@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'layout.html' %}
+{% block content %}
+<div class="mt-5 w-100">
+    <div class="row mx-3 jsutify-content-center">
+        <div class="col-md-8 col-12 border border-light p-3">
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label for="material">Material</label>
+                </div>
+                <div class="col-6">
+                    <select name="material" id="material" class="form-control select2">
+                        <option value="Cement">Cement</option>
+                        <option value="Concrete">Concrete</option>
+                        <option value="Steel">Steel</option>
+                        <option value="M Sand">M Sand</option>
+                        <option value="P Sand">P Sand</option>
+                        <option value="Aggregates">Aggregates</option>
+                        <option value="Wall Material">Wall Material</option>
+                        <option value="Door Window">Door Window</option>
+                        <option value="Flooring">Flooring</option>
+                        <option value="Sanitary">Sanitary</option>
+                        <option value="Hardware">Hardware</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label for="project">Project</label>
+                </div>
+                <div class="col-6">
+                    <select name="project" id="project" class="form-control select2">
+                        {% for i in projects %}
+                            <option value="{{i[0]}}">{{i[1]}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

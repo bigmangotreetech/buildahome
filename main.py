@@ -9,9 +9,9 @@ import time
 app = Flask(__name__)
 # Sql setup
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'ABWorldUser'
-app.config['MYSQL_PASSWORD'] = '0XR0MF*&jCKE'
-app.config['MYSQL_DB'] = 'ef22yrqyi32q'
+app.config['MYSQL_USER'] = 'buildahome'
+app.config['MYSQL_PASSWORD'] = 'build*2019'
+app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = 'images'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
 
@@ -25,7 +25,12 @@ def index():
 
 @app.route('/enter_material', methods=['GET'])
 def enter_material():
-    return render_template('enter_material.html')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        query = "SELECT project_id, prooject_name, project_number FROM projects"
+        cur.execute(query)
+        projects = cur.fetchall()
+        return render_template('enter_material.html', projects=projects)
 
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():
