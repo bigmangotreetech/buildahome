@@ -1,37 +1,9 @@
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-
-    <title>buildAhome</title>
-    <meta content="" name="description" />
-    <meta content="" name="keywords" />
-
-    <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon" />
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link href="http://fonts.cdnfonts.com/css/gilroy-bold" rel="stylesheet">
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"
-        type="text/css" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <link href="style.css" rel="stylesheet" />
-</head>
-
-<body>
-    <div class='mt-5 w-100'>
-        <div class='d-flex w-100-0'>
-            <a href="/enter_material.html" class='btn btn-primary mx-3'>Enter Material</a>
-            <a href="/view_inventory.html" class='btn btn-info mx-3'>View inventory</a>
-        </div>
+{% extends 'layout.html' %}
+{% block content %}
+ <div class='mt-5 w-100'>
+    <div class='d-flex w-100-0'>
+        <a href="/enter_material" class='btn btn-primary mx-3'>Enter Material</a>
+        <a href="/view_inventory" class='btn btn-info mx-3'>View inventory</a>
     </div>
-</body>
+</div>
+{% endblock %}

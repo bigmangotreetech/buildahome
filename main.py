@@ -21,7 +21,15 @@ app.secret_key = b'bAhSessionKey'
 
 @app.route('/', methods=['GET'])
 def index():
-    return "Hello there"
+    return render_template('index.html')
+
+@app.route('/enter_material', methods=['GET'])
+def enter_material():
+    return render_template('enter_material.html')
+
+@app.route('/view_inventory', methods=['GET'])
+def view_inventory():
+    return render_template('view_inventory.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
