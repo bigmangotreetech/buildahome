@@ -27,7 +27,7 @@ def index():
 def enter_material():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        query = "SELECT project_id, prooject_name, project_number FROM projects"
+        query = "SELECT project_id, project_name, project_number FROM projects"
         cur.execute(query)
         projects = cur.fetchall()
         return render_template('enter_material.html', projects=projects)
