@@ -1,0 +1,13 @@
+.select2-search__field {
+    border: none !important;
+    outline: none !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding: 4px 8px;
+    height: 40;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #001489;
+}
