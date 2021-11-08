@@ -72,6 +72,9 @@ def view_inventory():
         procurementQuery = 'SELECT * from procurement WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
         cur.execute(procurementQuery)
         procurements = cur.fetchall()
+        for i in projects:
+            if str(i[0]) == str(project_id):
+                project = i[1]
 
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material)
 
