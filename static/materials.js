@@ -1,5 +1,5 @@
 function calcAmount(gst, amount) {
-    const total = ((gst / 100 ) * amount) * 100;
+    const total = ((gst / 100 ) * amount) + amount;
     $("#total_amount").val(total)
 }
 
