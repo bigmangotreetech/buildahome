@@ -23,3 +23,7 @@
 .bg-indigo {
     background-color: #001489 !important;
 }
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
