@@ -4,10 +4,14 @@
 }
 
 .select2-container .select2-selection--single .select2-selection__rendered {
-    padding: 4px 8px;
-    height: 40;
+    height: 40px !important;
+}
+
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding: 4px 8px !important;
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-    background-color: #001489;
+    background-color: #001489 !important;
 }
