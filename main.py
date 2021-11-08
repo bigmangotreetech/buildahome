@@ -48,7 +48,7 @@ def enter_material():
         total_amount = request.form['total_amount']
         difference_cost = request.form['difference_cost']
         cur = mysql.connection.cursor()
-        query = "INSERT into procurement (material, description, vendor, project, po_no, invoice_no, invoice_date, invoice_value," \
+        query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date, invoice_value," \
                 "quantity, unit, rate, amount, gst, total_amount, difference_cost) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (material, description, vendor, project, po_no, invoice_no, invoice_date, invoice_value, quantity, unit, rate, amount, gst, total_amount, difference_cost)
         cur.execute(query, values)
