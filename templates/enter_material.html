@@ -3,95 +3,141 @@
 <div class="mt-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="material">Material</label>
+            <form action="/enter_material" method="post">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="material">Material</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="material" id="material" class="form-control select2">
+                            <option value=""></option>
+                            <option value="Cement">Cement</option>
+                            <option value="Concrete">Concrete</option>
+                            <option value="Steel">Steel</option>
+                            <option value="M Sand">M Sand</option>
+                            <option value="P Sand">P Sand</option>
+                            <option value="Aggregates">Aggregates</option>
+                            <option value="Wall Material">Wall Material</option>
+                            <option value="Door Window">Door Window</option>
+                            <option value="Flooring">Flooring</option>
+                            <option value="Sanitary">Sanitary</option>
+                            <option value="Hardware">Hardware</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <select name="material" id="material" class="form-control select2">
-                        <option value="Cement">Cement</option>
-                        <option value="Concrete">Concrete</option>
-                        <option value="Steel">Steel</option>
-                        <option value="M Sand">M Sand</option>
-                        <option value="P Sand">P Sand</option>
-                        <option value="Aggregates">Aggregates</option>
-                        <option value="Wall Material">Wall Material</option>
-                        <option value="Door Window">Door Window</option>
-                        <option value="Flooring">Flooring</option>
-                        <option value="Sanitary">Sanitary</option>
-                        <option value="Hardware">Hardware</option>
-                    </select>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="description">Description</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="description" id="description" class="form-control">
+                    </div>
                 </div>
-            </div>
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="description">Description</label>
-                </div>
-                <div class="col-6">
-                    <input name="description" id="description" class="form-control">
-                </div>
-            </div>
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="project">Project</label>
-                </div>
-                <div class="col-6">
-                    <select name="project" id="project" class="form-control select2">
-                        {% for i in projects %}
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project">Project</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="project" id="project" class="form-control select2">
+                            <option value=""></option>
+                            {% for i in projects %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
-                        {% endfor %}
-                    </select>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="quantity">Quantity</label>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="quantity">Quantity</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="quantity" id="quantity" class="form-control">
+                    </div>
                 </div>
-                <div class="col-6">
-                    <input name="quantity" id="quantity" class="form-control">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="rate">Rate</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="rate" id="rate" class="form-control">
+                    </div>
                 </div>
-            </div>
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="unit">Unit</label>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="unit">Unit</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="unit" id="unit" class="form-control">
+                    </div>
                 </div>
-                <div class="col-6">
-                    <input name="unit" id="unit" class="form-control">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="invoice_no">Invoice number</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="invoice_no" id="invoice_no" class="form-control">
+                    </div>
                 </div>
-            </div>
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="invoice_no">Invoice number</label>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="invoice_date">Invoice date</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="date" name="invoice_date" id="invoice_date" class="form-control">
+                    </div>
                 </div>
-                <div class="col-6">
-                    <input name="invoice_no" id="invoice_no" class="form-control">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="po_no">PO number</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="po_no" id="po_no" class="form-control">
+                    </div>
                 </div>
-            </div>
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="amount">Amount</label>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="amount">Amount</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="amount" id="amount" class="form-control">
+                    </div>
                 </div>
-                <div class="col-6">
-                    <input name="amount" id="amount" class="form-control">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="gst">GST</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="gst" id="gst" class="form-control select2">
+                            <option value=""></option>
+                            <option value="5">5%</option>
+                            <option value="18">18%</option>
+                            <option value="28">28%</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="row mx-0 mb-3 form-group">
-                <div class="col-6">
-                    <label for="gst">GST</label>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="total_amount">Total Amount</label>
+                    </div>
+                    <div class="col-6">
+                        <input readonly type="number" name="total_amount" id="total_amount" class="form-control">
+                    </div>
                 </div>
-                <div class="col-6">
-                    <select name="gst" id="gst" class="form-control select2">
-                        <option value="5">5%</option>
-                        <option value="18">18%</option>
-                    </select>
+                 <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="difference_cost">Difference cost</label>
+                    </div>
+                    <div class="col-6">
+                        <input readonly type="number" name="difference_cost" id="difference_cost" class="form-control">
+                    </div>
                 </div>
-            </div>
-            <div class="row justify-content-center mx-0">
-                <div class="col-6">
-                    <button class="btn btn-block btn-primary">Submit</button>
-                </div>
-            </div>
 
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button class="btn btn-block btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
 
         </div>
     </div>

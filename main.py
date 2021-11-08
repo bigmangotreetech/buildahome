@@ -31,6 +31,16 @@ def enter_material():
         cur.execute(query)
         projects = cur.fetchall()
         return render_template('enter_material.html', projects=projects)
+    else:
+        material = request.form['material']
+        description = request.form['description']
+        project = request.form['project']
+        quantity = request.form['quantity']
+        unit = request.form['unit']
+        invoice_no = request.form['invoice_no']
+        amount = request.form['amount']
+        gst = request.form['gst']
+
 
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():
