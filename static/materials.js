@@ -15,7 +15,7 @@ $("#gst").on("change", function(){
     }
 })
 
-$("#amount").on("change", function(){
+$("#amount").on("keyup", function(){
     const amount = $(this).val()
     if(gst) {
         const gst = $("#gst").val()

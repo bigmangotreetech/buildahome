@@ -1,10 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 pb-4 border-bottom">
+        <div class="col-md-4 col-12">
+            <select name="project" id="project" class="form-control select2">
+                <option value=""></option>
+                {% for i in projects %}
+                <option value="{{i[0]}}">{{i[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button id="get_procurement" class="btn text-white bg-indigo">Get procurement</button>
+    </div>
+    {% if procurement is not none %} {% end
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Material</th>
+            <th scope="col">Description</th>
+            <th scope="col">Vendor</th>
+            <th scope="col">PO number</th>
+            <th scope="col">Invoice number</th>
+            <th scope="col">Invoice date</th>
+            <th scope="col">Invoice value</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Amount</th>
+            <th scope="col">GST</th>
+            <th scope="col">Total Amount</th>
+            <th scope="col">Difference cost</th>
 
-</body>
-</html>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in procurement %}
+        <tr>
+            <td>{{i[1]}}</td>
+            <td>{{i[2]}}</td>
+            <td>{{i[3]}}</td>
+            <td>{{i[4]}}</td>
+            <td>{{i[5]}}</td>
+            <td>{{i[6]}}</td>
+            <td>{{i[7]}}</td>
+            <td>{{i[8]}}</td>
+            <td>{{i[9]}}</td>
+            <td>{{i[10]}}</td>
+            <td>{{i[11]}}</td>
+            <td>{{i[12]}}</td>
+            <td>{{i[13]}}</td>
+            <td>{{i[14]}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    if%}
+</div>
+
+{% endblock %}

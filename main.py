@@ -54,19 +54,23 @@ def enter_material():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
-        return redirect('/view_material')
+        return redirect('/material/enter_material')
 
-@app.route('/view_material', methods=['GET'])
-def view_material():
-    cur = mysql.connection.cursor()
-    query = "SELECT * FROM procurement"
-    cur.execute(query)
-    procurement = cur.fetchall()
-    return render_template('view_material.html', procurement=procurement)
 
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():
-    return render_template('view_inventory.html')
+    cur = mysql.connection.cursor()
+    query = "SELECT proejct_id, project_name FROM projects"
+    cur.execute(query)
+    projects = cur.fetchall()
+    project_id = request.args['project_id']
+    procurements = None
+    if project_id:
+        procurementQuery = 'SELECT * from procurement WHERE project_id='+str(project_id)
+        cur.execute(procurementQuery)
+        procurements = cur.fetchall()
+
+    return render_template('view_inventory.html', projects=projects, procurements=procurements)
 
 if __name__ == '__main__':
     app.run(debug=True)
