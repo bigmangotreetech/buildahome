@@ -23,7 +23,7 @@ app.secret_key = b'bAhSessionKey'
 def index():
     return render_template('index.html')
 
-@app.route('/enter_material', methods=['GET'])
+@app.route('/enter_material', methods=['GET', 'POST'])
 def enter_material():
     if request.method == 'GET':
         cur = mysql.connection.cursor()

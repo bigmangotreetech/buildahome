@@ -1,4 +1,6 @@
 function calcAmount(gst, amount) {
+    var gst = parseFloat(gst)
+    var amount = parseFloat(amount)
     const total = ((gst / 100 ) * amount) + amount;
     $("#total_amount").val(total)
 }
