@@ -60,7 +60,7 @@ def enter_material():
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():
     cur = mysql.connection.cursor()
-    query = "SELECT proejct_id, project_name FROM projects"
+    query = "SELECT project_id, project_name FROM projects"
     cur.execute(query)
     projects = cur.fetchall()
     project_id = request.args['project_id']
