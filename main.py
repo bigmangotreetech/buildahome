@@ -65,9 +65,10 @@ def view_inventory():
     projects = cur.fetchall()
     procurements = None
 
-    if 'project_id' in request.args:
+    if 'project_id' in request.args and 'material' in request.args:
         project_id = request.args['project_id']
-        procurementQuery = 'SELECT * from procurement WHERE project_id='+str(project_id)
+        material = request.args['material']
+        procurementQuery = 'SELECT * from procurement WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
         cur.execute(procurementQuery)
         procurements = cur.fetchall()
 
