@@ -64,7 +64,8 @@ def view_inventory():
     cur.execute(query)
     projects = cur.fetchall()
     procurements = None
-
+    project = None
+    material = None
     if 'project_id' in request.args and 'material' in request.args:
         project_id = request.args['project_id']
         material = request.args['material']
@@ -72,7 +73,7 @@ def view_inventory():
         cur.execute(procurementQuery)
         procurements = cur.fetchall()
 
-    return render_template('view_inventory.html', projects=projects, procurements=procurements)
+    return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material)
 
 if __name__ == '__main__':
     app.run(debug=True)
