@@ -27,3 +27,7 @@
 body {
     font-family: 'Montserrat', sans-serif;
 }
+
+.overflow-x-scroll {
+    overflow-x: scroll
+}
