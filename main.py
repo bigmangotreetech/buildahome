@@ -6,7 +6,7 @@ from time import mktime
 import os
 import hashlib
 import time
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 # Sql setup
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'buildahome'
