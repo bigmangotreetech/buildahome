@@ -34,13 +34,35 @@ def enter_material():
     else:
         material = request.form['material']
         description = request.form['description']
+        vendor = request.form['vendor']
         project = request.form['project']
+        po_no = request.form['po_no']
+        invoice_no = request.form['invoice_no']
+        invoice_date = request.form['invoice_date']
+        invoice_value = request.form['invoice_value']
         quantity = request.form['quantity']
         unit = request.form['unit']
-        invoice_no = request.form['invoice_no']
+        rate = request.form['rate']
         amount = request.form['amount']
         gst = request.form['gst']
+        total_amount = request.form['total_amount']
+        difference_cost = request.form['difference_cost']
+        cur = mysql.connection.cursor()
+        query = "INSERT into procurement (material, description, vendor, project, po_no, invoice_no, invoice_date, invoice_value," \
+                "quantity, unit, rate, amount, gst, total_amount, difference_cost) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (material, description, vendor, project, po_no, invoice_no, invoice_date, invoice_value, quantity, unit, rate, amount, gst, total_amount, difference_cost)
+        cur.execute(query, values)
+        mysql.connection.commit()
+        flash('Material was inserted successfully', 'success')
+        return redirect('/view_material')
 
+@app.route('/view_material', methods=['GET'])
+def view_material():
+    cur = mysql.connection.cursor()
+    query = "SELECT * FROM procurement"
+    cur.execute(query)
+    procurement = cur.fetchall()
+    return render_template('view_material.html', procurement=procurement)
 
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():

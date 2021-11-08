@@ -4,6 +4,11 @@
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
             <form action="/enter_material" method="post">
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h4>Enter material</h4>
+                    </div>
+                </div>
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="material">Material</label>
@@ -35,6 +40,14 @@
                 </div>
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
+                        <label for="vendor">Vendor</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="vendor" id="vendor" class="form-control">
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
                         <label for="project">Project</label>
                     </div>
                     <div class="col-6">
@@ -48,29 +61,13 @@
                 </div>
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
-                        <label for="quantity">Quantity</label>
+                        <label for="po_no">PO number</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" name="quantity" id="quantity" class="form-control">
+                        <input type="number" name="po_no" id="po_no" class="form-control">
                     </div>
                 </div>
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
-                        <label for="rate">Rate</label>
-                    </div>
-                    <div class="col-6">
-                        <input type="number" name="rate" id="rate" class="form-control">
-                    </div>
-                </div>
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
-                        <label for="unit">Unit</label>
-                    </div>
-                    <div class="col-6">
-                        <input name="unit" id="unit" class="form-control">
-                    </div>
-                </div>
-                <div class="row mx-0 mb-3 form-group">
+                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="invoice_no">Invoice number</label>
                     </div>
@@ -88,12 +85,37 @@
                 </div>
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
-                        <label for="po_no">PO number</label>
+                        <label for="invoice_value">Invoice value</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" name="po_no" id="po_no" class="form-control">
+                        <input type="text" name="invoice_value" id="invoice_value" class="form-control">
                     </div>
                 </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="quantity">Quantity</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="quantity" id="quantity" class="form-control">
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="unit">Unit</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="unit" id="unit" class="form-control">
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="rate">Rate</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="rate" id="rate" class="form-control">
+                    </div>
+                </div>
+
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="amount">Amount</label>
@@ -123,18 +145,18 @@
                         <input readonly type="number" name="total_amount" id="total_amount" class="form-control">
                     </div>
                 </div>
-                 <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="difference_cost">Difference cost</label>
                     </div>
                     <div class="col-6">
-                        <input readonly type="number" name="difference_cost" id="difference_cost" class="form-control">
+                        <input type="number" name="difference_cost" id="difference_cost" class="form-control">
                     </div>
                 </div>
 
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
-                        <button class="btn btn-block btn-primary">Submit</button>
+                        <button class="btn btn-block bg-indigo">Submit</button>
                     </div>
                 </div>
             </form>
@@ -142,4 +164,5 @@
         </div>
     </div>
 </div>
+<script src="../static/materials.js"></script>
 {% endblock %}
