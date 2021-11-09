@@ -1,5 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, flash, jsonify, send_from_directory
 from flask_mysqldb import MySQL
+from passlib.hash import sha256_crypt
+
 import datetime
 import time
 from time import mktime
@@ -21,17 +23,62 @@ app.secret_key = b'bAhSessionKey'
 
 @app.route('/', methods=['GET'])
 def index():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/'
+        return redirect('/login')
     return render_template('index.html')
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    if request.method == 'GET':
+        if 'email' in session:
+            if 'last_route' in session:
+                last_route = session['last_route']
+                del session['last_route']
+                return redirect(last_route)
+            else: return redirect('/')
+        return render_template('login.html')
+    else:
+        username = request.form['username']
+        password = request.form['password']
+        password = sha256_crypt.encrypt(password)
+        cur = mysql.connection.cursor()
+        query = "SELECT email, name, role, password FROM App_users WHERE email='"+username+"'"
+        cur.execute(query)
+        result = cur.fetchone()
+        if result is not None:
+            if result[3] == password:
+                session['email'] = result[0]
+                session['role'] = result[2]
+                session['name'] = result[1]
+                flash('Logged in successfully', 'success')
+                return redirect('/')
+            else:
+                flash('Incorrect credentials', 'danger')
+                return redirect('/login')
+        else:
+            flash('Incorrect credentials', 'danger')
+            return redirect('/login')
+
 
 @app.route('/enter_material', methods=['GET', 'POST'])
 def enter_material():
     if request.method == 'GET':
+        if 'email' not in session:
+            flash('You need to login to continue', 'danger')
+            session['last_route'] = '/enter_material'
+            return redirect('/login')
         cur = mysql.connection.cursor()
         query = "SELECT project_id, project_name, project_number FROM projects"
         cur.execute(query)
         projects = cur.fetchall()
         return render_template('enter_material.html', projects=projects)
     else:
+        if 'email' not in session:
+            flash('You need to login to continue', 'danger')
+            session['last_route'] = '/enter_material'
+            return redirect('/login')
         material = request.form['material']
         description = request.form['description']
         vendor = request.form['vendor']
@@ -59,6 +106,10 @@ def enter_material():
 
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/view_inventory'
+        return redirect('/login')
     cur = mysql.connection.cursor()
     query = "SELECT project_id, project_name FROM projects"
     cur.execute(query)
