@@ -1,12 +1,12 @@
 from flask import Flask, render_template, redirect, request, session, flash, jsonify, send_from_directory
 from flask_mysqldb import MySQL
-from passlib.hash import sha256_crypt
+import hashlib
+print(hashlib.sha256('Abcdefgh'.encode()).hexdigest() == 'e0fa227172f8e5bb0087326b7d8dc7bea00d6210b750550d5d057c4cfd6f19c0')
 
 import datetime
 import time
 from time import mktime
 import os
-import hashlib
 import time
 app = Flask(__name__)
 # Sql setup
@@ -42,7 +42,7 @@ def login():
     else:
         username = request.form['username']
         password = request.form['password']
-        password = sha256_crypt.encrypt(password)
+        password = hashlib.sha256(password.encode()).hexdigest()
         cur = mysql.connection.cursor()
         query = "SELECT email, name, role, password FROM App_users WHERE email='"+username+"'"
         cur.execute(query)
@@ -58,7 +58,7 @@ def login():
                 flash('Incorrect credentials', 'danger')
                 return redirect('/material/login')
         else:
-            flash('Incorrect credentials', 'danger')
+            flash('Incorrect credentials. User not found', 'danger')
             return redirect('/material/login')
 
 
