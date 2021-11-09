@@ -26,7 +26,7 @@ def index():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/'
-        return redirect('/login')
+        return redirect('/material/login')
     return render_template('index.html')
 
 @app.route('/login', methods=['GET','POST'])
@@ -37,7 +37,7 @@ def login():
                 last_route = session['last_route']
                 del session['last_route']
                 return redirect(last_route)
-            else: return redirect('/')
+            else: return redirect('/material')
         return render_template('login.html')
     else:
         username = request.form['username']
@@ -53,13 +53,13 @@ def login():
                 session['role'] = result[2]
                 session['name'] = result[1]
                 flash('Logged in successfully', 'success')
-                return redirect('/')
+                return redirect('/material')
             else:
                 flash('Incorrect credentials', 'danger')
-                return redirect('/login')
+                return redirect('/material/login')
         else:
             flash('Incorrect credentials', 'danger')
-            return redirect('/login')
+            return redirect('/material/login')
 
 
 @app.route('/enter_material', methods=['GET', 'POST'])
@@ -67,8 +67,8 @@ def enter_material():
     if request.method == 'GET':
         if 'email' not in session:
             flash('You need to login to continue', 'danger')
-            session['last_route'] = '/enter_material'
-            return redirect('/login')
+            session['last_route'] = '/material/enter_material'
+            return redirect('/material/login')
         cur = mysql.connection.cursor()
         query = "SELECT project_id, project_name, project_number FROM projects"
         cur.execute(query)
@@ -77,8 +77,8 @@ def enter_material():
     else:
         if 'email' not in session:
             flash('You need to login to continue', 'danger')
-            session['last_route'] = '/enter_material'
-            return redirect('/login')
+            session['last_route'] = '/material/enter_material'
+            return redirect('/material/login')
         material = request.form['material']
         description = request.form['description']
         vendor = request.form['vendor']
@@ -109,7 +109,7 @@ def view_inventory():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_inventory'
-        return redirect('/login')
+        return redirect('/material/login')
     cur = mysql.connection.cursor()
     query = "SELECT project_id, project_name FROM projects"
     cur.execute(query)

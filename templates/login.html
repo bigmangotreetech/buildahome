@@ -2,7 +2,7 @@
 {% block content %}
 <div class="d-flex flex-column h-100 justify-content-center">
     <div class="row mx-0 justify-content-center">
-        <div class="col-sm-10 col-md-6 col-lg-4 p-3 bg-light border py-5">
+        <form class="col-sm-10 col-md-6 col-lg-4 p-3 bg-light border py-5" action="/material/login" method="POST">
             <div class="mb-3 form-group">
                 <label for="username">Username / Email</label>
                 <input name="username" id="username" class="form-control">
@@ -12,7 +12,7 @@
                 <input name="password" id="password" class="form-control">
             </div>
             <button class="btn btn-block bg-indigo text-white">Submit</button>
-        </div>
+        </form>
     </div>
 </div>
 {% endblock %}
