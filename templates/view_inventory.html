@@ -33,6 +33,13 @@
         <div class="w-100 mb-3">
             <h4>{{material}} procurement for {{project}}</h4>
         </div>
+        {% if materialTotalQuantity is not none %}
+        <div class="mb-3">
+            <div class="h5" id="total_item_quantity">Total project quantity of {{material}} for project: {{materialTotalQuantity}}</div>
+            <div class="h5" id="total_current_quantity"></div>
+            <div class="h5" id="total_balance_quantity"></div>
+        </div>
+        {% endif %}
         <table class="table table-hover">
             <thead>
             <tr>
@@ -62,16 +69,32 @@
                 <td>{{i[5]}}</td>
                 <td>{{i[6]}}</td>
                 <td>{{i[7]}}</td>
-                <td>{{i[8]}}</td>
+                <td class="item_quantity">{{i[8]}}</td>
                 <td>{{i[9]}}</td>
                 <td>{{i[10]}}</td>
                 <td>{{i[11]}}</td>
                 <td>{{i[13]}}</td>
                 <td>{{i[12]}}</td>
                 <td>{{i[14]}}</td>
-                <td>{{i[15]}}</td>
+                <td class="item_difference_cost">{{i[15]}}</td>
             </tr>
             {% endfor %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+               <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><span class="font-weight-bold" id="total_difference_cost"></span></td>
+            </tr>
             </tbody>
         </table>
         {% endif %}

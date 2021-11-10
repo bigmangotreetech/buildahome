@@ -112,6 +112,7 @@ def view_inventory():
     procurements = None
     project = None
     material = None
+    materialTotalQuantity = None
     if 'project_id' in request.args and 'material' in request.args:
         project_id = request.args['project_id']
         material = request.args['material']
@@ -122,7 +123,12 @@ def view_inventory():
             if str(i[0]) == str(project_id):
                 project = i[1]
 
-    return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material)
+        materialQuantityQuery = 'SELECT total_quantity from kyp_material WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
+        cur.execute(materialQuantityQuery)
+        result = cur.fetchone()
+        if result is not None:
+            materialTotalQuantity = result[0]
+    return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material, materialTotalQuantity=materialTotalQuantity)
 
 @app.route('/kyp_material', methods=['GET','POST'])
 def kyp_material():
@@ -179,6 +185,12 @@ def kyp_material():
         flash('Quantity chart updated sucessfully','success')
         return redirect('/material/kyp_material?project_id='+str(project_id))
 
+@app.route('/logout', methods=['GET'])
+def logout():
+    del session['email']
+    del session['name']
+    del session['role']
+    return redirect('/material/login')
 
 if __name__ == '__main__':
     app.run(debug=True)
