@@ -151,6 +151,7 @@ def kyp_material():
 
         materialPresent = None;
         project = None
+        project_id = None
         if 'project_id' in request.args:
             project_id = request.args['project_id']
             materialQuery = 'SELECT * from kyp_material WHERE project_id='+str(project_id)
