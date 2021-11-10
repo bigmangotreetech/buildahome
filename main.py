@@ -174,8 +174,8 @@ def kyp_material():
             if len(str(quantityOfI)):
                 materialQuantityInsetQuery = "INSERT into kyp_material (project_id, material, total_quantity) values "+str(project_id)+",'"+str(i)+"','"+str(quantityOfI)+"'"
 
-            cur.execute(materialQuantityInsetQuery)
-            mysql.connection.commit()
+                cur.execute(materialQuantityInsetQuery)
+                mysql.connection.commit()
         flash('Quantity chart updated sucessfully','success')
         return redirect('/material/kyp_material?project_id='+str(project_id))
 
