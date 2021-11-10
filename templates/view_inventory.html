@@ -30,14 +30,14 @@
     </div>
     <div class="w-100 p-3 overflow-x-auto">
         {% if procurements is not none %}
-        <div class="w-100 mb-3">
+        <div class="w-100 mb-4">
             <h4>{{material}} procurement for {{project}}</h4>
         </div>
         {% if materialTotalQuantity is not none %}
         <div class="mb-3">
-            <div class="h5">Total project quantity of {{material}} for project: <span id="total_item_quantity"> {{materialTotalQuantity}} </span></div>
-            <div class="h5" id="total_current_quantity"></div>
-            <div class="h5" id="total_balance_quantity"></div>
+            <div>Total project quantity of {{material}} for project: <span id="total_item_quantity"> {{materialTotalQuantity}} </span></div>
+            <div id="total_current_quantity"></div>
+            <div id="total_balance_quantity"></div>
         </div>
         {% endif %}
         <table class="table table-hover">
