@@ -1,26 +1,12 @@
-function calcAmount(gst, amount) {
-    var gst = parseFloat(gst)
-    var amount = parseFloat(amount)
+function calcAmount() {
+    const quantity = $('#quantity').val().trim()
+    const rate = $("#rate").val().trim()
+    const gst = $("#gst").val()
+    const amount = parseFloat(rate) * parseFloat(quantity)
     const total = ((gst / 100 ) * amount) + amount;
     $("#total_amount").val(total)
 }
 
-$("#gst").on("change", function(){
-    const gst = $(this).val()
-    if(gst) {
-        const amount = $("#amount").val()
-        if (amount) {
-           calcAmount(gst, amount)
-        }
-    }
-})
-
-$("#amount").on("keyup", function(){
-    const amount = $(this).val()
-    if(gst) {
-        const gst = $("#gst").val()
-        if (gst) {
-           calcAmount(gst, amount)
-        }
-    }
-})
+$("#gst").on("change",  calcAmount)
+$("#rate").on("keyup", calcAmount)
+$("#quantity").on("keyup", calcAmount)
