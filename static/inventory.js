@@ -13,14 +13,14 @@ $("#update_kyp_material").on('click', function(){
 })
 
 if($('#total_item_quantity').length) {
-    let curernt_quantity = 0;
+    let current_quantity = 0;
     let total_quantity = parseFloat($('#total_item_quantity').text().trim())
     $('.item_quantity').each(function(index, element){
-        curernt_quantity += parseFloat($(this).text().trim())
+        current_quantity += parseFloat($(this).text().trim())
     })
-    let balance = total_quantity - curernt_quantity;
-    $('#total_current_quantity').text('Current : '+curernt_quantity.toString())
-    $('#total_current_quantity').text('Balance : '+balance.toString())
+    let balance = total_quantity - current_quantity;
+    $('#total_current_quantity').text('Current : '+current_quantity.toString())
+    $('#total_balance_quantity').text('Balance : '+balance.toString())
 }
 
 if($('.item_difference_cost').length) {
