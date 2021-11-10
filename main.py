@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, request, session, flash, jsonify, send_from_directory
 from flask_mysqldb import MySQL
 import hashlib
-print(hashlib.sha256('Abcdefgh'.encode()).hexdigest() == 'e0fa227172f8e5bb0087326b7d8dc7bea00d6210b750550d5d057c4cfd6f19c0')
 
 import datetime
 import time
@@ -25,7 +24,7 @@ app.secret_key = b'bAhSessionKey'
 def index():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/'
+        session['last_route'] = '/material'
         return redirect('/material/login')
     return render_template('index.html')
 
@@ -64,21 +63,17 @@ def login():
 
 @app.route('/enter_material', methods=['GET', 'POST'])
 def enter_material():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/enter_material'
+        return redirect('/material/login')
     if request.method == 'GET':
-        if 'email' not in session:
-            flash('You need to login to continue', 'danger')
-            session['last_route'] = '/material/enter_material'
-            return redirect('/material/login')
         cur = mysql.connection.cursor()
         query = "SELECT project_id, project_name, project_number FROM projects"
         cur.execute(query)
         projects = cur.fetchall()
         return render_template('enter_material.html', projects=projects)
     else:
-        if 'email' not in session:
-            flash('You need to login to continue', 'danger')
-            session['last_route'] = '/material/enter_material'
-            return redirect('/material/login')
         material = request.form['material']
         description = request.form['description']
         vendor = request.form['vendor']
@@ -108,7 +103,7 @@ def enter_material():
 def view_inventory():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/view_inventory'
+        session['last_route'] = '/material/view_inventory'
         return redirect('/material/login')
     cur = mysql.connection.cursor()
     query = "SELECT project_id, project_name FROM projects"
@@ -128,6 +123,63 @@ def view_inventory():
                 project = i[1]
 
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material)
+
+@app.route('/kyp_material', methods=['GET','POST'])
+def kyp_material():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/kyp_material'
+        return redirect('/material/login')
+    materialQuantityData = {
+        'Cement': '',
+        'Concrete': '',
+        'Steel': '',
+        'M Sand': '',
+        'P Sand': '',
+        'Aggregates': '',
+        'Wall Material': '',
+        'Door Window': '',
+        'Flooring': '',
+        'Sanitary': '',
+        'Hardware': ''
+    }
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        query = "SELECT project_id, project_name FROM projects"
+        cur.execute(query)
+        projects = cur.fetchall()
+
+        materialPresent = None;
+        project = None
+        if 'project_id' in request.args:
+            project_id = request.args['project_id']
+            materialQuery = 'SELECT * from kyp_material WHERE project_id='+str(project_id)
+            cur.execute(materialQuery)
+            result = cur.fetchall()
+            for i in result:
+                materialName = i[2]
+                materialQuantityData[materialName] = i[3]
+                materialPresent = True
+            for i in projects:
+                if str(i[0]) == str(project_id):
+                    project = i[1]
+        return render_template('kyp_material.html', projects=projects, project_id=project_id, materialPresent=materialPresent, project=project, materialQuantityData=materialQuantityData)
+    else:
+        cur = mysql.connection.cur()
+        project_id = request['project_id']
+        deleteOldQuantityChartQuery = 'DELETE from kyp_material WHERE project_id='+str(project_id)
+        cur.execute(deleteOldQuantityChartQuery)
+        for i in materialQuantityData:
+            quantityOfI = request.form[i]
+
+            if len(str(quantityOfI)):
+                materialQuantityInsetQuery = 'INSERT into kyp_material (project_id, material, total_quantity) values '+str(project_id)+',"'+i+'","'+quantityOfI+'"'
+
+            cur.execute(materialQuantityInsetQuery)
+            mysql.connection.commit()
+        flash('Quantity chart updated sucessfully','success')
+        return redirect('/material/kyp_material?project_id='+str(project_id))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
