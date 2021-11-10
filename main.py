@@ -165,7 +165,7 @@ def kyp_material():
         return render_template('kyp_material.html', projects=projects, project_id=project_id, project=project, materialQuantityData=materialQuantityData)
     else:
         cur = mysql.connection.cursor()
-        project_id = request['project_id']
+        project_id = request.form['project_id']
         deleteOldQuantityChartQuery = 'DELETE from kyp_material WHERE project_id='+str(project_id)
         cur.execute(deleteOldQuantityChartQuery)
         for i in materialQuantityData:
