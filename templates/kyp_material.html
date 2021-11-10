@@ -12,7 +12,7 @@
         </div>
         <button id="update_kyp_material" class="btn text-white bg-indigo  mb-2">View quantity chart</button>
     </div>
-    {% if materialPresent is not none %}
+
     <form class="row m-3 justify-content-center border-top"  action="/material/kyp_material" method="post">
         Total material quantities for project {{project}}
         <input type="hidden" name="project_id" value="{{project_id}}">
@@ -28,8 +28,13 @@
                 </div>
             {% endfor %}
         </div>
+        <div class="row justify-content-center mx-0 my-5">
+            <div class="col-6">
+                <button class="btn btn-block bg-indigo text-white">Submit</button>
+            </div>
+        </div>
     </form>
-    {% endif %}
+
 </div>
 
 {% endblock %}

@@ -149,7 +149,6 @@ def kyp_material():
         cur.execute(query)
         projects = cur.fetchall()
 
-        materialPresent = None;
         project = None
         project_id = None
         if 'project_id' in request.args:
@@ -160,11 +159,10 @@ def kyp_material():
             for i in result:
                 materialName = i[2]
                 materialQuantityData[materialName] = i[3]
-                materialPresent = True
             for i in projects:
                 if str(i[0]) == str(project_id):
                     project = i[1]
-        return render_template('kyp_material.html', projects=projects, project_id=project_id, materialPresent=materialPresent, project=project, materialQuantityData=materialQuantityData)
+        return render_template('kyp_material.html', projects=projects, project_id=project_id, project=project, materialQuantityData=materialQuantityData)
     else:
         cur = mysql.connection.cur()
         project_id = request['project_id']
