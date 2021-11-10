@@ -97,7 +97,7 @@ def enter_material():
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
             return redirect('/material/enter_material')
         if float(result[0]) < (float(quantity) + float(result[0])):
-            flash('Total quantity of material exceeded limti specified under KYP material. Entry not recorded', 'danger')
+            flash('Total quantity of material exceeded limii specified under KYP material. Entry not recorded', 'danger')
             return redirect('/material/enter_material')
 
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date, invoice_value," \
