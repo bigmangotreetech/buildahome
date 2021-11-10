@@ -13,7 +13,7 @@
         <button id="update_kyp_material" class="btn text-white bg-indigo  mb-2">View quantity chart</button>
     </div>
 
-    {% if project is not None%}
+    {% if project is not none %}
     <form class="m-3 w-100 border-top" action="/material/kyp_material" method="post">
         Total material quantities for project {{project}}
         <input type="hidden" name="project_id" value="{{project_id}}">
