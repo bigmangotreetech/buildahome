@@ -96,7 +96,7 @@ def enter_material():
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
             return redirect('/material/enter_material')
-        elif float(result[0]) > (float(quantity) + float(result[0])):
+        if float(result[0]) < (float(quantity) + float(result[0])):
             flash('Total quantity of material exceeded limti specified under KYP material. Entry not recorded', 'danger')
             return redirect('/material/enter_material')
 
