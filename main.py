@@ -172,7 +172,7 @@ def kyp_material():
             quantityOfI = request.form[i]
 
             if len(str(quantityOfI)):
-                materialQuantityInsetQuery = 'INSERT into kyp_material (project_id, material, total_quantity) values '+str(project_id)+',"'+i+'","'+quantityOfI+'"'
+                materialQuantityInsetQuery = "INSERT into kyp_material (project_id, material, total_quantity) values "+str(project_id)+",'"+str(i)+"','"+str(quantityOfI)+"'"
 
             cur.execute(materialQuantityInsetQuery)
             mysql.connection.commit()
