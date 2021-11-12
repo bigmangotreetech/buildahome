@@ -1,10 +1,14 @@
 {% extends 'layout.html' %}
 {% block content %}
  <div class='mt-5 w-100'>
-    <div class='d-flex w-100-0'>
+    <div class='d-flex w-100'>
         <a href="/material/enter_material" class='btn btn-primary mx-3'>Enter Material</a>
         <a href="/material/view_inventory" class='btn btn-info mx-3'>View inventory</a>
         <a href="/material/kyp_material" class='btn btn-success mx-3'>KYP For material</a>
+    </div>
+
+     <div class='d-flex w-100 mt-4'>
+        <a href="/material/create_work_order" class='btn btn-danger mx-3'>Create work order</a>
     </div>
 </div>
 {% endblock %}

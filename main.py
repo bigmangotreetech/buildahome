@@ -195,6 +195,21 @@ def kyp_material():
         flash('Quantity chart updated sucessfully','success')
         return redirect('/material/kyp_material?project_id='+str(project_id))
 
+@app.route('/create_work_order', methods=['GET', 'POST'])
+def create_work_order():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/create_work_order'
+        return redirect('/material/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        query = "SELECT project_id, project_name FROM projects"
+        cur.execute(query)
+        projects = cur.fetchall()
+        floors = ['G + 1','G + 2','G + 3','G + 4']
+        trades = ['Civil','Flooring','Fabrication','Wood work','Waterproofing','Painting','Electrical','Plumbing']
+        return render_template('create_work_order.html', projects=projects, floors=floors, trades=trades)
+
 @app.route('/logout', methods=['GET'])
 def logout():
     del session['email']
