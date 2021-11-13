@@ -20,6 +20,10 @@ mysql = MySQL(app)
 
 app.secret_key = b'bAhSessionKey'
 
+labourTradeStageMap = {
+
+}
+
 @app.route('/', methods=['GET'])
 def index():
     if 'email' not in session:
@@ -207,8 +211,21 @@ def create_work_order():
         cur.execute(query)
         projects = cur.fetchall()
         floors = ['G + 1','G + 2','G + 3','G + 4']
-        trades = ['Civil','Flooring','Fabrication','Wood work','Waterproofing','Painting','Electrical','Plumbing']
+        tradesQuery = 'SELECT DISTINCT trade from labour_stages'
+        cur.execute(tradesQuery)
+        result = cur.fetchall()
+        trades = []
+        for i in result:
+            trades.append(i[0])
         return render_template('create_work_order.html', projects=projects, floors=floors, trades=trades)
+    else:
+        project_id = request.form['project']
+        trade = request.form['trade']
+        fl0ors = request.form['floors']
+        vendor_name = request.form['vendor_name']
+        vendor_pan = request.form['vendor_pan']
+        vendor_code = request.form['vendor_code']
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
