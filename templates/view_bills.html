@@ -1,9 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="p-5 w-100">
-    {% for project in data %}
-        <div class="h5 mt-4 mb-2">{{data[project]['project_name']}}</div>
-        <table class="table table-hover">
+    <table class="table table-hover">
             <thead>
             <tr>
                 <th scope="col">Vendor Name</th>
@@ -15,20 +13,24 @@
             </tr>
             </thead>
             <tbody>
-            {% for i in data[project]['bills'] %}
-            <tr>
-                <td>{{i['vendor_name']}}</td>
-                <td>{{i['vendor_pan']}}</td>
-                <td>{{i['vendor_code']}}</td>
-                <td>{{i['stage']}}</td>
-                <td>{{i['amount']}}</td>
-                <td>{{i['total_payable']}}</td>
-            </tr>
+            {% for project in data %}
+                <tr class="h5 mt-4 mb-2">{{data[project]['project_name']}}</tr>
+                {% for i in data[project]['bills'] %}
+                <tr>
+                    <td>{{i['vendor_name']}}</td>
+                    <td>{{i['vendor_pan']}}</td>
+                    <td>{{i['vendor_code']}}</td>
+                    <td>{{i['stage']}}</td>
+                    <td>{{i['amount']}}</td>
+                    <td>{{i['total_payable']}}</td>
+                </tr>
+                {% endfor %}
             {% endfor %}
+
 
             </tbody>
         </table>
-    {% endfor %}
+
 
 
 
