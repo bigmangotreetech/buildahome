@@ -327,7 +327,7 @@ def view_bills():
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
                          'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                         'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes,' \
+                         'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes' \
                          ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id'
 
         cur.execute(bills_query)
