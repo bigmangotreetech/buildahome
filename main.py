@@ -286,7 +286,7 @@ def update_payment_stages():
         result = cur.fetchall()
         stages = {}
         for i in result:
-            stages[i[0]] = i[1]
+            stages[i[0]] = i[1].replace('%','')
 
         response = {'work_order_value': work_order_value, 'vendor_name': vendor_name, 'vendor_code': vendor_code, 'vendor_pan': vendor_pan, 'stages' : stages}
         return jsonify(response)

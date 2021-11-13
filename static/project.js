@@ -38,8 +38,10 @@ $(document).ready(function() {
               dataType: 'json',
               data: {'project_id': project_id, 'trade': trade},
               success: function(data){
-                  console.log(data)
-                  console.log(data['stages'])
+                  $('.total_wo_value').text(data['work_order_value'])
+                  $('.vendor_name').text(data['vendor_name'])
+                  $('.vendor_code').text(data['vendor_code'])
+                  $('.vendor_pan').text(data['vendor_pan'])
                   for(const stage of Object.keys(data['stages'])) {
                     $(".select_payment_stage select").append($("<option></option>")
                     .attr("value", stage)
@@ -51,6 +53,22 @@ $(document).ready(function() {
             $('.select_payment_stage').addClass('d-none')
         }
         $(".select_payment_stage select").select2()
+   })
+
+   $(".select_payment_stage select").on('change', function(){
+        let payment_percentage = $(this).val()
+        if (payment_percentage) {
+            $(".final_details").removeClass('d-none')
+            $(".payment_percentage").text(payment_percentage.toString()+"%")
+            let work_order_value = parseFloat($('.total_wo_value').text())
+            payment_percentage = parseFloat(payment_percentage)
+            const bill_amount = (work_order_value * (payment_percentage /  100)) * 100
+            $(".bill_amount").text(bill_amount)
+        } else {
+            $(".final_details").addClass('d-none')
+        }
+
+
    })
 
 });
