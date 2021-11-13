@@ -12,8 +12,8 @@ $(document).ready(function() {
               type: "POST",
               data: {'project_id': project_id},
               success: function(data){
-                  trades = JSON.parse(data)
-                  for(const trade of trades) {
+
+                  for(const trade of data) {
                     $(".select_trade_for_bill select").append(`${trade}`)
                   }
               }
