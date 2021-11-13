@@ -45,7 +45,7 @@ $(document).ready(function() {
                   for(const stage of Object.keys(data['stages'])) {
                     $(".select_payment_stage select").append($("<option></option>")
                     .attr("value", stage)
-                    .text(stage))
+                    .text(data['stages'][stage]))
                   }
               }
             });
