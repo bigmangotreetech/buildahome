@@ -94,8 +94,8 @@ def enter_material():
         difference_cost = request.form['difference_cost']
         cur = mysql.connection.cursor()
 
-        materialQuantityQuery = 'SELECT total_quantity from kyp_material WHERE project_id='+str(project)+' AND material="'+str(material)+'"'
-        cur.execute(materialQuantityQuery)
+        material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id='+str(project)+' AND material="'+str(material)+'"'
+        cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
@@ -126,23 +126,23 @@ def view_inventory():
     procurements = None
     project = None
     material = None
-    materialTotalQuantity = None
+    material_total_quantity = None
     if 'project_id' in request.args and 'material' in request.args:
         project_id = request.args['project_id']
         material = request.args['material']
-        procurementQuery = 'SELECT * from procurement WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
-        cur.execute(procurementQuery)
+        procurement_query = 'SELECT * from procurement WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
+        cur.execute(procurement_query)
         procurements = cur.fetchall()
         for i in projects:
             if str(i[0]) == str(project_id):
                 project = i[1]
 
-        materialQuantityQuery = 'SELECT total_quantity from kyp_material WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
-        cur.execute(materialQuantityQuery)
+        material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
+        cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is not None:
-            materialTotalQuantity = result[0]
-    return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material, materialTotalQuantity=materialTotalQuantity)
+            material_total_quantity = result[0]
+    return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material, material_total_quantity=material_total_quantity)
 
 @app.route('/kyp_material', methods=['GET','POST'])
 def kyp_material():
@@ -150,7 +150,7 @@ def kyp_material():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/material/kyp_material'
         return redirect('/material/login')
-    materialQuantityData = {
+    material_quantity_data = {
         'Cement': '',
         'Concrete': '',
         'Steel': '',
@@ -173,30 +173,30 @@ def kyp_material():
         project_id = None
         if 'project_id' in request.args:
             project_id = request.args['project_id']
-            materialQuery = 'SELECT * from kyp_material WHERE project_id='+str(project_id)
-            cur.execute(materialQuery)
+            material_query = 'SELECT * from kyp_material WHERE project_id='+str(project_id)
+            cur.execute(material_query)
             result = cur.fetchall()
             for i in result:
-                materialName = i[2]
-                materialQuantityData[materialName] = i[3]
+                material_name = i[2]
+                material_quantity_data[material_name] = i[3]
             for i in projects:
                 if str(i[0]) == str(project_id):
                     project = i[1]
-        return render_template('kyp_material.html', projects=projects, project_id=project_id, project=project, materialQuantityData=materialQuantityData)
+        return render_template('kyp_material.html', projects=projects, project_id=project_id, project=project, material_quantity_data=material_quantity_data)
     else:
         cur = mysql.connection.cursor()
         project_id = request.form['project_id']
-        deleteOldQuantityChartQuery = 'DELETE from kyp_material WHERE project_id='+str(project_id)
-        cur.execute(deleteOldQuantityChartQuery)
-        for i in materialQuantityData:
-            quantityOfI = request.form[i]
+        delete_old_quantity_chart_query = 'DELETE from kyp_material WHERE project_id='+str(project_id)
+        cur.execute(delete_old_quantity_chart_query)
+        for i in material_quantity_data:
+            quantity_of_i = request.form[i]
 
-            if len(str(quantityOfI)):
-                materialQuantityInsetQuery = "INSERT into kyp_material (project_id, material, total_quantity) values ("+str(project_id)+",'"+str(i)+"','"+str(quantityOfI)+"')"
+            if len(str(quantity_of_i)):
+                material_quantity_insert_query = "INSERT into kyp_material (project_id, material, total_quantity) values ("+str(project_id)+",'"+str(i)+"','"+str(quantity_of_i)+"')"
 
-                cur.execute(materialQuantityInsetQuery)
+                cur.execute(material_quantity_insert_query)
                 mysql.connection.commit()
-        flash('Quantity chart updated sucessfully','success')
+        flash('Quantity chart updated successfully','success')
         return redirect('/material/kyp_material?project_id='+str(project_id))
 
 @app.route('/create_work_order', methods=['GET', 'POST'])
@@ -211,8 +211,8 @@ def create_work_order():
         cur.execute(query)
         projects = cur.fetchall()
         floors = ['G + 1','G + 2','G + 3','G + 4']
-        tradesQuery = 'SELECT DISTINCT trade from labour_stages'
-        cur.execute(tradesQuery)
+        trades_query = 'SELECT DISTINCT trade from labour_stages'
+        cur.execute(trades_query)
         result = cur.fetchall()
         trades = []
         for i in result:
@@ -221,11 +221,25 @@ def create_work_order():
     else:
         project_id = request.form['project']
         trade = request.form['trade']
-        fl0ors = request.form['floors']
+        floors = request.form['floors']
+        wo_value = request.form['wo_value']
         vendor_name = request.form['vendor_name']
         vendor_pan = request.form['vendor_pan']
         vendor_code = request.form['vendor_code']
-
+        check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND floors="'+str(floors)+'" AND trade="'+str(trade)+'"'
+        cur = mysql.connection.cursor()
+        cur.execute(check_if_exist_query)
+        result = cur.fetchone()
+        if result is not None:
+            flash("Work order already exists. Operation failed",'danger')
+            return redirect('/material/create_work_order')
+        else:
+            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, vendor_name, vendor_code, vendor_pan) values (%s, %s, %s, %s, %s, %s, %s)'
+            values = (project_id, wo_value, trade, floors, vendor_name, vendor_code, vendor_pan)
+            cur.execute(insert_query, values)
+            mysql.connection.commit()
+            flash('Work order created successfully', 'success')
+            return redirect('/material/create_work_order')
 
 @app.route('/logout', methods=['GET'])
 def logout():
