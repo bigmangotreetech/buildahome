@@ -7,6 +7,7 @@ $(document).ready(function() {
 
         if (project_id) {
             $(".select_trade_for_bill select").empty()
+            $(".select_trade_for_bill select").append($("<option></option>"))
             $('.select_trade_for_bill').removeClass('d-none')
             $.ajax({
               url: '/material/update_trades_for_project',
@@ -32,6 +33,7 @@ $(document).ready(function() {
         const trade = $(this).val()
         if (trade) {
             $(".select_payment_stage select").empty()
+            $(".select_payment_stage select").append($("<option></option>"))
             project_id = $("#project").val()
             $('.select_payment_stage').removeClass('d-none')
             $.ajax({
