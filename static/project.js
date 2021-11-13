@@ -44,8 +44,8 @@ $(document).ready(function() {
                   $('.vendor_pan').text(data['vendor_pan'])
                   for(const stage of Object.keys(data['stages'])) {
                     $(".select_payment_stage select").append($("<option></option>")
-                    .attr("value", stage)
-                    .text(data['stages'][stage]))
+                    .attr("value", data['stages'][stage])
+                    .text(stage))
                   }
               }
             });
