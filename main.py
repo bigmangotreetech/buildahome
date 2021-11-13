@@ -249,7 +249,7 @@ def create_bill():
         session['last_route'] = '/material/create_bill'
         return redirect('/material/login')
     if request.method == 'GET':
-        projects_query = 'SELECT projects.project_id, projects.project_name FROM labour_stages INNER JOIN projects on labour_stages.project_id = projects.project_id'
+        projects_query = 'SELECT projects.project_id, projects.project_name FROM work_orders INNER JOIN projects on work_orders.project_id = projects.project_id'
         cur = mysql.connection.cursor()
         cur.execute(projects_query)
         projects = cur.fetchall()
