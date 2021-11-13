@@ -281,7 +281,7 @@ def update_payment_stages():
         vendor_name = res[2]
         vendor_code = res[3]
         vendor_pan = res[4]
-        payment_stages_query = 'SELECT stage, payment_percentage from labour_stages WHERE floor="'+str(floors)+'" AND trade="'+trade+'"'
+        payment_stages_query = 'SELECT stage, payment_percentage from labour_stages WHERE floors="'+str(floors)+'" AND trade="'+trade+'"'
         cur.execute(payment_stages_query)
         result = cur.fetchall()
         stages = {}
