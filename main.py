@@ -254,6 +254,30 @@ def create_bill():
         cur.execute(projects_query)
         projects = cur.fetchall()
         return render_template('create_bill.html',projects=projects)
+    else:
+        project_id = request.form['project_id']
+        trade = request.form['trade']
+        stage = request.form['stage']
+        payment_percentage = request.form['payment_percentage']
+        amount = request.form['amount']
+        vendor_name = request.form['vendor_name']
+        vendor_code = request.form['vendor_code']
+        vendor_pan = request.form['vendor_pan']
+        total_payable = float(amount) - (float(amount) * 0.05)
+        check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" AND stage="'+str(stage)+'"'
+        cur = mysql.connection.cursor()
+        cur.execute(check_if_exists_query)
+        res = cur.fetchone()
+        if res is not None:
+            flash("Older bill already exists. Operation failed", 'danger')
+            return redirect('/material/create_bill')
+        else:
+            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, vendor_name, vendor_code, vendor_pan) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
+            values = (project_id, trade, stage, payment_percentage, amount, total_payable, vendor_name, vendor_code, vendor_pan)
+            cur.execute(insert_query, values)
+            mysql.connection.commit()
+            flash('Bill created successfully', 'success')
+            return redirect('/material/create_bill')
 
 @app.route('/update_trades_for_project', methods=['POST'])
 def update_trades_for_project():

@@ -96,9 +96,20 @@
                     </div>
                 </div>
 
+                <form action="/material/create_bill" method="POST" id="create_bill_form">
+                    <input type="hidden" name="project_id">
+                    <input type="hidden" name="trade">
+                    <input type="hidden" name="stage">
+                    <input type="hidden" name="payment_percentage">
+                    <input type="hidden" name="amount">
+                    <input type="hidden" name="vendor_name">
+                    <input type="hidden" name="vendor_code">
+                    <input type="hidden" name="vendor_pan">
+                </form>
+
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
-                        <button class="btn btn-block bg-indigo text-white">Create</button>
+                        <button class="btn btn-block bg-indigo text-white create_bill">Create</button>
                     </div>
                 </div>
             </form>
