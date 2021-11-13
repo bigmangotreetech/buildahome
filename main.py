@@ -255,6 +255,19 @@ def create_bill():
         projects = cur.fetchall()
         return render_template('create_bill.html',projects=projects)
 
+@app.route('/update_trades_for_project', methods=['POST'])
+def update_trades_for_project():
+    project_id = request.form['project_id']
+    trades_query = 'SELECT DISTINCT trade from work_orders WHERE project_id='+str(project_id)
+    cur = mysql.connection.cursor()
+    cur.execute(trades_query)
+    trades = []
+    result = cur.fetchall()
+    for i in result:
+        trades.append(i[0])
+    return jsonify(trades)
+
+
 @app.route('/logout', methods=['GET'])
 def logout():
     del session['email']

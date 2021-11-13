@@ -14,11 +14,22 @@
                         <label for="project">Project</label>
                     </div>
                     <div class="col-6">
-                        <select name="project" id="project" class="form-control select2">
+                        <select name="project" id="project" class="form-control select2 update_trades_for_project">
                             <option value=""></option>
                             {% for i in projects %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
                             {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
+                    <div class="col-6">
+                        <label for="project">Project</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="trade" id="trade" class="form-control select2">
+                            <option value=""></option>
                         </select>
                     </div>
                 </div>
