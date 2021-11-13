@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="my-5 w-100">
+<div class="m-5 w-100">
     {% for project in data %}
         <div class="h5 mt-4 mb-2">{{data[project]['project_name']}}</div>
         <table class="table table-hover">
@@ -25,21 +25,7 @@
                 <td>{{i['total_payable']}}</td>
             </tr>
             {% endfor %}
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><span class="font-weight-bold" id="total_difference_cost"></span></td>
-            </tr>
+
             </tbody>
         </table>
     {% endfor %}
