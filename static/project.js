@@ -62,7 +62,7 @@ $(document).ready(function() {
             $(".payment_percentage").text(payment_percentage.toString()+"%")
             let work_order_value = parseFloat($('.total_wo_value').text())
             payment_percentage = parseFloat(payment_percentage)
-            const bill_amount = (work_order_value * (payment_percentage /  100)) * 100
+            const bill_amount = (work_order_value * (payment_percentage /  100)) + work_order_value
             $(".bill_amount").text(bill_amount)
         } else {
             $(".final_details").addClass('d-none')
