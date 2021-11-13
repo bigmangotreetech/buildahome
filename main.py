@@ -338,7 +338,7 @@ def view_bills():
             if project_id not in data:
                 data[project_id] = {'project_name': i[1], 'bills': []}
             data[project_id]['bills'].append(
-                {'vendor_name': i[7], 'vendor_pan': i[9], 'vendor_code': i[8], 'amount': i[5], 'total_payable': i[6]}
+                {'vendor_name': i[7], 'vendor_pan': i[9], 'vendor_code': i[8], 'stage': i[3], 'amount': i[5], 'total_payable': i[6]}
             )
         return render_template('view_bills.html', data=data)
 
