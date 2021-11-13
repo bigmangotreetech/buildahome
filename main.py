@@ -267,6 +267,30 @@ def update_trades_for_project():
         trades.append(i[0])
     return jsonify(trades)
 
+@app.route('/update_payment_stages', methods=['POST'])
+def update_payment_stages():
+    project_id = request.form['project_id']
+    trade = request.form['trade']
+    work_order_query = 'SELECT value, floors, vendor_name, vendor_code, vendor_pan from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'"'
+    cur = mysql.connection.cursor()
+    cur.execute(work_order_query)
+    res = cur.fetchone()
+    if res is not None:
+        work_order_value = res[0]
+        floors = res[1]
+        vendor_name = res[2]
+        vendor_code = res[3]
+        vendor_pan = res[4]
+        payment_stages_query = 'SELECT stage, payment_percentage from labour_stage WHERE floor="'+str(floors)+'" AND trade="'+trade+'"'
+        cur.execute(payment_stages_query)
+        result = cur.fetchall()
+        stages = {}
+        for i in result:
+            stages[i[0]] = i[1]
+
+        response = {'work_order_value': work_order_value, 'vendor_name': vendor_name, 'vendor_code': vendor_code, 'vendor_pan': vendor_pan, 'stages' : stages}
+        return jsonify(response)
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
