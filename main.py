@@ -243,7 +243,7 @@ def create_work_order():
 
 
 @app.route('/create_bill', methods=['GET', 'POST'])
-def create_work_order():
+def create_bill():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/material/create_bill'
