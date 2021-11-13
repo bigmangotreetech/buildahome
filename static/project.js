@@ -15,7 +15,9 @@ $(document).ready(function() {
               success: function(data){
                   console.log(data)
                   for(const trade of data) {
-                    $(".select_trade_for_bill select").append(`${trade}`)
+                    $(".select_trade_for_bill select").append($("<option></option>")
+                    .attr("value", trade)
+                    .text(trade))
                   }
               }
             });
