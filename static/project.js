@@ -6,6 +6,7 @@ $(document).ready(function() {
         const project_id = $(this).val()
 
         if (project_id) {
+            $(".select_trade_for_bill select").empty()
             $('.select_trade_for_bill').removeClass('d-none')
             $.ajax({
               url: '/material/update_trades_for_project',
@@ -30,7 +31,7 @@ $(document).ready(function() {
    $(".select_trade_for_bill select").on('change', function(){
         const trade = $(this).val()
         if (trade) {
-            $(".select_trade_for_bill select").empty()
+            $(".select_payment_stage select").empty()
             project_id = $("#project").val()
             $('.select_payment_stage').removeClass('d-none')
             $.ajax({
@@ -59,7 +60,7 @@ $(document).ready(function() {
    $(".select_payment_stage select").on('change', function(){
         let payment_percentage = $(this).val()
         if (payment_percentage) {
-            $(".select_payment_stage select").empty()
+
             $(".final_details").removeClass('d-none')
             $(".payment_percentage").text(payment_percentage.toString()+"%")
             let work_order_value = parseFloat($('.total_wo_value').text())
