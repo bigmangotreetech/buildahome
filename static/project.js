@@ -10,7 +10,7 @@ $(document).ready(function() {
             $.ajax({
               url: '/material/update_trades_for_project',
               type: "POST",
-              dataType: 'json'
+              dataType: 'json',
               data: {'project_id': project_id},
               success: function(data){
                   console.log(data)
