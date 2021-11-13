@@ -4,6 +4,7 @@ $(document).ready(function() {
 
     $(".update_trades_for_project").on('change', function(){
         const project_id = $(this).val()
+        $(".select_trade_for_bill select").select2()
         if (project_id) {
             $('.select_trade_for_bill').removeClass('d-none')
             $.ajax({
