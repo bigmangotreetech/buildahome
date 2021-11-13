@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     $(".update_trades_for_project").on('change', function(){
         const project_id = $(this).val()
-        $(".select_trade_for_bill select").select2()
+
         if (project_id) {
             $('.select_trade_for_bill').removeClass('d-none')
             $.ajax({
@@ -12,12 +12,16 @@ $(document).ready(function() {
               type: "POST",
               data: {'project_id': project_id},
               success: function(data){
-                  console.log(data);
+                  trades = JSON.parse(data)
+                  for(const trade of trades) {
+                    $(".select_trade_for_bill select").append(`${trade}`)
+                  }
               }
             });
         } else {
             $('.select_trade_for_bill').addClass('d-none')
         }
+         $(".select_trade_for_bill select").select2()
 
     })
 
