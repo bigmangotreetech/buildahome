@@ -241,6 +241,20 @@ def create_work_order():
             flash('Work order created successfully', 'success')
             return redirect('/material/create_work_order')
 
+
+@app.route('/create_bill', methods=['GET', 'POST'])
+def create_work_order():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/create_bill'
+        return redirect('/material/login')
+    if request.method == 'GET':
+        projects_query = 'SELECT projects.project_id, projects.project_name FROM labour_stages INNER JOIN projects on labour_stages.project_id = projects.project_id'
+        cur = mysql.connection.cursor()
+        cur.execute(projects_query)
+        projects = cur.fetchall()
+        return render_template('create_bill.html',projects=projects)
+
 @app.route('/logout', methods=['GET'])
 def logout():
     del session['email']
