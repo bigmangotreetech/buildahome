@@ -14,9 +14,7 @@ $(document).ready(function() {
               data: {'project_id': project_id},
               success: function(data){
                   console.log(data)
-                  const trades = JSON.parse(data)
-                  console.log(trades)
-                  for(const trade of trades) {
+                  for(const trade of data) {
                     $(".select_trade_for_bill select").append(`${trade}`)
                   }
               }
