@@ -24,7 +24,7 @@ $(document).ready(function() {
         } else {
             $('.select_trade_for_bill').addClass('d-none')
         }
-         $(".select_trade_for_bill select").select2()
+        $(".select_trade_for_bill select").select2()
    })
 
    $(".select_trade_for_bill select").on('change', function(){
@@ -50,6 +50,7 @@ $(document).ready(function() {
         } else {
             $('.select_payment_stage').addClass('d-none')
         }
+        $(".select_payment_stage select").select2()
    })
 
 });
