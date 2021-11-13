@@ -14,8 +14,8 @@
             </thead>
             <tbody>
             {% for project in data %}
-                <tr><td></td></tr>
-                <tr class="h5 mt-4 mb-2">
+                <tr><td class="border border-white"></td></tr>
+                <tr class="h5 mt-4 mb-2 border border-white">
                     <td>{{data[project]['project_name']}}</td>
                 </tr>
                 {% for i in data[project]['bills'] %}
