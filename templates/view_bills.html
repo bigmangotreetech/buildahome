@@ -11,6 +11,7 @@
             <th scope="col">Amount</th>
             <th scope="col">Total Payable</th>
             <th scope="col">Approval 1</th>
+            <th scope="col">Approval 2</th>
         </tr>
         </thead>
         <tbody>
@@ -29,7 +30,8 @@
             <td>{{i['stage']}}</td>
             <td>{{i['amount']}}</td>
             <td>{{i['total_payable']}}</td>
-            <td><button  class='btn w-100' data-toggle="modal" data-target="#approvalModal" ></button></td>
+            <td><button  class='btn bg-white approval-1-btn' data-project="{{data[project]['project_name']}}" data-toggle="modal" data-target="#approvalModal" ></button></td>
+            <td><button  class='btn bg-white approval-2-btn' data-project="{{data[project]['project_name']}}" data-toggle="modal" data-target="#approvalModal" ></button></td>
         </tr>
         {% endfor %}
         {% endfor %}
@@ -41,10 +43,11 @@
 
 </div>
 
+
 <!-- Modal -->
 <div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="approvalModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approvalModalLabel">Approve bill</h5>
@@ -127,9 +130,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <div class="d-flex w-100 jsutify-content-between">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-indigo">Approve</button>
+                <div class="d-flex w-100 justify-content-between">
+                    <button type="button" class="btn bg-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-indigo text-white">Approve</button>
                 </div>
             </div>
         </div>
