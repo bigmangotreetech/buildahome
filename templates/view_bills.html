@@ -2,41 +2,138 @@
 {% block content %}
 <div class="p-5 w-100">
     <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Vendor Name</th>
-                <th scope="col">Vendor PAN</th>
-                <th scope="col">Vendor Code</th>
-                <th scope="col">Payment Stage</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Total Payable</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for project in data %}
-                <tr><td class="border border-white"></td></tr>
-                <tr class="h5 mt-4 mb-2 border border-white">
-                    <td>{{data[project]['project_name']}}</td>
-                </tr>
-                {% for i in data[project]['bills'] %}
-                <tr>
-                    <td>{{i['vendor_name']}}</td>
-                    <td>{{i['vendor_pan']}}</td>
-                    <td>{{i['vendor_code']}}</td>
-                    <td>{{i['stage']}}</td>
-                    <td>{{i['amount']}}</td>
-                    <td>{{i['total_payable']}}</td>
-                </tr>
-                {% endfor %}
-            {% endfor %}
+        <thead>
+        <tr>
+            <th scope="col">Vendor Name</th>
+            <th scope="col">Vendor PAN</th>
+            <th scope="col">Vendor Code</th>
+            <th scope="col">Payment Stage</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Total Payable</th>
+            <th scope="col">Approval 1</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for project in data %}
+        <tr>
+            <td class="border border-white"></td>
+        </tr>
+        <tr class="h5 mt-4 mb-2 border border-white">
+            <td>{{data[project]['project_name']}}</td>
+        </tr>
+        {% for i in data[project]['bills'] %}
+        <tr>
+            <td>{{i['vendor_name']}}</td>
+            <td>{{i['vendor_pan']}}</td>
+            <td>{{i['vendor_code']}}</td>
+            <td>{{i['stage']}}</td>
+            <td>{{i['amount']}}</td>
+            <td>{{i['total_payable']}}</td>
+            <td><button  class='btn w-100' data-toggle="modal" data-target="#approvalModal" ></button></td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
 
 
-            </tbody>
-        </table>
+        </tbody>
+    </table>
 
 
+</div>
 
-
+<!-- Modal -->
+<div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="approvalModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approvalModalLabel">Approve bill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Project Name</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold project_name"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Vendor Name</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold vendor_name"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Vendor PAN</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold vendor_pan"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Vendor Code</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold vendor_code"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Payment stage</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold payment_stage"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Amount</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold amount"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Total payable</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold total_payable"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Amount approved</label>
+                    </div>
+                    <div class="col-6">
+                        <input  name="amount_approved" id="amount_approved" class="form-control">
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Notes</label> <small>(Optional)</small>
+                    </div>
+                    <div class="col-6">
+                        <input  name="notes" id="notes" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex w-100 jsutify-content-between">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-indigo">Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
