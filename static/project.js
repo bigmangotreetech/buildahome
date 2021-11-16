@@ -123,7 +123,7 @@ $(document).ready(function() {
         $('#approvalModal .vendor_pan').text(vendor_pan)
         $('#approvalModal .payment_stage').text(payment_stage)
         $('#approvalModal .amount').text(amount)
-        $('#approvalModal .total_payable').text(total_payable)\
+        $('#approvalModal .total_payable').text(total_payable)
         $('#approvalModal .bill_id').text(bill_id)
    }
 
