@@ -109,6 +109,7 @@ $(document).ready(function() {
         if ($(clickedBtn).hasClass('approval_2_btn'))
             $('.approval_level').val('Level 2')
 
+        const project_id = $(clickedBtn).attr('data-project-id')
         const project_name = $(clickedBtn).attr('data-project-name')
         const bill_id = $(clickedBtn).attr('data-bill-id')
         const vendor_name = $(clickedBtn).parents('tr').find('.vendor_name').text()
@@ -128,8 +129,8 @@ $(document).ready(function() {
         $('#approvalModal .amount').text(amount)
         $('#approvalModal .total_payable').text(total_payable)
         $('#approvalModal .bill_id').val(bill_id)
+        $('#approvalModal .project_id').val(project_id)
    }
-
 
    $(".approval_1_btn").on('click', function(){
         const clickedBtn = this
@@ -156,6 +157,10 @@ $(document).ready(function() {
         const approved_amount = $("#amount_approved").val()
         const notes = $("#notes").val()
         const approval_level = $('.approval_level').val()
+        const project_id = #("#project_id").val()
+        const trade =  $('#approvalModal .trade').text()
+        const amount = parseFloat($('#approvalModal .total_payable').text())
+        const difference_amount = parseFloat(amount) - parseFloat(approved_amount)
 
         $.ajax({
               url: '/material/save_approved_bill',
@@ -165,7 +170,10 @@ $(document).ready(function() {
                 'bill_id': bill_id,
                 'approved_amount': approved_amount,
                 'notes': notes,
-                'approval_level': approval_level
+                'approval_level': approval_level,
+                'project_id': project_id,
+                'trade': trade,
+                'difference_amount': difference_amount
               },
               success: function(data){
                 $('#approvalModal').modal('hide');
@@ -179,6 +187,15 @@ $(document).ready(function() {
         $(".approve_bill_btn").text('...')
         saveApprovedBill()
    })
+
+   function getWorkOrderForSelectedProject() {
+        const project = $("#project").val()
+        if (project.length) {
+            window.location.href = '/material/view_work_orders?project_id='+project.toString()
+        }
+   }
+
+   $("#view_work_order").on('click', getWorkOrderForSelectedProject)
 
 });
 

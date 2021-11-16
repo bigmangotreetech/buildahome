@@ -20,9 +20,12 @@ mysql = MySQL(app)
 
 app.secret_key = b'bAhSessionKey'
 
-labourTradeStageMap = {
-
-}
+def get_projects():
+    cur = mysql.connection.cursor()
+    query = "SELECT project_id, project_name, project_number FROM projects"
+    cur.execute(query)
+    projects = cur.fetchall()
+    return projects
 
 @app.route('/', methods=['GET'])
 def index():
@@ -72,10 +75,7 @@ def enter_material():
         session['last_route'] = '/material/enter_material'
         return redirect('/material/login')
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        query = "SELECT project_id, project_name, project_number FROM projects"
-        cur.execute(query)
-        projects = cur.fetchall()
+        projects = get_projects()
         return render_template('enter_material.html', projects=projects)
     else:
         material = request.form['material']
@@ -165,9 +165,7 @@ def kyp_material():
     }
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        query = "SELECT project_id, project_name FROM projects"
-        cur.execute(query)
-        projects = cur.fetchall()
+        projects = get_projects()
 
         project = None
         project_id = None
@@ -207,9 +205,7 @@ def create_work_order():
         return redirect('/material/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        query = "SELECT project_id, project_name FROM projects"
-        cur.execute(query)
-        projects = cur.fetchall()
+        projects = get_projects()
         floors = ['G + 1','G + 2','G + 3','G + 4']
         trades_query = 'SELECT DISTINCT trade from labour_stages'
         cur.execute(trades_query)
@@ -249,10 +245,7 @@ def create_bill():
         session['last_route'] = '/material/create_bill'
         return redirect('/material/login')
     if request.method == 'GET':
-        projects_query = 'SELECT projects.project_id, projects.project_name FROM work_orders INNER JOIN projects on work_orders.project_id = projects.project_id'
-        cur = mysql.connection.cursor()
-        cur.execute(projects_query)
-        projects = cur.fetchall()
+        projects = get_projects()
         return render_template('create_bill.html',projects=projects)
     else:
         project_id = request.form['project_id']
@@ -343,23 +336,66 @@ def view_bills():
             )
         return render_template('view_bills.html', data=data)
 
+def update_work_order_balance(project_id, trade, difference_amount):
+    get_wo_query = 'SELECT id, balance from work_orders WHERE project_id=' + str(
+        project_id) + ' AND trade="' + trade + '"'
+    cur = mysql.connection.cursor()
+    cur.execute(get_wo_query)
+    res = cur.fetchone()
+    if res is not None:
+        balance = res[1]
+        if str(balance).strip() == '':
+            balance = 0
+        else:
+            balance = float(balance)
+        updated_balance = balance + float(difference_amount)
+        update_wo_query = 'UPDATE work_orders SET balance='+str(updated_balance)+' WHERE id='+str(res[0])
+        cur.execute(update_wo_query)
+        mysql.connection.commit()
+
 @app.route('/save_approved_bill', methods=['POST'])
 def save_approved_bill():
     bill_id = request.form['bill_id']
     approved_amount = request.form['approved_amount']
     notes = request.form['notes']
     approval_level = request.form['approval_level']
+    trade = request.form['trade']
+    project_id = request.form['project_id']
+    difference_amount = request.form['difference_amount']
     cur = mysql.connection.cursor()
+    update_bill_query = ''
     if approval_level == 'Level 1':
         update_bill_query = 'UPDATE wo_bills SET approval_1_amount = "'+str(approved_amount)+'" , approval_1_notes = "'+str(notes)+'" WHERE id='+str(bill_id)
-        cur.execute(update_bill_query)
-        mysql.connection.commit()
-        return jsonify({"message":"success"})
     elif approval_level == 'Level 2':
         update_bill_query = 'UPDATE wo_bills SET approval_2_amount = "'+str(approved_amount)+'" , approval_2_notes = "'+str(notes)+'" WHERE id='+str(bill_id)
-        cur.execute(update_bill_query)
-        mysql.connection.commit()
-        return jsonify({"message":"success"})
+    cur.execute(update_bill_query)
+    if float(difference_amount) > 0:
+        update_work_order_balance(project_id, trade, difference_amount)
+    mysql.connection.commit()
+    return jsonify({"message": "success"})
+
+def get_work_orders_for_project(project_id):
+    cur = mysql.connection.cursor()
+    get_wo_query = 'SELECT * from work_orders WHERE project_id='+str(project_id)+' ORDER BY trade'
+    cur.execute(get_wo_query)
+    res = cur.fetchall()
+    return res
+
+@app.route("/view_work_order", methods=['GET'])
+def view_work_order():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/create_bill'
+        return redirect('/material/login')
+    if request.method == 'GET':
+        projects = get_projects()
+        work_orders = []
+        if 'project_id' in request.args:
+            project_id = request.args['project_id']
+            work_orders = get_work_orders_for_project(project_id)
+
+        return render_template('view_work_orders.html', projects=projects)
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
