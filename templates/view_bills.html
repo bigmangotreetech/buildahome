@@ -24,14 +24,28 @@
         </tr>
         {% for i in data[project]['bills'] %}
         <tr>
-            <td>{{i['vendor_name']}}</td>
-            <td>{{i['vendor_pan']}}</td>
-            <td>{{i['vendor_code']}}</td>
-            <td>{{i['stage']}}</td>
-            <td>{{i['amount']}}</td>
-            <td>{{i['total_payable']}}</td>
-            <td><button  class='btn bg-white approval-1-btn' data-project="{{data[project]['project_name']}}" data-toggle="modal" data-target="#approvalModal" ></button></td>
-            <td><button  class='btn bg-white approval-2-btn' data-project="{{data[project]['project_name']}}" data-toggle="modal" data-target="#approvalModal" ></button></td>
+            <td class="vendor_name">{{i['vendor_name']}}</td>
+            <td class="vendor_pan">{{i['vendor_pan']}}</td>
+            <td class="vendor_code">{{i['vendor_code']}}</td>
+            <td class="stage">{{i['stage']}}</td>
+            <td class="amount">{{i['amount']}}</td>
+            <td class="total_payable">{{i['total_payable']}}</td>
+            <td>
+                {% if i['approval_1_amount'] == '' %}
+                <button href="#" class="approval_1_btn btn" data-project="{{data[project]['project_name']}}"
+                        data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
+                {% else %}
+                {{i['approval_1_amount']}}
+                {% endif %}
+            </td>
+            <td>
+                {% if i['approval_1_amount'] == '' %}
+                <button href="#" class="approval_2_btn btn" data-project="{{data[project]['project_name']}}"
+                        data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
+                {% else %}
+                {{i['approval_2_amount']}}
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
         {% endfor %}
@@ -47,7 +61,7 @@
 <!-- Modal -->
 <div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="approvalModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered" role="document">
+    <div class="modal-dialog  modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approvalModalLabel">Approve bill</h5>
@@ -117,7 +131,7 @@
                         <label>Amount approved</label>
                     </div>
                     <div class="col-6">
-                        <input  name="amount_approved" id="amount_approved" class="form-control">
+                        <input name="amount_approved" id="amount_approved" class="form-control">
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -125,7 +139,7 @@
                         <label>Notes</label> <small>(Optional)</small>
                     </div>
                     <div class="col-6">
-                        <input  name="notes" id="notes" class="form-control">
+                        <input name="notes" id="notes" class="form-control">
                     </div>
                 </div>
             </div>

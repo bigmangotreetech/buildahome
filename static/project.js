@@ -102,5 +102,28 @@ $(document).ready(function() {
         $("#create_bill_form").submit()
    })
 
+   $(".approval_1_btn").on('click', function(){
+        const project_name = $(this).attr('data-project')
+        const vendor_name = $(this).parents('tr').find('.vendor_name').text()
+        const vendor_code = $(this).parents('tr').find('.vendor_code').text()
+        const vendor_pan = $(this).parents('tr').find('.vendor_pan').text()
+        const payment_stage = $(this).parents('tr').find('.stage').text()
+        const amount = $(this).parents('tr').find('.amount').text()
+        const total_payable = $(this).parents('tr').find('.total_payable').text()
+
+        $('#approvalModal .project_name').text(project_name)
+        $('#approvalModal .vendor_name').text(vendor_name)
+        $('#approvalModal .vendor_code').text(vendor_code)
+        $('#approvalModal .payment_stage').text(payment_stage)
+        $('#approvalModal .amount').text(amount)
+        $('#approvalModal .total_payable').text(total_payable)
+
+
+   })
+
+   $(".approval_2_btn").on('click', function(){
+
+   })
+
 });
 
