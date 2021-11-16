@@ -14,7 +14,7 @@
                         <label for="material">Material</label>
                     </div>
                     <div class="col-6">
-                        <select name="material" id="material" class="form-control select2">
+                        <select name="material" id="material" class="form-control select2" required>
                             <option value=""></option>
                             <option value="Cement">Cement</option>
                             <option value="Concrete">Concrete</option>
@@ -35,7 +35,7 @@
                         <label for="description">Description</label>
                     </div>
                     <div class="col-6">
-                        <input name="description" id="description" class="form-control">
+                        <input name="description" id="description" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -43,7 +43,7 @@
                         <label for="vendor">Vendor</label>
                     </div>
                     <div class="col-6">
-                        <input name="vendor" id="vendor" class="form-control">
+                        <input name="vendor" id="vendor" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -51,7 +51,7 @@
                         <label for="project">Project</label>
                     </div>
                     <div class="col-6">
-                        <select name="project" id="project" class="form-control select2">
+                        <select name="project" id="project" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in projects %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
@@ -64,7 +64,7 @@
                         <label for="po_no">PO number</label>
                     </div>
                     <div class="col-6">
-                        <input type="text" name="po_no" id="po_no" class="form-control">
+                        <input type="text" name="po_no" id="po_no" class="form-control" required>
                     </div>
                 </div>
                  <div class="row mx-0 mb-3 form-group">
@@ -72,7 +72,7 @@
                         <label for="invoice_no">Invoice number</label>
                     </div>
                     <div class="col-6">
-                        <input  name="invoice_no" id="invoice_no" class="form-control">
+                        <input  name="invoice_no" id="invoice_no" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -80,7 +80,7 @@
                         <label for="invoice_date">Invoice date</label>
                     </div>
                     <div class="col-6">
-                        <input type="date" name="invoice_date" id="invoice_date" class="form-control">
+                        <input type="date" name="invoice_date" id="invoice_date" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -88,7 +88,7 @@
                         <label for="invoice_value">Invoice value</label>
                     </div>
                     <div class="col-6">
-                        <input type="text" name="invoice_value" id="invoice_value" class="form-control">
+                        <input type="text" name="invoice_value" id="invoice_value" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -96,7 +96,7 @@
                         <label for="quantity">Quantity</label>
                     </div>
                     <div class="col-6">
-                        <input  name="quantity" id="quantity" class="form-control">
+                        <input  name="quantity" id="quantity" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -104,7 +104,7 @@
                         <label for="unit">Unit</label>
                     </div>
                     <div class="col-6">
-                        <input name="unit" id="unit" class="form-control">
+                        <input name="unit" id="unit" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -112,7 +112,7 @@
                         <label for="rate">Rate</label>
                     </div>
                     <div class="col-6">
-                        <input  name="rate" id="rate" class="form-control">
+                        <input  name="rate" id="rate" class="form-control" required>
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@
                         <label for="gst">GST</label>
                     </div>
                     <div class="col-6">
-                        <select name="gst" id="gst" class="form-control select2">
+                        <select name="gst" id="gst" class="form-control select2" required>
                             <option value=""></option>
                             <option value="5">5%</option>
                             <option value="18">18%</option>
@@ -134,7 +134,7 @@
                         <label for="total_amount">Total Amount</label>
                     </div>
                     <div class="col-6">
-                        <input readonly  name="total_amount" id="total_amount" class="form-control">
+                        <input readonly  name="total_amount" id="total_amount" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -142,7 +142,7 @@
                         <label for="difference_cost">Difference cost</label>
                     </div>
                     <div class="col-6">
-                        <input  name="difference_cost" id="difference_cost" class="form-control">
+                        <input  name="difference_cost" id="difference_cost" class="form-control" required>
                     </div>
                 </div>
 

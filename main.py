@@ -369,7 +369,7 @@ def save_approved_bill():
     elif approval_level == 'Level 2':
         update_bill_query = 'UPDATE wo_bills SET approval_2_amount = "'+str(approved_amount)+'" , approval_2_notes = "'+str(notes)+'" WHERE id='+str(bill_id)
     cur.execute(update_bill_query)
-    if float(difference_amount) > 0:
+    if float(difference_amount) > 0 and  approval_level == 'Level 2':
         update_work_order_balance(project_id, trade, difference_amount)
     mysql.connection.commit()
     return jsonify({"message": "success"})
