@@ -7,6 +7,7 @@
             <th scope="col">Vendor Name</th>
             <th scope="col">Vendor PAN</th>
             <th scope="col">Vendor Code</th>
+            <th scope="col">Trade</th>
             <th scope="col">Payment Stage</th>
             <th scope="col">Amount</th>
             <th scope="col">Total Payable</th>
@@ -27,12 +28,13 @@
             <td class="vendor_name">{{i['vendor_name']}}</td>
             <td class="vendor_pan">{{i['vendor_pan']}}</td>
             <td class="vendor_code">{{i['vendor_code']}}</td>
+            <td class="trade">{{i['trade']}}</td>
             <td class="stage">{{i['stage']}}</td>
             <td class="amount">{{i['amount']}}</td>
             <td class="total_payable">{{i['total_payable']}}</td>
             <td class="approval_1">
                 {% if i['approval_1_amount'] == '' %}
-                <button class="approval_1_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
+                <button class="approval_1_btn btn py-0 bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_1_amount']}}
@@ -40,7 +42,7 @@
             </td>
             <td class="approval_2">
                 {% if i['approval_2_amount'] == '' %}
-                <button class="approval_2_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
+                <button class="approval_2_btn btn py-0 bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_2_amount']}}
@@ -100,6 +102,14 @@
                     </div>
                     <div class="col-6">
                         <label class="font-weight-bold vendor_code"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Trade</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold trade"></label>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">

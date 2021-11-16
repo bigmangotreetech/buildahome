@@ -327,7 +327,7 @@ def view_bills():
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
                          'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                         'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id' \
+                         'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                          ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id'
 
         cur.execute(bills_query)
@@ -338,7 +338,7 @@ def view_bills():
             if project_id not in data:
                 data[project_id] = {'project_name': i[1], 'bills': []}
             data[project_id]['bills'].append(
-                {'bill_id': i[16], 'vendor_name': i[7], 'vendor_pan': i[9], 'vendor_code': i[8], 'stage': i[3], 'amount': i[5], 'total_payable': i[6],
+                {'bill_id': i[16], 'vendor_name': i[7], 'vendor_pan': i[9], 'vendor_code': i[8], 'trade': i[17], 'stage': i[3], 'amount': i[5], 'total_payable': i[6],
                  'approval_1_amount': i[11], 'approval_1_notes': i[12], 'approval_2_amount': i[14], 'approval_2_notes': i[15]}
             )
         return render_template('view_bills.html', data=data)
