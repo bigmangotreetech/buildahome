@@ -29,12 +29,15 @@
             </thead>
             <tbody>
             {% for i in work_orders %}
-            <tr>{{i[6]}}</tr>
-            <tr>{{i[8]}}</tr>
-            <tr>{{i[7]}}</tr>
-            <tr>{{i[3]}}</tr>
-            <tr>{{i[2]}}</tr>
-            <tr>{{i[9]}}</tr>
+            <tr>
+                <td>{{i[6]}}</td>
+                <td>{{i[8]}}</td>
+                <td>{{i[7]}}</td>
+                <td>{{i[3]}}</td>
+                <td>{{i[2]}}</td>
+                <td>{{i[9]}}</td>
+            </tr>
+
             {% endfor %}
             </tbody>
         </table>
