@@ -351,12 +351,12 @@ def save_approved_bill():
     approval_level = request.form['approval_level']
     cur = mysql.connection.cursor()
     if approval_level == 'Level 1':
-        update_bill_query = 'UPDATE wo_bills SET approval_1_amount = '+str(approved_amount)+' , approval_1_notes='+str(notes)+' WHERE id='+str(bill_id)
+        update_bill_query = 'UPDATE wo_bills SET approval_1_amount = "'+str(approved_amount)+'" , approval_1_notes = "'+str(notes)+'" WHERE id='+str(bill_id)
         cur.execute(update_bill_query)
         mysql.connection.commit()
         return jsonify({"message":"success"})
     elif approval_level == 'Level 2':
-        update_bill_query = 'UPDATE wo_bills SET approval_2_amount = '+str(approved_amount)+' , approval_2_notes='+str(notes)+' WHERE id='+str(bill_id)
+        update_bill_query = 'UPDATE wo_bills SET approval_2_amount = "'+str(approved_amount)+'" , approval_2_notes = "'+str(notes)+'" WHERE id='+str(bill_id)
         cur.execute(update_bill_query)
         mysql.connection.commit()
         return jsonify({"message":"success"})
