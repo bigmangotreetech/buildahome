@@ -32,7 +32,7 @@
             <td class="total_payable">{{i['total_payable']}}</td>
             <td class="approval_1">
                 {% if i['approval_1_amount'] == '' %}
-                <button class="approval_1_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id'}}"
+                <button class="approval_1_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_1_amount']}}
@@ -40,7 +40,7 @@
             </td>
             <td class="approval_2">
                 {% if i['approval_1_amount'] == '' %}
-                <button class="approval_2_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id'}}"
+                <button class="approval_2_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_2_amount']}}
