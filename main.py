@@ -394,7 +394,7 @@ def view_work_order():
             project_id = request.args['project_id']
             work_orders = get_work_orders_for_project(project_id)
 
-        return render_template('view_work_orders.html', projects=projects)
+        return render_template('view_work_orders.html', projects=projects, work_orders=work_orders)
 
 
 @app.route('/logout', methods=['GET'])

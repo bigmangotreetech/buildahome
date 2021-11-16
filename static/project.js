@@ -191,7 +191,7 @@ $(document).ready(function() {
    function getWorkOrderForSelectedProject() {
         const project = $("#project").val()
         if (project.length) {
-            window.location.href = '/material/view_work_orders?project_id='+project.toString()
+            window.location.href = '/material/view_work_order?project_id='+project.toString()
         }
    }
 
