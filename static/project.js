@@ -146,7 +146,7 @@ $(document).ready(function() {
         const bill_id = $('#approvalModal .bill_id').val()
         const amount_approved = $("#amount_approved").val()
         const notes = $("#notes").val()
-        const approval_level = $('.approval_level').val)()
+        const approval_level = $('.approval_level').val()
 
         $.ajax({
               url: '/material/save_approved_bill',
