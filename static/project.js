@@ -168,7 +168,7 @@ $(document).ready(function() {
               success: function(data){
                 $('#approvalModal').modal('hide');
                 $(".approve_bill_btn").text('Approve')
-                populateApprovalAmountInTable (bill_id, amount_approved, approval_level)
+                populateApprovalAmountInTable (bill_id, approved_amount, approval_level)
               }
          });
    }
