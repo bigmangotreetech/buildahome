@@ -167,7 +167,7 @@ $(document).ready(function() {
          });
    }
 
-   $(".approve_bill_btn").on('click', {
+   $(".approve_bill_btn").on('click', function(){
         $(".approve_bill_btn").text('...')
         saveApprovedBill()
    })
