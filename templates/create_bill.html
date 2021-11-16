@@ -13,7 +13,7 @@
                         <label for="project">Project</label>
                     </div>
                     <div class="col-6">
-                        <select name="project" id="project" class="form-control select2 update_trades_for_project">
+                        <select name="project" id="project" class="form-control select2 update_trades_for_project" required>
                             <option value=""></option>
                             {% for i in projects %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
@@ -27,7 +27,7 @@
                         <label for="project">Trade</label>
                     </div>
                     <div class="col-6">
-                        <select name="trade" id="trade" class="form-control select2">
+                        <select name="trade" id="trade" class="form-control select2" required>
                             <option value=""></option>
                         </select>
                     </div>
@@ -38,7 +38,7 @@
                         <label for="payment_stage">Milestone</label>
                     </div>
                     <div class="col-6">
-                        <select name="payment_stage" id="payment_stage" class="form-control select2">
+                        <select name="payment_stage" id="payment_stage" class="form-control select2" required>
                             <option value=""></option>
                         </select>
                     </div>

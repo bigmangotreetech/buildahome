@@ -14,7 +14,7 @@
                         <label for="project">Project</label>
                     </div>
                     <div class="col-6">
-                        <select name="project" id="project" class="form-control select2">
+                        <select name="project" id="project" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in projects %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
@@ -27,7 +27,7 @@
                         <label for="floors">Floors</label>
                     </div>
                     <div class="col-6">
-                        <select name="floors" id="floors" class="form-control select2">
+                        <select name="floors" id="floors" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in floors %}
                             <option value="{{i}}">{{i}}</option>
@@ -40,7 +40,7 @@
                         <label for="trade">Trade</label>
                     </div>
                     <div class="col-6">
-                        <select name="trade" id="trade" class="form-control select2">
+                        <select name="trade" id="trade" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in trades %}
                             <option value="{{i}}">{{i}}</option>
@@ -53,7 +53,7 @@
                         <label for="vendor_name">Vendor name</label>
                     </div>
                     <div class="col-6">
-                        <input name="vendor_name" id="vendor_name" class="form-control">
+                        <input name="vendor_name" id="vendor_name" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -61,7 +61,7 @@
                         <label for="vendor_pan">Vendor PAN</label>
                     </div>
                     <div class="col-6">
-                        <input name="vendor_pan" id="vendor_pan" class="form-control">
+                        <input name="vendor_pan" id="vendor_pan" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -69,7 +69,7 @@
                         <label for="vendor_code">Vendor code</label>
                     </div>
                     <div class="col-6">
-                        <input name="vendor_code" id="vendor_code" class="form-control">
+                        <input name="vendor_code" id="vendor_code" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -77,7 +77,7 @@
                         <label for="wo_value">Work order value</label>
                     </div>
                     <div class="col-6">
-                        <input name="wo_value" id="wo_value" class="form-control">
+                        <input name="wo_value" id="wo_value" class="form-control" required>
                     </div>
                 </div>
                 <div class="row justify-content-center mx-0 my-5">
