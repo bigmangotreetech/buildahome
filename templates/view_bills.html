@@ -23,24 +23,24 @@
             <td>{{data[project]['project_name']}}</td>
         </tr>
         {% for i in data[project]['bills'] %}
-        <tr>
+        <tr class="bill-{{i['bill_id']}}">
             <td class="vendor_name">{{i['vendor_name']}}</td>
             <td class="vendor_pan">{{i['vendor_pan']}}</td>
             <td class="vendor_code">{{i['vendor_code']}}</td>
             <td class="stage">{{i['stage']}}</td>
             <td class="amount">{{i['amount']}}</td>
             <td class="total_payable">{{i['total_payable']}}</td>
-            <td>
+            <td class="approval_1">
                 {% if i['approval_1_amount'] == '' %}
-                <button href="#" class="approval_1_btn btn" data-project="{{data[project]['project_name']}}"
+                <button class="approval_1_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id'}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_1_amount']}}
                 {% endif %}
             </td>
-            <td>
+            <td class="approval_2">
                 {% if i['approval_1_amount'] == '' %}
-                <button href="#" class="approval_2_btn btn" data-project="{{data[project]['project_name']}}"
+                <button class="approval_2_btn btn bg-white" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id'}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_2_amount']}}
@@ -143,10 +143,12 @@
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="bill_id" class="bill_id">
+            <input type="hidden" class="approval_level">
             <div class="modal-footer">
                 <div class="d-flex w-100 justify-content-between">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-indigo text-white">Approve</button>
+                    <button type="button" class="btn bg-indigo text-white approve_bill_btn">Approve</button>
                 </div>
             </div>
         </div>

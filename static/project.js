@@ -102,27 +102,74 @@ $(document).ready(function() {
         $("#create_bill_form").submit()
    })
 
-   $(".approval_1_btn").on('click', function(){
-        const project_name = $(this).attr('data-project')
-        const vendor_name = $(this).parents('tr').find('.vendor_name').text()
-        const vendor_code = $(this).parents('tr').find('.vendor_code').text()
-        const vendor_pan = $(this).parents('tr').find('.vendor_pan').text()
-        const payment_stage = $(this).parents('tr').find('.stage').text()
-        const amount = $(this).parents('tr').find('.amount').text()
-        const total_payable = $(this).parents('tr').find('.total_payable').text()
+   function updateApprovalModalDetails(clickedBtn) {
+        if ($(clickedBtn).hasClass('approval_1_btn'))
+            $('.approval_level').val('Level 1')
+        if ($(clickedBtn).hasClass('approval_2_btn'))
+            $('.approval_level').val('Level 2')
+
+        const project_name = $(clickedBtn).attr('data-project-name')
+        const bill_id = $(clickedBtn).attr('data-bill-id')
+        const vendor_name = $(clickedBtn).parents('tr').find('.vendor_name').text()
+        const vendor_code = $(clickedBtn).parents('tr').find('.vendor_code').text()
+        const vendor_pan = $(clickedBtn).parents('tr').find('.vendor_pan').text()
+        const payment_stage = $(clickedBtn).parents('tr').find('.stage').text()
+        const amount = $(clickedBtn).parents('tr').find('.amount').text()
+        const total_payable = $(clickedBtn).parents('tr').find('.total_payable').text()
 
         $('#approvalModal .project_name').text(project_name)
         $('#approvalModal .vendor_name').text(vendor_name)
         $('#approvalModal .vendor_code').text(vendor_code)
+        $('#approvalModal .vendor_pan').text(vendor_pan)
         $('#approvalModal .payment_stage').text(payment_stage)
         $('#approvalModal .amount').text(amount)
-        $('#approvalModal .total_payable').text(total_payable)
+        $('#approvalModal .total_payable').text(total_payable)\
+        $('#approvalModal .bill_id').text(bill_id)
+   }
 
 
-   })
+   $(".approval_1_btn").on('click', updateApprovalModalDetails(this))
 
-   $(".approval_2_btn").on('click', function(){
+   $(".approval_2_btn").on('click', updateApprovalModalDetails(this))
 
+   function populateApprovalAmountInTable(bill_id, amount_approved, approval_level) {
+        let tdTagClass = ''
+        if (approval_level === 'Level 1')
+            tdTagClass = 'approval_1'
+        if (approval_level === 'Level 2')
+            tdTagClass = 'approval_2'
+        $('.bill-'+bill_id.toString()).find('.'+tdTagClass).text(amount)
+
+   }
+
+   function saveApprovedBill() {
+        const bill_id = $('#approvalModal .bill_id').val()
+        const amount_approved = $("#amount_approved").val()
+        const notes = $("#notes").val()
+        const approval_level = $('.approval_level').val)()
+
+        $.ajax({
+              url: '/material/save_approved_bill',
+              type: "POST",
+              dataType: 'json',
+              data: {
+                'bill_id': bill_id,
+                'amount_approved': amount_approved,
+                'notes': notes,
+                'approval_level': approval_level
+
+              },
+              success: function(data){
+                $('#approvalModal').modal('hide');
+                $(".approve_bill_btn").text('Approve')
+                populateApprovalAmountInTable (bill_id, amount_approved, approval_level)
+              }
+         });
+   }
+
+   $(".approve_bill_btn").on('click', {
+        $(".approve_bill_btn").text('...')
+        saveApprovedBill()
    })
 
 });
