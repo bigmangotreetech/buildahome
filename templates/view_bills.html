@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="p-5 w-100 table-responsive">
-    <table class="table table-hover">
+    <table class="table table-striped">
         <thead>
         <tr>
             <th scope="col">Vendor Name</th>
@@ -17,10 +17,10 @@
         </thead>
         <tbody>
         {% for project in data %}
-        <tr>
+        <tr class="bg-white">
             <td class="border border-white"></td>
         </tr>
-        <tr class="h5 mt-4 mb-2 border border-white">
+        <tr class="h5 mt-4 mb-2 border border-white bg-white">
             <td>{{data[project]['project_name']}}</td>
         </tr>
         {% for i in data[project]['bills'] %}
