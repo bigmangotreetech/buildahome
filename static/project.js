@@ -125,7 +125,7 @@ $(document).ready(function() {
         $('#approvalModal .payment_stage').text(payment_stage)
         $('#approvalModal .amount').text(amount)
         $('#approvalModal .total_payable').text(total_payable)
-        $('#approvalModal .bill_id').text(bill_id)
+        $('#approvalModal .bill_id').val(bill_id)
    }
 
 
@@ -164,7 +164,6 @@ $(document).ready(function() {
                 'approved_amount': approved_amount,
                 'notes': notes,
                 'approval_level': approval_level
-
               },
               success: function(data){
                 $('#approvalModal').modal('hide');
