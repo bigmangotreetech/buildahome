@@ -145,7 +145,7 @@ $(document).ready(function() {
             tdTagClass = 'approval_1'
         if (approval_level === 'Level 2')
             tdTagClass = 'approval_2'
-        $('.bill-'+bill_id.toString()).find('.'+tdTagClass).text(amount)
+        $('.bill-'+bill_id.toString()).find('.'+tdTagClass).text(amount_approved)
 
    }
 
