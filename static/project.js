@@ -103,6 +103,7 @@ $(document).ready(function() {
    })
 
    function updateApprovalModalDetails(clickedBtn) {
+        console.log(clickedBtn)
         if ($(clickedBtn).hasClass('approval_1_btn'))
             $('.approval_level').val('Level 1')
         if ($(clickedBtn).hasClass('approval_2_btn'))
@@ -128,9 +129,15 @@ $(document).ready(function() {
    }
 
 
-   $(".approval_1_btn").on('click', updateApprovalModalDetails(this))
+   $(".approval_1_btn").on('click', function(){
+        const clickedBtn = this
+        updateApprovalModalDetails(this)
+   })
 
-   $(".approval_2_btn").on('click', updateApprovalModalDetails(this))
+   $(".approval_2_btn").on('click', function(){
+        const clickedBtn = this
+        updateApprovalModalDetails(this)
+   })
 
    function populateApprovalAmountInTable(bill_id, amount_approved, approval_level) {
         let tdTagClass = ''
