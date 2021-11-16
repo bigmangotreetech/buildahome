@@ -151,7 +151,7 @@ $(document).ready(function() {
 
    function saveApprovedBill() {
         const bill_id = $('#approvalModal .bill_id').val()
-        const amount_approved = $("#amount_approved").val()
+        const approved_amount = $("#amount_approved").val()
         const notes = $("#notes").val()
         const approval_level = $('.approval_level').val()
 
@@ -161,7 +161,7 @@ $(document).ready(function() {
               dataType: 'json',
               data: {
                 'bill_id': bill_id,
-                'amount_approved': amount_approved,
+                'approved_amount': approved_amount,
                 'notes': notes,
                 'approval_level': approval_level
 
