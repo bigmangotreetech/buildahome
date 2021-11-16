@@ -157,7 +157,7 @@ $(document).ready(function() {
         const approved_amount = $("#amount_approved").val()
         const notes = $("#notes").val()
         const approval_level = $('.approval_level').val()
-        const project_id = #("#project_id").val()
+        const project_id = $("#project_id").val()
         const trade =  $('#approvalModal .trade').text()
         const amount = parseFloat($('#approvalModal .total_payable').text())
         const difference_amount = parseFloat(amount) - parseFloat(approved_amount)
