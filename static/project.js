@@ -191,9 +191,10 @@ $(document).ready(function() {
             return true
         } else {
             $('#amount_approved').parent().find('.invalid-message').text('Amount entered is not valid')
-            $('#amount_approved').parent().find('.invalid-message').addClass('d-none')
+            $('#amount_approved').parent().find('.invalid-message').removeClass('d-none')
         }
-        return false
+        return false;
+
    }
 
    $(".approve_bill_btn").on('click', function(){
