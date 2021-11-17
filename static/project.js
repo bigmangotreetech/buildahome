@@ -183,9 +183,24 @@ $(document).ready(function() {
          });
    }
 
+   function validateApprovedBillAmnt(){
+        const amount = parseFloat($('#approvalModal .total_payable').text())
+        const approved_amount = parseFloat($("#amount_approved").val())
+        if (approved_amount > 0 && approved_amount <= amount ) {
+            $('#amount_approved').parent().find('.invalid-message').addClass('d-none')
+            return true
+        } else {
+            $('#amount_approved').parent().find('.invalid-message').text('Amount entered is not valid')
+            $('#amount_approved').parent().find('.invalid-message').addClass('d-none')
+        }
+        return false
+   }
+
    $(".approve_bill_btn").on('click', function(){
-        $(".approve_bill_btn").text('...')
-        saveApprovedBill()
+        if (validateApprovedBillAmnt()) {
+            $(".approve_bill_btn").text('...')
+            saveApprovedBill()
+        }
    })
 
    function getWorkOrderForSelectedProject() {
