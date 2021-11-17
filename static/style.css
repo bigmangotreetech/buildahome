@@ -38,8 +38,8 @@ body {
 }
 
 .popover-title {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', sans-serif !important;
 }
 .popover-content {
-   font-family: 'Montserrat', sans-serif;
+   font-family: 'Montserrat', sans-serif !important;
 }
