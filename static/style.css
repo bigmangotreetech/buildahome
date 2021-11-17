@@ -37,9 +37,6 @@ body {
     overflow-x: auto
 }
 
-.popover-title {
+.popover {
     font-family: 'Montserrat', sans-serif !important;
-}
-.popover-content {
-   font-family: 'Montserrat', sans-serif !important;
 }
