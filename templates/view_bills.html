@@ -25,34 +25,36 @@
         </tr>
         {% for i in data[project]['bills'] %}
         <tr class="bill-{{i['bill_id']}}">
-            <td class="vendor_name">{{i['vendor_name']}}</td>
-            <td class="vendor_pan">{{i['vendor_pan']}}</td>
-            <td class="vendor_code">{{i['vendor_code']}}</td>
-            <td class="trade">{{i['trade']}}</td>
-            <td class="stage">{{i['stage']}}</td>
-            <td class="amount">{{i['amount']}}</td>
-            <td class="total_payable">{{i['total_payable']}}</td>
-            <td class="approval_1 d-flex">
-                {% if i['approval_1_notes'] != '' %}
-                <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary" data-toggle="popover" data-trigger="focus" data-placement="top"  title="Notes" data-content="{{i['approval_1_notes']}}"><i class="fa fa-info-circle"></i></button>
-                {% endif %}
+            <td class="vendor_name border-right">{{i['vendor_name']}}</td>
+            <td class="vendor_pan border-right">{{i['vendor_pan']}}</td>
+            <td class="vendor_code border-right">{{i['vendor_code']}}</td>
+            <td class="trade border-right">{{i['trade']}}</td>
+            <td class="stage border-right">{{i['stage']}}</td>
+            <td class="amount  border-right">{{i['amount']}}</td>
+            <td class="total_payable border-right">{{i['total_payable']}}</td>
+            <td class="approval_1 d-flex border-right">
                 {% if i['approval_1_amount'] == '' %}
                 <button class="approval_1_btn btn py-0 bg-white" data-project-id="{{project}}" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_1_amount']}}
                 {% endif %}
+                {% if i['approval_1_notes'] != '' %}
+                <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary" data-toggle="popover" data-trigger="focus" data-placement="top"  title="Notes" data-content="{{i['approval_1_notes']}}"><i class="fa fa-info-circle"></i></button>
+                {% endif %}
+
             </td>
             <td class="approval_2">
-                {% if i['approval_2_notes'] != '' %}
-                <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary" data-toggle="popover" data-trigger="focus" data-placement="top"  title="Notes" data-content="{{i['approval_2_notes']}}"><i class="fa fa-info-circle"></i></button>
-                {% endif %}
                 {% if i['approval_2_amount'] == '' %}
                 <button class="approval_2_btn btn py-0 bg-white" data-project-id="{{project}}" data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                         data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
                 {% else %}
                 {{i['approval_2_amount']}}
                 {% endif %}
+                {% if i['approval_2_notes'] != '' %}
+                <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary" data-toggle="popover" data-trigger="focus" data-placement="top"  title="Notes" data-content="{{i['approval_2_notes']}}"><i class="fa fa-info-circle"></i></button>
+                {% endif %}
+
             </td>
         </tr>
         {% endfor %}
