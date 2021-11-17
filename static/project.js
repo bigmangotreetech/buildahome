@@ -3,7 +3,9 @@ $(document).ready(function() {
     $('.select2').select2();
 
     $(function () {
-      $('[data-toggle="popover"]').popover()
+      $('[data-toggle="popover"]').popover({
+         trigger: 'focus'
+      })
     })
 
     $(".update_trades_for_project").on('change', function(){
