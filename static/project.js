@@ -2,6 +2,10 @@
 $(document).ready(function() {
     $('.select2').select2();
 
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    })
+
     $(".update_trades_for_project").on('change', function(){
         const project_id = $(this).val()
 
@@ -177,6 +181,8 @@ $(document).ready(function() {
               },
               success: function(data){
                 $('#approvalModal').modal('hide');
+                $('#amount_approved').val('')
+                $("#notes").val('')
                 $(".approve_bill_btn").text('Approve')
                 populateApprovalAmountInTable (bill_id, approved_amount, approval_level)
               }
