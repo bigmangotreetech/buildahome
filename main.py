@@ -29,7 +29,7 @@ def get_projects():
 
 @app.route('/', methods=['GET'])
 def index():
-    # if 'email' not in session:
+    if 'email' not in session:
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/material'
         return redirect('/material/login')
