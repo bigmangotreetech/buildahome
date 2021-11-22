@@ -21,7 +21,6 @@ $(document).ready(function() {
               dataType: 'json',
               data: {'project_id': project_id},
               success: function(data){
-                  console.log(data)
                   for(const trade of data) {
                     $(".select_trade_for_bill select").append($("<option></option>")
                     .attr("value", trade)
@@ -221,5 +220,26 @@ $(document).ready(function() {
 
    $("#view_work_order").on('click', getWorkOrderForSelectedProject)
 
+   checkIfNumberOfFloorsUpdated(project_id) {
+   $.ajax({
+              url: '/material/check_if_floors_updated',
+              type: "POST",
+              dataType: 'json',
+              data: {
+                'project_id': project_id,
+              },
+              success: function(data){
+                if(data['floors_updated']) {
+                    $("#floors").val(data['floors'])
+                    $(".wo-floors-section").hide()
+                }
+              }
+         });
+   }
+
+   $(".work_order_project_select").on('change', function(){
+        const project_id = $(this).val()
+        if (project_id) checkIfNumberOfFloorsUpdated(project_id)
+   })
 });
 

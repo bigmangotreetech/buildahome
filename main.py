@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, flash, jsonify, send_from_directory
+from flask import Flask, render_template, redirect, request, session, flash, jsonify, send_from_directory, make_response
 from flask_mysqldb import MySQL
 import hashlib
 
@@ -29,11 +29,14 @@ def get_projects():
 
 @app.route('/', methods=['GET'])
 def index():
-    if 'email' not in session:
-        flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material'
-        return redirect('/material/login')
-    return render_template('index.html')
+    # if 'email' not in session:
+    #     flash('You need to login to continue', 'danger')
+    #     session['last_route'] = '/material'
+    #     return redirect('/material/login')
+    print(request.cookies)
+    resp = make_response('')
+    resp.set_cookie('Hello', 'I am cookie')
+    return resp
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -395,6 +398,18 @@ def view_work_order():
             work_orders = get_work_orders_for_project(project_id)
 
         return render_template('view_work_orders.html', projects=projects, work_orders=work_orders)
+
+@app.route('/check_if_floors_updated', methods=['POST'])
+def check_if_floors_updated():
+    project_id = request.form['project_id']
+    query = 'SELECT id, floors from work_orders WHERE project_id='+str(project_id)
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    result = cur.fetchone()
+    if result is not None:
+        return jsonify({'floors_updated': True, 'floors': result[1]})
+    return jsonify({'floors_updated': False})
+
 
 
 @app.route('/logout', methods=['GET'])

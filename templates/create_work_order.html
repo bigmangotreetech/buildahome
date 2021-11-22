@@ -14,7 +14,7 @@
                         <label for="project">Project</label>
                     </div>
                     <div class="col-6">
-                        <select name="project" id="project" class="form-control select2" required>
+                        <select name="project" id="project" class="form-control select2 work_order_project_select" required>
                             <option value=""></option>
                             {% for i in projects %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
@@ -22,7 +22,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 form-group wo-floors-section">
                     <div class="col-6">
                         <label for="floors">Floors</label>
                     </div>
