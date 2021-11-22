@@ -30,13 +30,10 @@ def get_projects():
 @app.route('/', methods=['GET'])
 def index():
     # if 'email' not in session:
-    #     flash('You need to login to continue', 'danger')
-    #     session['last_route'] = '/material'
-    #     return redirect('/material/login')
-    print(request.cookies)
-    resp = make_response('')
-    resp.set_cookie('Hello', 'I am cookie')
-    return resp
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material'
+        return redirect('/material/login')
+
 
 @app.route('/login', methods=['GET','POST'])
 def login():
