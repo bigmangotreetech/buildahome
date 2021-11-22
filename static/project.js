@@ -232,7 +232,8 @@ $(document).ready(function() {
                 if(data['floors_updated']) {
                     $("#floors").val(data['floors'])
                     $(".wo-floors-section").hide()
-                }
+                } else {
+                    $(".wo-floors-section").show()}
               }
          });
    }

@@ -33,6 +33,7 @@ def index():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/material'
         return redirect('/material/login')
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['GET','POST'])
