@@ -220,8 +220,8 @@ $(document).ready(function() {
 
    $("#view_work_order").on('click', getWorkOrderForSelectedProject)
 
-   checkIfNumberOfFloorsUpdated(project_id) {
-   $.ajax({
+   function checkIfNumberOfFloorsUpdated(project_id) {
+        $.ajax({
               url: '/material/check_if_floors_updated',
               type: "POST",
               dataType: 'json',
