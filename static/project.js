@@ -148,6 +148,13 @@ $(document).ready(function() {
         updateApprovalModalDetails(this)
    })
 
+   $(".copy_from_approval_1_btn").on("click", function() {
+        updateApprovalModalDetails(this)
+        const amount_approved = parseFloat($(this).parents("tr").find(".approval_1").text().trim())
+        $('#approvalModal .total_payable').text(amount_approved)
+        saveApprovedBill()
+   })
+
    function populateApprovalAmountInTable(bill_id, amount_approved, approval_level) {
         let tdTagClass = ''
         if (approval_level === 'Level 1')

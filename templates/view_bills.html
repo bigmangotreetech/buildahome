@@ -51,6 +51,9 @@
                     <button class="approval_2_btn btn py-0 bg-white" data-project-id="{{project}}"
                             data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                             data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
+                    <button class="copy_from_approval_1_btn btn btn-success py-0"
+                            data-toggle="popover" data-trigger="focus" data-placement="top"
+                            data-content="Approve proposed amount in approval 1"><i class="fa fa-check"></i></button>
                     {% else %}
                     {{i['approval_2_amount']}}
                     {% endif %}
