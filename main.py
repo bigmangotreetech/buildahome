@@ -65,7 +65,7 @@ def login():
                 session['email'] = result[0]
                 session['role'] = result[2]
                 session['name'] = result[1]
-                session['access_level'] = result[3]
+                session['access_level'] = result[4]
                 flash('Logged in successfully', 'success')
                 return redirect('/material')
             else:
