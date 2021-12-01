@@ -74,7 +74,7 @@ $(document).ready(function() {
             payment_percentage = parseFloat(payment_percentage)
             const bill_amount_before_5_percent_deduction = (work_order_value * (payment_percentage /  100))
             const final_bill_amount = bill_amount_before_5_percent_deduction - (bill_amount_before_5_percent_deduction * 0.05)
-            $(".bill_amount").text('₹ '+final_bill_amount.toString())
+            $(".bill_amount").text(final_bill_amount.toString())
         } else {
             $(".final_details").addClass('d-none')
         }
@@ -93,7 +93,7 @@ $(document).ready(function() {
         const payment_percentage = $(".select_payment_stage select").find('option:selected').val()
         $('input[name="payment_percentage"]').val(payment_percentage)
 
-        const amount = $('.total_wo_value').text()
+        const amount = $('.bill_amount').text()
         $('input[name="amount"]').val(amount)
 
         const vendor_name = $('.vendor_name').text()

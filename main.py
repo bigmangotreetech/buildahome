@@ -256,7 +256,7 @@ def create_bill():
         vendor_name = request.form['vendor_name']
         vendor_code = request.form['vendor_code']
         vendor_pan = request.form['vendor_pan']
-        total_payable = float(amount) - (float(amount) * 0.05)
+        total_payable = float(amount)
         check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" AND stage="'+str(stage)+'"'
         cur = mysql.connection.cursor()
         cur.execute(check_if_exists_query)
