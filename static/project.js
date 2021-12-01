@@ -6,7 +6,10 @@ $(document).ready(function() {
       $('[data-toggle="popover"]').popover({
          trigger: 'focus'
       })
-      $('[data-trigger="hover"]').popover({
+    })
+
+    $(function () {
+      $('[data-toggle="popover-hover"]').popover({
          trigger: 'hover'
       })
     })
