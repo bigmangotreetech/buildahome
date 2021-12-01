@@ -6,6 +6,9 @@ $(document).ready(function() {
       $('[data-toggle="popover"]').popover({
          trigger: 'focus'
       })
+      $('[data-trigger="hover"]').popover({
+         trigger: 'hover'
+      })
     })
 
     $(".update_trades_for_project").on('change', function(){

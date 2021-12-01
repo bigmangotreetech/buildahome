@@ -51,11 +51,13 @@
                     <button class="approval_2_btn btn py-0 bg-white" data-project-id="{{project}}"
                             data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                             data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
+                    {% if i['approval_1_amount'] != '' %}
                     <button class="copy_from_approval_1_btn btn bg-indigo text-white ml-2 py-0"
                             data-project-id="{{project}}"
                             data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
                             data-toggle="popover" data-trigger="hover" data-placement="top"
                             data-content="Approve proposed amount in approval 1"><i class="fa fa-thumbs-up"></i></button>
+                    {% endif %}
                     {% else %}
                     {{i['approval_2_amount']}}
                     {% endif %}
@@ -138,14 +140,6 @@
                     </div>
                     <div class="col-6">
                         <label class="font-weight-bold payment_stage"></label>
-                    </div>
-                </div>
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
-                        <label>Amount</label>
-                    </div>
-                    <div class="col-6">
-                        <label class="font-weight-bold amount"></label>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
