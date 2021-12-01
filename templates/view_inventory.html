@@ -17,6 +17,7 @@
         <div class="col-sm-12 col-md-4 pl-0 pr-2 mb-2">
             <select name="material" id="material" class="form-control select2">
                 <option value=""></option>
+                <option value="All">All</option>
                 <option value="Cement" >Cement</option>
                 <option value="Concrete">Concrete</option>
                 <option value="Steel">Steel</option>
@@ -33,7 +34,7 @@
         <button id="get_procurement" class="btn text-white bg-indigo  mb-2">Get procurement</button>
     </div>
     <div class="w-100 p-3 overflow-x-auto">
-        {% if procurements is not none %}
+        {% if procurements is not none && request.args['project_id']|string() != 'All' %}
         <div class="w-100 mb-4">
             <h4>{{material}} procurement for {{project}}</h4>
         </div>

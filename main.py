@@ -130,7 +130,11 @@ def view_inventory():
     if 'project_id' in request.args and 'material' in request.args:
         project_id = request.args['project_id']
         material = request.args['material']
-        procurement_query = 'SELECT * from procurement WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
+        if material == 'All':
+            procurement_query = 'SELECT * from procurement WHERE project_id=' + str(
+                project_id)
+        else:
+            procurement_query = 'SELECT * from procurement WHERE project_id='+str(project_id)+' AND material="'+str(material)+'"'
         cur.execute(procurement_query)
         procurements = cur.fetchall()
         for i in projects:
