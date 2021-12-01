@@ -150,6 +150,7 @@ $(document).ready(function() {
 
    $(".copy_from_approval_1_btn").on("click", function() {
         updateApprovalModalDetails(this)
+        $('.approval_level').val('Level 2')
         const amount_approved = parseFloat($(this).parents("tr").find(".approval_1").text().trim())
         $('#approvalModal .total_payable').text(amount_approved)
         saveApprovedBill()
