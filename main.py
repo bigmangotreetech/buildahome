@@ -288,7 +288,7 @@ def update_trades_for_project():
 def update_payment_stages():
     project_id = request.form['project_id']
     trade = request.form['trade']
-    work_order_query = 'SELECT value, floors, vendor_name, vendor_code, vendor_pan from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'"'
+    work_order_query = 'SELECT value, floors, vendor_name, vendor_code, vendor_pan from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" ORDER BY id'
     cur = mysql.connection.cursor()
     cur.execute(work_order_query)
     res = cur.fetchone()
