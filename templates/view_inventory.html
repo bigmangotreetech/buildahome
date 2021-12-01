@@ -34,7 +34,8 @@
         <button id="get_procurement" class="btn text-white bg-indigo  mb-2">Get procurement</button>
     </div>
     <div class="w-100 p-3 overflow-x-auto">
-        {% if procurements is not none && request.args['project_id']|string() != 'All' %}
+        {% if request.args['project_id']|string() != 'All' %}
+        {% if procurements is not none %}
         <div class="w-100 mb-4">
             <h4>{{material}} procurement for {{project}}</h4>
         </div>
@@ -44,6 +45,7 @@
             <div id="total_current_quantity"></div>
             <div id="total_balance_quantity"></div>
         </div>
+        {% endif %}
         {% endif %}
         <table class="table table-hover">
             <thead>
