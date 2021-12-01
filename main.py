@@ -308,6 +308,23 @@ def update_payment_stages():
         response = {'work_order_value': work_order_value, 'vendor_name': vendor_name, 'vendor_code': vendor_code, 'vendor_pan': vendor_pan, 'stages' : stages}
         return jsonify(response)
 
+def get_bills_as_json(bills_query):
+    cur = mysql.connection.cursor()
+    cur.execute(bills_query)
+    data = {}
+    res = cur.fetchall()
+    for i in res:
+        project_id = i[0]
+        if project_id not in data:
+            data[project_id] = {'project_name': i[1], 'bills': []}
+        data[project_id]['bills'].append(
+            {'bill_id': i[16], 'vendor_name': i[7], 'vendor_pan': i[9], 'vendor_code': i[8], 'trade': i[17],
+             'stage': i[3], 'amount': i[5], 'total_payable': i[6],
+             'approval_1_amount': i[11], 'approval_1_notes': i[12], 'approval_2_amount': i[14],
+             'approval_2_notes': i[15]}
+        )
+    return data
+
 @app.route('/view_bills', methods=['GET'])
 def view_bills():
     if 'email' not in session:
@@ -315,25 +332,27 @@ def view_bills():
         session['last_route'] = '/material/create_bill'
         return redirect('/material/login')
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
-
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
                          'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
-                         ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id'
+                         ' FROM wo_bills WHERE wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS  NULL INNER JOIN projects on wo_bills.project_id = projects.project_id'
+        data = get_bills_as_json(bills_query)
+        return render_template('view_bills.html', data=data)
 
-        cur.execute(bills_query)
-        data = {}
-        res = cur.fetchall()
-        for i in res:
-            project_id = i[0]
-            if project_id not in data:
-                data[project_id] = {'project_name': i[1], 'bills': []}
-            data[project_id]['bills'].append(
-                {'bill_id': i[16], 'vendor_name': i[7], 'vendor_pan': i[9], 'vendor_code': i[8], 'trade': i[17], 'stage': i[3], 'amount': i[5], 'total_payable': i[6],
-                 'approval_1_amount': i[11], 'approval_1_notes': i[12], 'approval_2_amount': i[14], 'approval_2_notes': i[15]}
-            )
+@app.route('/view__approved_bills', methods=['GET'])
+def view_bills():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/create_bill'
+        return redirect('/material/login')
+    if request.method == 'GET':
+        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
+                         'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
+                         'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
+                         'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
+                         ' FROM wo_bills WHERE wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL INNER JOIN projects on wo_bills.project_id = projects.project_id'
+        data = get_bills_as_json(bills_query)
         return render_template('view_bills.html', data=data)
 
 def update_work_order_balance(project_id, trade, difference_amount):
