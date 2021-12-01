@@ -1,6 +1,11 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class='mt-5 w-100'>
+    <div class="mb-3">
+        <div>Logged in as <b> {{user_login_data['name']}}</b></div>
+        <div>Role: <b>{{user_login_data['role']}}</b> </div>
+        <div>Access level: <b>{{user_login_data['access_level']}}</b> </div>
+    </div>
     <div class='d-flex w-100'>
         <a href="/material/enter_material" class='btn btn-primary mx-3'>Enter Material</a>
     </div>

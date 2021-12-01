@@ -33,7 +33,13 @@ def index():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/material'
         return redirect('/material/login')
-    return render_template('index.html')
+    user_login_data = {
+        'email' : session['email'],
+        'name': session['name'],
+        'access_level': session['access_level'],
+        'role': session['role']
+    }
+    return render_template('index.html', user_login_data=user_login_data)
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -51,7 +57,7 @@ def login():
         password = request.form['password']
         password = hashlib.sha256(password.encode()).hexdigest()
         cur = mysql.connection.cursor()
-        query = "SELECT email, name, role, password FROM App_users WHERE email='"+username+"'"
+        query = "SELECT email, name, role, password, access_level FROM App_users WHERE email='"+username+"'"
         cur.execute(query)
         result = cur.fetchone()
         if result is not None:
@@ -59,6 +65,7 @@ def login():
                 session['email'] = result[0]
                 session['role'] = result[2]
                 session['name'] = result[1]
+                session['access_level'] = result[3]
                 flash('Logged in successfully', 'success')
                 return redirect('/material')
             else:
@@ -342,7 +349,8 @@ def view_bills():
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                          ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL)'
         data = get_bills_as_json(bills_query)
-        return render_template('view_bills.html', data=data)
+        access_level = session['access_level']
+        return render_template('view_bills.html', data=data, access_level=access_level)
 
 @app.route('/view_approved_bills', methods=['GET'])
 def view_approved_bills():
