@@ -340,8 +340,8 @@ def view_bills():
         data = get_bills_as_json(bills_query)
         return render_template('view_bills.html', data=data)
 
-@app.route('/view__approved_bills', methods=['GET'])
-def view_bills():
+@app.route('/view_approved_bills', methods=['GET'])
+def view_approved_bills():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/material/create_bill'
