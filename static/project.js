@@ -159,6 +159,7 @@ $(document).ready(function() {
         $('.approval_level').val('Level 2')
         const amount_approved = parseFloat($(this).parents("tr").find(".approval_1").text().trim())
         $("#amount_approved").val(amount_approved)
+        $('[data-toggle="popover-hover"]').popover('hide')
         saveApprovedBill()
    })
 
