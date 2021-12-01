@@ -72,8 +72,9 @@ $(document).ready(function() {
             $(".payment_percentage").text(payment_percentage.toString()+"%")
             let work_order_value = parseFloat($('.total_wo_value').text())
             payment_percentage = parseFloat(payment_percentage)
-            const bill_amount = (work_order_value * (payment_percentage /  100)) + work_order_value
-            $(".bill_amount").text('₹ '+bill_amount.toString())
+            const bill_amount_before_5_percent_deduction = (work_order_value * (payment_percentage /  100))
+            const final_bill_amount = bill_amount_before_5_percent_deduction - (bill_amount_before_5_percent_deduction * 0.05)
+            $(".bill_amount").text('₹ '+final_bill_amount.toString())
         } else {
             $(".final_details").addClass('d-none')
         }

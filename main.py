@@ -86,7 +86,6 @@ def enter_material():
         po_no = request.form['po_no']
         invoice_no = request.form['invoice_no']
         invoice_date = request.form['invoice_date']
-        invoice_value = request.form['invoice_value']
         quantity = request.form['quantity']
         unit = request.form['unit']
         rate = request.form['rate']
@@ -101,13 +100,13 @@ def enter_material():
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
             return redirect('/material/enter_material')
-        if float(result[0]) < (float(quantity) + float(result[0])):
-            flash('Total quantity of material exceeded limii specified under KYP material. Entry not recorded', 'danger')
+        if float(result[0]) < (float(quantity)):
+            flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded', 'danger')
             return redirect('/material/enter_material')
 
-        query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date, invoice_value," \
+        query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
                 "quantity, unit, rate, gst, total_amount, difference_cost) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (material, description, vendor, project, po_no, invoice_no, invoice_date, invoice_value, quantity, unit, rate, gst, total_amount, difference_cost)
+        values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst, total_amount, difference_cost)
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')

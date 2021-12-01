@@ -83,14 +83,7 @@
                         <input type="date" name="invoice_date" id="invoice_date" class="form-control" required>
                     </div>
                 </div>
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
-                        <label for="invoice_value">Invoice value</label>
-                    </div>
-                    <div class="col-6">
-                        <input type="text" name="invoice_value" id="invoice_value" class="form-control" required>
-                    </div>
-                </div>
+
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="quantity">Quantity</label>
@@ -104,7 +97,19 @@
                         <label for="unit">Unit</label>
                     </div>
                     <div class="col-6">
-                        <input name="unit" id="unit" class="form-control" required>
+                        <select name="unit" id="unit" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="Bags">Bags</option>
+                            <option value="CFT">CFT</option>
+                            <option value="CUM">CUM</option>
+                            <option value="Load">Load</option>
+                            <option value="Kg">Kg</option>
+                            <option value="MT">MT</option>
+                            <option value="Nos">Nos</option>
+                            <option value="Box">Box</option>
+                            <option value="Others">Others</option>
+                        </select>
+
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
