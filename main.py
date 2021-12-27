@@ -480,7 +480,7 @@ def get_unapproved_indents():
             access_as_int = [int(i) for i in access]
             access_tuple = tuple(access_as_int)
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ' FROM indents JOIN projects on indents.status="unapproved" AND indents.project_id IN '+str(access_tuple)
+                            ' FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id IN '+str(access_tuple)
             cur.execute(indents_query)
             res = cur.fetchall()
             data = []
