@@ -447,5 +447,27 @@ def logout():
     del session['role']
     return redirect('/material/login')
 
+
+
+# APIs for mobile app
+@app.route('/API/create_indent', methods=['POST'])
+def create_indent():
+    if request.method == 'POST':
+        project_id = request.form['project_id']
+        material = request.form['material']
+        quantity = request.form['quantity']
+        unit = request.form['unit']
+        purpose = request.form['purpose']
+        cur = mysql.connection.cursor()
+        query = 'INSERT into indents(project_id, material, quantity, unit, purpose) values (%s, %s, %s, %s, %s)'
+        values = (project_id, material, quantity, unit, purpose)
+        cur.execute(query, values)
+        mysql.connection.commit()
+        return jsonify({'message':'success'})
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
