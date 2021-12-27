@@ -466,9 +466,37 @@ def create_indent():
         mysql.connection.commit()
         return jsonify({'message':'success'})
 
+@app.route('/API/get_unapproved_indents', methods=['GET'])
+def get_unapproved_indents():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        user_id = request.args['user_id']
+        access_query = 'SELECT access from App_users WHERE user_id='+str(user_id)
+        cur.execute(access_query)
+        res = cur.fetchone()
+        access = res[0]
+        if len(access):
+            access = access.split(',')
+            access_as_int = [int(i) for i in access]
+            access_tuple = tuple(access_as_int)
+            indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                            ' FROM indents JOIN projects on indents.status="unapproved" AND indents.project_id IN '+str(access_tuple)
+            cur.execute(indents_query)
+            res = cur.fetchall()
+            data = []
+            for i in res:
+                indent_entry = {}
+                indent_entry['id'] = i[0]
+                indent_entry['project_id'] = i[1]
+                indent_entry['project_name'] = i[2]
+                indent_entry['material'] = i[3]
+                indent_entry['quantity'] = i[4]
+                indent_entry['unit'] = i[5]
+                indent_entry['purpose'] = i[6]
+                data.append(indent_entry)
 
-
-
+            return jsonify(data)
+        else: return jsonify({'message':'user has no access'})
 
 if __name__ == '__main__':
     app.run(debug=True)
