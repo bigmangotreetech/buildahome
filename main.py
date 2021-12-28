@@ -518,7 +518,7 @@ def upload_po_for_indent():
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(indent_id)+'_'+filename))
                 cur = mysql.connection.cursor()
-                query = 'UPDATE indent set status=%s, purchase_order=%s WHERE id=%s'
+                query = 'UPDATE indents set status=%s, purchase_order=%s WHERE id=%s'
                 values = ('po_uploaded', str(indent_id)+'_'+filename, indent_id )
                 cur.execute(query, values)
                 mysql.connection.commit()
