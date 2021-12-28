@@ -494,7 +494,7 @@ def view_indent_details():
         indent_id = request.args['indent_id']
         cur = mysql.connection.cursor()
         indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                        ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.id=%s AND indents.project_id=projects.project_id ' \
+                        ', App_users.name, indents.timestamp, indents.purchase_order FROM indents INNER JOIN projects on indents.id=%s AND indents.project_id=projects.project_id ' \
                         ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
         cur.execute(indents_query, (indent_id))
         result = cur.fetchone()
@@ -508,6 +508,7 @@ def upload_po_for_indent():
         session['last_route'] = '/material/create_bill'
         return redirect('/material/login')
     if request.method == 'POST':
+        indent_id = request.form['indent_id']
         if 'purchase_order' in request.files:
             file = request.files['purchase_order']
             if file.filename == '':
@@ -515,8 +516,14 @@ def upload_po_for_indent():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                return redirect(url_for('download_file', name=filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(indent_id)+'_'+filename))
+                cur = mysql.connection.cursor()
+                query = 'UPDATE indent set status=%s, purchase_order=%s WHERE id=%s'
+                values = ('po_uploaded', str(indent_id)+'_'+filename, indent_id )
+                cur.execute(query, values)
+                mysql.connection.commit()
+                flash('PO Uploaded successfully')
+        return redirect('/view_indent_details?indent_id='+str(indent_id))
 
 @app.route('/logout', methods=['GET'])
 def logout():
