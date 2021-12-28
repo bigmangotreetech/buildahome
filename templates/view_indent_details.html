@@ -42,7 +42,7 @@
             </div>
             <div class="row mx-0 mb-3 form-group">
                 <div class="col-6">
-                    Indent created by user
+                    Purpose
                 </div>
                 <div class="col-6">
                     <b>{{result[6]}}</b>
@@ -50,14 +50,29 @@
             </div>
             <div class="row mx-0 mb-3 form-group">
                 <div class="col-6">
-                    Indent created on
+                    Indent created by user
                 </div>
                 <div class="col-6">
                     <b>{{result[7]}}</b>
                 </div>
             </div>
-
-
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Indent created on
+                </div>
+                <div class="col-6">
+                    <b>{{result[8]}}</b>
+                </div>
+            </div>
+            <form class="mt-3" action="/material/upload_po_for_indent" method="post" enctype="multipart/form-data">
+                <div class="mb-2">Upload purchase order</div>
+                <input type="file" name="purchase_order">
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button class="btn btn-block bg-indigo text-white create_bill">Upload</button>
+                    </div>
+                </div>
+            </form>
 
         </div>
     </div>

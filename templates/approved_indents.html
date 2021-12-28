@@ -8,9 +8,7 @@
             <th scope="col">Project</th>
             <th scope="col">Material</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Purpose</th>
             <th scope="col">Created by</th>
-            <th scope="col">Date & time</th>
         </tr>
         </thead>
         <tbody>
@@ -20,10 +18,8 @@
             <td>{{i[2]}}</td>
             <td>{{i[3]}}</td>
             <td>{{i[4]}} {{i[5]}}</td>
-            <td>{{i[6]}}</td>
             <td>{{i[7]}}</td>
-            <td>{{i[8]}}</td>
-            <td><a href="/view_indent_details?indent_id={{i[0]}}">View details</a></td>
+            <td><a href="/material/view_indent_details?indent_id={{i[0]}}">View details</a></td>
 
         </tr>
         {% endfor %}
