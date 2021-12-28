@@ -439,6 +439,44 @@ def check_if_floors_updated():
     return jsonify({'floors_updated': False})
 
 
+@app.route('/view_approved_indents', methods=['GET'])
+def view_approved_indents():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/create_bill'
+        return redirect('/material/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        current_user_role = session['role']
+        if current_user_role == 'Admin':
+            indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved" AND indents.project_id=projects.project_id ' \
+                            ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
+
+            cur.execute(indents_query)
+            result = cur.fetchall()
+            return render_template('approved_indents.html', result=result)
+        elif current_user_role == 'Purchase Executive':
+            current_user_email = session['email']
+            access_query = 'SELECT access, role from App_users WHERE email=' + str(current_user_email)
+            cur.execute(access_query)
+            res = cur.fetchone()
+            access = res[0]
+            if len(access):
+                access = access.split(',')
+                access_as_int = [int(i) for i in access]
+                access_tuple = tuple(access_as_int)
+                indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                                ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
+                                     access_tuple) + '' \
+                                    ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
+                cur.execute(indents_query)
+                result = cur.fetchall()
+                return render_template('approved_indents.html', result=result)
+        else:
+            return 'You do not have access to view this page'
+
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -530,7 +568,7 @@ def get_unapproved_indents():
             access_as_int = [int(i) for i in access]
             access_tuple = tuple(access_as_int)
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id AND indents.project_id IN '+str(access_tuple)+'' \
+                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id AND indents.project_id IN '+str(access_tuple)+'' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
             cur.execute(indents_query)
             res = cur.fetchall()

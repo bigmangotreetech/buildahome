@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Indent Id</th>
+            <th scope="col">Project</th>
+            <th scope="col">Material</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Purpose</th>
+            <th scope="col">Created by</th>
+            <th scope="col">Date & time</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in result %}
+        <tr class="bill-{{i['bill_id']}}">
+            <td>{{i[0]}}</td>
+            <td>{{i[2]}}</td>
+            <td>{{i[3]}}</td>
+            <td>{{i[4]}} {{i[5]}}</td>
+            <td>{{i[6]}}</td>
+            <td>{{i[7]}}</td>
+            <td>{{i[8]}}</td>
+
+        </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}
