@@ -488,7 +488,7 @@ def edit_and_approve_indent():
     purpose = request.form['purpose']
     cur = mysql.connection.cursor()
     query = 'UPDATE indents SET status=%s, project_id=%s, material=%s, quantity=%s, unit=%s, purpose=%s WHERE id=%s'
-    values = (project_id, material, quantity, unit, purpose, status, indent_id)
+    values = (status, project_id, material, quantity, unit, purpose, indent_id)
     cur.execute(query, values)
     mysql.connection.commit()
     return jsonify({'message': 'success'})
