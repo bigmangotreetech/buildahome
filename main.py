@@ -467,6 +467,32 @@ def create_indent():
         mysql.connection.commit()
         return jsonify({'message':'success'})
 
+@app.route('/API/change_indent_status', methods=['POST'])
+def change_indent_status():
+    indent_id = request.form['indent_id']
+    status = request.form['status']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE indents SET status="'+status+'" WHERE id='+str(indent_id)
+    cur.execute(query)
+    mysql.connection.commit()
+    return jsonify({'message': 'success'})
+
+@app.route('/API/edit_and_approve_indent', methods=['POST'])
+def edit_and_approve_indent():
+    indent_id = request.form['indent_id']
+    status = 'approved'
+    project_id = request.form['project_id']
+    material = request.form['material']
+    quantity = request.form['quantity']
+    unit = request.form['unit']
+    purpose = request.form['purpose']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE indents SET status=%s, project_id=%s, material=%s, quantity=%s, unit=%s, purpose=%s WHERE id=%s'
+    values = (project_id, material, quantity, unit, purpose, status, indent_id)
+    cur.execute(query, values)
+    mysql.connection.commit()
+    return jsonify({'message': 'success'})
+
 @app.route('/API/get_unapproved_indents', methods=['GET'])
 def get_unapproved_indents():
     if request.method == 'GET':
