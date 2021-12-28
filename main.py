@@ -15,7 +15,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'buildahome'
 app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
-app.config['UPLOAD_FOLDER'] = '../files'
+app.config['UPLOAD_FOLDER'] = '../app.buildahome.in/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
 
 mysql = MySQL(app)
@@ -522,8 +522,8 @@ def upload_po_for_indent():
                 values = ('po_uploaded', str(indent_id)+'_'+filename, indent_id )
                 cur.execute(query, values)
                 mysql.connection.commit()
-                flash('PO Uploaded successfully')
-        return redirect('/view_indent_details?indent_id='+str(indent_id))
+                flash('PO Uploaded successfully','success')
+        return redirect('/material/view_indent_details?indent_id='+str(indent_id))
 
 @app.route('/logout', methods=['GET'])
 def logout():
