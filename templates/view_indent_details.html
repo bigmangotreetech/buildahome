@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="col-12">
+                    <h4>Indent details</h4>
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Indent Id
+                </div>
+                <div class="col-6">
+                    <b>{{result[0]}}</b>
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Project
+                </div>
+                <div class="col-6">
+                    <b>{{result[2]}}</b>
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Indent for material
+                </div>
+                <div class="col-6">
+                    <b>{{result[3]}}</b>
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Requested quantity
+                </div>
+                <div class="col-6">
+                    <b>{{result[4]}} {{result[5]}}</b>
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Indent created by user
+                </div>
+                <div class="col-6">
+                    <b>{{result[6]}}</b>
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Indent created on
+                </div>
+                <div class="col-6">
+                    <b>{{result[7]}}</b>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

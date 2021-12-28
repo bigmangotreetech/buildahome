@@ -476,7 +476,21 @@ def view_approved_indents():
         else:
             return 'You do not have access to view this page'
 
-
+@app.route('/view_indent_details', methods=['GET'])
+def view_indent_details():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/create_bill'
+        return redirect('/material/login')
+    if request.method == 'GET':
+        indent_id = request.args['indent_id']
+        cur = mysql.connection.cursor()
+        indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                        ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.id=%s AND indents.project_id=projects.project_id ' \
+                        ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
+        cur.execute(indents_query, (indent_id))
+        result = cur.fetchone()
+        return render_template('view_indent_details.html', result=result)
 
 @app.route('/logout', methods=['GET'])
 def logout():
