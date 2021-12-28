@@ -458,11 +458,12 @@ def create_indent():
         quantity = request.form['quantity']
         unit = request.form['unit']
         purpose = request.form['purpose']
+        timestamp = request.form['timestamp']
         status = 'unapproved'
         cur = mysql.connection.cursor()
         user_id = request.form['user_id']
-        query = 'INSERT into indents(project_id, material, quantity, unit, purpose, status, created_by_user) values (%s, %s, %s, %s, %s, %s, %s)'
-        values = (project_id, material, quantity, unit, purpose, status, user_id)
+        query = 'INSERT into indents(project_id, material, quantity, unit, purpose, status, created_by_user, timestamp) values (%s, %s, %s, %s, %s, %s, %s, %s)'
+        values = (project_id, material, quantity, unit, purpose, status, user_id, timestamp)
         cur.execute(query, values)
         mysql.connection.commit()
         return jsonify({'message':'success'})
@@ -505,7 +506,7 @@ def get_unapproved_indents():
         role = res[1]
         if role == 'Admin':
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id '\
+                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id '\
                                 ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
             cur.execute(indents_query)
             res = cur.fetchall()
@@ -520,6 +521,7 @@ def get_unapproved_indents():
                 indent_entry['unit'] = i[5]
                 indent_entry['purpose'] = i[6]
                 indent_entry['created_by_user'] = i[7]
+                indent_entry['timestamp'] = i[8]
                 data.append(indent_entry)
 
             return jsonify(data)
