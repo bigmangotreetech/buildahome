@@ -685,5 +685,17 @@ def get_unapproved_indents():
             return jsonify(data)
         else: return jsonify([])
 
+@app.route('/API/get_notifications', methods = ['GET'])
+def get_notifications():
+    recipient = request.args['recipient']
+    cur = mysql.connection.cursor()
+    notifications_query = 'SELECT title, body from app_notifications WHERE user_id='+str(recipient)
+    cur.execute(notifications_query)
+    data = []
+    result = cur.fetchall()
+    for i in result:
+        data.append({'title': i[0], 'body': i[1]})
+    return jsonify(data)
+
 if __name__ == '__main__':
     app.run(debug=True)
