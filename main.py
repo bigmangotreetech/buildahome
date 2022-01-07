@@ -524,6 +524,7 @@ def upload_po_for_indent():
                 values = ('po_uploaded', str(indent_id)+'_'+filename, indent_id )
                 cur.execute(query, values)
                 mysql.connection.commit()
+
                 flash('PO Uploaded successfully','success')
         return redirect('/material/view_indent_details?indent_id='+str(indent_id))
 
@@ -576,7 +577,7 @@ def send_app_notification(title, body, user_id, role, category, timestamp):
         'Authorization': 'key=AAAAlQ1Lrfw:APA91bHvI2-qFZNCf-oFfeZgM0JUDxxbuykH_ffka9hPUE0xBpiza4uHF0LmItT_SfMZ1Zl5amGUfAXigaR_VcMsEArqpOwHNup4oRTQ24htJ_GWYH0OWZzFrH2lRY24mnQ-uiHgLyln'
     }
     data = {
-        "notification": {"title": title, "body": body},
+        "notification": {"title": title, "body": body, 'data': {'category': 'team_notifications'}},
         "to": "/topics/" + recipient,
     }
     requests.post(url, headers=headers, data=json.dumps(data))
@@ -588,7 +589,7 @@ def change_indent_status():
     status = request.form['status']
 
     cur = mysql.connection.cursor()
-    query = 'UPDATE indents SET status="'+status+'" WHERE id='+str(indent_id)
+    query = 'UPDATE indents SET status="'+status+'", acted_by_user='+str(request.form['acted_by_user'])+' WHERE id='+str(indent_id)
     cur.execute(query)
     mysql.connection.commit()
 
@@ -619,13 +620,22 @@ def edit_and_approve_indent():
     project_id = request.form['project_id']
     material = request.form['material']
     quantity = request.form['quantity']
+    user_id = request.form['acted_by_user']
     unit = request.form['unit']
     purpose = request.form['purpose']
     cur = mysql.connection.cursor()
-    query = 'UPDATE indents SET status=%s, project_id=%s, material=%s, quantity=%s, unit=%s, purpose=%s WHERE id=%s'
-    values = (status, project_id, material, quantity, unit, purpose, indent_id)
+    query = 'UPDATE indents SET status=%s, project_id=%s, material=%s, quantity=%s, unit=%s, purpose=%s, acted_by_user=%s WHERE id=%s'
+    values = (status, project_id, material, quantity, unit, purpose, user_id, indent_id)
     cur.execute(query, values)
     mysql.connection.commit()
+    send_app_notification(
+        'Indent Approved',
+        request.form['notification_body'],
+        request.form['user_id'],
+        request.form['user_id'],
+        'Indent Approval',
+        request.form['timestamp']
+    )
     return jsonify({'message': 'success'})
 
 @app.route('/API/get_unapproved_indents', methods=['GET'])
