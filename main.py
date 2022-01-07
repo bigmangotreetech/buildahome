@@ -555,16 +555,16 @@ def create_indent():
         mysql.connection.commit()
         return jsonify({'message':'success'})
 
-def save_notification_to_db(title, body, user_id, role, category):
+def save_notification_to_db(title, body, user_id, role, category, timestamp):
     cur = mysql.connection.cursor()
-    notification_query = 'INSERT into app_notifications(title, body, user_id, role, category) values (%s, %s, %s, %s, %s)'
-    values = (title, body, user_id, role, category)
+    notification_query = 'INSERT into app_notifications(title, body, user_id, role, category, timestamp) values (%s, %s, %s, %s, %s, %s)'
+    values = (title, body, user_id, role, category, timestamp)
     cur.execute(notification_query, values)
     mysql.connection.commit()
     return
 
-def send_app_notification(title, body, user_id, role, category):
-    save_notification_to_db(title, body, user_id, role, category)
+def send_app_notification(title, body, user_id, role, category, timestamp):
+    save_notification_to_db(title, body, user_id, role, category, timestamp)
     recipient = ''
     if str(user_id).strip() == '':
         recipient = role
@@ -598,7 +598,8 @@ def change_indent_status():
             request.form['notification_body'],
             request.form['user_id'],
             request.form['user_id'],
-            'Indent Approval'
+            'Indent Approval',
+            request.form['timestamp']
         )
     elif status == 'rejected':
         send_app_notification(
@@ -606,7 +607,8 @@ def change_indent_status():
             request.form['notification_body'],
             request.form['user_id'],
             request.form['user_id'],
-            'Indent Rejection'
+            'Indent Rejection',
+            request.form['timestamp']
         )
     return jsonify({'message': 'success'})
 
@@ -689,12 +691,12 @@ def get_unapproved_indents():
 def get_notifications():
     recipient = request.args['recipient']
     cur = mysql.connection.cursor()
-    notifications_query = 'SELECT title, body from app_notifications WHERE user_id='+str(recipient)
+    notifications_query = 'SELECT title, body, timestamp from app_notifications WHERE user_id='+str(recipient)
     cur.execute(notifications_query)
     data = []
     result = cur.fetchall()
     for i in result:
-        data.append({'title': i[0], 'body': i[1]})
+        data.append({'title': i[0], 'body': i[1], 'timestamp': i[2]})
     return jsonify(data)
 
 if __name__ == '__main__':
