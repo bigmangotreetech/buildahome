@@ -2,6 +2,8 @@ from flask import Flask, render_template, redirect, request, session, flash, jso
 from flask_mysqldb import MySQL
 import hashlib
 
+import requests, json
+
 import datetime
 import time
 from time import mktime
@@ -553,14 +555,59 @@ def create_indent():
         mysql.connection.commit()
         return jsonify({'message':'success'})
 
+def save_notification_to_db(title, body, user_id, role, category):
+    cur = mysql.connection.cursor()
+    notification_query = 'INSERT into app_notifications(title, body, user_id, role, category) values (%s, %s, %s, %s, %s)'
+    values = (title, body, user_id, role, category)
+    cur.execute(notification_query, values)
+    mysql.connection.commit()
+    return
+
+def send_app_notification(title, body, user_id, role, category):
+    save_notification_to_db(title, body, user_id, role, category)
+    recipient = ''
+    if str(user_id).strip() == '':
+        recipient = role
+    else:
+        recipient = user_id
+    url = 'https://fcm.googleapis.com/fcm/send'
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'key=AAAAlQ1Lrfw:APA91bHvI2-qFZNCf-oFfeZgM0JUDxxbuykH_ffka9hPUE0xBpiza4uHF0LmItT_SfMZ1Zl5amGUfAXigaR_VcMsEArqpOwHNup4oRTQ24htJ_GWYH0OWZzFrH2lRY24mnQ-uiHgLyln'
+    }
+    data = {
+        "notification": {"title": title, "body": body},
+        "to": "/topics/" + recipient,
+    }
+    requests.post(url, headers=headers, data=json.dumps(data))
+    return
+
 @app.route('/API/change_indent_status', methods=['POST'])
 def change_indent_status():
     indent_id = request.form['indent_id']
     status = request.form['status']
+
     cur = mysql.connection.cursor()
     query = 'UPDATE indents SET status="'+status+'" WHERE id='+str(indent_id)
     cur.execute(query)
     mysql.connection.commit()
+
+    if status == 'approved':
+        send_app_notification(
+            'Indent Approved',
+            request.form['notification_body'],
+            request.form['user_id'],
+            request.form['user_id'],
+            'Indent Approval'
+        )
+    elif status == 'rejected':
+        send_app_notification(
+            'Indent Rejected',
+            request.form['notification_body'],
+            request.form['user_id'],
+            request.form['user_id'],
+            'Indent Rejection'
+        )
     return jsonify({'message': 'success'})
 
 @app.route('/API/edit_and_approve_indent', methods=['POST'])
@@ -591,7 +638,7 @@ def get_unapproved_indents():
         role = res[1]
         if role == 'Admin':
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id '\
+                            ', App_users.name, indents.timestamp, indents.created_by_user FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id '\
                                 ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
             cur.execute(indents_query)
             res = cur.fetchall()
@@ -607,6 +654,7 @@ def get_unapproved_indents():
                 indent_entry['purpose'] = i[6]
                 indent_entry['created_by_user'] = i[7]
                 indent_entry['timestamp'] = i[8]
+                indent_entry['created_by_user_id'] = i[9]
                 data.append(indent_entry)
 
             return jsonify(data)
@@ -615,7 +663,7 @@ def get_unapproved_indents():
             access_as_int = [int(i) for i in access]
             access_tuple = tuple(access_as_int)
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id AND indents.project_id IN '+str(access_tuple)+'' \
+                            ', App_users.name, indents.timestamp, indents.created_by_user FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id AND indents.project_id IN '+str(access_tuple)+'' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
             cur.execute(indents_query)
             res = cur.fetchall()
@@ -630,6 +678,8 @@ def get_unapproved_indents():
                 indent_entry['unit'] = i[5]
                 indent_entry['purpose'] = i[6]
                 indent_entry['created_by_user'] = i[7]
+                indent_entry['timestamp'] = i[8]
+                indent_entry['created_by_user_id'] = i[9]
                 data.append(indent_entry)
 
             return jsonify(data)
