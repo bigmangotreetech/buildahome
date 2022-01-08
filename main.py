@@ -4,7 +4,9 @@ import hashlib
 
 import requests, json
 
-import datetime
+
+from datetime import datetime
+import pytz
 import time
 from time import mktime
 import os
@@ -532,8 +534,11 @@ def upload_po_for_indent():
                 result = cur.fetchone()
                 if result is not None:
                     notification_body = 'PO uploaded for indent with id '+str(indent_id)+'. Details: '+str(result[4])+' '+str(result[5])+' '+str(result[3])+' For project '+str(result[2])
-                    send_app_notification('PO Uploaded', notification_body, result[8], result[8], 'PO uploads')
-                    send_app_notification('PO Uploaded', notification_body, result[9], result[9], 'PO uploads')
+                    IST = pytz.timezone('Asia/Kolkata')
+                    datetime_ist = datetime.now(IST)
+                    timestamp = datetime_ist.strftime('%A %w %B %H:%M')
+                    send_app_notification('PO Uploaded', notification_body, result[8], result[8], 'PO uploads', timestamp)
+                    send_app_notification('PO Uploaded', notification_body, result[9], result[9], 'PO uploads', timestamp)
                 flash('PO Uploaded successfully','success')
         return redirect('/material/view_indent_details?indent_id='+str(indent_id))
 
