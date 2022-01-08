@@ -537,8 +537,8 @@ def upload_po_for_indent():
                     IST = pytz.timezone('Asia/Kolkata')
                     datetime_ist = datetime.now(IST)
                     timestamp = datetime_ist.strftime('%A %w %B %H:%M')
-                    send_app_notification('PO Uploaded', notification_body, result[8], result[8], 'PO uploads', timestamp)
-                    send_app_notification('PO Uploaded', notification_body, result[9], result[9], 'PO uploads', timestamp)
+                    send_app_notification('PO Uploaded', notification_body, str(result[8]), str(result[8]), 'PO uploads', timestamp)
+                    send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]), 'PO uploads', timestamp)
                 flash('PO Uploaded successfully','success')
         return redirect('/material/view_indent_details?indent_id='+str(indent_id))
 
