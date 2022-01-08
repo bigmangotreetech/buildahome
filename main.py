@@ -469,7 +469,8 @@ def view_approved_indents():
             result = cur.fetchall()
             for i in result:
                 i = list(i)
-                if len(str(i[8])) > 0:
+                if len(str(i[8]).strip()) > 0:
+                    i[8] = str(i[8]).strip()
                     timestamp = datetime.strptime(i[8], '%A %w %B %H:%M')
                     current_time = datetime.now()
                     time_since_creation = current_time - timestamp
@@ -501,7 +502,8 @@ def view_approved_indents():
                 result = cur.fetchall()
                 for i in result:
                     i = list(i)
-                    if len(str(i[8])) > 0:
+                    if len(str(i[8]).strip()) > 0:
+                        i[8] = str(i[8]).strip()
                         timestamp = datetime.strptime(i[8], '%A %w %B %H:%M')
                         current_time = datetime.now()
                         time_since_creation = current_time - timestamp
