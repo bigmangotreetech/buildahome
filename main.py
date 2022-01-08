@@ -525,6 +525,15 @@ def upload_po_for_indent():
                 cur.execute(query, values)
                 mysql.connection.commit()
 
+                get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                                ', App_users.name, indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id ' \
+                                ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id AND indents.id='+str(indent_id)
+                cur.execute(get_indent_query)
+                result = cur.fetchone()
+                if result is not None:
+                    notification_body = 'PO uploaded for indent with id '+str(indent_id)+'. Details: '+str(result[4])+' '+str(result[5])+' '+str(result[3])+' For project '+str(result[2])
+                    send_app_notification('PO Uploaded', notification_body, result[9], result[9], 'PO uploads')
+                    send_app_notification('PO Uploaded', notification_body, result[10], result[10], 'PO uploads')
                 flash('PO Uploaded successfully','success')
         return redirect('/material/view_indent_details?indent_id='+str(indent_id))
 
