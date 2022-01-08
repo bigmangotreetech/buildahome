@@ -481,10 +481,10 @@ def view_approved_indents():
                     if difference_in_hours >= 24:
                         difference_in_days = difference_in_hours // 24
                         hours_remaining = difference_in_hours % 24
-                        i[8] = str(difference_in_days) + ' days, ' + str(
-                            hours_remaining) + 'hours'
+                        i[8] = str(int(difference_in_days)) + ' days, ' + str(
+                            int(hours_remaining)) + 'hours'
                     else:
-                        i[8] = str(difference_in_hours) + ' hours'
+                        i[8] = str(int(difference_in_hours)) + ' hours'
                 data.append(i)
             return render_template('approved_indents.html', result=data)
         elif current_user_role == 'Purchase Executive':
@@ -517,10 +517,10 @@ def view_approved_indents():
                         if difference_in_hours >= 24:
                             difference_in_days = difference_in_hours // 24
                             hours_remaining = difference_in_hours % 24
-                            i[8] = str(difference_in_days) + ' days, ' + str(
-                                hours_remaining) + 'hours'
+                            i[8] = str(int(difference_in_days)) + ' days, ' + str(
+                                int(hours_remaining)) + 'hours'
                         else:
-                            i[8] = str(difference_in_hours) + ' hours'
+                            i[8] = str(int(difference_in_hours)) + ' hours'
                     data.append(i)
                 return render_template('approved_indents.html', result=data)
         else:
