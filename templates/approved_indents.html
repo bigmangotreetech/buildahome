@@ -9,6 +9,7 @@
             <th scope="col">Material</th>
             <th scope="col">Quantity</th>
             <th scope="col">Created by</th>
+            <th scope="col">Time</th>
         </tr>
         </thead>
         <tbody>
@@ -19,7 +20,10 @@
             <td>{{i[3]}}</td>
             <td>{{i[4]}} {{i[5]}}</td>
             <td>{{i[7]}}</td>
-            <td><a href="/material/view_indent_details?indent_id={{i[0]}}">View details</a></td>
+            <td>{{i[8]}}</td>
+            <td><a href="/material/view_indent_details?indent_id={{i[0]}}">
+                <i class="fa fa-external-link"></i>
+            </a></td>
 
         </tr>
         {% endfor %}

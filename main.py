@@ -467,6 +467,21 @@ def view_approved_indents():
 
             cur.execute(indents_query)
             result = cur.fetchall()
+            for i in result:
+                i = list(i)
+                if len(str(i[8])) > 0:
+                    timestamp = datetime.strptime(i[8], '%A %w %B %H:%M')
+                    current_time = datetime.now()
+                    time_since_creation = current_time - timestamp
+                    difference_in_seconds = time_since_creation.total_seconds()
+                    difference_in_hours = difference_in_seconds // 3600
+                    if difference_in_hours >= 24:
+                        difference_in_days = difference_in_hours // 24
+                        hours_remaining = difference_in_hours % 24
+                        i[8] = str(difference_in_days) + ' days, ' + str(
+                            hours_remaining) + 'hours'
+                    else:
+                        i[8] = str(difference_in_hours) + ' hours'
             return render_template('approved_indents.html', result=result)
         elif current_user_role == 'Purchase Executive':
             current_user_email = session['email']
@@ -484,6 +499,21 @@ def view_approved_indents():
                                     ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
                 cur.execute(indents_query)
                 result = cur.fetchall()
+                for i in result:
+                    i = list(i)
+                    if len(str(i[8])) > 0:
+                        timestamp = datetime.strptime(i[8], '%A %w %B %H:%M')
+                        current_time = datetime.now()
+                        time_since_creation = current_time - timestamp
+                        difference_in_seconds = time_since_creation.total_seconds()
+                        difference_in_hours = difference_in_seconds // 3600
+                        if difference_in_hours >= 24:
+                            difference_in_days = difference_in_hours // 24
+                            hours_remaining = difference_in_hours % 24
+                            i[8] = str(difference_in_days) + ' days, ' + str(
+                                hours_remaining) + 'hours'
+                        else:
+                            i[8] = str(difference_in_hours) + ' hours'
                 return render_template('approved_indents.html', result=result)
         else:
             return 'You do not have access to view this page'
