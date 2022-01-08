@@ -471,7 +471,7 @@ def view_approved_indents():
                 i = list(i)
                 if len(str(i[8]).strip()) > 0:
                     i[8] = str(i[8]).strip()
-                    timestamp = datetime.strptime(i[8], '%A %w %B %H:%M')
+                    timestamp = datetime.strptime(i[8], '%A %-d %B %H:%M')
                     current_time = datetime.now()
                     time_since_creation = current_time - timestamp
                     difference_in_seconds = time_since_creation.total_seconds()
@@ -504,7 +504,7 @@ def view_approved_indents():
                     i = list(i)
                     if len(str(i[8]).strip()) > 0:
                         i[8] = str(i[8]).strip()
-                        timestamp = datetime.strptime(i[8], '%A %w %B %H:%M')
+                        timestamp = datetime.strptime(i[8], '%A %-d %B %H:%M')
                         current_time = datetime.now()
                         time_since_creation = current_time - timestamp
                         difference_in_seconds = time_since_creation.total_seconds()
@@ -568,7 +568,7 @@ def upload_po_for_indent():
                     notification_body = 'PO uploaded for indent with id '+str(indent_id)+'. Details: '+str(result[4])+' '+str(result[5])+' '+str(result[3])+' For project '+str(result[2])
                     IST = pytz.timezone('Asia/Kolkata')
                     datetime_ist = datetime.now(IST)
-                    timestamp = datetime_ist.strftime('%A %w %B %H:%M')
+                    timestamp = datetime_ist.strftime('%A %-d %B %H:%M')
                     send_app_notification('PO Uploaded', notification_body, str(result[8]), str(result[8]), 'PO uploads', timestamp)
                     send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]), 'PO uploads', timestamp)
                 flash('PO Uploaded successfully','success')
