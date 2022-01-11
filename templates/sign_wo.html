@@ -3,7 +3,7 @@
 <div class="d-flex flex-column h-100 justify-content-center">
   <div id="iframe">
     <canvas id="canvas" width="300px" height="300px"></canvas>
-    <input type="submit" value="Clear Canvas" id="clearbutton" onclick="clearCanvas(canvas,ctx);">
+    <input type="submit" value="Clear Canvas" id="clearbutton" onclick="clearCanvas();">
   </div>
 </div>
 <style>
@@ -14,9 +14,9 @@
   }
 
   #canvas {
-    border:1px solid #000000;
+    border: 1px solid #000000;
     position: absolute;
-    left: 50px;
+    top: 50px;
   }
 </style>
 {% endblock %}

@@ -36,7 +36,7 @@ function initialize() {
   var context = sigCanvas.getContext("2d");
   context.strokeStyle = "#000000";
   context.lineJoin = "round";
-  context.lineWidth = 5;
+  context.lineWidth = 3;
 
   // This will be defined on a TOUCH device such as iPad or Android, etc.
   var is_touch_device = 'ontouchstart' in document.documentElement;
@@ -148,6 +148,8 @@ function finishDrawing(mouseEvent, sigCanvas, context) {
 }
 
 // Clear the canvas context using the canvas width and height
-function clearCanvas(canvas, ctx) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function clearCanvas() {
+  var canvas = document.getElementById("canvas");
+  var context = sigCanvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height);
 }
