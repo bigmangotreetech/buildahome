@@ -159,6 +159,6 @@ function saveSign() {
 
     var canvas = document.getElementById("canvas");
     var dataURL = canvas.toDataURL("image/png");
-    doc.addImage(dataURL, "JPEG", 15, 40, 400, 300);
+    doc.addImage(dataURL, "JPEG", 20, 20, 100, 100);
     doc.save("a4.pdf");
 }
