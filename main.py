@@ -580,6 +580,11 @@ def upload_po_for_indent():
                 flash('PO Uploaded successfully','success')
         return redirect('/material/view_indent_details?indent_id='+str(indent_id))
 
+@app.route('/sign_wo', methods=['GET'])
+def sign_wo_order():
+    if request.method == 'GET':
+        return render_template('sign_wo.html')
+
 @app.route('/logout', methods=['GET'])
 def logout():
     del session['email']

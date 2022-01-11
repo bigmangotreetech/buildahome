@@ -1,0 +1,23 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+<div class="d-flex flex-column h-100 justify-content-center">
+  <div id="iframe">
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+    <input type="submit" value="Clear Canvas" id="clearbutton" onclick="clearCanvas(canvas,ctx);">
+  </div>
+</div>
+<style>
+  #iframe {
+    position: absolute;
+    left: 250px;
+    top: 250px;
+  }
+
+  #canvas {
+    border:2px solid #000000;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+  }
+</style>
+{% endblock %}
