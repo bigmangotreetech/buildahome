@@ -155,8 +155,10 @@ function clearCanvas() {
 }
 
 function saveSign() {
-
     const doc = new jsPDF();
-    doc.text("Hello world!", 10, 10);
+
+    var canvas = document.getElementById("alpha");
+    var dataURL = canvas.toDataURL("image/png");
+    doc.addImage(dataURL, "JPEG", 15, 40, 400, 300);
     doc.save("a4.pdf");
 }
