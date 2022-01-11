@@ -1,22 +1,19 @@
 {% extends 'base_layout.html' %}
 {% block content %}
-<div class="d-flex flex-column h-100 justify-content-center">
+<div class="d-flex flex-column h-100 justify-content-start mx-3">
   <div id="iframe">
-    <canvas id="canvas" width="300px" height="300px"></canvas>
-    <input type="submit" value="Clear Canvas" id="clearbutton" onclick="clearCanvas();">
+    <canvas id="canvas" width="400px" height="300px"></canvas>
   </div>
+  <input type="submit" class="mt-3" value="Clear Canvas" id="clearbutton" onclick="clearCanvas();">
+
 </div>
 <style>
-  #iframe {
-    position: absolute;
-    left: 50px;
-    top: 150px;
-  }
+
 
   #canvas {
     border: 1px solid #000000;
-    position: absolute;
-    top: 50px;
+    border-radius: 5px;
+    overflow: hidden;
   }
 </style>
 {% endblock %}
