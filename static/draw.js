@@ -153,3 +153,11 @@ function clearCanvas() {
   var context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
 }
+
+function saveSign() {
+    import { jsPDF } from "jspdf";
+
+    const doc = new jsPDF();
+    doc.text("Hello world!", 10, 10);
+    doc.save("a4.pdf");
+}
