@@ -34,17 +34,9 @@ function initialize() {
   // get references to the canvas element as well as the 2D drawing context
   var sigCanvas = document.getElementById("canvas");
   var context = sigCanvas.getContext("2d");
-  context.strokeStyle = "#f8920f";
+  context.strokeStyle = "#000000";
   context.lineJoin = "round";
-  context.lineWidth = 10;
-
-  // Add background image to canvas - remove for blank white canvas
-  var background = new Image();
-  background.src = "https://3.bp.blogspot.com/_jFM-Fd8NDFE/TLhmRK1h8AI/AAAAAAAAKcU/NKNPe051PbA/s1600/OldCanvas-5.jpg";
-  // Make sure the image is loaded first otherwise nothing will draw.
-  background.onload = function() {
-    context.drawImage(background, 0, 0);
-  }
+  context.lineWidth = 5;
 
   // This will be defined on a TOUCH device such as iPad or Android, etc.
   var is_touch_device = 'ontouchstart' in document.documentElement;
