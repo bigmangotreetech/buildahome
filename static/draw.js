@@ -160,30 +160,31 @@ async function saveSign() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     let pngImageBytes = canvas.toDataURL("image/png");
+    const pngImage = await pdfDoc.embedPng(pngImageBytes)
+    const pngDims = pngImage.scale(0.5)
 
     const url = 'https://app.buildahome.in/files/7_MEE_Assignemnt_1.pdf'
     const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
     const pdfDoc = await PDFDocument.load(arrayBuffer)
 
+    const pages = pdfDoc.getPages()
 
-    const pngImage = await pdfDoc.embedPng(pngImageBytes)
-
-    const page = pdfDoc.addPage()
-
-    const pngDims = pngImage.scale(0.5)
-
-    // Draw the PNG image near the lower right corner of the JPG image
+    pages.forEach((page) => {
       page.drawImage(pngImage, {
-        x: page.getWidth() / 2 - pngDims.width / 2 + 75,
-        y: page.getHeight() / 2 - pngDims.height,
-        width: pngDims.width,
-        height: pngDims.height,
+        x: page.getWidth() - 100,
+        y: page.getHeight() -100,
+        width: 100,
+        height: 50,
       })
+    })
 
-     const pdfBytes = await pdfDoc.save()
+    const pdfBytes = await pdfDoc.save()
 
-     // Trigger the browser to download the PDF document
-     download(pdfBytes, "pdf-lib_creation_example.pdf", "application/pdf");
+    // Trigger the browser to download the PDF document
+    download(pdfBytes, "signed_wo.pdf", "application/pdf");
+
+
+
 }
 
 function saveSign1() {
