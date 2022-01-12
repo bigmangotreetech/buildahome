@@ -160,12 +160,14 @@ async function saveSign() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     let pngImageBytes = canvas.toDataURL("image/png");
-    const pngImage = await pdfDoc.embedPng(pngImageBytes)
-    const pngDims = pngImage.scale(0.5)
+
 
     const url = 'https://app.buildahome.in/files/7_MEE_Assignemnt_1.pdf'
     const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
     const pdfDoc = await PDFDocument.load(arrayBuffer)
+
+    const pngImage = await pdfDoc.embedPng(pngImageBytes)
+    const pngDims = pngImage.scale(0.5)
 
     const pages = pdfDoc.getPages()
 
