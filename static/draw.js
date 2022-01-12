@@ -1,3 +1,5 @@
+const { PDFDocument, StandardFonts, rgb } = PDFLib
+
 $(document).ready(function() {
     if ($('#canvas').length)
       initialize();
@@ -154,11 +156,48 @@ function clearCanvas() {
   context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function saveSign() {
+async function saveSign() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    let pngImageBytes = canvas.toDataURL("image/png");
+
+    const url = 'https://app.buildahome.in/files/7_MEE_Assignemnt_1.pdf'
+    const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+
+
+    const pngImage = await pdfDoc.embedPng(pngImageBytes)
+
+    const page = pdfDoc.addPage()
+
+    const pngDims = pngImage.scale(0.5)
+
+    // Draw the PNG image near the lower right corner of the JPG image
+      page.drawImage(pngImage, {
+        x: page.getWidth() / 2 - pngDims.width / 2 + 75,
+        y: page.getHeight() / 2 - pngDims.height,
+        width: pngDims.width,
+        height: pngDims.height,
+      })
+
+     const pdfBytes = await pdfDoc.save()
+
+     // Trigger the browser to download the PDF document
+     download(pdfBytes, "pdf-lib_creation_example.pdf", "application/pdf");
+}
+
+function saveSign1() {
     const doc = new jsPDF();
 
     var canvas = document.getElementById("canvas");
     var dataURL = canvas.toDataURL("image/png");
     doc.addImage(dataURL, "PNG", 0, 0, 60, 40);
+
+    //
+//
+//    fetch('http://app.buildahome.in/files/7_MEE_Assignemnt_1.pdf').then(res => res.arrayBuffer()).then(one => {
+//
+//    });
+
     doc.save("a4.pdf");
 }
