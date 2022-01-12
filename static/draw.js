@@ -162,7 +162,7 @@ async function saveSign() {
     let pngImageBytes = canvas.toDataURL("image/png");
 
 
-    const url = 'https://app.buildahome.in/files/7_MEE_Assignemnt_1.pdf'
+    const url = 'https://app.buildahome.in/files/Sample_WO.pdf'
     const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
     const pdfDoc = await PDFDocument.load(arrayBuffer)
 
@@ -173,8 +173,8 @@ async function saveSign() {
 
     pages.forEach((page) => {
       page.drawImage(pngImage, {
-        x: page.getWidth() - 100,
-        y: page.getHeight() -100,
+        x: page.getWidth() - 150,
+        y: page.getHeight() - 100,
         width: 100,
         height: 50,
       })
