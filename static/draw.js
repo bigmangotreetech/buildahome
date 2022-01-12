@@ -172,9 +172,10 @@ async function saveSign() {
     const pages = pdfDoc.getPages()
 
     pages.forEach((page) => {
+        console.log(page.getHeight())
       page.drawImage(pngImage, {
-        x: page.getWidth() - 150,
-        y: page.getHeight() - 100,
+        x: page.getWidth() - 120,
+        y: (parseInt(page.getHeight()) - 800),
         width: 100,
         height: 50,
       })
