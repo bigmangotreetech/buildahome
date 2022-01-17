@@ -604,6 +604,7 @@ def create_project():
 
         cur = mysql.connection.cursor()
         new_project_query = 'INSERT into projects'+str(tuple(column_names)).replace("'","")+'values '+str(tuple(values))
+        return new_project_query + str(tuple(values))
         cur.execute(new_project_query, tuple(values))
         project_id = cur.lastrowid
         if 'cost_sheet' in request.files:
