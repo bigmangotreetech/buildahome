@@ -589,7 +589,7 @@ def sign_wo_order():
 def create_project():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
+        session['last_route'] = '/material/create_project'
         return redirect('/material/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
