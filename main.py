@@ -652,7 +652,7 @@ def view_project_details():
 @app.route('/approve_project', methods=['GET'])
 def approve_project():
     project_id = request.args['project_id']
-    approve_project_query = 'UPDATE projects set approved="1" WHERE project_id='+str(project_id)
+    approve_project_query = 'UPDATE projects set is_approved="1" WHERE project_id='+str(project_id)
     cur = mysql.connection.cursor()
     cur.execute(approve_project_query)
     mysql.connection.commit()
