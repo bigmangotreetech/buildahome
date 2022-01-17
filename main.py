@@ -621,11 +621,33 @@ def create_project():
         return redirect('/material/create_project')
 
 
-@app.route('/project_kyc', methods=['GET','POST'])
-def project_kyc():
-    if 'project_id' in request.args:
+@app.route('/unapproved_projects', methods=['GET'])
+def unapproved_projects():
+    if request.method == 'GET':
         cur = mysql.connection.cursor()
-    return ''
+        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=0'
+        cur.execute(unapproved_projects_query)
+        result = cur.fetchall()
+        return render_template('unapproved_projects.html', projects=result)
+
+@app.route('/view_project_details',methods=['GET'])
+def view_project_details():
+    if request.method == 'GET':
+        fields = [
+            'project_name', 'project_location', 'no_of_floors', 'project_value', 'sales_executive', 'site_area',
+            'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
+            'paid_percentage', 'comments'
+        ]
+        fields_as_string = " ".join(fields)
+        get_details_query = 'SELECT ('+fields_as_string+') from projects WHERE project_id='+str(request.args['project_id'])
+        cur = mysql.connection.cursor()
+        cur.execute(get_details_query)
+        result = cur.fetchone()
+        details = {}
+        for i in range (len(fields)) :
+            fields_name_to_show = " ".join(fields[i].split('_')).title()
+            details[fields_name_to_show] = result[i]
+        return render_template('view_project_details.html', details=details)
 
 @app.route('/logout', methods=['GET'])
 def logout():

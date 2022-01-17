@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Project id</th>
+            <th scope="col">Project Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>{{project[0]}}</td>
+            <td>{{project[1]}}</td>
+            <td>
+                <a href="/material/view_project_details?project_id={{project[0]}}">View details</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

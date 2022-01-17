@@ -3,7 +3,7 @@
 <div class="my-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form action="/material/create_project" method="post">
+            <form action="/material/create_project" method="post" enctype="multipart/form-data">
                 <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
                     <div class="col-12">
                         <h4>Create project</h4>
@@ -16,6 +16,14 @@
                     </div>
                     <div class="col-6">
                         <input name="project_name" id="project_name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="no_of_floors">No of Floors</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="no_of_floors" id="no_of_floors" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
