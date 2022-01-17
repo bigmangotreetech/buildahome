@@ -630,6 +630,15 @@ def unapproved_projects():
         result = cur.fetchall()
         return render_template('unapproved_projects.html', projects=result)
 
+@app.route('/', methods=['GET'])
+def approved_projects():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
+        cur.execute(unapproved_projects_query)
+        result = cur.fetchall()
+        return render_template('approved_projects.html', projects=result)
+
 @app.route('/view_project_details',methods=['GET'])
 def view_project_details():
     if request.method == 'GET':
@@ -659,6 +668,19 @@ def approve_project():
     flash('Project has been approved', 'success')
     return redirect('/material/view_project_details?project_id='+str(project_id))
 
+@app.route('/projects_with_no_design_team', methods=['GET'])
+def projects_with_no_design_team():
+    no_design_team_query = 'SELECT project_id, project_name from projects p left join project_design_team pdt on p.project_id = pdt.project_id WHERE pdt.project_id is NULL'
+    cur = mysql.connection.cursor()
+    result = cur.execute(no_design_team_query)
+    return render_template('projects_with_no_design_team.html', projects=result)
+
+@app.route('/projects_with_design_team', methods=['GET'])
+def projects_with_design_team():
+    no_design_team_query = 'SELECT project_id, project_name from projects p left join project_design_team pdt on p.project_id = pdt.project_id'
+    cur = mysql.connection.cursor()
+    result = cur.execute(no_design_team_query)
+    return render_template('projects_with_no_design_team.html', projects=result)
 
 @app.route('/logout', methods=['GET'])
 def logout():
