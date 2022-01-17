@@ -636,7 +636,7 @@ def view_project_details():
         fields = [
             'project_name', 'project_location', 'no_of_floors', 'project_value', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
-            'paid_percentage', 'comments'
+            'paid_percentage', 'comments', 'is_approved'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
@@ -644,10 +644,21 @@ def view_project_details():
         cur.execute(get_details_query)
         result = cur.fetchone()
         details = {}
-        for i in range (len(fields)) :
+        for i in range (len(fields) - 1) :
             fields_name_to_show = " ".join(fields[i].split('_')).title()
             details[fields_name_to_show] = result[i]
-        return render_template('view_project_details.html', details=details)
+        return render_template('view_project_details.html', details=details, approved=str(result[-1]))
+
+@app.route('/approve_project', methods=['GET'])
+def approve_project():
+    project_id = request.args['project_id']
+    approve_project_query = 'UPDATE projects set approved="1" WHERE project_id='+str(project_id)
+    cur = mysql.connection.cursor()
+    cur.execute(approve_project_query)
+    mysql.connection.commit()
+    flash('Project has been approved', 'success')
+    return redirect('/material/view_project_details?project_id='+str(project_id))
+
 
 @app.route('/logout', methods=['GET'])
 def logout():

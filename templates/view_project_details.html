@@ -3,29 +3,30 @@
 <div class="my-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form action="/material/create_project" method="post" enctype="multipart/form-data">
-                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
-                    <div class="col-12">
-                        <h4>Create project</h4>
-                    </div>
+            <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="col-12">
+                    <h4>View project</h4>
                 </div>
-                {% for i in details %}
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
-                        <label for="{{i}}">{{i}}</label>
-                    </div>
-                    <div class="col-6">
-                        {{details[i]}}
-                    </div>
+            </div>
+            {% for i in details %}
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label for="{{i}}">{{i}}</label>
                 </div>
-                {% endfor %}
-
-                <div class="row justify-content-center mx-0 my-5">
-                    <div class="col-6">
-                        <button class="btn btn-block bg-indigo text-white">Approve</button>
-                    </div>
+                <div class="col-6">
+                    {{details[i]}}
                 </div>
-            </form>
+            </div>
+            {% endfor %}
+            {% if approved=='0' %}
+            <div class="row justify-content-center mx-0 my-5">
+                <div class="col-6">
+                    <a class="btn btn-block bg-indigo text-white" href="/material/approve_project?project_id={{request.args['project_id']}}"
+                            onclick="return confirm('Are you sure you want to approve this project')">Approve
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
