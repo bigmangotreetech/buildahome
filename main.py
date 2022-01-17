@@ -670,17 +670,31 @@ def approve_project():
 
 @app.route('/projects_with_no_design_team', methods=['GET'])
 def projects_with_no_design_team():
-    no_design_team_query = 'SELECT project_id, project_name from projects p left join project_design_team pdt on p.project_id = pdt.project_id WHERE pdt.project_id is NULL'
+    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT on P.project_id = PDT.project_id WHERE PDT.project_id is NULL'
     cur = mysql.connection.cursor()
     result = cur.execute(no_design_team_query)
     return render_template('projects_with_no_design_team.html', projects=result)
 
 @app.route('/projects_with_design_team', methods=['GET'])
 def projects_with_design_team():
-    no_design_team_query = 'SELECT project_id, project_name from projects p left join project_design_team pdt on p.project_id = pdt.project_id'
+    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT on P.project_id = PDT.project_id'
     cur = mysql.connection.cursor()
     result = cur.execute(no_design_team_query)
     return render_template('projects_with_no_design_team.html', projects=result)
+
+@app.route('/projects_with_no_operations_team', methods=['GET'])
+def projects_with_no_operations_team():
+    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT on P.project_id = POT.project_id WHERE POT.project_id is NULL'
+    cur = mysql.connection.cursor()
+    result = cur.execute(no_design_team_query)
+    return render_template('projects_with_no_operations_team.html', projects=result)
+
+@app.route('/projects_with_operations_team', methods=['GET'])
+def projects_with_operations_team():
+    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT on P.project_id = POT.project_id'
+    cur = mysql.connection.cursor()
+    result = cur.execute(no_design_team_query)
+    return render_template('projects_with_operations_team.html', projects=result)
 
 @app.route('/logout', methods=['GET'])
 def logout():
