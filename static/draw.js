@@ -172,7 +172,6 @@ async function saveSign() {
     const pages = pdfDoc.getPages()
 
     pages.forEach((page) => {
-        console.log(page.getHeight())
       page.drawImage(pngImage, {
         x: page.getWidth() - 120,
         y: (parseInt(page.getHeight()) - 800),
@@ -190,18 +189,3 @@ async function saveSign() {
 
 }
 
-function saveSign1() {
-    const doc = new jsPDF();
-
-    var canvas = document.getElementById("canvas");
-    var dataURL = canvas.toDataURL("image/png");
-    doc.addImage(dataURL, "PNG", 0, 0, 60, 40);
-
-    //
-//
-//    fetch('http://app.buildahome.in/files/7_MEE_Assignemnt_1.pdf').then(res => res.arrayBuffer()).then(one => {
-//
-//    });
-
-    doc.save("a4.pdf");
-}

@@ -585,6 +585,48 @@ def sign_wo_order():
     if request.method == 'GET':
         return render_template('sign_wo.html')
 
+@app.route('/create_project', methods=['GET','POST'])
+def create_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/material/create_bill'
+        return redirect('/material/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
+        cur.execute(sales_executives_query)
+        result = cur.fetchall()
+        return render_template('create_project.html', sales_executives=result)
+    else:
+
+        column_names = list(request.form.keys())
+        values = list(request.form.values())
+
+        cur = mysql.connection.cursor()
+        new_project_query = 'INSERT into projects'+str(tuple(column_names))+'values'+str(tuple(values))
+        cur.execute(new_project_query, values)
+        project_id = cur.lastrowid
+        if 'cost_sheet' in request.files:
+            file = request.files['cost_sheet']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename_on_server = 'cost_sheet_for_project_'+str(project_id)+'_'+filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_on_server))
+
+        flash('Project created successfully', 'success')
+        mysql.connection.commit()
+        return redirect('/material/create_project')
+
+
+@app.route('/project_kyc', methods=['GET','POST'])
+def project_kyc():
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+    return ''
+
 @app.route('/logout', methods=['GET'])
 def logout():
     del session['email']

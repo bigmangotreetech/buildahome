@@ -1,0 +1,141 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <form action="/material/create_project" method="post">
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h4>Create project</h4>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project_name">Project name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_name" id="project_name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project_value">Project value</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_value" id="project_value" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project_location">Project location</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_location" id="project_location" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="sales_executive">Sales Executive</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="sales_executive" id=sales_executive" class="form-control select2" required>
+                            <option value=""></option>
+                            {% for i in sales_executive %}
+                            <option value="{{i[0]}}">{{i[1]}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="site_area">Site Area in Sqft</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="site_area" id="site_area" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="gf_slab_are">GF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="gf_slab_are" id="gf_slab_are" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="ff_slab_are">FF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="ff_slab_are" id="ff_slab_are" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="tf_slab_are">TF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="tf_slab_are" id="tf_slab_are" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="tef_slab_are">Te.F Slab area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="tef_slab_are" id="tef_slab_are" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="shr_oht">SHR & OHT</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="shr_oht" id="shr_oht" class="form-control" required>
+                    </div>
+                </div>
+                 <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="elevation_details">Elevation details</label>
+                    </div>
+                    <div class="col-6">
+                        <textarea name="elevation_details" id="elevation_details" rows="2" class="form-control" required></textarea>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="paid_percentage">Percentage paid</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="paid_percentage" id="paid_percentage" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="comments">Comments</label>
+                    </div>
+                    <div class="col-6">
+                        <textarea name="comments" id="comments" rows="3" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="cost_sheet">Cost sheet</label>
+                    </div>
+                    <div class="col-6">
+                         <input type="file" name="cost_sheet" id="cost_sheet">
+                    </div>
+                </div>
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button class="btn btn-block bg-indigo text-white">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
