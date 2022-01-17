@@ -638,7 +638,7 @@ def view_project_details():
             'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
             'paid_percentage', 'comments'
         ]
-        fields_as_string = " ".join(fields)
+        fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT ('+fields_as_string+') from projects WHERE project_id='+str(request.args['project_id'])
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
