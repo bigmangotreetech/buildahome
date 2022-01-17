@@ -639,7 +639,7 @@ def view_project_details():
             'paid_percentage', 'comments'
         ]
         fields_as_string = ", ".join(fields)
-        get_details_query = 'SELECT ('+fields_as_string+') from projects WHERE project_id='+str(request.args['project_id'])
+        get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
