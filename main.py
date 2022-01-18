@@ -620,6 +620,39 @@ def create_project():
         mysql.connection.commit()
         return redirect('/material/create_project')
 
+@app.route('/edit_project', methods=['GET','POST'])
+def edit_project():
+    if request.method == 'GET':
+        fields = [
+            'project_name', 'project_location', 'no_of_floors', 'project_value', 'sales_executive', 'site_area',
+            'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
+            'paid_percentage', 'comments', 'is_approved'
+        ]
+        fields_as_string = ", ".join(fields)
+        get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
+            request.args['project_id'])
+        cur = mysql.connection.cursor()
+        cur.execute(get_details_query)
+        result = cur.fetchone()
+        details = {}
+        for i in range(len(fields) - 1):
+            fields_name_to_show = " ".join(fields[i].split('_')).title()
+            details[fields_name_to_show] = [fields[i], result[i]]
+        return render_template('edit_project.html', details=details, approved=str(result[-1]))
+    else:
+
+        column_names = list(request.form.keys())
+
+        update_string = ""
+        for i in column_names[:-1]:
+            update_string += i+'='+request.form[i] +', '
+        # Remove the last comma
+        update_string = update_string[:-1]
+        update_project_query = 'UPDATE projects SET '+update_string+' WHERE project_id='+str(request.form['project_id'])
+        cur = mysql.connection.cursor()
+        cur.execute(update_project_query)
+        flash('Project updated successfully','success')
+        return redirect('/material/view_project_details?project_id='+str(request.form['project_id']))
 
 @app.route('/unapproved_projects', methods=['GET'])
 def unapproved_projects():

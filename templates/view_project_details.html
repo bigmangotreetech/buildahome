@@ -18,6 +18,13 @@
                 </div>
             </div>
             {% endfor %}
+            <div class="row mx-0 mb-3 form-group">
+
+                <div class="ml-auto">
+                    <a href="/material/edit_project?project_id={{request.args['project_id']}}" class="btn btn-info mr-2">Edit</a>
+                    <a href="/material/delete_project?project_id={{request.args['project_id']}} class="btn btn-danger">Delete</a>
+                </div>
+            </div>
             {% if approved=='0' %}
             <div class="row justify-content-center mx-0 my-5">
                 <div class="col-6">
