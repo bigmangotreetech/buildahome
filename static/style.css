@@ -71,6 +71,8 @@ body {
     top: 65px;
     height: calc(100% - 65px);
     overflow: auto;
+    padding-bottom: 100px !important;
+    transition: all .3s;
 
 }
 
@@ -112,4 +114,28 @@ body {
     border-bottom: 1px solid white;
     padding-bottom: 5px;
     font-size: 12px;
+}
+
+@media only screen and (min-width: 992px) {
+  .mobile-menu-icon {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .mobile-menu-icon {
+    display: block;
+  }
+  .sidebar {
+    left: -250px;
+    opacity: 0.9;
+  }
+  .sidebar.active {
+    left: 0px;
+  }
+  .main-wrapper {
+    width: 100%
+    left: 0px;
+    top: 70px;
+  }
 }

@@ -34,6 +34,9 @@
 
 <body>
 <div class="w-100 py-1 bg-indigo text-white d-flex mb-4 top-0 position-fixed">
+    <btn class="btn text-white mobile-menu-icon p-3 my-auto">
+        <i class=" fa fa-bars text-white"></i>
+    </btn>
     <img src="/material/static/logo.png" alt="" class="mr-3" width="80">
     <h6 class="text-white my-auto">Material management</h6>
     <div class="ml-auto d-none d-md-block my-auto">
@@ -45,6 +48,12 @@
 
 </div>
 <div class="position-fixed sidebar p-3 bg-indigo">
+
+    <div class="nav-section-header">Project</div>
+    <a href="/material/create_project" class='nav-link'>Create project</a>
+    <a href="/material/unapproved_projects" class='nav-link'>Unapproved projects</a>
+
+
     <div class="nav-section-header">Material</div>
     <a href="/material/enter_material" class='nav-link'>Enter Material</a>
     <a href="/material/kyp_material" class='nav-link'>KYP For material</a>
