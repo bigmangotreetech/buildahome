@@ -40,3 +40,17 @@ body {
 .popover {
     font-family: 'Montserrat', sans-serif !important;
 }
+
+.sidebar {
+    width: 250px;
+    top: 65px;
+}
+
+.top-0 {
+    top: 0px;
+}
+
+.main-wrapper {
+    width: calc(100% - 250px);
+    margin-left: 250px;
+}

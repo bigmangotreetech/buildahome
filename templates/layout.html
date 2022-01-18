@@ -32,15 +32,18 @@
 </head>
 
 <body>
-<div class="w-100 p-3 bg-indigo text-white d-flex mb-4">
-    <img src="/material/static/logo.png" alt="" class="mr-3" width="100">
-    <h4 class="text-white my-auto">Material management</h4>
+<div class="w-100 py-1 bg-indigo text-white d-flex mb-4 top-0 position-fixed">
+    <img src="/material/static/logo.png" alt="" class="mr-3" width="80">
+    <h6 class="text-white my-auto">Material management</h6>
     <div class="ml-auto d-none d-md-block my-auto">
-        <a href="/material" class="btn text-white">HOME</a>
+        <a href="/material" class="btn text-white h6">HOME</a>
     </div>
     <div class="d-none d-md-block my-auto">
-        <a href="/material/logout" class="btn text-white">LOGOUT</a>
+        <a href="/material/logout" class="btn text-white h6">LOGOUT</a>
     </div>
+
+</div>
+<div class="position-fixed h-100 sidebar p-3 bg-indigo">
 
 </div>
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -57,7 +60,9 @@
     </div>
   {% endif %}
 {% endwith %}
+<div class="main-wrapper">
 {% block content %}{% endblock %}
+</div>
 <!-- Production version -->
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script
