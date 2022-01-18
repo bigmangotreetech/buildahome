@@ -61,11 +61,20 @@ body {
 .nav-link {
     display: block;
     color: white !important;
-    margin: 20px !important;
     padding: 10px !important;
     transition: all .3s;
+    font-size: 14px;
 }
 
 .nav-link:hover {
-    font-size: 20px;
+    font-size: 18px;
+}
+
+.nav-section-header {
+    color: white;
+    margin: 10px;
+    margin-top: 30px;
+    width: fit-content;
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
 }

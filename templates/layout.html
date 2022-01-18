@@ -45,14 +45,36 @@
 
 </div>
 <div class="position-fixed h-100 sidebar p-3 bg-indigo">
+    <div class="nav-section-header">Material</div>
     <a href="/material/enter_material" class='nav-link'>Enter Material</a>
-    <a href="/material/view_inventory" class='nav-link'>View inventory</a>
     <a href="/material/kyp_material" class='nav-link'>KYP For material</a>
+    <a href="/material/view_inventory" class='nav-link'>View inventory</a>
+
+    <div class="nav-section-header">Work orders</div>
     <a href="/material/create_work_order" class='nav-link'>Create work order</a>
     <a href="/material/view_work_order" class='nav-link'>View work order</a>
+
+    <div class="nav-section-header">Bills</div>
     <a href="/material/create_bill" class='nav-link'>Create bill</a>
     <a href="/material/view_bills" class='nav-link'>View unapproved bills</a>
     <a href="/material/view_approved_bills" class='nav-link'>View Approved bills</a>
+
+    <div class="nav-section-header">Indents</div>
+    <a href="/material/view_approved_indents" class='nav-link'>View Approved Indents</a>
+
+    <div class="nav-section-header">Design team</div>
+    <a href="/material/projects_with_design_team" class='nav-link'>Assigned projects</a>
+    <a href="/material/projects_with_no_design_team" class='nav-link'>Unassigned project</a>
+
+    <div class="nav-section-header">Operations team</div>
+    <a href="/material/projects_with_operations_team" class='nav-link'>Assigned projects</a>
+    <a href="/material/projects_with_no_operations_team" class='nav-link'>Unassigned project</a>
+
+
+
+
+
+
 </div>
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
