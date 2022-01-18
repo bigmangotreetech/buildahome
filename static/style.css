@@ -86,8 +86,8 @@ body {
     width: calc(100% - 270px);
     left: 270px;
     top: 70px;
-    height: calc(100% - 100px);
-    overflow: scroll;
+    height: calc(100% - 72px);
+    overflow-y: auto;
     position: absolute;
 }
 
