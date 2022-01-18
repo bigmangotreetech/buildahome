@@ -730,7 +730,7 @@ def assign_design_team():
             tuple(values))
         cur.execute(assign_design_team_query)
         mysql.connection.commit()
-        flash('Design team has been assigned successfully')
+        flash('Design team has been assigned successfully', 'success')
         return redirect('/material/projects_with_design_team')
 
 @app.route('/assign_operations_team', methods=['GET','POST'])
@@ -745,13 +745,13 @@ def assign_operations_team():
         qs_executives = []
         result = cur.fetchall()
         for i in result:
-            if i[2] == 'Architect':
+            if i[2] == 'Project Coordinator':
                 co_ordinators.append({'id': i[0], 'name': i[1]})
-            if i[2] == 'Structural Designer':
+            if i[2] == 'Project Manager':
                 project_managers.append({'id': i[0], 'name': i[1]})
-            if i[2] == 'Electrical Designer':
+            if i[2] == 'Purchase Executive':
                 purchase_executives.append({'id': i[0], 'name': i[1]})
-            if i[2] == 'PHE Designer':
+            if i[2] == 'QS Executive':
                 qs_executives.append({'id': i[0], 'name': i[1]})
         return render_template('assign_operations_team.html', co_ordinators=co_ordinators, project_managers=project_managers, purchase_executives=purchase_executives, qs_executives=qs_executives)
     else:
@@ -763,7 +763,7 @@ def assign_operations_team():
             tuple(values))
         cur.execute(assign_operations_team_query)
         mysql.connection.commit()
-        flash('Operations team has been assigned successfully')
+        flash('Operations team has been assigned successfully','success')
         return redirect('/material/projects_with_operations_team')
 
 
