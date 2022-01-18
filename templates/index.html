@@ -2,64 +2,9 @@
 {% block content %}
 <div class='mt-5 w-100'>
     <div class="my-4 mx-3">
-        <div>Logged in as <b> {{user_login_data['name']}}</b></div>
+        <div>Welcome, <b> {{user_login_data['name']}}</b></div>
         <div>Role: <b>{{user_login_data['role']}}</b> </div>
-        <div>Access level: <b>{{user_login_data['access_level']}}</b> </div>
     </div>
-    <div class='d-flex w-100'>
-        <a href="/material/enter_material" class='btn btn-primary mx-3'>Enter Material</a>
-    </div>
-
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/view_inventory" class='btn btn-info mx-3'>View inventory</a>
-    </div>
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/kyp_material" class='btn btn-success mx-3'>KYP For material</a>
-    </div>
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/create_work_order" class='btn btn-danger mx-3'>Create work order</a>
-    </div>
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/view_work_order" class='btn bg-indigo text-white mx-3'>View work order</a>
-    </div>
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/create_bill" class='btn btn-warning mx-3'>Create bill</a>
-    </div>
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/view_bills" class='btn btn-secondary mx-3'>View unapproved bills</a>
-    </div>
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/view_approved_bills" class='btn btn-dark text-white mx-3'>View Approved bills</a>
-    </div>
-
-    {% if user_login_data['role'] == 'Admin' or user_login_data['role'] == 'Purchase Executive' %}
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/view_approved_indents    " class='btn btn-primary text-white mx-3'>View Approved Indents</a>
-    </div>
-    {% endif %}
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/create_project    " class='btn btn-primary text-white mx-3'>Create project</a>
-    </div>
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/unapproved_projects    " class='btn btn-primary text-white mx-3'>Unapproved projects</a>
-    </div>
-
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/projects_with_design_team" class='btn btn-primary text-white mx-3'>Projects with assigned design team </a>
-    </div>
-
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/projects_with_no_design_team" class='btn btn-primary text-white mx-3'>Projects with unassigned design team </a>
-    </div>
-
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/projects_with_operations_team" class='btn btn-primary text-white mx-3'>Projects with assigned operations team </a>
-    </div>
-
-    <div class='d-flex w-100 mt-4'>
-        <a href="/material/projects_with_no_operations_team" class='btn btn-primary text-white mx-3'>Projects with unassigned operations team </a>
-    </div>
-
 
 </div>
 {% endblock %}
