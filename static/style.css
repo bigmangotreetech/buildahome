@@ -129,7 +129,6 @@ body {
   }
   .sidebar {
     left: -250px;
-    opacity: 0.9;
   }
   .sidebar.active {
     left: 0px;
