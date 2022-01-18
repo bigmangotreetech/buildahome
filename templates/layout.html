@@ -81,26 +81,23 @@
     <a href="/material/projects_with_no_operations_team" class='nav-link'>Unassigned project</a>
 
 
-
-
-
-
 </div>
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<div class=flashes>
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }} alert-dismissible fade show">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
+
 <div class="main-wrapper">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class=flashes>
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
 </div>
 <!-- Production version -->
