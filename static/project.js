@@ -4,9 +4,11 @@ $(document).ready(function() {
     $(document).mouseup(function(e)
     {
         var container = $(".sidebar");
-
+        var menu_icon =  $('.mobile-menu-icon');
         // if the target of the click isn't the container nor a descendant of the container
-        if (!container.is(e.target) && container.has(e.target).length === 0)
+        if (!container.is(e.target) && container.has(e.target).length === 0 &&
+        !menu_icon.is(e.target) && menu_icon.has(e.target).length === 0
+        )
         {
             container.removeClass('active');
         }
