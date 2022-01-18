@@ -700,6 +700,39 @@ def projects_with_operations_team():
     result = cur.fetchall()
     return render_template('projects_with_operations_team.html', projects=result)
 
+@app.route('/assign_design_team', methods=['GET','POST'])
+def assign_design_team():
+    if request.method == 'GET':
+        design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
+        cur = mysql.connection.cursor()
+        cur.execute(design_team_query)
+        architects = [];
+        structural_designers = []
+        electrical_designers = []
+        phe_designers = []
+        result = cur.fetchall()
+        for i in result:
+            if i[2] == 'Architect':
+                architects.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Structural Designer':
+                structural_designers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Electrical Designer':
+                electrical_designers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'PHE Designer':
+                phe_designers.append({'id': i[0], 'name': i[1]})
+        return render_template('assign_design_team.html', architects=architects, structural_designers=structural_designers, electrical_designers=electrical_designers, phe_designers=phe_designers)
+    else:
+        column_names = list(request.form.keys())
+        values = list(request.form.values())
+
+        cur = mysql.connection.cursor()
+        assign_design_team_query = 'INSERT into project_design_team' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
+            tuple(values))
+        cur.execute(assign_design_team_query)
+        flash('Design team has been assigned successfully')
+        return redirect('/material/projects_with_design_team')
+
+
 @app.route('/logout', methods=['GET'])
 def logout():
     del session['email']
