@@ -20,9 +20,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
-     <link href="../lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="../lib/animate/animate.min.css" rel="stylesheet">
 
     <link href="/material/static/style.css" rel="stylesheet"/>
@@ -44,31 +45,38 @@
 
 </div>
 <div class="position-fixed h-100 sidebar p-3 bg-indigo">
-
+    <a href="/material/enter_material" class='text-white m-3 p-2'>Enter Material</a>
+    <a href="/material/view_inventory" class='text-white m-3 p-2'>View inventory</a>
+    <a href="/material/kyp_material" class='text-white m-3 p-2'>KYP For material</a>
+    <a href="/material/create_work_order" class='text-white m-3 p-2'>Create work order</a>
+    <a href="/material/view_work_order" class='text-white m-3 p-2'>View work order</a>
+    <a href="/material/create_bill" class='text-white m-3 p-2'>Create bill</a>
+    <a href="/material/view_bills" class='text-white m-3 p-2'>View unapproved bills</a>
+    <a href="/material/view_approved_bills" class='text-white m-3 p-2'>View Approved bills</a>
 </div>
 {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class=flashes>
+{% if messages %}
+<div class=flashes>
     {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <div class="alert alert-{{ category }} alert-dismissible fade show">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
-          </button>
-      </div>
-    {% endfor %}
+        </button>
     </div>
-  {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
 {% endwith %}
 <div class="main-wrapper">
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 </div>
 <!-- Production version -->
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script
-  src="https://code.jquery.com/jquery-3.6.0.js"
-  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-  crossorigin="anonymous"></script>
+        src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js "
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q "
         crossorigin="anonymous "></script>
