@@ -45,10 +45,14 @@ body {
 .sidebar {
     width: 250px;
     top: 65px;
+    height: calc(100% - 66px);
+    overflow: auto;
+
 }
 
-.top-0 {
-    top: 0px;
+.sidebar ::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
 .main-wrapper {
@@ -72,9 +76,10 @@ body {
 
 .nav-section-header {
     color: white;
-    margin: 10px;
+    margin: 0px 10px;
     margin-top: 30px;
     width: fit-content;
     border-bottom: 1px solid white;
     padding-bottom: 5px;
+    font-size: 12px;
 }
