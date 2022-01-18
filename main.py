@@ -647,9 +647,8 @@ def edit_project():
         for i in column_names[:-1]:
             update_string += i+'="'+request.form[i] +'", '
         # Remove the last comma
-        update_string = update_string[:-1]
+        update_string = update_string[:-2]
         update_project_query = 'UPDATE projects SET '+update_string+' WHERE project_id='+str(request.form['project_id'])
-        return  update_project_query
         cur = mysql.connection.cursor()
         cur.execute(update_project_query)
         flash('Project updated successfully','success')
