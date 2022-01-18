@@ -43,8 +43,8 @@ def get_projects():
 def index():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material'
-        return redirect('/material/login')
+        session['last_route'] = '/erp'
+        return redirect('/erp/login')
     user_login_data = {
         'email' : session['email'],
         'name': session['name'],
@@ -62,7 +62,7 @@ def login():
                 last_route = session['last_route']
                 del session['last_route']
                 return redirect(last_route)
-            else: return redirect('/material')
+            else: return redirect('/erp')
         return render_template('login.html')
     else:
         username = request.form['username']
@@ -79,21 +79,21 @@ def login():
                 session['name'] = result[1]
                 session['access_level'] = result[4]
                 flash('Logged in successfully', 'success')
-                return redirect('/material')
+                return redirect('/erp')
             else:
                 flash('Incorrect credentials', 'danger')
-                return redirect('/material/login')
+                return redirect('/erp/login')
         else:
             flash('Incorrect credentials. User not found', 'danger')
-            return redirect('/material/login')
+            return redirect('/erp/login')
 
 
 @app.route('/enter_material', methods=['GET', 'POST'])
 def enter_material():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/enter_material'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/enter_material'
+        return redirect('/erp/login')
     if request.method == 'GET':
         projects = get_projects()
         return render_template('enter_material.html', projects=projects)
@@ -118,10 +118,10 @@ def enter_material():
         result = cur.fetchone()
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
-            return redirect('/material/enter_material')
+            return redirect('/erp/enter_material')
         if float(result[0]) < (float(quantity)):
             flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded', 'danger')
-            return redirect('/material/enter_material')
+            return redirect('/erp/enter_material')
 
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
                 "quantity, unit, rate, gst, total_amount, difference_cost) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -129,15 +129,15 @@ def enter_material():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
-        return redirect('/material/enter_material')
+        return redirect('/erp/enter_material')
 
 
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/view_inventory'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/view_inventory'
+        return redirect('/erp/login')
     cur = mysql.connection.cursor()
     query = "SELECT project_id, project_name FROM projects"
     cur.execute(query)
@@ -171,8 +171,8 @@ def view_inventory():
 def kyp_material():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/kyp_material'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/kyp_material'
+        return redirect('/erp/login')
     material_quantity_data = {
         'Cement': '',
         'Concrete': '',
@@ -218,14 +218,14 @@ def kyp_material():
                 cur.execute(material_quantity_insert_query)
                 mysql.connection.commit()
         flash('Quantity chart updated successfully','success')
-        return redirect('/material/kyp_material?project_id='+str(project_id))
+        return redirect('/erp/kyp_material?project_id='+str(project_id))
 
 @app.route('/create_work_order', methods=['GET', 'POST'])
 def create_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_work_order'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_work_order'
+        return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         projects = get_projects()
@@ -251,22 +251,22 @@ def create_work_order():
         result = cur.fetchone()
         if result is not None:
             flash("Work order already exists. Operation failed",'danger')
-            return redirect('/material/create_work_order')
+            return redirect('/erp/create_work_order')
         else:
             insert_query = 'INSERT into work_orders (project_id, value, trade, floors, vendor_name, vendor_code, vendor_pan) values (%s, %s, %s, %s, %s, %s, %s)'
             values = (project_id, wo_value, trade, floors, vendor_name, vendor_code, vendor_pan)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
-            return redirect('/material/create_work_order')
+            return redirect('/erp/create_work_order')
 
 
 @app.route('/create_bill', methods=['GET', 'POST'])
 def create_bill():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
     if request.method == 'GET':
         projects = get_projects()
         return render_template('create_bill.html',projects=projects)
@@ -286,14 +286,14 @@ def create_bill():
         res = cur.fetchone()
         if res is not None:
             flash("Older bill already exists. Operation failed", 'danger')
-            return redirect('/material/create_bill')
+            return redirect('/erp/create_bill')
         else:
             insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, vendor_name, vendor_code, vendor_pan) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
             values = (project_id, trade, stage, payment_percentage, amount, total_payable, vendor_name, vendor_code, vendor_pan)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Bill created successfully', 'success')
-            return redirect('/material/create_bill')
+            return redirect('/erp/create_bill')
 
 @app.route('/update_trades_for_project', methods=['POST'])
 def update_trades_for_project():
@@ -352,8 +352,8 @@ def get_bills_as_json(bills_query):
 def view_bills():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
     if request.method == 'GET':
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
@@ -368,8 +368,8 @@ def view_bills():
 def view_approved_bills():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
     if request.method == 'GET':
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
@@ -428,8 +428,8 @@ def get_work_orders_for_project(project_id):
 def view_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
     if request.method == 'GET':
         projects = get_projects()
         work_orders = []
@@ -455,8 +455,8 @@ def check_if_floors_updated():
 def view_approved_indents():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
@@ -530,8 +530,8 @@ def view_approved_indents():
 def view_indent_details():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['indent_id']
         cur = mysql.connection.cursor()
@@ -547,8 +547,8 @@ def view_indent_details():
 def upload_po_for_indent():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_bill'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
     if request.method == 'POST':
         indent_id = request.form['indent_id']
         if 'purchase_order' in request.files:
@@ -578,7 +578,7 @@ def upload_po_for_indent():
                     send_app_notification('PO Uploaded', notification_body, str(result[8]), str(result[8]), 'PO uploads', timestamp)
                     send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]), 'PO uploads', timestamp)
                 flash('PO Uploaded successfully','success')
-        return redirect('/material/view_indent_details?indent_id='+str(indent_id))
+        return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
 
 @app.route('/sign_wo', methods=['GET'])
 def sign_wo_order():
@@ -589,8 +589,8 @@ def sign_wo_order():
 def create_project():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/material/create_project'
-        return redirect('/material/login')
+        session['last_route'] = '/erp/create_project'
+        return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
@@ -618,7 +618,7 @@ def create_project():
 
         flash('Project created successfully', 'success')
         mysql.connection.commit()
-        return redirect('/material/create_project')
+        return redirect('/erp/create_project')
 
 @app.route('/edit_project', methods=['GET','POST'])
 def edit_project():
@@ -652,7 +652,7 @@ def edit_project():
         cur = mysql.connection.cursor()
         cur.execute(update_project_query)
         flash('Project updated successfully','success')
-        return redirect('/material/view_project_details?project_id='+str(request.form['project_id']))
+        return redirect('/erp/view_project_details?project_id='+str(request.form['project_id']))
 
 @app.route('/unapproved_projects', methods=['GET'])
 def unapproved_projects():
@@ -699,7 +699,7 @@ def approve_project():
     cur.execute(approve_project_query)
     mysql.connection.commit()
     flash('Project has been approved', 'success')
-    return redirect('/material/view_project_details?project_id='+str(project_id))
+    return redirect('/erp/view_project_details?project_id='+str(project_id))
 
 @app.route('/projects_with_no_design_team', methods=['GET'])
 def projects_with_no_design_team():
@@ -764,7 +764,7 @@ def assign_design_team():
         cur.execute(assign_design_team_query)
         mysql.connection.commit()
         flash('Design team has been assigned successfully', 'success')
-        return redirect('/material/projects_with_design_team')
+        return redirect('/erp/projects_with_design_team')
 
 @app.route('/assign_operations_team', methods=['GET','POST'])
 def assign_operations_team():
@@ -797,7 +797,7 @@ def assign_operations_team():
         cur.execute(assign_operations_team_query)
         mysql.connection.commit()
         flash('Operations team has been assigned successfully','success')
-        return redirect('/material/projects_with_operations_team')
+        return redirect('/erp/projects_with_operations_team')
 
 
 @app.route('/logout', methods=['GET'])
@@ -805,7 +805,7 @@ def logout():
     del session['email']
     del session['name']
     del session['role']
-    return redirect('/material/login')
+    return redirect('/erp/login')
 
 
 
