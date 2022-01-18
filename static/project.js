@@ -40,7 +40,7 @@ $(document).ready(function() {
             $(".select_trade_for_bill select").append($("<option></option>"))
             $('.select_trade_for_bill').removeClass('d-none')
             $.ajax({
-              url: '/material/update_trades_for_project',
+              url: '/erp/update_trades_for_project',
               type: "POST",
               dataType: 'json',
               data: {'project_id': project_id},
@@ -66,7 +66,7 @@ $(document).ready(function() {
             project_id = $("#project").val()
             $('.select_payment_stage').removeClass('d-none')
             $.ajax({
-              url: '/material/update_payment_stages',
+              url: '/erp/update_payment_stages',
               type: "POST",
               dataType: 'json',
               data: {'project_id': project_id, 'trade': trade},
@@ -202,7 +202,7 @@ $(document).ready(function() {
         const difference_amount = parseFloat(amount) - parseFloat(approved_amount)
 
         $.ajax({
-              url: '/material/save_approved_bill',
+              url: '/erp/save_approved_bill',
               type: "POST",
               dataType: 'json',
               data: {
@@ -248,7 +248,7 @@ $(document).ready(function() {
    function getWorkOrderForSelectedProject() {
         const project = $("#project").val()
         if (project.length) {
-            window.location.href = '/material/view_work_order?project_id='+project.toString()
+            window.location.href = '/erp/view_work_order?project_id='+project.toString()
         }
    }
 
@@ -256,7 +256,7 @@ $(document).ready(function() {
 
    function checkIfNumberOfFloorsUpdated(project_id) {
         $.ajax({
-              url: '/material/check_if_floors_updated',
+              url: '/erp/check_if_floors_updated',
               type: "POST",
               dataType: 'json',
               data: {
