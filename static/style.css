@@ -21,7 +21,8 @@
 }
 
 .bg-indigo {
-    background-color: #001489 !important;
+    background: rgb(4,0,69);
+    background: linear-gradient(90deg, rgba(4,0,69,1) 0%, rgba(0,0,78,1) 35%, rgba(0,10,40,1) 100%);
 }
 
 html {
@@ -53,4 +54,6 @@ body {
 .main-wrapper {
     width: calc(100% - 250px);
     margin-left: 250px;
+    margin-top: 130px;
+    height: calc(100% - 130px);
 }
