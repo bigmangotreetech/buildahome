@@ -630,12 +630,12 @@ def unapproved_projects():
         result = cur.fetchall()
         return render_template('unapproved_projects.html', projects=result)
 
-@app.route('/', methods=['GET'])
+@app.route('/approved_projects', methods=['GET'])
 def approved_projects():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
-        cur.execute(unapproved_projects_query)
+        approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
+        cur.execute(approved_projects_query)
         result = cur.fetchall()
         return render_template('approved_projects.html', projects=result)
 
