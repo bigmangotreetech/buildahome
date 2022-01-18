@@ -57,3 +57,15 @@ body {
     margin-top: 100px;
     height: calc(100% - 100px);
 }
+
+.nav-link {
+    display: block;
+    color: white !important;
+    margin: 20px !important;
+    padding: 10px !important;
+    transition: all .3s;
+}
+
+.nav-link:hover {
+    font-size: 20px;
+}
