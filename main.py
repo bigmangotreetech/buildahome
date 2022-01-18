@@ -706,7 +706,7 @@ def assign_design_team():
         design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
         cur = mysql.connection.cursor()
         cur.execute(design_team_query)
-        architects = [];
+        architects = []
         structural_designers = []
         electrical_designers = []
         phe_designers = []
@@ -729,8 +729,42 @@ def assign_design_team():
         assign_design_team_query = 'INSERT into project_design_team' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
         cur.execute(assign_design_team_query)
+        mysql.connection.commit()
         flash('Design team has been assigned successfully')
         return redirect('/material/projects_with_design_team')
+
+@app.route('/assign_operations_team', methods=['GET','POST'])
+def assign_operations_team():
+    if request.method == 'GET':
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Executive"'
+        cur = mysql.connection.cursor()
+        cur.execute(operations_team_query)
+        co_ordinators = []
+        project_managers = []
+        purchase_executives = []
+        qs_executives = []
+        result = cur.fetchall()
+        for i in result:
+            if i[2] == 'Architect':
+                co_ordinators.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Structural Designer':
+                project_managers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Electrical Designer':
+                purchase_executives.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'PHE Designer':
+                qs_executives.append({'id': i[0], 'name': i[1]})
+        return render_template('assign_operations_team.html', co_ordinators=co_ordinators, project_managers=project_managers, purchase_executives=purchase_executives, qs_executives=qs_executives)
+    else:
+        column_names = list(request.form.keys())
+        values = list(request.form.values())
+
+        cur = mysql.connection.cursor()
+        assign_operations_team_query = 'INSERT into project_operations_team' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
+            tuple(values))
+        cur.execute(assign_operations_team_query)
+        mysql.connection.commit()
+        flash('Operations team has been assigned successfully')
+        return redirect('/material/projects_with_operations_team')
 
 
 @app.route('/logout', methods=['GET'])
