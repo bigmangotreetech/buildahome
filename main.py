@@ -634,7 +634,7 @@ def create_project():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], site_inspection_report_filename))
 
         update_filename_query = 'UPDATE projects set cost_sheet=%s, site_inspection_report=%s WHERE project_id=%s'
-        cur.execute(update_filename_query)
+        cur.execute(update_filename_query, (cost_sheet_filename, site_inspection_report_filename))
         flash('Project created successfully', 'success')
         mysql.connection.commit()
         return redirect('/erp/create_project')
