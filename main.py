@@ -242,10 +242,10 @@ def create_work_order():
         trade = request.form['trade']
         floors = request.form['floors']
         wo_value = request.form['wo_value']
-        vendor_name = request.form['vendor_name']
-        vendor_pan = request.form['vendor_pan']
-        vendor_code = request.form['vendor_code']
-        vendor_address = request.form['vendor_address']
+        contractor_name = request.form['contractor_name']
+        contractor_pan = request.form['contractor_pan']
+        contractor_code = request.form['contractor_code']
+        contractor_address = request.form['contractor_address']
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND floors="'+str(floors)+'" AND trade="'+str(trade)+'"'
@@ -256,9 +256,9 @@ def create_work_order():
             flash("Work order already exists. Operation failed",'danger')
             return redirect('/erp/create_work_order')
         else:
-            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, vendor_name, vendor_code, vendor_pan, wo_number, vendor_address, cheque_no) ' \
+            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no) ' \
                            'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            values = (project_id, wo_value, trade, floors, vendor_name, vendor_code, vendor_pan, wo_number, vendor_address, cheque_no)
+            values = (project_id, wo_value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
