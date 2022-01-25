@@ -12,10 +12,34 @@
 
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
+                        <label for="project_number">Project number</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_number" id="project_number" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
                         <label for="project_name">Project name</label>
                     </div>
                     <div class="col-6">
                         <input name="project_name" id="project_name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="package_type">Package type</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="package_type" id=package_type" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="Essential">Essential</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Luxury">Luxury</option>
+                            <option value="Green Home">Green Home</option>
+                            <option value="Others">Others</option>
+
+                        </select>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -81,6 +105,14 @@
                 </div>
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
+                        <label for="sf_slab_area">SF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="sf_slab_area" id="sf_slab_area" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
                         <label for="tf_slab_area">TF Slab Area</label>
                     </div>
                     <div class="col-6">
@@ -103,12 +135,13 @@
                         <input name="shr_oht" id="shr_oht" class="form-control" required>
                     </div>
                 </div>
-                 <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="elevation_details">Elevation details</label>
                     </div>
                     <div class="col-6">
-                        <textarea name="elevation_details" id="elevation_details" rows="2" class="form-control" required></textarea>
+                        <textarea name="elevation_details" id="elevation_details" rows="2" class="form-control"
+                                  required></textarea>
                     </div>
                 </div>
 
@@ -117,7 +150,13 @@
                         <label for="paid_percentage">Percentage paid</label>
                     </div>
                     <div class="col-6">
-                        <input name="paid_percentage" id="paid_percentage" class="form-control" required>
+                        <select name="paid_percentage" id=paid_percentage" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="2.5">2.5%</option>
+                            <option value="2.5">5%</option>
+                            <option value="2.5">10%</option>
+
+                        </select>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -133,7 +172,15 @@
                         <label for="cost_sheet">Cost sheet</label>
                     </div>
                     <div class="col-6">
-                         <input type="file" name="cost_sheet" id="cost_sheet">
+                        <input type="file" name="cost_sheet" id="cost_sheet">
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="site_inspection_report">Site inspection report</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="file" name="site_inspection_report" id="site_inspection_report">
                     </div>
                 </div>
                 <div class="row justify-content-center mx-0 my-5">

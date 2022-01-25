@@ -610,6 +610,8 @@ def create_project():
         new_project_query = 'INSERT into projects'+str(tuple(column_names)).replace("'","")+'values '+str(tuple(values))
         cur.execute(new_project_query)
         project_id = cur.lastrowid
+        cost_sheet_filename = ''
+        site_inspection_report_filename = ''
         if 'cost_sheet' in request.files:
             file = request.files['cost_sheet']
             if file.filename == '':
@@ -617,9 +619,22 @@ def create_project():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                filename_on_server = 'cost_sheet_for_project_'+str(project_id)+'_'+filename
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_on_server))
+                cost_sheet_filename = 'cost_sheet_for_project_'+str(project_id)+'_'+filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], cost_sheet_filename))
 
+
+        if 'site_inspection_report' in request.files:
+            file = request.files['site_inspection_report']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                site_inspection_report_filename = 'site_inspection_report'+str(project_id)+'_'+filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], site_inspection_report_filename))
+
+        update_filename_query = 'UPDATE projects set cost_sheet=%s, site_inspection_report=%s WHERE project_id=%s'
+        cur.execute(update_filename_query)
         flash('Project created successfully', 'success')
         mysql.connection.commit()
         return redirect('/erp/create_project')
@@ -682,7 +697,7 @@ def view_project_details():
         fields = [
             'project_name', 'project_location', 'no_of_floors', 'project_value', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
-            'paid_percentage', 'comments', 'is_approved'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
