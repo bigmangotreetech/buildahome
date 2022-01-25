@@ -47,7 +47,14 @@
                         <label for="no_of_floors">No of Floors</label>
                     </div>
                     <div class="col-6">
-                        <input name="no_of_floors" id="no_of_floors" class="form-control" required>
+                        <select name="no_of_floors" id=no_of_floors" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="G + 1">G + 1</option>
+                            <option value="G + 2">G + 2</option>
+                            <option value="G + 3">G + 3</option>
+                            <option value="G + 4">G + 4</option>
+
+                        </select>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -64,6 +71,22 @@
                     </div>
                     <div class="col-6">
                         <input name="project_location" id="project_location" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="date_of_initial_advance">Date of initial advance</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="data" name="date_of_initial_advance" id="date_of_initial_advance" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="date_of_agreement">Date of Agreement</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="data" name="date_of_agreement" id="date_of_agreement" class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">

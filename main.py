@@ -643,7 +643,8 @@ def create_project():
 def edit_project():
     if request.method == 'GET':
         fields = [
-            'project_name', 'project_location', 'no_of_floors', 'project_value', 'sales_executive', 'site_area',
+            'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance',
+            'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
             'paid_percentage', 'comments', 'is_approved'
         ]
@@ -695,7 +696,7 @@ def approved_projects():
 def view_project_details():
     if request.method == 'GET':
         fields = [
-            'project_name', 'project_location', 'no_of_floors', 'project_value', 'sales_executive', 'site_area',
+            'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
             'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved'
         ]
@@ -762,6 +763,7 @@ def assign_design_team():
         structural_designers = []
         electrical_designers = []
         phe_designers = []
+        senior_architects = []
         result = cur.fetchall()
         for i in result:
             if i[2] == 'Architect':
@@ -772,7 +774,9 @@ def assign_design_team():
                 electrical_designers.append({'id': i[0], 'name': i[1]})
             if i[2] == 'PHE Designer':
                 phe_designers.append({'id': i[0], 'name': i[1]})
-        return render_template('assign_design_team.html', architects=architects, structural_designers=structural_designers, electrical_designers=electrical_designers, phe_designers=phe_designers)
+            if i[2] == 'Senior Architect':
+                senior_architects.append({'id': i[0], 'name': i[1]})
+        return render_template('assign_design_team.html',senior_architects=senior_architects,  architects=architects, structural_designers=structural_designers, electrical_designers=electrical_designers, phe_designers=phe_designers)
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())
