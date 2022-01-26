@@ -184,7 +184,7 @@ def vendor_registration():
         return redirect('/erp/view_vendors')
 
 @app.route('/view_vendors', methods=['GET'])
-def vendor_registration():
+def view_vendors():
     cur = mysql.connection.cursor()
     vendors_query = 'SELECT name, code, contact_no FROM vendors'
     cur.execute(vendors_query)
