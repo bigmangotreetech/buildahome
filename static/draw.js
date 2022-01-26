@@ -223,15 +223,14 @@ async function saveSign() {
     const description = $('.trade').text().trim() +' work order for '+ $('.project_name').text().trim()
     pages[0].drawText(description, {
         x: 100,
-        y: 420,
+        y: 430,
         size: 11,
       })
-
 
     const value = $('.value').text().trim()
     pages[0].drawText(value, {
         x: 418,
-        y: 420,
+        y: 430,
         size: 11,
       })
 
