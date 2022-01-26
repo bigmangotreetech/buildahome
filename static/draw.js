@@ -179,7 +179,7 @@ async function saveSign() {
       })
 
     pages[2].drawImage(pngImage, {
-        x: page.getWidth() - 400,
+        x:  500,
         y: (parseInt(page.getHeight()) - 100),
         width: 100,
         height: 50,
