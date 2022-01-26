@@ -225,7 +225,7 @@ def edit_vendor():
         cur.execute(update_vendor_query)
         mysql.connection.commit()
         flash('Vendor updated successfully','success')
-        return redirect('/view_vendor_details?vendor_id='+request.form['vendor_id'])
+        return redirect('/erp/view_vendor_details?vendor_id='+request.form['vendor_id'])
 
 @app.route('/delete_vendor', methods=['GET'])
 def delete_vendor():
