@@ -183,9 +183,7 @@ async function saveSign() {
     const pdfBytes = await pdfDoc.save()
 
 
-    const blob = new Blob(pdfBytes, {
-        type: 'application/pdf'
-      })
+    const blob = new Blob([pdfBytes])
     var file = new File([blob], 'test.pdf');
     console.log(pdfBytes)
     console.log(file)
