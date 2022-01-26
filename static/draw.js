@@ -174,10 +174,51 @@ async function saveSign() {
     const date = new Date()
     pages[0].drawText(date.getDate() +'/'+(parseInt(date.getMonth())+ 1).toString()+'/'+date.getFullYear(), {
         x: 430,
-        y: 700,
+        y: 680,
         size: 11,
       })
 
+    const wo_number = $('.wo_number').text()
+    pages[0].drawText(wo_number, {
+        x: 410,
+        y: 680,
+        size: 11,
+      })
+
+    const contractor_name = $('.contractor_name').text()
+    pages[0].drawText(contractor_name, {
+        x: 410,
+        y: 680,
+        size: 11,
+      })
+
+    const contractor_address = $('.contractor_address').text()
+    pages[0].drawText(contractor_address, {
+        x: 410,
+        y: 660,
+        size: 11,
+      })
+
+    const contractor_pan = $('.contractor_pan').text()
+    pages[0].drawText(contractor_pan, {
+        x: 410,
+        y: 620,
+        size: 11,
+      })
+
+    const cheque_number = $('.cheque_number').text()
+    pages[0].drawText(cheque_number, {
+        x: 410,
+        y: 600,
+        size: 11,
+      })
+
+    const contractor_code = $('.contractor_code').text()
+    pages[0].drawText(cheque_number, {
+        x: 410,
+        y: 580,
+        size: 11,
+      })
 
     pages[3].drawImage(pngImage, {
         x:  280,
