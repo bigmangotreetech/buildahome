@@ -219,7 +219,7 @@ def edit_vendor():
             update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
         update_string = update_string[:-2]
-        update_vendor_query = 'UPDATE vendors SET ' + update_string + ' WHERE project_id=' + str(
+        update_vendor_query = 'UPDATE vendors SET ' + update_string + ' WHERE id=' + str(
             request.form['vendor_id'])
         cur = mysql.connection.cursor()
         cur.execute(update_vendor_query)
