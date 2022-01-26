@@ -591,16 +591,16 @@ def sign_wo_order():
 
 @app.route('/create_project', methods=['GET','POST'])
 def create_project():
-    # if 'email' not in session:
-    #     flash('You need to login to continue', 'danger')
-    #     session['last_route'] = '/erp/create_project'
-    #     return redirect('/erp/login')
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_project'
+        return redirect('/erp/login')
     if request.method == 'GET':
-        # cur = mysql.connection.cursor()
-        # sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
-        # cur.execute(sales_executives_query)
-        # result = cur.fetchall()
-        return render_template('create_project.html', sales_executives=[])
+        cur = mysql.connection.cursor()
+        sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
+        cur.execute(sales_executives_query)
+        result = cur.fetchall()
+        return render_template('create_project.html', sales_executives=result)
     else:
 
         column_names = list(request.form.keys())
