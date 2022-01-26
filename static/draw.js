@@ -173,50 +173,64 @@ async function saveSign() {
 
     const date = new Date()
     pages[0].drawText(date.getDate() +'/'+(parseInt(date.getMonth())+ 1).toString()+'/'+date.getFullYear(), {
-        x: 420,
+        x: 418,
         y: 678,
         size: 11,
       })
 
     const wo_number = $('.wo_number').text().trim()
     pages[0].drawText(wo_number, {
-        x: 420,
+        x: 418,
         y: 656,
         size: 11,
       })
 
     const contractor_name = $('.contractor_name').text().trim()
     pages[0].drawText(contractor_name, {
-        x: 420,
+        x: 418,
         y: 635,
         size: 11,
       })
 
     const contractor_address = $('.contractor_address').text().trim()
     pages[0].drawText(contractor_address, {
-        x: 420,
+        x: 418,
         y: 609,
         size: 11,
       })
 
     const contractor_pan = $('.contractor_pan').text().trim()
     pages[0].drawText(contractor_pan, {
-        x: 420,
-        y: 554,
+        x: 418,
+        y: 553,
         size: 11,
       })
 
     const cheque_number = $('.cheque_number').text().trim()
     pages[0].drawText(cheque_number, {
-        x: 420,
+        x: 418,
         y: 534,
         size: 11,
       })
 
     const contractor_code = $('.contractor_code').text().trim()
     pages[0].drawText(contractor_code, {
-        x: 420,
+        x: 418,
         y: 514,
+        size: 11,
+      })
+
+    const description = $('.trade').text().trim() ' work order for ' $('.project_name').text().trim()
+    pages[0].drawText(description, {
+        x: 218,
+        y: 450,
+        size: 11,
+      })
+
+    const value = $('.value').text().trim()
+    pages[0].drawText(value, {
+        x: 418,
+        y: 450,
         size: 11,
       })
 
