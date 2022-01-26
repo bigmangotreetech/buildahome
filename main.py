@@ -235,7 +235,7 @@ def delete_vendor():
             vendor_query = 'DELETE from vendors WHERE id=' + request.args['vendor_id']
             cur.execute(vendor_query)
             mysql.connection.commit()
-            return redirect('/view_vendors')
+            return redirect('/erp/view_vendors')
 
 
 @app.route('/kyp_material', methods=['GET','POST'])
