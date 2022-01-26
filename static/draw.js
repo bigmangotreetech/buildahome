@@ -172,16 +172,16 @@ async function saveSign() {
     const pages = pdfDoc.getPages()
 
     const date = new Date()
-    pages[0].drawText(date.getDate() +' '+date.getMonth(), {
+    pages[0].drawText(date.getDate() +'/'+(parseInt(date.getMonth())+ 1).toString()+'/'+date.getFullYear(), {
         x: 430,
-        y: 800,
+        y: 700,
         size: 11,
       })
 
 
     pages[3].drawImage(pngImage, {
-        x:  300,
-        y: 800,
+        x:  280,
+        y: 700,
         width: 100,
         height: 50,
       })
