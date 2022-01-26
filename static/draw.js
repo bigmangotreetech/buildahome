@@ -182,15 +182,16 @@ async function saveSign() {
 
     const pdfBytes = await pdfDoc.save()
 
-    var file = new File(pdfBytes, 'test.pdf');
+
     const blob = new Blob(pdfBytes, {
         type: 'application/pdf'
       })
+    var file = new File([blob], 'test.pdf');
     console.log(pdfBytes)
-    console.log(blob)
+    console.log(file)
 
     var formData = new FormData();
-    formData.append("file", blob, 'test.pdf');
+    formData.append("file", file, 'test.pdf');
 
     $.ajax({
         type: "POST",
