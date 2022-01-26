@@ -103,7 +103,7 @@
             <div class="d-flex flex-column h-100 justify-content-start mx-3">
                 <div class="my-2 h5">Sign here</div>
                 <div id="iframe">
-                    <canvas id="canvas" width="300px" height="250px"></canvas>
+                    <canvas id="canvas" width="300px" height="250px" class="bg-white"></canvas>
                 </div>
                 <div class="d-flex">
                     <input type="submit" class="mt-3 mr-3" value="Clear" id="clearbutton" onclick="clearCanvas();">
@@ -117,10 +117,15 @@
 
 <style>
   #canvas {
-    border: 1px solid #000000;
+    border: 1px solid lightgrey;
     border-radius: 5px;
     overflow: hidden;
   }
 
 </style>
 {% endblock %}
+
+{% block scripts %}
+<script src="/erp/static/draw.js"></script>
+{% endblock %}
+
