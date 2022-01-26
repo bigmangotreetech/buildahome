@@ -227,6 +227,7 @@ async function saveSign() {
         size: 11,
       })
 
+
     const value = $('.value').text().trim()
     pages[0].drawText(value, {
         x: 418,
