@@ -96,7 +96,9 @@ def enter_material():
         return redirect('/erp/login')
     if request.method == 'GET':
         projects = get_projects()
-        return render_template('enter_material.html', projects=projects)
+        vendors = get_vendors()
+
+        return render_template('enter_material.html', projects=projects, vendors=vendors)
     else:
         material = request.form['material']
         description = request.form['description']
@@ -274,7 +276,6 @@ def kyp_material():
 
         project = None
         project_id = None
-        vendors = get_vendors()
         if 'project_id' in request.args:
             project_id = request.args['project_id']
             material_query = 'SELECT * from kyp_material WHERE project_id='+str(project_id)
@@ -286,7 +287,7 @@ def kyp_material():
             for i in projects:
                 if str(i[0]) == str(project_id):
                     project = i[1]
-        return render_template('kyp_material.html', vendors=vendors, projects=projects, project_id=project_id, project=project, material_quantity_data=material_quantity_data)
+        return render_template('kyp_material.html', projects=projects, project_id=project_id, project=project, material_quantity_data=material_quantity_data)
     else:
         cur = mysql.connection.cursor()
         project_id = request.form['project_id']
