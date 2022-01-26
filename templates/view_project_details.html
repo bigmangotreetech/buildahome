@@ -14,7 +14,11 @@
                     <label for="{{i}}">{{i}}</label>
                 </div>
                 <div class="col-6">
-                    {% if i=='Cost Sheet' or i=='Site Inspection Report'  %}
+                    {% if i=='Elevation Details' %}
+                    {% for x in details[i].split(' &# ') %}
+                        <div>{{x}}</div>
+                    {% endfor %}
+                    {% elif i=='Cost Sheet' or i=='Site Inspection Report'  %}
                     <a style="word-break: break-all;" target="_blank" href="/files/{{details[i]}}">{{details[i]}}</a>
                     {% else %}
                     {{details[i]}}

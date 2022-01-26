@@ -276,5 +276,30 @@ $(document).ready(function() {
         const project_id = $(this).val()
         if (project_id) checkIfNumberOfFloorsUpdated(project_id)
    })
+
+   $('.add-elevation-detail').on('click', function() {
+        element = $($(this).parent().find('.elevation-details').get(0))
+        if (element.hasClass('d-none')) {
+            element.removeClass('d-none')
+        } else {
+            clone = element.clone()
+            clone.val('')
+            element.parent().append(clone)
+        }
+        return false
+   })
+
+   $('.submit-create-project-form').on('click', function(event) {
+        event.preventDefault()
+        elevation_details = $(this).parents('form').find('.elevation_details_input')
+
+        elevation_details_value = $(this).parents('form').find('.elevation-details').val()
+        $(this).parents('form').find('.elevation-details').each(function(index, element) {
+            if (index != 0)
+            elevation_details_value += ' &# ' + element.value
+        })
+        elevation_details.val(elevation_details_value)
+        $(this).parents('form').submit()
+   })
 });
 

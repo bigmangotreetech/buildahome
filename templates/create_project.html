@@ -78,7 +78,8 @@
                         <label for="date_of_initial_advance">Date of initial advance</label>
                     </div>
                     <div class="col-6">
-                        <input type="data" name="date_of_initial_advance" id="date_of_initial_advance" class="form-control" required>
+                        <input type="data" name="date_of_initial_advance" id="date_of_initial_advance"
+                               class="form-control" required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -86,7 +87,8 @@
                         <label for="date_of_agreement">Date of Agreement</label>
                     </div>
                     <div class="col-6">
-                        <input type="data" name="date_of_agreement" id="date_of_agreement" class="form-control" required>
+                        <input type="data" name="date_of_agreement" id="date_of_agreement" class="form-control"
+                               required>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -163,8 +165,14 @@
                         <label for="elevation_details">Elevation details</label>
                     </div>
                     <div class="col-6">
-                        <textarea name="elevation_details" id="elevation_details" rows="2" class="form-control"
-                                  required></textarea>
+                        <input type="hidden" name="elevation_details" id="elevation_details"
+                               class="elevation_details_input">
+                        <div class="elevation-details-section">
+                            <input type="text" class="form-control elevation-details d-none mb-2">
+
+                        </div>
+
+                        <button class="btn add-elevation-detail">+</button>
                     </div>
                 </div>
 
@@ -208,7 +216,7 @@
                 </div>
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
-                        <button class="btn btn-block bg-indigo text-white">Submit</button>
+                        <button class="btn btn-block bg-indigo text-whiten submit-create-project-form">Submit</button>
                     </div>
                 </div>
             </form>
