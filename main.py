@@ -527,6 +527,62 @@ def view_work_order():
 
         return render_template('view_work_orders.html', projects=projects, work_orders=work_orders)
 
+@app.route("/view_unsigned_work_order", methods=['GET'])
+def view_unsigned_work_order():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        work_orders = []
+
+        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, wo.contractor_name FROM work_orders wo ' \
+                         'LEFT OUTER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0'
+        cur = mysql.connection.cursor()
+        cur.execute(unsigned_query)
+        result = cur.fetchall()
+        for i in result:
+            work_orders.append({
+                'project_name': i[0],
+                'project_number': i[1],
+                'id': i[2],
+                'trade': i[3],
+                'value': i[4],
+                'contractor_name': i[5],
+
+            })
+
+        return render_template('unsigned_work_orders.html', work_orders=work_orders)
+
+
+@app.route("/view_unapproved_work_order", methods=['GET'])
+def view_unapproved_work_order():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        work_orders = []
+
+        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, wo.contractor_name FROM work_orders wo ' \
+                         'LEFT OUTER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0'
+        cur = mysql.connection.cursor()
+        cur.execute(unsigned_query)
+        result = cur.fetchall()
+        for i in result:
+            work_orders.append({
+                'project_name': i[0],
+                'project_number': i[1],
+                'id': i[2],
+                'trade': i[3],
+                'value': i[4],
+                'contractor_name': i[5],
+
+            })
+
+        return render_template('unapproved_work_order.html', work_orders=work_orders)
+
+
 @app.route('/check_if_floors_updated', methods=['POST'])
 def check_if_floors_updated():
     project_id = request.form['project_id']
@@ -668,10 +724,32 @@ def upload_po_for_indent():
                 flash('PO Uploaded successfully','success')
         return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
 
-@app.route('/sign_wo', methods=['GET'])
-def sign_wo_order():
+@app.route('/sign_wo', methods=['GET', 'POST'])
+def sign_wo():
     if request.method == 'GET':
-        return render_template('sign_wo.html')
+        if 'wo_id' in request.args:
+            work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, wo.contractor_name,' \
+                               'wo.contractor_pan, wo.contractor_code, wo.contractor_address, wo.wo_number, wo.cheque_no' \
+                               ' FROM work_orders wo ' \
+                               'LEFT OUTER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 wo.id=' + str(
+                request.args['wo_id'])
+            cur = mysql.connection.cursor()
+            cur.execute(work_order_query)
+            result = cur.fetchone()
+        return render_template('sign_wo.html', wo=result)
+
+@app.route('/approve_wo', methods=['GET', 'POST'])
+def approve_wo():
+    if request.method == 'GET':
+        if 'wo_id' in request.args:
+            work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, wo.contractor_name,' \
+                               'wo.contractor_pan, wo.contractor_code, wo.contractor_address, wo.wo_number, wo.cheque_no' \
+                               ' FROM work_orders wo ' \
+                             'LEFT OUTER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 wo.id='+str(request.args['wo_id'])
+            cur = mysql.connection.cursor()
+            cur.execute(work_order_query)
+            result = cur.fetchone()
+        return render_template('approve_wo.html', wo=result)
 
 @app.route('/create_project', methods=['GET','POST'])
 def create_project():

@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Project name</th>
+            <th scope="col">Project number</th>
+            <th scope="col">Trade</th>
+            <th scope="col">Value</th>
+            <th scope="col">Contractor</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for wo in work_orders %}
+        <tr>
+            <td>{{wo['project_name']}}</td>
+            <td>{{wo['project_number']}}</td>
+            <td>{{wo['trade']}}</td>
+            <td>{{wo['value']}}</td>
+            <td>{{wo['contractor']}}</td>
+            <td>
+                <a href="/erp/sign_wo?wo_id={{wo['id']}}">Sign</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}
