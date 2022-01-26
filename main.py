@@ -176,9 +176,9 @@ def vendor_registration():
         values = list(request.form.values())
 
         cur = mysql.connection.cursor()
-        new_project_query = 'INSERT into vendors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
+        new_vendor_query = 'INSERT into vendors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
-        cur.execute(new_project_query)
+        cur.execute(new_vendor_query)
         mysql.connection.commit()
         flash ('Vendor registered', 'success')
         return redirect('/erp/view_vendors')
@@ -186,7 +186,7 @@ def vendor_registration():
 @app.route('/view_vendors', methods=['GET'])
 def view_vendors():
     cur = mysql.connection.cursor()
-    vendors_query = 'SELECT name, code, contact_no FROM vendors'
+    vendors_query = 'SELECT id, name, code, contact_no FROM vendors'
     cur.execute(vendors_query)
     result = cur.fetchall()
     return render_template('view_vendors.html', vendors=result)
