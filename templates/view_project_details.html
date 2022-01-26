@@ -14,7 +14,7 @@
                     <label for="{{i}}">{{i}}</label>
                 </div>
                 <div class="col-6">
-                    {% if i=='Elevation Details' %}
+                    {% if i=='Elevation Details' or i=='Additional Cost' %}
                     {% for x in details[i].split(' &# ') %}
                         <div>{{x}}</div>
                     {% endfor %}

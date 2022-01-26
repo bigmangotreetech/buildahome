@@ -289,6 +289,18 @@ $(document).ready(function() {
         return false
    })
 
+   $('.add-additional-cost').on('click', function() {
+        element = $($(this).parent().find('.additional-cost').get(0))
+        if (element.hasClass('d-none')) {
+            element.removeClass('d-none')
+        } else {
+            clone = element.clone()
+            clone.val('')
+            element.parent().append(clone)
+        }
+        return false
+   })
+
    $('.submit-create-project-form').on('click', function(event) {
         event.preventDefault()
         elevation_details = $(this).parents('form').find('.elevation_details_input')
@@ -299,6 +311,18 @@ $(document).ready(function() {
             elevation_details_value += ' &# ' + element.value
         })
         elevation_details.val(elevation_details_value)
+
+
+
+
+        additional_cost = $(this).parents('form').find('.additional_cost_input')
+
+        additional_cost_value = $(this).parents('form').find('.additional-cost').val()
+        $(this).parents('form').find('.additional-cost').each(function(index, element) {
+            if (index != 0)
+            additional_cost_value += ' &# ' + element.value
+        })
+        additional_cost.val(additional_cost_value)
         $(this).parents('form').submit()
    })
 });
