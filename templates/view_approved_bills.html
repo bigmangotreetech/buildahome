@@ -4,9 +4,9 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Vendor Name</th>
-            <th scope="col">Vendor PAN</th>
-            <th scope="col">Vendor Code</th>
+            <th scope="col">Contractor Name</th>
+            <th scope="col">Contractor PAN</th>
+            <th scope="col">Contractor Code</th>
             <th scope="col">Trade</th>
             <th scope="col">Payment Stage</th>
             <th scope="col">Total Payable</th>
@@ -23,9 +23,9 @@
         </tr>
         {% for i in data[project]['bills'] %}
         <tr class="bill-{{i['bill_id']}}">
-            <td class="vendor_name border-right">{{i['vendor_name']}}</td>
-            <td class="vendor_pan border-right">{{i['vendor_pan']}}</td>
-            <td class="vendor_code border-right">{{i['vendor_code']}}</td>
+            <td class="contractor_name border-right">{{i['contractor_name']}}</td>
+            <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
+            <td class="contractor_code border-right">{{i['contractor_code']}}</td>
             <td class="trade border-right">{{i['trade']}}</td>
             <td class="stage border-right">{{i['stage']}}</td>
             <td class="total_payable border-right">{{i['total_payable']}}</td>
