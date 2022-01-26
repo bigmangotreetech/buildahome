@@ -184,10 +184,10 @@ async function saveSign() {
 
     var file = new File(pdfBytes, 'test.pdf');
     const blob = new Blob(pdfBytes, {
-        type: 'application/octet-stream'
+        type: 'application/pdf'
       })
     console.log(pdfBytes)
-    console.log(file)
+    console.log(blob)
 
     var formData = new FormData();
     formData.append("file", blob, 'test.pdf');
