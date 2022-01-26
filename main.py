@@ -221,7 +221,6 @@ def edit_vendor():
         update_string = update_string[:-2]
         update_vendor_query = 'UPDATE vendors SET ' + update_string + ' WHERE id=' + str(
             request.form['vendor_id'])
-        return update_vendor_query
         cur = mysql.connection.cursor()
         cur.execute(update_vendor_query)
         mysql.connection.commit()
