@@ -43,7 +43,7 @@
                         <label for="vendor">Vendor</label>
                     </div>
                     <div class="col-6">
-                        <select name="vendor" id="vendor">
+                        <select name="vendor" id="vendor"  class="form-control select2" required>
                         {% for i in vendors %}
                             <option value="{{i}}">{{vendors[i]}}</option>
                         {% endfor %}
