@@ -697,7 +697,7 @@ def view_project_details():
     if request.method == 'GET':
         fields = [
             'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
-            'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details', 'additional_cost'
+            'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details', 'additional_cost',
             'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved'
         ]
         fields_as_string = ", ".join(fields)
