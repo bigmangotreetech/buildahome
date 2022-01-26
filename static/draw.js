@@ -171,14 +171,22 @@ async function saveSign() {
 
     const pages = pdfDoc.getPages()
 
-    pages.forEach((page) => {
-      page.drawImage(pngImage, {
-        x: page.getWidth() - 120,
-        y: (parseInt(page.getHeight()) - 800),
+    const date new Date()
+    pages[0].drawText(date.getDate() +' '+getMonth(), {
+        x: 400,
+        y: 100,
+        size: 11,
+      })
+
+    pages[2].drawImage(pngImage, {
+        x: page.getWidth() - 400,
+        y: (parseInt(page.getHeight()) - 100),
         width: 100,
         height: 50,
       })
-    })
+
+
+
 
     const pdfBytes = await pdfDoc.save()
 
