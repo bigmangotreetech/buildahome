@@ -220,7 +220,7 @@ async function saveSign() {
         size: 11,
       })
 
-    const description = $('.trade').text().trim() ' work order for ' $('.project_name').text().trim()
+    const description = $('.trade').text().trim() +' work order for '+ $('.project_name').text().trim()
     pages[0].drawText(description, {
         x: 218,
         y: 450,
