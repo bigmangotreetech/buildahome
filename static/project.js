@@ -72,9 +72,9 @@ $(document).ready(function() {
               data: {'project_id': project_id, 'trade': trade},
               success: function(data){
                   $('.total_wo_value').text(data['work_order_value'])
-                  $('.vendor_name').text(data['vendor_name'])
-                  $('.vendor_code').text(data['vendor_code'])
-                  $('.vendor_pan').text(data['vendor_pan'])
+                  $('.contractor_name').text(data['contractor_name'])
+                  $('.contractor_code').text(data['contractor_code'])
+                  $('.contractor_pan').text(data['contractor_pan'])
                   for(const stage of Object.keys(data['stages'])) {
                     $(".select_payment_stage select").append($("<option></option>")
                     .attr("value", data['stages'][stage])
@@ -120,14 +120,14 @@ $(document).ready(function() {
         const amount = $('.bill_amount').text()
         $('input[name="amount"]').val(amount)
 
-        const vendor_name = $('.vendor_name').text()
-        $('input[name="vendor_name"]').val(vendor_name)
+        const contractor_name = $('.contractor_name').text()
+        $('input[name="contractor_name"]').val(contractor_name)
 
-        const vendor_code = $('.vendor_code').text()
-        $('input[name="vendor_code"]').val(vendor_code)
+        const contractor_code = $('.contractor_code').text()
+        $('input[name="contractor_code"]').val(contractor_code)
 
-        const vendor_pan = $('.vendor_pan').text()
-        $('input[name="vendor_pan"]').val(vendor_pan)
+        const contractor_pan = $('.contractor_pan').text()
+        $('input[name="contractor_pan"]').val(contractor_pan)
 
         $("#create_bill_form").submit()
    })
@@ -142,18 +142,18 @@ $(document).ready(function() {
         const project_id = $(clickedBtn).attr('data-project-id')
         const project_name = $(clickedBtn).attr('data-project-name')
         const bill_id = $(clickedBtn).attr('data-bill-id')
-        const vendor_name = $(clickedBtn).parents('tr').find('.vendor_name').text()
-        const vendor_code = $(clickedBtn).parents('tr').find('.vendor_code').text()
-        const vendor_pan = $(clickedBtn).parents('tr').find('.vendor_pan').text()
+        const contractor_name = $(clickedBtn).parents('tr').find('.contractor_name').text()
+        const contractor_code = $(clickedBtn).parents('tr').find('.contractor_code').text()
+        const contractor_pan = $(clickedBtn).parents('tr').find('.contractor_pan').text()
         const trade = $(clickedBtn).parents('tr').find('.trade').text()
         const payment_stage = $(clickedBtn).parents('tr').find('.stage').text()
         const amount = $(clickedBtn).parents('tr').find('.amount').text()
         const total_payable = $(clickedBtn).parents('tr').find('.total_payable').text()
 
         $('#approvalModal .project_name').text(project_name)
-        $('#approvalModal .vendor_name').text(vendor_name)
-        $('#approvalModal .vendor_code').text(vendor_code)
-        $('#approvalModal .vendor_pan').text(vendor_pan)
+        $('#approvalModal .contractor_name').text(contractor_name)
+        $('#approvalModal .contractor_code').text(contractor_code)
+        $('#approvalModal .contractor_pan').text(contractor_pan)
         $('#approvalModal .trade').text(trade)
         $('#approvalModal .payment_stage').text(payment_stage)
         $('#approvalModal .amount').text(amount)
