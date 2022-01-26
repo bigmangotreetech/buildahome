@@ -173,15 +173,15 @@ async function saveSign() {
 
     const date = new Date()
     pages[0].drawText(date.getDate() +' '+date.getMonth(), {
-        x: 400,
-        y: 100,
+        x: 430,
+        y: 800,
         size: 11,
       })
 
 
-    pages[2].drawImage(pngImage, {
-        x:  500,
-        y: 100,
+    pages[3].drawImage(pngImage, {
+        x:  300,
+        y: 800,
         width: 100,
         height: 50,
       })
