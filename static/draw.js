@@ -183,17 +183,20 @@ async function saveSign() {
     const pdfBytes = await pdfDoc.save()
 
     var file = new File(pdfBytes, 'test.pdf');
+    const blob = new Blob(pdfBytes, {
+        type: 'application/octet-stream'
+      })
     console.log(pdfBytes)
     console.log(file)
 
     var formData = new FormData();
-    formData.append("file", file, 'test.pdf');
+    formData.append("file", blob, 'test.pdf');
 
     $.ajax({
         type: "POST",
         url: "/erp/upload_signed_wo",
         success: function (data) {
-            // your callback here
+            console.log(data)
         },
         error: function (error) {
             // handle error
