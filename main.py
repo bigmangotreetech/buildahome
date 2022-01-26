@@ -280,9 +280,9 @@ def create_bill():
         stage = request.form['stage']
         payment_percentage = request.form['payment_percentage']
         amount = request.form['amount']
-        vendor_name = request.form['vendor_name']
-        vendor_code = request.form['vendor_code']
-        vendor_pan = request.form['vendor_pan']
+        contractor_name = request.form['contractor_name']
+        contractor_code = request.form['contractor_code']
+        contractor_pan = request.form['contractor_pan']
         total_payable = float(amount)
         check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" AND stage="'+str(stage)+'"'
         cur = mysql.connection.cursor()
@@ -292,8 +292,8 @@ def create_bill():
             flash("Older bill already exists. Operation failed", 'danger')
             return redirect('/erp/create_bill')
         else:
-            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, vendor_name, vendor_code, vendor_pan) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
-            values = (project_id, trade, stage, payment_percentage, amount, total_payable, vendor_name, vendor_code, vendor_pan)
+            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
+            values = (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Bill created successfully', 'success')
@@ -315,16 +315,16 @@ def update_trades_for_project():
 def update_payment_stages():
     project_id = request.form['project_id']
     trade = request.form['trade']
-    work_order_query = 'SELECT value, floors, vendor_name, vendor_code, vendor_pan from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" ORDER BY id'
+    work_order_query = 'SELECT value, floors, contractor_name, contractor_code, contractor_pan from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" ORDER BY id'
     cur = mysql.connection.cursor()
     cur.execute(work_order_query)
     res = cur.fetchone()
     if res is not None:
         work_order_value = res[0]
         floors = res[1]
-        vendor_name = res[2]
-        vendor_code = res[3]
-        vendor_pan = res[4]
+        contractor_name = res[2]
+        contractor_code = res[3]
+        contractor_pan = res[4]
         payment_stages_query = 'SELECT stage, payment_percentage from labour_stages WHERE floors="'+str(floors)+'" AND trade="'+trade+'"'
         cur.execute(payment_stages_query)
         result = cur.fetchall()
@@ -332,7 +332,7 @@ def update_payment_stages():
         for i in result:
             stages[i[0]] = i[1].replace('%','')
 
-        response = {'work_order_value': work_order_value, 'vendor_name': vendor_name, 'vendor_code': vendor_code, 'vendor_pan': vendor_pan, 'stages' : stages}
+        response = {'work_order_value': work_order_value, 'contractor_name': contractor_name, 'contractor_code': contractor_code, 'contractor_pan': contractor_pan, 'stages' : stages}
         return jsonify(response)
 
 def get_bills_as_json(bills_query):
@@ -345,7 +345,7 @@ def get_bills_as_json(bills_query):
         if project_id not in data:
             data[project_id] = {'project_name': i[1], 'bills': []}
         data[project_id]['bills'].append(
-            {'bill_id': i[16], 'vendor_name': i[7], 'vendor_pan': i[9], 'vendor_code': i[8], 'trade': i[17],
+            {'bill_id': i[16], 'contractor_name': i[7], 'contractor_pan': i[9], 'contractor_code': i[8], 'trade': i[17],
              'stage': i[3], 'amount': i[5], 'total_payable': i[6],
              'approval_1_amount': i[11], 'approval_1_notes': i[12], 'approval_2_amount': i[14],
              'approval_2_notes': i[15]}
@@ -360,7 +360,7 @@ def view_bills():
         return redirect('/erp/login')
     if request.method == 'GET':
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
-                         'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
+                         'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                          'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                          ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL)'
@@ -376,7 +376,7 @@ def view_approved_bills():
         return redirect('/erp/login')
     if request.method == 'GET':
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
-                         'wo_bills.amount, wo_bills.total_payable, wo_bills.vendor_name, wo_bills.vendor_code, wo_bills.vendor_pan,' \
+                         'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                          'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                          ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND (wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
