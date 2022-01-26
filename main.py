@@ -738,6 +738,19 @@ def sign_wo():
             result = cur.fetchone()
         return render_template('sign_wo.html', wo=result)
 
+@app.route('/upload_signed_wo', methods=['POST'])
+def upload_signed_wo():
+    if 'file' in request.files:
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'test.pdf'))
+            return 'success'
+
+
+
 @app.route('/approve_wo', methods=['GET', 'POST'])
 def approve_wo():
     if request.method == 'GET':

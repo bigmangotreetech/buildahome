@@ -162,7 +162,7 @@ async function saveSign() {
     let pngImageBytes = canvas.toDataURL("image/png");
 
 
-    const url = 'https://app.buildahome.in/files/Sample_WO.pdf'
+    const url = 'https://app.buildahome.in/files/Standard_WO.pdf'
     const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
     const pdfDoc = await PDFDocument.load(arrayBuffer)
 
@@ -181,6 +181,30 @@ async function saveSign() {
     })
 
     const pdfBytes = await pdfDoc.save()
+
+    var file = new File(pdfBytes, 'test.pdf');
+    console.log(pdfBytes)
+    console.log(file)
+
+    var formData = new FormData();
+    formData.append("file", file, 'test.pdf');
+
+    $.ajax({
+        type: "POST",
+        url: "/erp/upload_signed_wo",
+        success: function (data) {
+            // your callback here
+        },
+        error: function (error) {
+            // handle error
+        },
+        async: true,
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        timeout: 60000
+    });
 
     // Trigger the browser to download the PDF document
     download(pdfBytes, "signed_wo.pdf", "application/pdf");
