@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Vendor name</th>
+            <th scope="col">Vendor code</th>
+            <th scope="col">Contact number</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for vendor in vendors %}
+        <tr>
+            <td>{{vendor[0]}}</td>
+            <td>{{vendor[1]}}</td>
+            <td>{{vendor[1]}}</td>
+            <td>
+                <a href="/erp/view_vendor_details?vendor_id={{project[0]}}">More info</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

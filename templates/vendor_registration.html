@@ -1,0 +1,105 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <form action="/erp/vendor_registration" method="post">
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h4>Vendor registration</h4>
+                    </div>
+                </div>
+
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="name">Vendor Name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="name" id="name" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="code">Vendor Code</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="code" id="code" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="gst">GST</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="gst" id="gst" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="account_number">Account Number</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="account_number" id="account_number" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="IFSC">IFSC</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="IFSC" id="IFSC" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="account_holder_name">Account holder's name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="account_holder_name" id="account_holder_name" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="material_type">Material Type</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="material_type" id="material_type" class="form-control" required>
+                    </div>
+                </div>
+
+                 <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="address">Address</label>
+                    </div>
+                    <div class="col-6">
+                        <textarea name="address" id="address" rows="3" class="form-control" required></textarea>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="contact_no">Contact No</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="contact_no" id="contact_no" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button class="btn btn-block bg-indigo text-whiten submit-create-project-form">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

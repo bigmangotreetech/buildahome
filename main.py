@@ -167,6 +167,77 @@ def view_inventory():
             material_total_quantity = result[0]
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material, material_total_quantity=material_total_quantity)
 
+@app.route('/vendor_registration', methods=['GET','POST'])
+def vendor_registration():
+    if request.method == 'GET':
+        return render_template('vendor_registration.html')
+    else:
+        column_names = list(request.form.keys())
+        values = list(request.form.values())
+
+        cur = mysql.connection.cursor()
+        new_project_query = 'INSERT into vendors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
+            tuple(values))
+        cur.execute(new_project_query)
+        mysql.connection.commit()
+        flash ('Vendor registered', 'success')
+        return redirect('/erp/view_vendors')
+
+@app.route('/view_vendors', methods=['GET'])
+def vendor_registration():
+    cur = mysql.connection.cursor()
+    vendors_query = 'SELECT name, code, contact_no FROM vendors'
+    cur.execute(vendors_query)
+    result = cur.fetchall()
+    return render_template('view_vendors.html', vendors=result)
+
+@app.route('/view_vendor_details', methods=['GET'])
+def view_vendor_details():
+    vendor_details = []
+    if 'vendor_id' in request.args:
+        cur = mysql.connection.cursor()
+        vendor_query = 'SELECT * from vendors WHERE id='+request.args['vendor_id']
+        cur.execute(vendor_query)
+        vendor_details = cur.fetchone()
+    return render_template('view_vendor_details.html', vendor_details=vendor_details[1:])
+
+
+@app.route('/edit_vendor', methods=['GET','POST'])
+def edit_vendor():
+    if request.method == 'GET':
+        if 'vendor_id' in request.args:
+            cur = mysql.connection.cursor()
+            vendor_query = 'SELECT * from vendors WHERE id=' + request.args['vendor_id']
+            cur.execute(vendor_query)
+            vendor_details = cur.fetchone()
+            return render_template('edit_vendor.html', vendor_details=vendor_details[1:], vendor_id=request.args['vendor_id'])
+    else:
+        column_names = list(request.form.keys())
+
+        update_string = ""
+        for i in column_names[:-1]:
+            update_string += i + '="' + request.form[i] + '", '
+        # Remove the last comma
+        update_string = update_string[:-2]
+        update_vendor_query = 'UPDATE vendors SET ' + update_string + ' WHERE project_id=' + str(
+            request.form['vendor_id'])
+        cur = mysql.connection.cursor()
+        cur.execute(update_vendor_query)
+        mysql.connection.commit()
+        flash('Vendor updated successfully','success')
+        return redirect('/view_vendor_details?vendor_id='+request.form['vendor_id'])
+
+@app.route('/delete_vendor', methods=['GET'])
+def delete_vendor():
+    if request.method == 'GET':
+        if 'vendor_id' in request.args:
+            cur = mysql.connection.cursor()
+            vendor_query = 'DELETE from vendors WHERE id=' + request.args['vendor_id']
+            cur.execute(vendor_query)
+            mysql.connection.commit()
+            return redirect('/view_vendors')
+
+
 @app.route('/kyp_material', methods=['GET','POST'])
 def kyp_material():
     if 'email' not in session:
