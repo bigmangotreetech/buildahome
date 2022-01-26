@@ -188,35 +188,35 @@ async function saveSign() {
     const contractor_name = $('.contractor_name').text().trim()
     pages[0].drawText(contractor_name, {
         x: 420,
-        y: 634,
+        y: 635,
         size: 11,
       })
 
     const contractor_address = $('.contractor_address').text().trim()
     pages[0].drawText(contractor_address, {
         x: 420,
-        y: 608,
+        y: 609,
         size: 11,
       })
 
     const contractor_pan = $('.contractor_pan').text().trim()
     pages[0].drawText(contractor_pan, {
         x: 420,
-        y: 556,
+        y: 554,
         size: 11,
       })
 
     const cheque_number = $('.cheque_number').text().trim()
     pages[0].drawText(cheque_number, {
         x: 420,
-        y: 536,
+        y: 534,
         size: 11,
       })
 
     const contractor_code = $('.contractor_code').text().trim()
     pages[0].drawText(contractor_code, {
         x: 420,
-        y: 516,
+        y: 514,
         size: 11,
       })
 
