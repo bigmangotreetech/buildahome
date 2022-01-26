@@ -235,8 +235,19 @@ def delete_vendor():
             vendor_query = 'DELETE from vendors WHERE id=' + request.args['vendor_id']
             cur.execute(vendor_query)
             mysql.connection.commit()
+            flash('Vendor deleted', 'danger')
             return redirect('/erp/view_vendors')
 
+
+def get_vendors():
+    cur = mysql.connection.cursor()
+    vendors_query = 'SELECT id, name, code FROM vendors'
+    cur.execute(vendors_query)
+    result = cur.fetchall()
+    vendors = {}
+    for i in result:
+        vendors[str(i[0])] = str(i[1]) + str(i[2])
+    return vendors
 
 @app.route('/kyp_material', methods=['GET','POST'])
 def kyp_material():
@@ -263,6 +274,7 @@ def kyp_material():
 
         project = None
         project_id = None
+        vendors = get_vendors()
         if 'project_id' in request.args:
             project_id = request.args['project_id']
             material_query = 'SELECT * from kyp_material WHERE project_id='+str(project_id)
@@ -274,7 +286,7 @@ def kyp_material():
             for i in projects:
                 if str(i[0]) == str(project_id):
                     project = i[1]
-        return render_template('kyp_material.html', projects=projects, project_id=project_id, project=project, material_quantity_data=material_quantity_data)
+        return render_template('kyp_material.html', vendors=vendors, projects=projects, project_id=project_id, project=project, material_quantity_data=material_quantity_data)
     else:
         cur = mysql.connection.cursor()
         project_id = request.form['project_id']

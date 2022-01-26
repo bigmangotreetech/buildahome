@@ -43,7 +43,11 @@
                         <label for="vendor">Vendor</label>
                     </div>
                     <div class="col-6">
-                        <input name="vendor" id="vendor" class="form-control" required>
+                        <select name="vendor" id="vendor">
+                        {% for i in vendors %}
+                            <option value="{{i}}">{{vendors[i]}}</option>
+                        {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
