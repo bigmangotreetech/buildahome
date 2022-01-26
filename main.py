@@ -731,7 +731,7 @@ def sign_wo():
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, wo.contractor_name,' \
                                'wo.contractor_pan, wo.contractor_code, wo.contractor_address, wo.wo_number, wo.cheque_no' \
                                ' FROM work_orders wo ' \
-                               'LEFT OUTER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 wo.id=' + str(
+                               'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 wo.id=' + str(
                 request.args['wo_id'])
             cur = mysql.connection.cursor()
             cur.execute(work_order_query)
@@ -745,7 +745,7 @@ def approve_wo():
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, wo.contractor_name,' \
                                'wo.contractor_pan, wo.contractor_code, wo.contractor_address, wo.wo_number, wo.cheque_no' \
                                ' FROM work_orders wo ' \
-                             'LEFT OUTER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 wo.id='+str(request.args['wo_id'])
+                             'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 wo.id='+str(request.args['wo_id'])
             cur = mysql.connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
