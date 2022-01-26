@@ -171,7 +171,7 @@ async function saveSign() {
 
     const pages = pdfDoc.getPages()
 
-    const date new Date()
+    const date = new Date()
     pages[0].drawText(date.getDate() +' '+getMonth(), {
         x: 400,
         y: 100,
