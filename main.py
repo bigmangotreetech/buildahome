@@ -1057,7 +1057,7 @@ def upload_drawing():
         cur.execute(check_if_drawing_exists_query)
         result = cur.fetchone()
         if result is not None:
-            update_drawing_query = 'UPDATE architect_drawings set '+drawing_name+'='+drawing_filename+' WHERE id='+result[0]
+            update_drawing_query = 'UPDATE architect_drawings set '+drawing_name+'='+drawing_filename+' WHERE id='+str(result[0])
             cur.execute(update_drawing_query)
             mysql.connection.commit()
             flash('Drawing uploaded!', 'success')
