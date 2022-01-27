@@ -1021,7 +1021,7 @@ def drawings():
     cur.execute(drawings_query)
     result = cur.fetchall()
 
-    query_string = 'd.project_id, p.project_name, p.project_number, '
+    query_string = 'p.project_id, p.project_name, p.project_number, '
 
     drawing_names = []
     for i in result[2:]:
