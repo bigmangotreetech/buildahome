@@ -5,19 +5,20 @@
         <thead>
         <tr>
             <th scope="col" style="min-width: 200px;">Project</th>
-            {% for i in drawings %}
+            {% for i in drawing_names %}
                 <th scope="col">{{i}}</th>
             {% endfor %}
 
         </tr>
         </thead>
         <tbody>
-        {% for i in projects %}
+        {% for i in drawings %}
         <tr>
-            <td style="min-width: 200px;" data-project-id="{{i}}">{{projects[i]}}</td>
-            {% for x in range(drawings|length) %}
+            <td style="min-width: 200px;" data-project-id="{{i[0]}}">{{i[1]-i[2]}}</td>
+            {% for x in range((i|length) - 3) %}
             <td class="text-center status-action" data-index="{{x}}" data-toggle="modal" data-target="#drawing-modal">
                 <div class="w-100 d-flex justify-content-center">
+                    {{i[x+3]}}
                     <div class="status bg-danger"></div>
                     <div class="status bg-warning d-none"></div>
                     <div class="status bg-success d-none"></div>
@@ -114,6 +115,10 @@
     }
     .status-action {
         cursor: pointer;
+    }
+
+    .table-responsive {
+        height: 95%;
     }
 
 

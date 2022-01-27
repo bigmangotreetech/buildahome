@@ -1021,17 +1021,22 @@ def drawings():
     cur.execute(drawings_query)
     result = cur.fetchall()
 
-    # query_string_for_drawings = ', '.join(list(result))
-    # get_drawing_status_query = 'SELECT '+query_string_for_drawings+' FROM architect_drawings'
-    drawings = []
+    query_string = 'd.project_id, p.project_name, p.project_number, '
+
+    drawing_names = []
     for i in result[2:]:
         drawings.append(i[0].replace('_',' ').capitalize())
+        query_string += 'd.'+i[0]+', '
 
-    projects = get_projects()
-    projects_data = {}
-    for i in projects:
-        projects_data[i[0]] = str(i[1]) + str(i[2])
-    return render_template('drawings.html', projects=projects_data, drawings=drawings)
+    query_string = query_string[:-2]
+
+    drawings_info = "SELECT "+ query_string +" FROM architect drawings d outer join projects p on p.project_id=d.project_id"
+    cur.execute(drawings_info)
+    drawings = cur.fetchall()
+
+
+
+    return render_template('drawings.html', drawing_names=drawing_names, drawings=drawings)
 
 @app.route('/upload_drawing', methods=['POST'])
 def upload_drawing():
@@ -1044,7 +1049,7 @@ def upload_drawing():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                drawing_filename = str(int(time.time()))+'_'+filename
+                drawing_filename = 'drawing_'+str(int(time.time()))+'.pdf'
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], drawing_filename))
         project_id = request.form['project_id']
         drawing_name = request.form['drawing_name']
