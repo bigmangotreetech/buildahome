@@ -1044,12 +1044,14 @@ def drawings():
     return render_template('drawings.html', drawing_names=drawing_names, drawings=drawings)
 
 def get_drwaings_table_name():
-    return 'structural_drawings'
+    return 'electrical_drawings'
     role = session['role']
     if role == 'Admin' or role == 'Senior Architect' or role == 'Architect':
         return 'architect_drawings'
     elif role == 'Structural Engineer':
         return 'structural_drawings'
+    elif role == 'Electrical Engineer':
+        return 'electrical_drawings'
 
 @app.route('/upload_drawing', methods=['POST'])
 def upload_drawing():
