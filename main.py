@@ -1021,7 +1021,7 @@ def drawings():
         table_name = request.args['category']
     else:
         table_name = get_drwaings_table_name()
-
+    session['session'] = table_name
     drawings_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'"+table_name+"'"
     cur = mysql.connection.cursor()
     cur.execute(drawings_query)
@@ -1071,8 +1071,8 @@ def upload_drawing():
 
         cur = mysql.connection.cursor()
         table_name = ''
-        if 'category' in request.form:
-            table_name = request.form['category']
+        if 'category' in session:
+            table_name = session['category']
         else:
             table_name = get_drwaings_table_name()
         check_if_drawing_exists_query = 'SELECT id FROM '+table_name+' WHERE project_id='+str(project_id)
@@ -1099,8 +1099,8 @@ def mark_drawing_in_progress():
 
     cur = mysql.connection.cursor()
     table_name = ''
-    if 'category' in request.form:
-        table_name = request.form['category']
+    if 'category' in session:
+        table_name = session['category']
     else:
         table_name = get_drwaings_table_name()
 
