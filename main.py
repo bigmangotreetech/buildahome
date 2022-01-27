@@ -1065,7 +1065,7 @@ def upload_drawing():
         else:
             insert_drawing_query = 'INSERT into architect_drawings (project_id, '+drawing_name+') values (%s, %s)'
             cur.execute(insert_drawing_query, (str(project_id), drawing_filename))
-            flash('Drawing uploaded!', 'success')
+            mysql.connection.commit()
             flash('Drawing uploaded!', 'success')
             return redirect('/erp/drawings')
 
