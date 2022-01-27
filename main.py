@@ -1027,8 +1027,6 @@ def drawings():
     cur.execute(drawings_query)
     result = cur.fetchall()
 
-
-
     query_string = 'p.project_id, p.project_name, p.project_number, '
 
     drawing_names = []
@@ -1041,10 +1039,9 @@ def drawings():
     drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on p.project_id=d.project_id"
     cur.execute(drawings_info)
     drawings = cur.fetchall()
-    return render_template('drawings.html', drawing_names=drawing_names, drawings=drawings)
+    return render_template('drawings.html', role=session['role'], drawing_names=drawing_names, drawings=drawings)
 
 def get_drwaings_table_name():
-    return 'plumbing_drawings'
     role = session['role']
     if role == 'Admin' or role == 'Senior Architect' or role == 'Architect':
         return 'architect_drawings'

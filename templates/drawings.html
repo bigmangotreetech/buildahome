@@ -1,5 +1,35 @@
 {% extends 'layout.html' %}
 {% block content %}
+
+{% if role is not none %}
+{% if role == 'Admin' %}
+
+<div class="my-4 d-flex">
+    {% if 'category' not in request.args or request.args['category'] == 'architect_drawing' %}
+        <a href="#" class="btn bg-indigo text-white mr-3">Architect</a>
+        <a href="/erp/drawings?category=structural_drawings" class="btn border-dark mr-3">Structural</a>
+        <a href="/erp/drawings?category=electrical_drawings" class="btn border-dark mr-3">Electrical</a>
+        <a href="/erp/drawings?category=plumbing_drawings" class="btn border-dark mr-3">Plumbing</a>
+    {% elif request.args['category'] == 'structural_drawings' %}
+        <a href="/erp/drawings?category=architect_drawings" class="btn border-dark mr-3">Architect</a>
+        <a href="#" class="btn bg-indigo text-white mr-3">Structural</a>
+        <a href="/erp/drawings?category=electrical_drawings" class="btn border-dark mr-3">Electrical</a>
+        <a href="/erp/drawings?category=plumbing_drawings" class="btn border-dark mr-3">Plumbing</a>
+    {% elif request.args['category'] == 'electrical_drawings' %}
+        <a href="/erp/drawings?category=architect_drawings" class="btn border-dark mr-3">Architect</a>
+        <a href="/erp/drawings?category=structural_drawings" class="btn border-dark mr-3">Structural</a>
+        <a href="#" class="btn bg-indigo text-white mr-3">Electrical</a>
+        <a href="/erp/drawings?category=plumbing_drawings" class="btn border-dark mr-3">Plumbing</a>
+    {% elif request.args['category'] == 'plumbing_drawings' %}
+        <a href="/erp/drawings?category=architect_drawings" class="btn border-dark mr-3">Architect</a>
+        <a href="/erp/drawings?category=structural_drawings" class="btn border-dark mr-3">Structural</a>
+        <a href="/erp/drawings?category=electrical_drawings" class="btn border-dark mr-3">Electrical</a>
+        <a href="#" class="btn bg-indigo text-white mr-3">Plumbing</a>
+    {% endif %}
+</div>
+
+{% endif %}
+{% endif %}
 <div class="mt-4  w-100 table-responsive">
     <table class="table table-striped mb-3">
         <thead>
@@ -75,7 +105,7 @@
 
                 <div class="row mx-0 mb-3 form-group drawing-link-section">
                     <div class="col-6 p-0">
-                        <a href="" class="drawing-link">View drawing</a>
+                        <a href="" class="drawing-link" target="_blank">View drawing</a>
                     </div>
                 </div>
 

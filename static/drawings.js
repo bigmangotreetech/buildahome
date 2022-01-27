@@ -16,7 +16,6 @@ $('.status-action').on('click', function() {
     $('.upload-drawing-form').addClass('d-none')
 
     drawing_link = $(this).attr('data-link').toString()
-    console.log(drawing_link)
 
     if (drawing_link == 'None' || drawing_link == '0' || drawing_link == '') {
         $('.drawing-link-section').addClass('d-none')
@@ -29,10 +28,7 @@ $('.status-action').on('click', function() {
     project_name = $($(this).parents('tr').find('td').get(0)).text()
     project_id = $($(this).parents('tr').find('td').get(0)).attr('data-project-id')
 
-
-
     $('#project_id').val(project_id)
-
     $('.project_name').text(project_name)
 
     index = $(this).attr('data-index')
