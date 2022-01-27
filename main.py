@@ -1039,8 +1039,8 @@ def drawings():
 def upload_drawing():
     if request.method == 'POST':
         drawing_filename = ''
-        if 'file' in request.files:
-            file = request.files['file']
+        if 'drawing' in request.files:
+            file = request.files['drawing']
             if file.filename == '':
                 flash('No selected file', 'danger ')
                 return redirect(request.url)
