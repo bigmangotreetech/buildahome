@@ -1025,8 +1025,9 @@ def drawings():
     get_drawing_status_query = 'SELECT '+query_string_for_drawings+' FROM architect_drawings'
 
     drawings = []
-    for i in result:
+    for i in result[2:]:
         drawings.append(i.replace('_',' ').capitalize())
+
     projects = get_projects()
     projects_data = {}
     for i in projects:
