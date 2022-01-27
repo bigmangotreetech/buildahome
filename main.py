@@ -1025,12 +1025,14 @@ def drawings():
 
     drawing_names = []
     for i in result[2:]:
+        query_string += 'd.' + i[0] + ', '
         drawing_names.append(i[0].replace('_',' ').capitalize())
-        query_string += 'd.'+i[0]+', '
+
 
     query_string = query_string[:-2]
 
     drawings_info = "SELECT "+ query_string +" FROM architect_drawings d LEFT OUTER JOIN projects p on p.project_id=d.project_id"
+    return drawings_info
     cur.execute(drawings_info)
     drawings = cur.fetchall()
 
