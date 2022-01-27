@@ -23,7 +23,7 @@ $('.status-action').on('click', function() {
     }
     else {
         $('.drawing-link-section').removeClass('d-none')
-        $('.drawing-link').attr('href', '/files/'+drawing_name)
+        $('.drawing-link').attr('href', '/files/'+$(this).attr('data-link').toString())
     }
 
     project_name = $($(this).parents('tr').find('td').get(0)).text()
