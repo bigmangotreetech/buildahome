@@ -1014,6 +1014,11 @@ def assign_operations_team():
         flash('Operations team has been assigned successfully','success')
         return redirect('/erp/projects_with_operations_team')
 
+@app.route('/drawings', methods=['GET'])
+def drawings():
+    # role = session['role']
+    return render_template('drawings.html')
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
