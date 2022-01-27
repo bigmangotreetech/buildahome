@@ -1030,7 +1030,7 @@ def drawings():
     projects = get_projects()
     projects_data = {}
     for i in projects:
-        projects_data[i[0]] = i[1] + 1[2]
+        projects_data[i[0]] = str(i[1]) + str(i[2])
     return render_template('drawings.html', projects=projects_data, drawings=drawings)
 
 @app.route('/upload_drawing', methods=['POST'])
