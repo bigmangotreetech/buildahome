@@ -1016,10 +1016,18 @@ def assign_operations_team():
 
 @app.route('/drawings', methods=['GET'])
 def drawings():
-    drawings_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'architect_drawings'"
+    table_name = ''
+    if 'category' in request.args:
+        table_name = request.args['category']
+    else:
+        table_name = get_drwaings_table_name()
+
+    drawings_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'"+table_name+"'"
     cur = mysql.connection.cursor()
     cur.execute(drawings_query)
     result = cur.fetchall()
+
+
 
     query_string = 'p.project_id, p.project_name, p.project_number, '
 
@@ -1030,10 +1038,18 @@ def drawings():
 
     query_string = query_string[:-2]
 
-    drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN architect_drawings d on p.project_id=d.project_id"
+    drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on p.project_id=d.project_id"
     cur.execute(drawings_info)
     drawings = cur.fetchall()
     return render_template('drawings.html', drawing_names=drawing_names, drawings=drawings)
+
+def get_drwaings_table_name():
+    return 'structural_drawings'
+    role = session['role']
+    if role == 'Admin' or role == 'Senior Architect' or role == 'Architect':
+        return 'architect_drawings'
+    elif role == 'Structural Engineer':
+        return 'structural_drawings'
 
 @app.route('/upload_drawing', methods=['POST'])
 def upload_drawing():
@@ -1053,17 +1069,22 @@ def upload_drawing():
         drawing_name = drawing_name.lower().replace(' ', '_')
 
         cur = mysql.connection.cursor()
-        check_if_drawing_exists_query = 'SELECT id FROM architect_drawings  WHERE project_id='+str(project_id)
+        table_name = ''
+        if 'category' in request.form:
+            table_name = request.form['category']
+        else:
+            table_name = get_drwaings_table_name()
+        check_if_drawing_exists_query = 'SELECT id FROM '+table_name+' WHERE project_id='+str(project_id)
         cur.execute(check_if_drawing_exists_query)
         result = cur.fetchone()
         if result is not None:
-            update_drawing_query = 'UPDATE architect_drawings set '+drawing_name+'="'+drawing_filename+'" WHERE id='+str(result[0])
+            update_drawing_query = 'UPDATE '+table_name+' set '+drawing_name+'="'+drawing_filename+'" WHERE id='+str(result[0])
             cur.execute(update_drawing_query)
             mysql.connection.commit()
             flash('Drawing uploaded!', 'success')
             return redirect('/erp/drawings')
         else:
-            insert_drawing_query = 'INSERT into architect_drawings (project_id, '+drawing_name+') values (%s, %s)'
+            insert_drawing_query = 'INSERT into '+table_name+' (project_id, '+drawing_name+') values (%s, %s)'
             cur.execute(insert_drawing_query, (str(project_id), drawing_filename))
             mysql.connection.commit()
             flash('Drawing uploaded!', 'success')
