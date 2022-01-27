@@ -14,7 +14,7 @@
         <tbody>
         {% for i in drawings %}
         <tr>
-            <td style="min-width: 200px;" data-project-id="{{i[0]}}">{{i[1]-i[2]}}</td>
+            <td style="min-width: 200px;" data-project-id="{{i[0]}}">{{i[1]}}-{{i[2]}}</td>
             {% for x in range((i|length) - 3) %}
             <td class="text-center status-action" data-index="{{x}}" data-toggle="modal" data-target="#drawing-modal">
                 <div class="w-100 d-flex justify-content-center">
