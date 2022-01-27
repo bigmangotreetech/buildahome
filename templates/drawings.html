@@ -15,14 +15,14 @@
         {% for i in drawings %}
         <tr>
             <td style="min-width: 200px;" data-project-id="{{i[0]}}">{{i[1]}}</td>
-            {% for x in range((i|length) - 3) %}
+            {% for x in range(3, (i|length)) %}
             <td class="text-center status-action" data-index="{{x}}" data-toggle="modal" data-target="#drawing-modal">
                 <div class="w-100 d-flex justify-content-center">
-                    {% if i[x+3] is none %}
+                    {% if i[x] is none or i[x] == '' %}
                     <div class="status bg-danger"></div>
                     <div class="status bg-warning d-none"></div>
                     <div class="status bg-success d-none"></div>
-                    {% elif i[x+3] == '0' %}
+                    {% elif i[x] == '0' %}
                     <div class="status bg-danger d-none"></div>
                     <div class="status bg-warning "></div>
                     <div class="status bg-success d-none"></div>
