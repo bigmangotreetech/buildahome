@@ -1016,8 +1016,39 @@ def assign_operations_team():
 
 @app.route('/drawings', methods=['GET'])
 def drawings():
-    # role = session['role']
-    return render_template('drawings.html')
+    drawings_query = "SELECT COLUMNS FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'architect_drawings'"
+    cur = mysql.connection.cursor()
+    cur.execute(drawings_query)
+    result = cur.fetchone()
+
+    query_string_for_drawings = ', '.join(result)
+    get_drawing_status_query = 'SELECT '+query_string_for_drawings+' FROM architect_drawings'
+
+    drawings = []
+    for i in result:
+        drawings.append(i.replace('_',' ').capitalize())
+    projects = get_projects()
+    projects_data = {}
+    for i in projects:
+        projects_data[i[0]] = i[1] + 1[2]
+    return render_template('drawings.html', projects=projects_data, drawings=drawings)
+
+@app.route('/upload_drawing', methods=['POST'])
+def upload_drawing():
+    if request.method == 'POST':
+        drawing_filename = ''
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                drawing_filename = str(int(time.time()))+'_'+filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], drawing_filename))
+        project_id = request.form['project_id']
+        drawing_name = request.form['drawing_name']
+        drawing_name = drawing_name.lower().replace(' ', '_')
 
 
 @app.route('/logout', methods=['GET'])

@@ -27,6 +27,12 @@
 
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar:hover {
+  cursor: pointer;
+
 }
 /* Track */
 ::-webkit-scrollbar-track {
