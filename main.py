@@ -1025,7 +1025,7 @@ def drawings():
 
     drawing_names = []
     for i in result[2:]:
-        drawings.append(i[0].replace('_',' ').capitalize())
+        drawing_names.append(i[0].replace('_',' ').capitalize())
         query_string += 'd.'+i[0]+', '
 
     query_string = query_string[:-2]
