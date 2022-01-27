@@ -113,6 +113,7 @@ def enter_material():
         gst = request.form['gst']
         total_amount = request.form['total_amount']
         difference_cost = request.form['difference_cost']
+        photo_date = request.form['photo_date']
         cur = mysql.connection.cursor()
 
         material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id='+str(project)+' AND material="'+str(material)+'"'
@@ -126,8 +127,8 @@ def enter_material():
             return redirect('/erp/enter_material')
 
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
-                "quantity, unit, rate, gst, total_amount, difference_cost) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst, total_amount, difference_cost)
+                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst, total_amount, difference_cost, photo_date)
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
@@ -330,6 +331,7 @@ def create_work_order():
         contractor_pan = request.form['contractor_pan']
         contractor_code = request.form['contractor_code']
         contractor_address = request.form['contractor_address']
+        contractor_phone = request.form['contractor_phone']
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND floors="'+str(floors)+'" AND trade="'+str(trade)+'"'
@@ -340,9 +342,9 @@ def create_work_order():
             flash("Work order already exists. Operation failed",'danger')
             return redirect('/erp/create_work_order')
         else:
-            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no) ' \
-                           'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            values = (project_id, wo_value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no)
+            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no, contractor_phone) ' \
+                           'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            values = (project_id, wo_value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no, contractor_phone)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
