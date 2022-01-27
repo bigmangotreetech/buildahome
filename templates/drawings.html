@@ -6,7 +6,7 @@
         <tr>
             <th scope="col" style="min-width: 200px;">Project</th>
             {% for i in drawing_names %}
-                <th scope="col">{{i}}</th>
+            <th scope="col">{{i}}</th>
             {% endfor %}
 
         </tr>
@@ -18,10 +18,19 @@
             {% for x in range((i|length) - 3) %}
             <td class="text-center status-action" data-index="{{x}}" data-toggle="modal" data-target="#drawing-modal">
                 <div class="w-100 d-flex justify-content-center">
-                    {{i[x+3]}}
+                    {% if i[x+3] is none %}
                     <div class="status bg-danger"></div>
                     <div class="status bg-warning d-none"></div>
                     <div class="status bg-success d-none"></div>
+                    {% else if i[x+3] == '0' %}
+                    <div class="status bg-danger d-none"></div>
+                    <div class="status bg-warning "></div>
+                    <div class="status bg-success d-none"></div>
+                    {% else %}
+                    <div class="status bg-danger d-none"></div>
+                    <div class="status bg-warning d-none "></div>
+                    <div class="status bg-success"></div>
+                    {% endif %}
                 </div>
             </td>
             {% endfor %}
@@ -76,7 +85,8 @@
 
                 </div>
 
-                <form class="d-none upload-drawing-form" action="/erp/upload_drawing" enctype="multipart/form-data" method="post">
+                <form class="d-none upload-drawing-form" action="/erp/upload_drawing" enctype="multipart/form-data"
+                      method="post">
                     <div class="row mx-0 mb-3 form-group">
                         <div class="col-8 mt-4 p-0">
                             <div class="mb-2">Upload drawing</div>
@@ -120,6 +130,7 @@
     .table-responsive {
         height: 95%;
     }
+
 
 
 </style>

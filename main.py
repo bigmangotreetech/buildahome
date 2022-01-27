@@ -1028,15 +1028,11 @@ def drawings():
         query_string += 'd.' + i[0] + ', '
         drawing_names.append(i[0].replace('_',' ').capitalize())
 
-
     query_string = query_string[:-2]
 
     drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN architect_drawings d on p.project_id=d.project_id"
     cur.execute(drawings_info)
     drawings = cur.fetchall()
-
-
-
     return render_template('drawings.html', drawing_names=drawing_names, drawings=drawings)
 
 @app.route('/upload_drawing', methods=['POST'])
@@ -1056,6 +1052,22 @@ def upload_drawing():
         drawing_name = request.form['drawing_name']
         drawing_name = drawing_name.lower().replace(' ', '_')
 
+        cur = mysql.connection.cursor()
+        check_if_drawing_exists_query = 'SELECT id FROM architect_drawings  WHERE project_id='+str(project_id)
+        cur.execute(check_if_drawing_exists_query)
+        result = cur.fetchone()
+        if result is not None:
+            update_drawing_query = 'UPDATE architect_drawings set '+drawing_name+'='+drawing_filename+' WHERE id='+result[0]
+            cur.execute(update_drawing_query)
+            mysql.connection.commit()
+            flash('Drawing uploaded!', 'success')
+            return redirect('/erp/drawings')
+        else:
+            insert_drawing_query = 'INSERT into architect_drawings (project_id, '+drawing_name+') values (%s, %s)'
+            cur.execute(insert_drawing_query, (str(project_id), drawing_filename))
+            flash('Drawing uploaded!', 'success')
+            flash('Drawing uploaded!', 'success')
+            return redirect('/erp/drawings')
 
 @app.route('/logout', methods=['GET'])
 def logout():
