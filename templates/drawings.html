@@ -16,7 +16,7 @@
         <tr>
             <td style="min-width: 200px;" data-project-id="{{i[0]}}">{{i[1]}}</td>
             {% for x in range(3, (i|length)) %}
-            <td class="text-center status-action" data-index="{{x}}" data-toggle="modal" data-target="#drawing-modal">
+            <td class="text-center status-action" data-index="{{x + 3}}" data-toggle="modal" data-target="#drawing-modal">
                 <div class="w-100 d-flex justify-content-center">
                     {% if i[x] is none or i[x] == '' %}
                     <div class="status bg-danger"></div>
