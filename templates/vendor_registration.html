@@ -70,7 +70,20 @@
                         <label for="material_type">Material Type</label>
                     </div>
                     <div class="col-6">
-                        <input name="material_type" id="material_type" class="form-control" required>
+                        <select name="material_type" id="material_type" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="Cement">Cement</option>
+                            <option value="Concrete">Concrete</option>
+                            <option value="Steel">Steel</option>
+                            <option value="M Sand">M Sand</option>
+                            <option value="P Sand">P Sand</option>
+                            <option value="Aggregates">Aggregates</option>
+                            <option value="Wall Material">Wall Material</option>
+                            <option value="Door Window">Door Window</option>
+                            <option value="Flooring">Flooring</option>
+                            <option value="Sanitary">Sanitary</option>
+                            <option value="Hardware">Hardware</option>
+                        </select>
                     </div>
                 </div>
 
@@ -88,7 +101,7 @@
                         <label for="contact_no">Contact No</label>
                     </div>
                     <div class="col-6">
-                        <input name="contact_no" id="contact_no" class="form-control" required>
+                        <input type="number" name="contact_no" id="contact_no" class="form-control" required>
                     </div>
                 </div>
 
