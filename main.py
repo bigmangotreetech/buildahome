@@ -769,6 +769,15 @@ def approve_wo():
             cur.execute(work_order_query)
             result = cur.fetchone()
         return render_template('approve_wo.html', wo=result, wo_id=str(request.args['wo_id']))
+    else:
+        wo_id = request.form['wo_id']
+        cur = mysql.connection.cursor()
+        query = 'UPDATE work_orders SET approved=1 WHERE id=' + wo_id
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Work order approved!', 'success')
+        return redirect('/erp/unapproved_work_order')
+
 
 @app.route('/create_project', methods=['GET','POST'])
 def create_project():
