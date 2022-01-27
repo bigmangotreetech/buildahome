@@ -1016,7 +1016,7 @@ def assign_operations_team():
 
 @app.route('/drawings', methods=['GET'])
 def drawings():
-    drawings_query = "SELECT COLUMNS FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'architect_drawings'"
+    drawings_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'architect_drawings'"
     cur = mysql.connection.cursor()
     cur.execute(drawings_query)
     result = cur.fetchone()
