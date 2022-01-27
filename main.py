@@ -776,7 +776,7 @@ def approve_wo():
         cur.execute(query)
         mysql.connection.commit()
         flash('Work order approved!', 'success')
-        return redirect('/erp/unapproved_work_order')
+        return redirect('/erp/view_unapproved_work_order')
 
 
 @app.route('/create_project', methods=['GET','POST'])
