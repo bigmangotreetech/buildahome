@@ -1069,6 +1069,30 @@ def upload_drawing():
             flash('Drawing uploaded!', 'success')
             return redirect('/erp/drawings')
 
+@app.route('/mark_drawing_in_progress', methods=['POST'])
+def mark_drawing_in_progress():
+    project_id = request.form['project_id']
+    drawing_name = request.form['drawing_name']
+    drawing_name = drawing_name.lower().replace(' ', '_')
+
+    cur = mysql.connection.cursor()
+    check_if_drawing_exists_query = 'SELECT id FROM architect_drawings  WHERE project_id=' + str(project_id)
+    cur.execute(check_if_drawing_exists_query)
+    result = cur.fetchone()
+    if result is not None:
+        update_drawing_query = 'UPDATE architect_drawings set ' + drawing_name + '="0" WHERE id=' + str(
+            result[0])
+        cur.execute(update_drawing_query)
+        mysql.connection.commit()
+        flash('Drawing marked as in progress!', 'success')
+        return redirect('/erp/drawings')
+    else:
+        insert_drawing_query = 'INSERT into architect_drawings (project_id, ' + drawing_name + ') values (%s, %s)'
+        cur.execute(insert_drawing_query, (str(project_id), '0'))
+        mysql.connection.commit()
+        flash('Drawing marked as in progress!', 'success')
+        return redirect('/erp/drawings')
+
 @app.route('/logout', methods=['GET'])
 def logout():
     del session['email']

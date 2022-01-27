@@ -1,6 +1,8 @@
 drawings_list = []
 var actionBtn;
 var action;
+var project_id;
+var drawing_name;
 
 $('th').each(function(index, element) {
     if (index!=0)
@@ -51,6 +53,20 @@ $('.approve_drawing_btn').on('click', function(){
     } else if (action == "In progress") {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-warning').removeClass('d-none')
+
+        $.ajax({
+        type: "POST",
+        url: "/erp/mark_drawing_in_progress",
+        success: function (data) {
+            window.location.href = '/erp/drawings'
+        },
+        error: function (error) {
+            console.log(error)
+            // handle error
+        },
+        async: true,
+        data: {'project_id': project_id, 'drawing_name': drawing_name},
+    });
     } else if (action == "Pending") {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-danger').removeClass('d-none')
