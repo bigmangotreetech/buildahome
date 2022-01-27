@@ -10,6 +10,7 @@ $('th').each(function(index, element) {
 })
 
 $('.status-action').on('click', function() {
+    $('.current-status').text('')
     actionBtn = $(this).find('div')
     $('.upload-drawing-form').addClass('d-none')
     project_name = $($(this).parents('tr').find('td').get(0)).text()
@@ -26,16 +27,19 @@ $('.status-action').on('click', function() {
 
 $('.drawing-complete').on('click', function(){
     action = 'Complete';
+    $('.current-status').text('Changing status to '+action)
     $('.upload-drawing-form').removeClass('d-none')
 })
 
 $('.drawing-in-progress').on('click', function(){
     action = 'In progress';
+    $('.current-status').text('Changing status to '+action)
     $('.upload-drawing-form').addClass('d-none')
 })
 
 $('.drawing-pending').on('click', function(){
     action = 'Pending';
+    $('.current-status').text('Changing status to '+action)
     $('.upload-drawing-form').addClass('d-none')
 })
 
