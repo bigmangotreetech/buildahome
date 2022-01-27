@@ -1019,7 +1019,7 @@ def drawings():
     drawings_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'architect_drawings'"
     cur = mysql.connection.cursor()
     cur.execute(drawings_query)
-    result = cur.fetchone()
+    result = cur.fetchall()
 
     query_string_for_drawings = ', '.join(result)
     get_drawing_status_query = 'SELECT '+query_string_for_drawings+' FROM architect_drawings'
