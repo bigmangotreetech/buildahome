@@ -1023,7 +1023,7 @@ def drawings():
 
     query_string_for_drawings = ', '.join(result)
     get_drawing_status_query = 'SELECT '+query_string_for_drawings+' FROM architect_drawings'
-
+    return str(result)
     drawings = []
     for i in result[2:]:
         drawings.append(i.replace('_',' ').capitalize())
