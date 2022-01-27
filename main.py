@@ -1021,7 +1021,7 @@ def drawings():
     cur.execute(drawings_query)
     result = cur.fetchall()
 
-    query_string_for_drawings = ', '.join(result)
+    query_string_for_drawings = ', '.join(list(result))
     get_drawing_status_query = 'SELECT '+query_string_for_drawings+' FROM architect_drawings'
     drawings = []
     for i in result[2:]:
