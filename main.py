@@ -1030,7 +1030,7 @@ def drawings():
 
     query_string = query_string[:-2]
 
-    drawings_info = "SELECT "+ query_string +" FROM architect drawings d outer join projects p on p.project_id=d.project_id"
+    drawings_info = "SELECT "+ query_string +" FROM architect_drawings d LEFT OUTER JOIN projects p on p.project_id=d.project_id"
     cur.execute(drawings_info)
     drawings = cur.fetchall()
 
