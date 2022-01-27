@@ -15,9 +15,8 @@ $('.status-action').on('click', function() {
     actionBtn = $(this).find('div')
     $('.upload-drawing-form').addClass('d-none')
 
-    project_name = $($(this).parents('tr').find('td').get(0)).text()
-    project_id = $($(this).parents('tr').find('td').get(0)).attr('data-project-id')
     drawing_link = $(this).attr('data-link').toString()
+    console.log(drawing_link)
 
     if (drawing_link == 'None' || drawing_link == '0' || drawing_link == '') {
         $('.drawing-link-section').addClass('d-none')
@@ -26,6 +25,10 @@ $('.status-action').on('click', function() {
         $('.drawing-link-section').removeClass('d-none')
         $('.drawing-link').attr('href', '/files/'+drawing_name)
     }
+
+    project_name = $($(this).parents('tr').find('td').get(0)).text()
+    project_id = $($(this).parents('tr').find('td').get(0)).attr('data-project-id')
+
 
 
     $('#project_id').val(project_id)
