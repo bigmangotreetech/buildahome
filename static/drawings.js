@@ -19,7 +19,7 @@ $('.status-action').on('click', function() {
     project_id = $($(this).parents('tr').find('td').get(0)).attr('data-project-id')
     drawing_link = $($(this).parents('tr').find('td').get(0)).attr('data-link').toString()
 
-    if (drawing_link == 'None' || drawing_link == '0' || drawing_link = '') {
+    if (drawing_link == 'None' || drawing_link == '0' || drawing_link == '') {
         $('.drawing-link-section').addClass('d-none')
     }
     else {
