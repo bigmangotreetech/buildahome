@@ -736,17 +736,22 @@ def sign_wo():
             cur = mysql.connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
-        return render_template('sign_wo.html', wo=result)
+        return render_template('sign_wo.html', wo=result, wo_id=str(request.args['wo_id']))
 
 @app.route('/upload_signed_wo', methods=['POST'])
 def upload_signed_wo():
+    wo_id = request.form['wo_id']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE work_orders SET signed=1 WHERE id='+wo_id
+    cur.execute(query)
+    mysql.connection.commit()
     if 'file' in request.files:
         file = request.files['file']
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'test.pdf'))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'work_order_'+str(wo_id)+'.pdf'))
             return 'success'
 
 

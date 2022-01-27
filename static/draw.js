@@ -253,6 +253,7 @@ async function saveSign() {
     console.log(file)
 
     var formData = new FormData();
+    formData.append("wo_id", $('#wo_id').val())
     formData.append("file", file, 'test.pdf');
 
     $.ajax({
@@ -260,6 +261,7 @@ async function saveSign() {
         url: "/erp/upload_signed_wo",
         success: function (data) {
             console.log(data)
+            window.location.reload()
         },
         error: function (error) {
             // handle error
