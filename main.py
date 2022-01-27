@@ -1097,18 +1097,25 @@ def mark_drawing_in_progress():
     drawing_name = drawing_name.lower().replace(' ', '_')
 
     cur = mysql.connection.cursor()
-    check_if_drawing_exists_query = 'SELECT id FROM architect_drawings  WHERE project_id=' + str(project_id)
+    table_name = ''
+    if 'category' in request.form:
+        table_name = request.form['category']
+    else:
+        table_name = get_drwaings_table_name()
+
+    cur = mysql.connection.cursor()
+    check_if_drawing_exists_query = 'SELECT id FROM '+table_name+'  WHERE project_id=' + str(project_id)
     cur.execute(check_if_drawing_exists_query)
     result = cur.fetchone()
     if result is not None:
-        update_drawing_query = 'UPDATE architect_drawings set ' + drawing_name + '="0" WHERE id=' + str(
+        update_drawing_query = 'UPDATE '+table_name+' set ' + drawing_name + '="0" WHERE id=' + str(
             result[0])
         cur.execute(update_drawing_query)
         mysql.connection.commit()
         flash('Drawing marked as in progress!', 'success')
         return redirect('/erp/drawings')
     else:
-        insert_drawing_query = 'INSERT into architect_drawings (project_id, ' + drawing_name + ') values (%s, %s)'
+        insert_drawing_query = 'INSERT into '+table_name+' (project_id, ' + drawing_name + ') values (%s, %s)'
         cur.execute(insert_drawing_query, (str(project_id), '0'))
         mysql.connection.commit()
         flash('Drawing marked as in progress!', 'success')
