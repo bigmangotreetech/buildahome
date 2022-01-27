@@ -260,10 +260,10 @@ async function saveSign() {
         type: "POST",
         url: "/erp/upload_signed_wo",
         success: function (data) {
-            console.log(data)
-            window.location.reload()
+            window.location.href = '/erp/view_unsigned_work_order'
         },
         error: function (error) {
+            console.log(error)
             // handle error
         },
         async: true,
@@ -275,7 +275,7 @@ async function saveSign() {
     });
 
     // Trigger the browser to download the PDF document
-    download(pdfBytes, "signed_wo.pdf", "application/pdf");
+    // download(pdfBytes, "signed_wo.pdf", "application/pdf");
 
 
 

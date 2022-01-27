@@ -751,6 +751,7 @@ def upload_signed_wo():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
+            flash('Work order signed!','success')
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'work_order_'+str(wo_id)+'.pdf'))
             return 'success'
 
@@ -767,7 +768,7 @@ def approve_wo():
             cur = mysql.connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
-        return render_template('approve_wo.html', wo=result)
+        return render_template('approve_wo.html', wo=result, wo_id=str(request.args['wo_id']))
 
 @app.route('/create_project', methods=['GET','POST'])
 def create_project():
