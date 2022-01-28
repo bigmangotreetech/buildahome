@@ -34,7 +34,9 @@
             <tbody>
             {% for i in work_orders %}
             <tr>
-                <td>{{i[5]}}</td>
+                <td>
+                    <a href="/erp/project_contractor_info?project_id={{i[1]}}&&name={{i[5]}}&&name={{i[6]}}">{{i[5]}}</a>
+                </td>
                 <td>{{i[7]}}</td>
                 <td>{{i[6]}}</td>
                 <td>{{i[3]}}</td>

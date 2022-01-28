@@ -507,6 +507,29 @@ def save_approved_bill():
     mysql.connection.commit()
     return jsonify({"message": "success"})
 
+
+@app.route('/project_contractor_info', methods=["GET"])
+def project_contractor_info():
+    project_id = request.args['project_id']
+    contractor_name = request.args['contractor_name']
+    contractor_code = request.args['contractor_code']
+    cur = mysql.connection.cursor()
+    get_wo_query = 'SELECT w.contractor_name, w.contractor_code, w.contractor_pan,' \
+                   'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount' \
+                   'from work_orders w INNER JOIN wo_bills b on ' \
+                   'AND b.approval_2_amount IS NOT NULL' \
+                   'w.contractor_name=b.contractor_name AND w.contractor_code = b.contractor_code AND' \
+                   'w.project_id=%s AND w.contractor_name=%s AND w.contractor_code=%s ORDER BY w.trade'
+    cur.execute(get_wo_query, (project_id, contractor_name, contractor_code))
+    bills = cur.fetchall()
+
+    get_project_query = 'SELECT project_name, project_number from projects WHERE project_id='+str(project_id)
+    cur.execute(get_project_query)
+    project = cur.fetchone()
+
+
+    return render_template('project_contractor_info.html', bills=bills, project=project)
+
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
     get_wo_query = 'SELECT * from work_orders WHERE project_id='+str(project_id)+' ORDER BY trade'
