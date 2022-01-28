@@ -3,7 +3,7 @@
 <div class="my-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form action="/erp/create_project" method="post" enctype="multipart/form-data">
+            <form name="myForm" action="/erp/create_project" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                 <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
                     <div class="col-12">
                         <h4>Create project</h4>
@@ -16,6 +16,7 @@
                     </div>
                     <div class="col-6">
                         <input name="project_number" id="project_number" class="form-control" required>
+                        <span name="project_number_error" class="d-none" id="project_number_error">Please Enter Project Number</span>  
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -248,5 +249,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    function validateForm() {
+      let x = document.forms["myForm"]["project_number"].value;
+      if (x == "") {
+        document.getElementById("project_number_error") .setAttribute("class", "error");
+        return false;
+      }
+    }
+</script>
 
 {% endblock %}
