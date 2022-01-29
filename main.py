@@ -1040,13 +1040,14 @@ def assign_operations_team():
 @app.route('/revised_drawings', methods=['GET',"POST"])
 def revised_drawings():
     if request.method == 'GET':
+        projects = get_projects()
         drawings = []
         if 'project_id' in request.args:
             cur = mysql.connection.cursor()
             reviewed_drawings_query = 'SELECT id, type, name from revised_drawings WHERE project_id='+str(request.args['project_id'])
             cur.execute(reviewed_drawings_query)
             drawings = cur.fetchall()
-        return render_template('revised_drawings.html', drawings=drawings)
+        return render_template('revised_drawings.html', drawings=drawings, projects=projects)
 
 
 
