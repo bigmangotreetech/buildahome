@@ -1064,7 +1064,7 @@ def upload_revised_drawing():
         type = request.form['drawing_type']
         name = request.form['drawing_name']
         new_drawing_query = 'INSERT into revised_drawings (name, type, project_id) values (%s, %s, %s)'
-        cur.execute(new_drawing_query)
+        cur.execute(new_drawing_query, (str(project_id), type, name))
         drawing_id = cur.lastrowid
         if 'drawing' in request.files:
             file = request.files['drawing']
