@@ -199,7 +199,7 @@ def create_user():
         phone = request.form['phone']
         cur = mysql.connection.cursor()
         values = (name, role, email, phone)
-        check_if_user_exists = 'SELECT user_id from App_users WHERE email='+str(email)
+        check_if_user_exists = 'SELECT user_id from App_users WHERE email="'+str(email)+'"'
         cur.execute(check_if_user_exists)
         res = cur.fetchone()
         if res is not None:
