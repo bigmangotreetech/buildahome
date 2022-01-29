@@ -520,6 +520,7 @@ def project_contractor_info():
                    'w.contractor_name=b.contractor_name AND w.contractor_code = b.contractor_code AND ' \
                    'w.project_id=%s AND w.contractor_name=%s AND w.contractor_code=%s AND ' \
                    'b.approval_2_amount IS NOT NULL ORDER BY w.trade'
+    return get_wo_query
     cur.execute(get_wo_query, (project_id, contractor_name, contractor_code))
     bills = cur.fetchall()
 
