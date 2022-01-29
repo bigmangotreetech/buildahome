@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Phone</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{user[2]}}</td>
+            <td>{{user[1]}}</td>
+            <td>{{user[3]}}</td>
+            <td>{{user[4]}}</td>
+            <td>
+                <a href="/erp/edit_user?user_id={{user[0]}}" class="btn text-primary"
+                   onclick="return confirm('Are you sure you want to delete this user')">Edit</a>
+            </td>
+            <td>
+                <a href="/erp/delete_user?user_id={{user[0]}}" class="btn text-danger"
+                   onclick="return confirm('Are you sure you want to delete this user')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

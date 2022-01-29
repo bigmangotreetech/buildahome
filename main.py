@@ -170,6 +170,91 @@ def view_inventory():
             material_total_quantity = result[0]
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material, material_total_quantity=material_total_quantity)
 
+
+@app.route('/create_user', methods=['GET','POST'])
+def create_user():
+    if request.method == 'GET':
+        roles = [
+            'Super Admin',
+            'COO',
+            'QS Head',
+            'QS Engineers',
+            'Purchase Head',
+            'Purchase executives',
+            'Design Head',
+            'Architect',
+            'Structural Designer',
+            'Electrical Engineer',
+            'PHE Designer',
+            'Site Engineer',
+            'Project Coordinator',
+            'Sales Executive',
+            'Project Manager'
+        ]
+        return render_template('create_user.html', roles=roles)
+    else:
+        name = request.form['name']
+        role = request.form['role']
+        email = request.form['email']
+        phone = request.form['phone']
+        cur = mysql.connection.cursor()
+        values = (name, role, email, phone)
+        check_if_user_exists = 'SELECT user_id from App_users WHERE email=%s'
+        cur.execute(check_if_user_exists, (email) )
+        res = cur.fetchone()
+        if res is not None:
+            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s WHERE user_id='+str(res[0])
+            cur.execute(update_query, (name, role, phone))
+            flash('User with that email already exists. Role updated','warning')
+        else:
+            new_user_query = 'INSERT into App_users (name, role, email, phone) values(%s, %s, %s, %s)'
+            cur.execute(new_user_query, values)
+            flash('User created successfully','success')
+        mysql.connection.commit()
+        return redirect('/erp/view_users')
+
+@app.route('/edit_user', methods=['GET','POST'])
+def edit_user():
+    if request.method == 'GET':
+        user_id = request.args['user_id']
+        cur = mysql.connection.cursor()
+        view_user_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE user_id='+str(user_id)
+        cur.execute(view_user_query)
+        result = cur.fetchall()
+        return render_template('edit_user.html', user=result)
+    else:
+        user_id = request.form['user_id']
+        name = request.form['name']
+        role = request.form['role']
+        email = request.form['email']
+        phone = request.form['phone']
+        cur = mysql.connection.cursor()
+        values = (name, role, email, phone)
+        update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
+        cur.execute(update_query, values)
+        flash('User updated', 'success')
+        mysql.connection.commit()
+        return redirect('/erp/view_users')
+
+@app.route('/delete_user', methods=['GET','POST'])
+def delete_user():
+    user_id = request.args['user_id']
+    cur = mysql.connection.cursor()
+    delete_user_query = 'DELETE from App_users WHERE user_id=' + str(user_id)
+    cur.execute(delete_user_query)
+    mysql.connection.commit()
+    flash('User deleted', 'danger')
+    return redirect('/erp/view_users')
+
+
+@app.route('/view_users', methods=['GET'])
+def view_users():
+    cur = mysql.connection.cursor()
+    view_users_query = 'SELECT user_id, email, name, role, phone FROM users'
+    cur.execute(view_users_query)
+    result = cur.fetchall()
+    return render_template('view_users.html', users=result)
+
 @app.route('/vendor_registration', methods=['GET','POST'])
 def vendor_registration():
     if request.method == 'GET':
@@ -536,8 +621,6 @@ def project_contractor_info():
         data['value'] = bills[0][3]
         data['balance'] = bills[0][4]
         data['trade'] = bills[0][5]
-
-
 
     return render_template('project_contractor_info.html', bills=bills, project=project, data=data)
 

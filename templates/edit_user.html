@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <form action="/erp/edit_user"  method="post"  enctype="multipart/form-data">
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="role">Role</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="role" id="role" class="form-control select2">
+                            <option value=""></option>
+                            {% for i in roles %}
+                            {% if i|string() == user[3]|string() %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {% else %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endif %}
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="name">Name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="name" id="name" class="form-control" value="{{user[2]}}" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="email" id="email" value="{{user[1]}}" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="phone">Phone number</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="phone" id="phone" value="{{user[4]}}" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button class="btn btn-block bg-indigo text-white ">Submit</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
