@@ -4,29 +4,42 @@
     <div class="mb-2">
         Project: {{project[0]}}
     </div>
-    <div class="mb-2">
-        Balance: {{project[0]}}
-    </div>
 
+    <div class="mb-2">
+        Contractor Name: {{data['name'}}
+    </div>
+    <div class="mb-2">
+        Contractor Code: {{data['code'}}
+    </div>
+    <div class="mb-2">
+        Contractor APN: {{data['pan'}}
+    </div>
+    <div class="mb-2">
+        Nature of work: {{data['trade'}}
+    </div>
+    <div class="mb-2">
+        WO value: {{data['value'}}
+    </div>
+    <div class="mb-2">
+        Balance: {{data['balance'}}
+    </div>
 </div>
 <div class="p-5 w-100 table-responsive">
     <table class="table table-striped">
         <thead>
         <tr>
 
-            <th scope="col">WO Value</th>
-            <th scope="col">Nature of Work</th>
+
             <th scope="col">Description</th>
             <th scope="col">%</th>
             <th scope="col">Total Payable</th>
-            <th scope="col">Approved amount</th>
+            <th scop e="col">Approved amount</th>
         </tr>
         </thead>
         <tbody>
         {% for i in bills %}
         <tr>
-            <td>{{i[3]}}</td>
-            <td>{{i[5]}}</td>
+
             <td>{{i[6]}}</td>
             <td>{{i[7]}}</td>
             <td>{{i[8]}}</td>

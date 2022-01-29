@@ -528,7 +528,18 @@ def project_contractor_info():
     project = cur.fetchone()
 
 
-    return render_template('project_contractor_info.html', bills=bills, project=project)
+    data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': ''}
+    if len(bills) > 0:
+        data['name'] = bills[0][0]
+        data['code'] = bills[0][1]
+        data['pan'] = bills[0][2]
+        data['value'] = bills[0][3]
+        data['balance'] = bills[0][4]
+        data['trade'] = bills[0][5]
+
+
+
+    return render_template('project_contractor_info.html', bills=bills, project=project, data=data)
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
