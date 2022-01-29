@@ -216,12 +216,29 @@ def create_user():
 @app.route('/edit_user', methods=['GET','POST'])
 def edit_user():
     if request.method == 'GET':
+        roles = [
+            'Super Admin',
+            'COO',
+            'QS Head',
+            'QS Engineers',
+            'Purchase Head',
+            'Purchase executives',
+            'Design Head',
+            'Architect',
+            'Structural Designer',
+            'Electrical Engineer',
+            'PHE Designer',
+            'Site Engineer',
+            'Project Coordinator',
+            'Sales Executive',
+            'Project Manager'
+        ]
         user_id = request.args['user_id']
         cur = mysql.connection.cursor()
         view_user_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE user_id='+str(user_id)
         cur.execute(view_user_query)
         result = cur.fetchone()
-        return render_template('edit_user.html', user=result)
+        return render_template('edit_user.html', user=result, roles=roles)
     else:
         user_id = request.form['user_id']
         name = request.form['name']
