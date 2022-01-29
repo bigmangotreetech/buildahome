@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <form action="/erp/upload_revised_drawing" , method="post" , enctype="multipart/form-data">
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project">Project</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="project" id="project" class="form-control select2">
+                            <option value=""></option>
+                            {% for i in projects %}
+                            <option value="{{i[0]}}">{{i[1]}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="drawing_type">Type</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="drawing_type" id="drawing_type" class="form-control select2">
+                            <option value=""></option>
+                            {% for i in drawing_types %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="drawing_name">Name</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="drawing_name" id="drawing_name" class="drawing_name_select form-control select2">
+                            <option value=""></option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="drawing">Drawing</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="file" name="drawing" id="drawing">
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button class="btn btn-block bg-indigo text-white ">Submit</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

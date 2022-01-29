@@ -254,6 +254,17 @@ $(document).ready(function() {
 
    $("#view_work_order").on('click', getWorkOrderForSelectedProject)
 
+   function getRevisedDrawingsForSelectedProject() {
+        const project = $("#project").val()
+        if (project.length) {
+            window.location.href = '/erp/revised_drawings?project_id='+project.toString()
+        }
+   }
+
+   $("#view_revised_drawings").on('click', getRevisedDrawingsForSelectedProject)
+
+
+
    function checkIfNumberOfFloorsUpdated(project_id) {
         $.ajax({
               url: '/erp/check_if_floors_updated',
@@ -325,5 +336,55 @@ $(document).ready(function() {
         additional_cost.val(additional_cost_value)
         $(this).parents('form').submit()
    })
+
+
+   drawings = {
+            'Architect': [
+                'Working drawing (floor plans)',
+                'Designer wall details',
+                'Filler slab layout',
+                'Sections',
+                '2 D elevation',
+                'Door Window details, Window grill details',
+                'Flooring layout details',
+                'Toilet,kitchen Dadoing Details',
+                'Compound wall details',
+                'Fabrication details',
+                'Sky light details',
+                'External and Internal Paint Shades'
+            ],
+            'Structural' : [
+                'Column Marking',
+                'Footing Layout',
+                'UG sump details',
+                'Plinth Beam layout',
+                'Staircase details',
+                'Floor form work ,beam and slab reinforcement details',
+                'OHT slab details',
+                'Lintel details.'
+            ],
+            'Electrical': [
+                'Electrical', 'Conduit'
+            ],
+            'Plumbing': [
+                'Water line drawings',
+                'Drainage line drawings',
+                'RWH Details'
+            ]
+        }
+
+   $('#drawing_type').on('change', function() {
+        type = $(this).val()
+        if (type.length) {
+            for(const drawing of drawings[type]) {
+                $(".drawing_name_select").append($("<option></option>")
+                .attr("value", drawing)
+                .text(drawing))
+              }
+        }
+   })
+
+
+
 });
 

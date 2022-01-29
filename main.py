@@ -511,8 +511,8 @@ def save_approved_bill():
 @app.route('/project_contractor_info', methods=["GET"])
 def project_contractor_info():
     project_id = request.args['project_id']
-    contractor_name = request.args['contractor_name']
-    contractor_code = request.args['contractor_code']
+    contractor_name = request.args['name']
+    contractor_code = request.args['code']
     cur = mysql.connection.cursor()
     get_wo_query = 'SELECT w.contractor_name, w.contractor_code, w.contractor_pan,' \
                    'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount' \
@@ -1036,6 +1036,46 @@ def assign_operations_team():
         mysql.connection.commit()
         flash('Operations team has been assigned successfully','success')
         return redirect('/erp/projects_with_operations_team')
+
+@app.route('/revised_drawings', methods=['GET',"POST"])
+def revised_drawings():
+    if request.method == 'GET':
+        drawings = []
+        if 'project_id' in request.args:
+            cur = mysql.connection.cursor()
+            reviewed_drawings_query = 'SELECT id, type, name from revised_drawings WHERE project_id='+str(request.args['project_id'])
+            cur.execute(reviewed_drawings_query)
+            drawings = cur.fetchall()
+        return render_template('revised_drawings.html', drawings=drawings)
+
+
+
+@app.route('/upload_revised_drawing', methods=['GET',"POST"])
+def upload_revised_drawing():
+    if request.method == 'GET':
+        projects = get_projects()
+        drawing_types = ['Architect','Structural','Electrical','Plumbing']
+
+        return render_template('upload_revised_drawing.html', projects=projects, drawing_types=drawing_types)
+    else:
+        cur = mysql.connection.cursor()
+        project_id = request.form['project_id']
+        type = request.form['drawing_type']
+        name = request.form['drawing_name']
+        new_drawing_query = 'INSERT into revised_drawings (name, type, project_id) values (%s, %s, %s)'
+        cur.execute(new_drawing_query)
+        drawing_id = cur.lastrowid
+        if 'drawing' in request.files:
+            file = request.files['drawing']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                drawing_filename = 'rd_'+str(drawing_id)+'.pdf'
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], drawing_filename))
+            mysql.connection.commit()
+            flash('Revised drawing uploaded successfully', 'success')
+            return redirect('/revised_drawings')
 
 @app.route('/drawings', methods=['GET'])
 def drawings():

@@ -14,34 +14,29 @@
                 {% endfor %}
             </select>
         </div>
-        <button id="view_work_order" class="btn text-white bg-indigo  mb-2">Get work order</button>
+        <button id="view_revised_drawings" class="btn text-white bg-indigo  mb-2">Get revised drawings</button>
     </div>
 
-    {% if work_orders is not none %}
+    {% if drawings is not none %}
 
     <div class="p-5 w-100 table-responsive">
         <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">Contractor Name</th>
-                <th scope="col">Contractor PAN</th>
-                <th scope="col">Contractor Code</th>
-                <th scope="col">Trade</th>
-                <th scope="col">Value</th>
-                <th scope="col">Balance</th>
+                <th scope="col">Drawing Name</th>
+                <th scope="col">Drawing Type</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
-            {% for i in work_orders %}
+            {% for i in drawings %}
             <tr>
-                <td>
-                    <a href="/erp/project_contractor_info?project_id={{i[1]}}&&name={{i[5]}}&&code={{i[6]}}">{{i[5]}}</a>
-                </td>
-                <td>{{i[7]}}</td>
-                <td>{{i[6]}}</td>
-                <td>{{i[3]}}</td>
+                <td>{{i[1]}}</td>
                 <td>{{i[2]}}</td>
-                <td>{{i[8]}}</td>
+                <td>
+                    <a href="/files/rd_{{i[0]}}.pdf">View</a>
+                </td>
+
             </tr>
 
             {% endfor %}
