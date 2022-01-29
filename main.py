@@ -517,7 +517,7 @@ def project_contractor_info():
     get_wo_query = 'SELECT w.contractor_name, w.contractor_code, w.contractor_pan,' \
                    'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount' \
                    'from work_orders w INNER JOIN wo_bills b on ' \
-                   'AND b.approval_2_amount IS NOT NULL AND' \
+                   'AND b.approval_2_amount IS NOT NULL AND ' \
                    'w.contractor_name=b.contractor_name AND w.contractor_code = b.contractor_code AND' \
                    'w.project_id=%s AND w.contractor_name=%s AND w.contractor_code=%s ORDER BY w.trade'
     cur.execute(get_wo_query, (project_id, contractor_name, contractor_code))
