@@ -1064,7 +1064,7 @@ def upload_revised_drawing():
         type = request.form['drawing_type']
         name = request.form['drawing_name']
         new_drawing_query = 'INSERT into revised_drawings (name, type, project_id) values (%s, %s, %s)'
-        cur.execute(new_drawing_query, (str(project_id), type, name))
+        cur.execute(new_drawing_query, (name, type, str(project_id)))
         drawing_id = cur.lastrowid
         if 'drawing' in request.files:
             file = request.files['drawing']
@@ -1076,7 +1076,7 @@ def upload_revised_drawing():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], drawing_filename))
             mysql.connection.commit()
             flash('Revised drawing uploaded successfully', 'success')
-            return redirect('/revised_drawings')
+            return redirect('/erp/revised_drawings')
 
 @app.route('/drawings', methods=['GET'])
 def drawings():
