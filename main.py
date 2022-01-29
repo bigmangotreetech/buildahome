@@ -220,7 +220,7 @@ def edit_user():
         cur = mysql.connection.cursor()
         view_user_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE user_id='+str(user_id)
         cur.execute(view_user_query)
-        result = cur.fetchall()
+        result = cur.fetchone()
         return render_template('edit_user.html', user=result)
     else:
         user_id = request.form['user_id']
