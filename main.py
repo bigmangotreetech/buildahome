@@ -250,7 +250,7 @@ def delete_user():
 @app.route('/view_users', methods=['GET'])
 def view_users():
     cur = mysql.connection.cursor()
-    view_users_query = 'SELECT user_id, email, name, role, phone FROM users'
+    view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users'
     cur.execute(view_users_query)
     result = cur.fetchall()
     return render_template('view_users.html', users=result)
