@@ -199,8 +199,8 @@ def create_user():
         phone = request.form['phone']
         cur = mysql.connection.cursor()
         values = (name, role, email, phone)
-        check_if_user_exists = 'SELECT user_id from App_users WHERE email=%s'
-        cur.execute(check_if_user_exists, (email) )
+        check_if_user_exists = 'SELECT user_id from App_users WHERE email='+str(email)
+        cur.execute(check_if_user_exists)
         res = cur.fetchone()
         if res is not None:
             update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s WHERE user_id='+str(res[0])
