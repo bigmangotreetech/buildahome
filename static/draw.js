@@ -197,7 +197,7 @@ async function saveSign() {
         x: 418,
         y: 609,
         size: 10,
-        lineHeight: 13
+        lineHeight: 13,
         maxWidth: 150,
       })
 
