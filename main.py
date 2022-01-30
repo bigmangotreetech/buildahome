@@ -145,9 +145,9 @@ def login():
 def enter_material():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/enter_material'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -195,9 +195,9 @@ def enter_material():
 def view_inventory():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_inventory'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     cur = mysql.connection.cursor()
@@ -284,7 +284,7 @@ def create_user():
 def edit_user():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/edit_user'
         return redirect('/erp/login')
     if session['role'] not in ['Super Admin','COO','Billing']:
         flash('You do not have permission to view that page', 'danger')
@@ -331,7 +331,7 @@ def edit_user():
 def delete_user():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/delete_user'
         return redirect('/erp/login')
     if session['role'] not in ['Super Admin','COO','Billing']:
         flash('You do not have permission to view that page', 'danger')
@@ -349,7 +349,7 @@ def delete_user():
 def view_users():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_users'
         return redirect('/erp/login')
     if session['role'] not in ['Super Admin','COO','Billing']:
         flash('You do not have permission to view that page', 'danger')
@@ -364,9 +364,9 @@ def view_users():
 def vendor_registration():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/vendor_registration'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -387,9 +387,9 @@ def vendor_registration():
 def view_vendors():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_vendors'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     cur = mysql.connection.cursor()
@@ -402,9 +402,9 @@ def view_vendors():
 def view_vendor_details():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_vendor_details'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     vendor_details = []
@@ -420,9 +420,9 @@ def view_vendor_details():
 def edit_vendor():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/edit_vendor'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -452,9 +452,9 @@ def edit_vendor():
 def delete_vendor():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/delete_vendor'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -481,9 +481,9 @@ def get_vendors():
 def kyp_material():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/kyp_material'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     material_quantity_data = {
@@ -537,9 +537,9 @@ def kyp_material():
 def create_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/create_work_order'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']:
+    if session['role'] not in ['Super Admin','COO','QS Head','QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -586,9 +586,9 @@ def create_work_order():
 def create_bill():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/create_bill'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -676,9 +676,9 @@ def get_bills_as_json(bills_query):
 def view_bills():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_bills'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'QS Head']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -695,9 +695,9 @@ def view_bills():
 def view_approved_bills():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_approved_bills'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -790,9 +790,9 @@ def get_work_orders_for_project(project_id):
 def view_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_work_order'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -808,9 +808,9 @@ def view_work_order():
 def view_unsigned_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_unsigned_work_order'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -839,9 +839,9 @@ def view_unsigned_work_order():
 def view_unapproved_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_unapproved_work_order'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'QS Head']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -882,9 +882,9 @@ def check_if_floors_updated():
 def view_approved_indents():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_user'
+        session['last_route'] = '/erp/view_approved_indents'
         return redirect('/erp/login')
-    if session['role'] in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -960,7 +960,7 @@ def view_approved_indents():
 def view_indent_details():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_indent_details'
         return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['indent_id']
@@ -1121,7 +1121,7 @@ def create_project():
 def edit_project():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_project'
+        session['last_route'] = '/erp/edit_project'
         return redirect('/erp/login')
     if session['role'] not in ['Super Admin', 'COO', 'Sales Executive']:
         flash('You do not have permission to view that page', 'danger')
@@ -1163,7 +1163,7 @@ def edit_project():
 def unapproved_projects():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_project'
+        session['last_route'] = '/erp/unapproved_projects'
         return redirect('/erp/login')
     if session['role'] not in ['Super Admin']:
         flash('You do not have permission to view that page', 'danger')
@@ -1179,7 +1179,7 @@ def unapproved_projects():
 def approved_projects():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_project'
+        session['last_route'] = '/erp/projects'
         return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()

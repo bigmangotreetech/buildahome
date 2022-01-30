@@ -10,7 +10,7 @@
                         <label for="role">Role</label>
                     </div>
                     <div class="col-6">
-                        <select name="role" id="role" class="form-control select2">
+                        <select name="role" id="role" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in roles %}
                             {% if i|string() == user[3]|string() %}
