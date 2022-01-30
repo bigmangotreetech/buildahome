@@ -29,6 +29,7 @@
                 <th scope="col">Trade</th>
                 <th scope="col">Value</th>
                 <th scope="col">Balance</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -42,6 +43,11 @@
                 <td>{{i[3]}}</td>
                 <td>{{i[2]}}</td>
                 <td>{{i[8]}}</td>
+                <td>
+                    <a style="word-break: break-all;" target="_blank" href="/files/work_order_{{i[0]}}.pdf">
+                        View
+                    </a>
+                </td>
             </tr>
 
             {% endfor %}

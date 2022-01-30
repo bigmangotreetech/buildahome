@@ -34,10 +34,56 @@ def allowed_file(filename):
 
 def get_projects():
     cur = mysql.connection.cursor()
-    query = "SELECT project_id, project_name, project_number FROM projects"
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer']:
+        query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
+                                  'AND project_id IN ' + str(session['projects'])
+    else:
+        query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
     cur.execute(query)
     projects = cur.fetchall()
     return projects
+
+def get_projects_for_current_user():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        role = session['role']
+        cur = mysql.connection.cursor()
+        if role == 'Project Coordinator':
+            query = 'SELECT project_id from project_operations_team WHERE co_ordinator='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'Project Manager':
+            query = 'SELECT project_id from project_operations_team WHERE project_manager='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'Purchase Executive':
+            query = 'SELECT project_id from project_operations_team WHERE purchase_executive='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'QS Executive':
+            query = 'SELECT project_id from project_operations_team WHERE qs_executive='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'Architect':
+            query = 'SELECT project_id from project_design_team WHERE architect='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'Structural Designer':
+            query = 'SELECT project_id from project_design_team WHERE structural_designer='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'Electrical Designer':
+            query = 'SELECT project_id from project_design_team WHERE electrical_designer='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'PHE Designer':
+            query = 'SELECT project_id from project_design_team WHERE phe_designer='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
+        elif role == 'Senior Architect':
+            query = 'SELECT project_id from project_design_team WHERE senior_architect='+str(user_id)
+            cur.execute(query)
+            return cur.fetchall()
 
 @app.route('/', methods=['GET'])
 def index():
@@ -45,19 +91,7 @@ def index():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp'
         return redirect('/erp/login')
-    user_login_data = {
-        'email' : session['email'],
-        'name': session['name'],
-        'access_level': session['access_level'],
-        'role': session['role']
-    }
-    return render_template('index.html', user_login_data=user_login_data)
-
-
-@app.route('/forgot_password', methods=['GET','POST'])
-def forgot_password():
-    if request.method == 'GET':
-        return render_template('forgot_password.html')
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -67,22 +101,32 @@ def login():
                 last_route = session['last_route']
                 del session['last_route']
                 return redirect(last_route)
-            else: return redirect('/erp')
-        return render_template('login.html')
+            else:
+                return redirect('/erp')
+        else:
+            return render_template('login.html')
     else:
+        required_fields = ['username', 'password']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         username = request.form['username']
         password = request.form['password']
         password = hashlib.sha256(password.encode()).hexdigest()
         cur = mysql.connection.cursor()
-        query = "SELECT email, name, role, password, access_level FROM App_users WHERE email='"+username+"'"
+        query = "SELECT user_id, email, name, role, password, access_level FROM App_users WHERE email='"+username+"'"
         cur.execute(query)
         result = cur.fetchone()
         if result is not None:
-            if result[3] == password:
-                session['email'] = result[0]
-                session['role'] = result[2]
-                session['name'] = result[1]
-                session['access_level'] = result[4]
+            if result[4] == password:
+                session['user_id'] = result[0]
+                session['email'] = result[1]
+                session['role'] = result[3]
+                session['name'] = result[2]
+                session['access_level'] = result[5]
+                session['projects'] = get_projects_for_current_user()
                 flash('Logged in successfully', 'success')
                 return redirect('/erp')
             else:
@@ -99,12 +143,21 @@ def enter_material():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/enter_material'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         projects = get_projects()
         vendors = get_vendors()
-
         return render_template('enter_material.html', projects=projects, vendors=vendors)
     else:
+        required_fields = ['material', 'description','vendor','project','po_no','invoice_no','invoice_date',
+                           'quantity','unit','rate','gst','total_amount','difference_cost','photo_date']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         material = request.form['material']
         description = request.form['description']
         vendor = request.form['vendor']
@@ -146,10 +199,11 @@ def view_inventory():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_inventory'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     cur = mysql.connection.cursor()
-    query = "SELECT project_id, project_name FROM projects"
-    cur.execute(query)
-    projects = cur.fetchall()
+    projects = get_projects()
     procurements = None
     project = None
     material = None
@@ -178,41 +232,62 @@ def view_inventory():
 
 @app.route('/create_user', methods=['GET','POST'])
 def create_user():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_user'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Billing']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         roles = [
-            'Super Admin',
-            'COO',
             'QS Head',
             'QS Engineer',
             'Purchase Head',
             'Purchase Executive',
+            'Project Coordinator',
+            'Project Manager',
             'Design Head',
+            'Senior Architect',
             'Architect',
             'Structural Designer',
-            'Electrical Engineer',
+            'Electrical Designer',
             'PHE Designer',
             'Site Engineer',
-            'Project Coordinator',
             'Sales Executive',
-            'Project Manager'
+            'Billing',
+            'Planning'
         ]
         return render_template('create_user.html', roles=roles)
     else:
+        required_fields = ['name','role','email','phone','password','confirm_password']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         name = request.form['name']
         role = request.form['role']
         email = request.form['email']
         phone = request.form['phone']
+        password = request.form['password']
+        c_password = request.form['confirm_password']
+        if password != c_password:
+            flash('Passwords did not match. Operation failed', 'danger')
+            return redirect(request.referrer)
         cur = mysql.connection.cursor()
-        values = (name, role, email, phone)
+        password = hashlib.sha256(password.encode()).hexdigest()
+
         check_if_user_exists = 'SELECT user_id from App_users WHERE email="'+str(email)+'"'
         cur.execute(check_if_user_exists)
         res = cur.fetchone()
         if res is not None:
-            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s WHERE user_id='+str(res[0])
-            cur.execute(update_query, (name, role, phone))
+            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, password=%s WHERE user_id='+str(res[0])
+            cur.execute(update_query, (name, role, phone, password))
             flash('User with that email already exists. Role updated','warning')
         else:
-            new_user_query = 'INSERT into App_users (name, role, email, phone) values(%s, %s, %s, %s)'
+            new_user_query = 'INSERT into App_users (name, role, email, phone, password) values(%s, %s, %s, %s, %s)'
+            values = (name, role, email, phone, password)
             cur.execute(new_user_query, values)
             flash('User created successfully','success')
         mysql.connection.commit()
@@ -220,10 +295,15 @@ def create_user():
 
 @app.route('/edit_user', methods=['GET','POST'])
 def edit_user():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/edit_user'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Billing']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         roles = [
-            'Super Admin',
-            'COO',
             'QS Head',
             'QS Engineer',
             'Purchase Head',
@@ -231,12 +311,14 @@ def edit_user():
             'Design Head',
             'Architect',
             'Structural Designer',
-            'Electrical Engineer',
+            'Electrical Designer',
             'PHE Designer',
             'Site Engineer',
             'Project Coordinator',
             'Sales Executive',
-            'Project Manager'
+            'Project Manager',
+            'Billing',
+            'Planning',
         ]
         user_id = request.args['user_id']
         cur = mysql.connection.cursor()
@@ -245,21 +327,55 @@ def edit_user():
         result = cur.fetchone()
         return render_template('edit_user.html', user=result, roles=roles)
     else:
+        required_fields = ['name', 'role', 'email', 'phone', 'password', 'confirm_password']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         user_id = request.form['user_id']
         name = request.form['name']
         role = request.form['role']
         email = request.form['email']
         phone = request.form['phone']
-        cur = mysql.connection.cursor()
-        values = (name, role, phone, email)
-        update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
-        cur.execute(update_query, values)
-        flash('User updated', 'success')
-        mysql.connection.commit()
-        return redirect('/erp/view_users')
+        password = request.form['password']
+        if len(password.strip()) > 0:
+            c_password = request.form['confirm_password']
+            if password != c_password:
+                flash('Passwords did not match. Operation failed', 'danger')
+                return redirect(request.referrer)
+            cur = mysql.connection.cursor()
+            password = hashlib.sha256(password.encode()).hexdigest()
+            values = (name, role, phone, email, password)
+            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(user_id)
+            cur.execute(update_query, values)
+            flash('User details and password updated', 'success')
+            mysql.connection.commit()
+            return redirect('/erp/view_users')
+        else:
+            cur = mysql.connection.cursor()
+            values = (name, role, phone, email)
+            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
+            cur.execute(update_query, values)
+            flash('User updated', 'success')
+            mysql.connection.commit()
+            return redirect('/erp/view_users')
 
-@app.route('/delete_user', methods=['GET','POST'])
+@app.route('/delete_user', methods=['GET'])
 def delete_user():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_user'
+        return redirect('/erp/login')
+
+    if session['role'] not in ['Super Admin','COO','Billing']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
+    if 'user_id' not in request.args:
+        flash('Missing fields. Operation failed', 'danger')
+        return redirect(request.referrer)
+
     user_id = request.args['user_id']
     cur = mysql.connection.cursor()
     delete_user_query = 'DELETE from App_users WHERE user_id=' + str(user_id)
@@ -271,14 +387,30 @@ def delete_user():
 
 @app.route('/view_users', methods=['GET'])
 def view_users():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_users'
+        return redirect('/erp/login')
+
+    if session['role'] not in ['Super Admin','COO','Billing']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
     cur = mysql.connection.cursor()
-    view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users'
+    view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE NOT role="Client"'
     cur.execute(view_users_query)
     result = cur.fetchall()
     return render_template('view_users.html', users=result)
 
 @app.route('/vendor_registration', methods=['GET','POST'])
 def vendor_registration():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/vendor_registration'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         return render_template('vendor_registration.html')
     else:
@@ -295,14 +427,32 @@ def vendor_registration():
 
 @app.route('/view_vendors', methods=['GET'])
 def view_vendors():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_vendors'
+        return redirect('/erp/login')
+
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
     cur = mysql.connection.cursor()
     vendors_query = 'SELECT id, name, code, contact_no FROM vendors'
     cur.execute(vendors_query)
     result = cur.fetchall()
     return render_template('view_vendors.html', vendors=result)
 
+# Field validation for form done till here
+
 @app.route('/view_vendor_details', methods=['GET'])
 def view_vendor_details():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_vendor_details'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     vendor_details = []
     if 'vendor_id' in request.args:
         cur = mysql.connection.cursor()
@@ -314,6 +464,13 @@ def view_vendor_details():
 
 @app.route('/edit_vendor', methods=['GET','POST'])
 def edit_vendor():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/edit_vendor'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         if 'vendor_id' in request.args:
             cur = mysql.connection.cursor()
@@ -339,6 +496,13 @@ def edit_vendor():
 
 @app.route('/delete_vendor', methods=['GET'])
 def delete_vendor():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_vendor'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         if 'vendor_id' in request.args:
             cur = mysql.connection.cursor()
@@ -365,6 +529,9 @@ def kyp_material():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/kyp_material'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     material_quantity_data = {
         'Cement': '',
         'Concrete': '',
@@ -418,6 +585,9 @@ def create_work_order():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/create_work_order'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','QS Head','QS Engineer']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         projects = get_projects()
@@ -464,6 +634,9 @@ def create_bill():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/create_bill'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         projects = get_projects()
         return render_template('create_bill.html',projects=projects)
@@ -549,8 +722,11 @@ def get_bills_as_json(bills_query):
 def view_bills():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_bills'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
@@ -565,8 +741,11 @@ def view_bills():
 def view_approved_bills():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_approved_bills'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
@@ -657,8 +836,11 @@ def get_work_orders_for_project(project_id):
 def view_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_work_order'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         projects = get_projects()
         work_orders = []
@@ -672,8 +854,11 @@ def view_work_order():
 def view_unsigned_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_unsigned_work_order'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         work_orders = []
 
@@ -700,8 +885,11 @@ def view_unsigned_work_order():
 def view_unapproved_work_order():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_unapproved_work_order'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         work_orders = []
 
@@ -740,8 +928,11 @@ def check_if_floors_updated():
 def view_approved_indents():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_approved_indents'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
@@ -815,7 +1006,7 @@ def view_approved_indents():
 def view_indent_details():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_bill'
+        session['last_route'] = '/erp/view_indent_details'
         return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['indent_id']
@@ -920,12 +1111,56 @@ def approve_wo():
         return redirect('/erp/view_unapproved_work_order')
 
 
+@app.route('/archive_project', methods=['GET'])
+def archive_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_project'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set archived=1 WHERE project_id='+str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Project archived', 'warning')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+@app.route('/unarchive_project', methods=['GET'])
+def unarchive_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_project'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set archived=0 WHERE project_id='+str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Project unarchived', 'success')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+
 @app.route('/create_project', methods=['GET','POST'])
 def create_project():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/create_project'
         return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
@@ -971,6 +1206,13 @@ def create_project():
 
 @app.route('/edit_project', methods=['GET','POST'])
 def edit_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/edit_project'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         fields = [
             'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance',
@@ -1006,21 +1248,53 @@ def edit_project():
 
 @app.route('/unapproved_projects', methods=['GET'])
 def unapproved_projects():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/unapproved_projects'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=0'
+        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=0 AND archived=0'
         cur.execute(unapproved_projects_query)
         result = cur.fetchall()
         return render_template('unapproved_projects.html', projects=result)
 
-@app.route('/approved_projects', methods=['GET'])
+@app.route('/projects', methods=['GET'])
 def approved_projects():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/projects'
+        return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
+        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer']:
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
+                                      'AND project_id IN '+str(session['projects'])
+        else:
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0'
         cur.execute(approved_projects_query)
         result = cur.fetchall()
         return render_template('approved_projects.html', projects=result)
+
+@app.route('/archived_projects', methods=['GET'])
+def archived_projects():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/projects'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer']:
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1 ' \
+                                      'AND project_id IN '+str(session['projects'])
+        else:
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1'
+        cur.execute(approved_projects_query)
+        result = cur.fetchall()
+        return render_template('archived_projects.html', projects=result)
 
 @app.route('/view_project_details',methods=['GET'])
 def view_project_details():
@@ -1028,7 +1302,7 @@ def view_project_details():
         fields = [
             'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
@@ -1039,7 +1313,7 @@ def view_project_details():
         for i in range (len(fields) - 1) :
             fields_name_to_show = " ".join(fields[i].split('_')).title()
             details[fields_name_to_show] = result[i]
-        return render_template('view_project_details.html', details=details, approved=str(result[-1]))
+        return render_template('view_project_details.html', details=details, approved=str(result[-2]), archived=str(result[-1]))
 
 @app.route('/approve_project', methods=['GET'])
 def approve_project():
@@ -1053,7 +1327,8 @@ def approve_project():
 
 @app.route('/projects_with_no_design_team', methods=['GET'])
 def projects_with_no_design_team():
-    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT on P.project_id = PDT.project_id WHERE PDT.project_id is NULL'
+    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
+                           'on P.project_id = PDT.project_id WHERE P.approved=1 AND p.archived=0 AND PDT.project_id is NULL'
     cur = mysql.connection.cursor()
     cur.execute(no_design_team_query)
     result = cur.fetchall()
@@ -1061,7 +1336,8 @@ def projects_with_no_design_team():
 
 @app.route('/projects_with_design_team', methods=['GET'])
 def projects_with_design_team():
-    design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT on P.project_id = PDT.project_id WHERE PDT.project_id is NOT NULL'
+    design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
+                        'on P.project_id = PDT.project_id WHERE P.approved=1 AND p.archived=0 AND PDT.project_id is NOT NULL'
     cur = mysql.connection.cursor()
     cur.execute(design_team_query)
     result = cur.fetchall()
@@ -1069,7 +1345,8 @@ def projects_with_design_team():
 
 @app.route('/projects_with_no_operations_team', methods=['GET'])
 def projects_with_no_operations_team():
-    no_ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT on P.project_id = POT.project_id WHERE POT.project_id is NULL'
+    no_ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
+                        'on P.project_id = POT.project_id WHERE P.approved=1 AND p.archived=0 AND POT.project_id is NULL'
     cur = mysql.connection.cursor()
     cur.execute(no_ops_team_query)
     result = cur.fetchall()
@@ -1077,7 +1354,8 @@ def projects_with_no_operations_team():
 
 @app.route('/projects_with_operations_team', methods=['GET'])
 def projects_with_operations_team():
-    ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT on P.project_id = POT.project_id WHERE POT.project_id is NOT NULL'
+    ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
+                     'on P.project_id = POT.project_id WHERE P.approved=1 AND p.archived=0 AND POT.project_id is NOT NULL'
     cur = mysql.connection.cursor()
     cur.execute(ops_team_query)
     result = cur.fetchall()
@@ -1224,11 +1502,11 @@ def get_drwaings_table_name():
     role = session['role']
     if role == 'Admin' or role == 'Senior Architect' or role == 'Architect':
         return 'architect_drawings'
-    elif role == 'Structural Engineer':
+    elif role == 'Structural Designer':
         return 'structural_drawings'
-    elif role == 'Electrical Engineer':
+    elif role == 'Electrical Designer':
         return 'electrical_drawings'
-    elif role == 'PHE Engineer':
+    elif role == 'PHE Designer':
         return 'plumbing_drawings'
 
 @app.route('/upload_drawing', methods=['POST'])
