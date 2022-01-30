@@ -264,17 +264,25 @@ def create_user():
         role = request.form['role']
         email = request.form['email']
         phone = request.form['phone']
+        password = request.form['password']
+        c_password = request.form['confirm_password']
+        if password != c_password:
+            flash('Passwords did not match. Operation failed', 'danger')
+            return redirect(request.referrer)
         cur = mysql.connection.cursor()
-        values = (name, role, email, phone)
+        password = hashlib.sha256(password.encode()).hexdigest()
+
+        values = (name, role, email, phone, password)
+
         check_if_user_exists = 'SELECT user_id from App_users WHERE email="'+str(email)+'"'
         cur.execute(check_if_user_exists)
         res = cur.fetchone()
         if res is not None:
-            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s WHERE user_id='+str(res[0])
-            cur.execute(update_query, (name, role, phone))
+            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, password=%s WHERE user_id='+str(res[0])
+            cur.execute(update_query, (name, role, phone, password))
             flash('User with that email already exists. Role updated','warning')
         else:
-            new_user_query = 'INSERT into App_users (name, role, email, phone) values(%s, %s, %s, %s)'
+            new_user_query = 'INSERT into App_users (name, role, email, phone, password) values(%s, %s, %s, %s, %s)'
             cur.execute(new_user_query, values)
             flash('User created successfully','success')
         mysql.connection.commit()
