@@ -1257,7 +1257,7 @@ def unapproved_projects():
         return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=0'
+        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=0 AND archived=0'
         cur.execute(unapproved_projects_query)
         result = cur.fetchall()
         return render_template('unapproved_projects.html', projects=result)
@@ -1271,13 +1271,30 @@ def approved_projects():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer']:
-            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 ' \
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                                       'AND project_id IN '+str(session['projects'])
         else:
-            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0'
         cur.execute(approved_projects_query)
         result = cur.fetchall()
         return render_template('approved_projects.html', projects=result)
+
+@app.route('/archived_projects', methods=['GET'])
+def archived_projects():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/projects'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer']:
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1 ' \
+                                      'AND project_id IN '+str(session['projects'])
+        else:
+            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1'
+        cur.execute(approved_projects_query)
+        result = cur.fetchall()
+        return render_template('archived_projects.html', projects=result)
 
 @app.route('/view_project_details',methods=['GET'])
 def view_project_details():
@@ -1310,7 +1327,8 @@ def approve_project():
 
 @app.route('/projects_with_no_design_team', methods=['GET'])
 def projects_with_no_design_team():
-    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT on P.project_id = PDT.project_id WHERE PDT.project_id is NULL'
+    no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
+                           'on P.project_id = PDT.project_id WHERE P.approved=1 AND p.archived=0 AND PDT.project_id is NULL'
     cur = mysql.connection.cursor()
     cur.execute(no_design_team_query)
     result = cur.fetchall()
@@ -1318,7 +1336,8 @@ def projects_with_no_design_team():
 
 @app.route('/projects_with_design_team', methods=['GET'])
 def projects_with_design_team():
-    design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT on P.project_id = PDT.project_id WHERE PDT.project_id is NOT NULL'
+    design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
+                        'on P.project_id = PDT.project_id WHERE P.approved=1 AND p.archived=0 AND PDT.project_id is NOT NULL'
     cur = mysql.connection.cursor()
     cur.execute(design_team_query)
     result = cur.fetchall()
@@ -1326,7 +1345,8 @@ def projects_with_design_team():
 
 @app.route('/projects_with_no_operations_team', methods=['GET'])
 def projects_with_no_operations_team():
-    no_ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT on P.project_id = POT.project_id WHERE POT.project_id is NULL'
+    no_ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
+                        'on P.project_id = POT.project_id WHERE P.approved=1 AND p.archived=0 AND POT.project_id is NULL'
     cur = mysql.connection.cursor()
     cur.execute(no_ops_team_query)
     result = cur.fetchall()
@@ -1334,7 +1354,8 @@ def projects_with_no_operations_team():
 
 @app.route('/projects_with_operations_team', methods=['GET'])
 def projects_with_operations_team():
-    ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT on P.project_id = POT.project_id WHERE POT.project_id is NOT NULL'
+    ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
+                     'on P.project_id = POT.project_id WHERE P.approved=1 AND p.archived=0 AND POT.project_id is NOT NULL'
     cur = mysql.connection.cursor()
     cur.execute(ops_team_query)
     result = cur.fetchall()
