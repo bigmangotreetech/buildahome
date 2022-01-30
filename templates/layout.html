@@ -51,47 +51,74 @@
 <div class="position-fixed sidebar p-3 bg-indigo">
 
     <div class="nav-section-header">Project</div>
+    {% if session['role'] in ['Super Admin','COO','Sales Executive'] %}
     <a href="/erp/create_project" class='nav-link'>Create project</a>
-    <a href="/erp/unapproved_projects" class='nav-link'>Unapproved projects</a>
-    <a href="/erp/approved_projects" class='nav-link'>Approved projects</a>
+    {% endif %}
 
+    {% if session['role'] in ['Super Admin'] %}
+    <a href="/erp/unapproved_projects" class='nav-link'>Unapproved projects</a>
+    {% endif %}
+
+    <a href="/erp/projects" class='nav-link'>Projects</a>
+
+    {% if session['role'] in ['Super Admin','COO','Billing'] %}
     <div class="nav-section-header">Users</div>
     <a href="/erp/create_user" class='nav-link'>Create user</a>
     <a href="/erp/view_users" class='nav-link'>View users</a>
+    {% endif %}
 
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive'] %}
     <div class="nav-section-header">Material</div>
     <a href="/erp/vendor_registration" class='nav-link'>Vendor Registration</a>
     <a href="/erp/view_vendors" class='nav-link'>View Vendors</a>
     <a href="/erp/enter_material" class='nav-link'>Enter Material</a>
     <a href="/erp/kyp_material" class='nav-link'>KYP For material</a>
     <a href="/erp/view_inventory" class='nav-link'>View inventory</a>
+    {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
     <div class="nav-section-header">Work orders</div>
     <a href="/erp/create_work_order" class='nav-link'>Create work order</a>
     <a href="/erp/view_unsigned_work_order" class='nav-link'>Unsigned work order</a>
+
+    {% if session['role'] in ['Super Admin','COO','QS Head'] %}
     <a href="/erp/view_unapproved_work_order" class='nav-link'>Unapproved work order</a>
+    {% endif %}
+
     <a href="/erp/view_work_order" class='nav-link'>View work order</a>
     {% endif %}
 
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
     <div class="nav-section-header">Bills</div>
     <a href="/erp/create_bill" class='nav-link'>Create bill</a>
-    <a href="/erp/view_bills" class='nav-link'>Unapproved bills</a>
-    <a href="/erp/view_approved_bills" class='nav-link'>Approved bills</a>
 
+    {% if session['role'] in ['Super Admin','COO','QS Head'] %}
+    <a href="/erp/view_bills" class='nav-link'>Unapproved bills</a>
+    {% endif %}
+
+    <a href="/erp/view_approved_bills" class='nav-link'>Approved bills</a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive'] %}
     <div class="nav-section-header">Indents</div>
     <a href="/erp/view_approved_indents" class='nav-link'>Approved Indents</a>
+    {% endif %}
 
+    {% if session['role'] in ['Super Admin','COO','Design Head','Architect','Structural Designer', 'Electrical Engineer', 'PHE Designer'] %}
     <div class="nav-section-header">Design team</div>
     <a href="/erp/drawings" class='nav-link'>Drawings</a>
     <a href="/erp/revised_drawings" class='nav-link'>Revised Drawings</a>
     <a href="/erp/projects_with_design_team" class='nav-link'>Assigned projects</a>
-    <a href="/erp/projects_with_no_design_team" class='nav-link'>Unassigned project</a>
 
+    {% if session['role'] in ['Super Admin','COO','Design Head'] %}
+    <a href="/erp/projects_with_no_design_team" class='nav-link'>Unassigned project</a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Planning'] %}
     <div class="nav-section-header">Operations team</div>
     <a href="/erp/projects_with_operations_team" class='nav-link'>Assigned projects</a>
     <a href="/erp/projects_with_no_operations_team" class='nav-link'>Unassigned project</a>
-
+    {% endif %}
 
 </div>
 
