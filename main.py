@@ -35,7 +35,7 @@ def allowed_file(filename):
 def get_projects():
     cur = mysql.connection.cursor()
     if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer']:
-        query = 'SELECT project_id, project_name from projects WHERE is_approved=1 ' \
+        query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                                   'AND project_id IN ' + str(session['projects'])
     else:
         query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
@@ -1088,6 +1088,47 @@ def approve_wo():
         return redirect('/erp/view_unapproved_work_order')
 
 
+@app.route('/archive_project', methods=['GET'])
+def archive_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_project'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set archived=1 WHERE project_id='+str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Project archived', 'warning')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+@app.route('/unarchive_project', methods=['GET'])
+def unarchive_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_project'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set archived=0 WHERE project_id='+str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Project unarchived', 'success')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+
 @app.route('/create_project', methods=['GET','POST'])
 def create_project():
     if 'email' not in session:
@@ -1221,7 +1262,7 @@ def view_project_details():
         fields = [
             'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
@@ -1232,7 +1273,7 @@ def view_project_details():
         for i in range (len(fields) - 1) :
             fields_name_to_show = " ".join(fields[i].split('_')).title()
             details[fields_name_to_show] = result[i]
-        return render_template('view_project_details.html', details=details, approved=str(result[-1]))
+        return render_template('view_project_details.html', details=details, approved=str(result[-2]), archived=str(result[-1]))
 
 @app.route('/approve_project', methods=['GET'])
 def approve_project():

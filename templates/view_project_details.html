@@ -29,6 +29,11 @@
             {% if session['role'] in ['Super Admin','COO'] %}
             <div class="row mx-0 mb-3 form-group">
                 <div class="ml-auto">
+                    {% if archived=='0' %}
+                    <a href="/erp/archive_project?project_id={{request.args['project_id']}}" class="btn btn-info mr-2">Archive</a>
+                    {% else %}
+                    <a href="/erp/unarchive_project?project_id={{request.args['project_id']}}" class="btn btn-info mr-2">Unarchive</a>
+                    {% endif %}
                     <a href="/erp/edit_project?project_id={{request.args['project_id']}}" class="btn btn-info mr-2">Edit</a>
                     <a href="/erp/delete_project?project_id={{request.args['project_id']}}" class="btn btn-danger">Delete</a>
                 </div>
