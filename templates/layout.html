@@ -66,11 +66,13 @@
     <a href="/erp/kyp_material" class='nav-link'>KYP For material</a>
     <a href="/erp/view_inventory" class='nav-link'>View inventory</a>
 
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']
     <div class="nav-section-header">Work orders</div>
     <a href="/erp/create_work_order" class='nav-link'>Create work order</a>
     <a href="/erp/view_unsigned_work_order" class='nav-link'>Unsigned work order</a>
     <a href="/erp/view_unapproved_work_order" class='nav-link'>Unapproved work order</a>
     <a href="/erp/view_work_order" class='nav-link'>View work order</a>
+    {% endif %}
 
     <div class="nav-section-header">Bills</div>
     <a href="/erp/create_bill" class='nav-link'>Create bill</a>

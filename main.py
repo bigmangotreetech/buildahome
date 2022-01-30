@@ -54,6 +54,11 @@ def index():
     return render_template('index.html', user_login_data=user_login_data)
 
 
+@app.route('/forgot_password', methods=['GET','POST'])
+def forgot_password():
+    if request.method == 'GET':
+        return render_template('forgot_password.html')
+
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'GET':
@@ -178,9 +183,9 @@ def create_user():
             'Super Admin',
             'COO',
             'QS Head',
-            'QS Engineers',
+            'QS Engineer',
             'Purchase Head',
-            'Purchase executives',
+            'Purchase Executive',
             'Design Head',
             'Architect',
             'Structural Designer',
@@ -220,9 +225,9 @@ def edit_user():
             'Super Admin',
             'COO',
             'QS Head',
-            'QS Engineers',
+            'QS Engineer',
             'Purchase Head',
-            'Purchase executives',
+            'Purchase Executive',
             'Design Head',
             'Architect',
             'Structural Designer',
@@ -931,7 +936,6 @@ def create_project():
 
         column_names = list(request.form.keys())
         values = list(request.form.values())
-
         cur = mysql.connection.cursor()
         new_project_query = 'INSERT into projects'+str(tuple(column_names)).replace("'","")+'values '+str(tuple(values))
         cur.execute(new_project_query)
