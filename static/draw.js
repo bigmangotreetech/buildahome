@@ -197,6 +197,7 @@ async function saveSign() {
         x: 418,
         y: 609,
         size: 11,
+        maxWidth: 200
       })
 
     const contractor_pan = $('.contractor_pan').text().trim()
