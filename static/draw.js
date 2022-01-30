@@ -196,8 +196,8 @@ async function saveSign() {
     pages[0].drawText(contractor_address, {
         x: 418,
         y: 609,
-        size: 11,
-        lineHeight: 14,
+        size: 10,
+        lineHeight: 13
         maxWidth: 150,
       })
 
