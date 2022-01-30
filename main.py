@@ -251,7 +251,7 @@ def edit_user():
         email = request.form['email']
         phone = request.form['phone']
         cur = mysql.connection.cursor()
-        values = (name, role, email, phone)
+        values = (name, role, phone, email)
         update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
         cur.execute(update_query, values)
         flash('User updated', 'success')
