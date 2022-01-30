@@ -91,19 +91,7 @@ def index():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp'
         return redirect('/erp/login')
-    user_login_data = {
-        'email' : session['email'],
-        'name': session['name'],
-        'access_level': session['access_level'],
-        'role': session['role']
-    }
-    return render_template('index.html', user_login_data=user_login_data)
-
-
-@app.route('/forgot_password', methods=['GET','POST'])
-def forgot_password():
-    if request.method == 'GET':
-        return render_template('forgot_password.html')
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -113,9 +101,17 @@ def login():
                 last_route = session['last_route']
                 del session['last_route']
                 return redirect(last_route)
-            else: return redirect('/erp')
-        return render_template('login.html')
+            else:
+                return redirect('/erp')
+        else:
+            return render_template('login.html')
     else:
+        required_fields = ['username', 'password']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         username = request.form['username']
         password = request.form['password']
         password = hashlib.sha256(password.encode()).hexdigest()
@@ -153,9 +149,15 @@ def enter_material():
     if request.method == 'GET':
         projects = get_projects()
         vendors = get_vendors()
-
         return render_template('enter_material.html', projects=projects, vendors=vendors)
     else:
+        required_fields = ['material', 'description','vendor','project','po_no','invoice_no','invoice_date',
+                           'quantity','unit','rate','gst','total_amount','difference_cost','photo_date']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         material = request.form['material']
         description = request.form['description']
         vendor = request.form['vendor']
@@ -201,9 +203,7 @@ def view_inventory():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     cur = mysql.connection.cursor()
-    query = "SELECT project_id, project_name FROM projects"
-    cur.execute(query)
-    projects = cur.fetchall()
+    projects = get_projects()
     procurements = None
     project = None
     material = None
@@ -260,6 +260,12 @@ def create_user():
         ]
         return render_template('create_user.html', roles=roles)
     else:
+        required_fields = ['name','role','email','phone','password','confirm_password']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         name = request.form['name']
         role = request.form['role']
         email = request.form['email']
@@ -272,8 +278,6 @@ def create_user():
         cur = mysql.connection.cursor()
         password = hashlib.sha256(password.encode()).hexdigest()
 
-        values = (name, role, email, phone, password)
-
         check_if_user_exists = 'SELECT user_id from App_users WHERE email="'+str(email)+'"'
         cur.execute(check_if_user_exists)
         res = cur.fetchone()
@@ -283,6 +287,7 @@ def create_user():
             flash('User with that email already exists. Role updated','warning')
         else:
             new_user_query = 'INSERT into App_users (name, role, email, phone, password) values(%s, %s, %s, %s, %s)'
+            values = (name, role, email, phone, password)
             cur.execute(new_user_query, values)
             flash('User created successfully','success')
         mysql.connection.commit()
@@ -322,6 +327,12 @@ def edit_user():
         result = cur.fetchone()
         return render_template('edit_user.html', user=result, roles=roles)
     else:
+        required_fields = ['name', 'role', 'email', 'phone', 'password', 'confirm_password']
+        for field in required_fields:
+            if field not in list(request.form.keys()):
+                flash('Missing fields. Operation failed', 'danger')
+                return redirect(request.referrer)
+
         user_id = request.form['user_id']
         name = request.form['name']
         role = request.form['role']
@@ -350,15 +361,21 @@ def edit_user():
             mysql.connection.commit()
             return redirect('/erp/view_users')
 
-@app.route('/delete_user', methods=['GET','POST'])
+@app.route('/delete_user', methods=['GET'])
 def delete_user():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/delete_user'
         return redirect('/erp/login')
+
     if session['role'] not in ['Super Admin','COO','Billing']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
+
+    if 'user_id' not in request.args:
+        flash('Missing fields. Operation failed', 'danger')
+        return redirect(request.referrer)
+
     user_id = request.args['user_id']
     cur = mysql.connection.cursor()
     delete_user_query = 'DELETE from App_users WHERE user_id=' + str(user_id)
@@ -374,9 +391,11 @@ def view_users():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_users'
         return redirect('/erp/login')
+
     if session['role'] not in ['Super Admin','COO','Billing']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
+
     cur = mysql.connection.cursor()
     view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE NOT role="Client"'
     cur.execute(view_users_query)
@@ -412,14 +431,18 @@ def view_vendors():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_vendors'
         return redirect('/erp/login')
+
     if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
+
     cur = mysql.connection.cursor()
     vendors_query = 'SELECT id, name, code, contact_no FROM vendors'
     cur.execute(vendors_query)
     result = cur.fetchall()
     return render_template('view_vendors.html', vendors=result)
+
+# Field validation for form done till here
 
 @app.route('/view_vendor_details', methods=['GET'])
 def view_vendor_details():
