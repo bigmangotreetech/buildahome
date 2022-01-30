@@ -124,7 +124,7 @@ def login():
         cur.execute(query)
         result = cur.fetchone()
         if result is not None:
-            if result[3] == password:
+            if result[4] == password:
                 session['user_id'] = result[0]
                 session['email'] = result[1]
                 session['role'] = result[3]
