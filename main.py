@@ -327,13 +327,28 @@ def edit_user():
         role = request.form['role']
         email = request.form['email']
         phone = request.form['phone']
-        cur = mysql.connection.cursor()
-        values = (name, role, phone, email)
-        update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
-        cur.execute(update_query, values)
-        flash('User updated', 'success')
-        mysql.connection.commit()
-        return redirect('/erp/view_users')
+        password = request.form['password']
+        if len(password.strip()) > 0:
+            c_password = request.form['confirm_password']
+            if password != c_password:
+                flash('Passwords did not match. Operation failed', 'danger')
+                return redirect(request.referrer)
+            cur = mysql.connection.cursor()
+            password = hashlib.sha256(password.encode()).hexdigest()
+            values = (name, role, phone, email, password)
+            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(user_id)
+            cur.execute(update_query, values)
+            flash('User details and password updated', 'success')
+            mysql.connection.commit()
+            return redirect('/erp/view_users')
+        else:
+            cur = mysql.connection.cursor()
+            values = (name, role, phone, email)
+            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
+            cur.execute(update_query, values)
+            flash('User updated', 'success')
+            mysql.connection.commit()
+            return redirect('/erp/view_users')
 
 @app.route('/delete_user', methods=['GET','POST'])
 def delete_user():
