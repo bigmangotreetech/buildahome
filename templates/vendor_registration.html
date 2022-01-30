@@ -34,7 +34,12 @@
                         <label for="gst">GST</label>
                     </div>
                     <div class="col-6">
-                        <input name="gst" id="gst" class="form-control" required>
+                        <select name="gst" id="gst" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="5">5%</option>
+                            <option value="18">18%</option>
+                            <option value="28">28%</option>
+                        </select>
                     </div>
                 </div>
 
@@ -43,7 +48,7 @@
                         <label for="account_number">Account Number</label>
                     </div>
                     <div class="col-6">
-                        <input name="account_number" id="account_number" class="form-control" required>
+                        <input name="account_number" minlength="9" id="account_number" class="form-control" required>
                     </div>
                 </div>
 
