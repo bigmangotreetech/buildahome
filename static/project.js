@@ -384,7 +384,238 @@ $(document).ready(function() {
         }
    })
 
+   
+
 
 
 });
+
+function onInputNumberInt(value){
+    // handle validations
+    // allow value to be positive number only
+    // use this helper on every int data type 
+    value = value.replace(/[^0-9]/g, '');
+    return value;
+    
+}
+
+function onInputNumberFloat(value){
+    // handle validations
+    // allow value to be positive number only
+    // use this helper on every float data type 
+    
+    if(isNaN(value)){
+     value = value.replace(/[^0-9\.]/g,'');
+     if(value.split('.').length>2) 
+         value =value.replace(/\.+$/,"");
+}
+    return value;
+    
+}
+
+
+function handleNoOfFloorsChange(value){
+    // if value is G+1 then set sf_slab_area and tf_slab_area to 0
+    // if value is G+2 then set tf_slab_area to 0
+    if(value == 'G + 1'){
+        $('#sf_slab_area').val(0);
+        $('#tf_slab_area').val(0);
+    }else if(value = 'G + 2'){
+        $('#tf_slab_area').val(0);
+    }
+}
+
+
+function validateForm() {
+  let x = document.forms["myForm"]
+  let isValid = true;
+  let no_of_floors = x["no_of_floors"].value ? x["no_of_floors"].value : '';
+  let floor_options = ['G + 1','G + 2','G + 3','G + 4'];  
+    for(let i=0; i<x.length; i++){
+        switch(x[i].id){
+            case("project_number"):
+                if(x[i].value == ""){
+                    document.getElementById("project_number_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                 {
+                      document.getElementById("project_number_error").setAttribute("class", "d-none");
+                 }
+                break;
+            case("project_name"):
+                if(x[i].value == ""){
+                    document.getElementById("project_name_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                 {
+                      document.getElementById("project_name_error").setAttribute("class", "d-none");
+                 }
+                break;
+            case("project_location"):
+                 if(x[i].value == ""){
+                    document.getElementById("project_location_error").setAttribute("class", "error");
+                    isValid = false;
+                 }
+                else 
+                    {
+                        document.getElementById("project_location_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("no_of_floors"):
+                if(x[i].value == ""){
+                    document.getElementById("no_of_floors_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("no_of_floors_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("package_type"):
+                if(x[i].value == ""){
+                    document.getElementById("package_type_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("package_type_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("date_of_initial_advance"):
+                if(x[i].value == ""){
+                    document.getElementById("date_of_initial_advance_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("date_of_initial_advance_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("date_of_agreement"):
+                if(x[i].value == ""){
+                    document.getElementById("date_of_agreement_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("date_of_agreement_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("sales_executive"):
+                if(x[i].value == ""){
+                    document.getElementById("sales_executive_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("sales_executive_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("site_area"):
+                if(x[i].value == ""){
+                    document.getElementById("site_area_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("site_area_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("paid_percentage"):
+                if(x[i].value == ""){
+                    document.getElementById("paid_percentage_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("paid_percentage_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("project_value"):
+                if(x[i].value == ""){
+                    document.getElementById("project_value_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("project_value_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("cost_sheet"):
+                if(x[i].files.length == 0){
+                    document.getElementById("cost_sheet_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("cost_sheet_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("site_inspection_report"):
+                if(x[i].files.length == 0){
+                    document.getElementById("site_inspection_report_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("site_inspection_report_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("shr_oht"):
+                if(x[i].value == ""){
+                    document.getElementById("shr_oht_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("shr_oht_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("gf_slab_area"):
+                if(floor_options.includes(no_of_floors) && x[i].value == ""){
+                    document.getElementById("gf_slab_area_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else
+                    {
+                        document.getElementById("gf_slab_area_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("ff_slab_area"):
+                if(floor_options.includes(no_of_floors) && x[i].value == ""){
+                    document.getElementById("ff_slab_area_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("ff_slab_area_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("sf_slab_area"):
+                if(floor_options.includes(no_of_floors) && x[i].value == ""){
+                    document.getElementById("sf_slab_area_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("sf_slab_area_error").setAttribute("class", "d-none");
+                    }
+                break;
+            case("tf_slab_area"):
+                if(floor_options.includes(no_of_floors) && x[i].value == ""){
+                    document.getElementById("tf_slab_area_error").setAttribute("class", "error");
+                    isValid = false;
+                }
+                else 
+                    {
+                        document.getElementById("tf_slab_area_error").setAttribute("class", "d-none");
+                    }
+                break;
+                        
+        }
+    }
+  return isValid;
+}
 
