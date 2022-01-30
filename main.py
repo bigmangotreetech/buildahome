@@ -355,7 +355,7 @@ def view_users():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     cur = mysql.connection.cursor()
-    view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users'
+    view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE NOT role="Client"'
     cur.execute(view_users_query)
     result = cur.fetchall()
     return render_template('view_users.html', users=result)
