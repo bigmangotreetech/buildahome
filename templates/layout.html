@@ -114,6 +114,8 @@
     <a href="/erp/projects_with_no_design_team" class='nav-link'>Unassigned project</a>
     {% endif %}
 
+    {% endif %}
+
     {% if session['role'] in ['Super Admin','COO','Planning'] %}
     <div class="nav-section-header">Operations team</div>
     <a href="/erp/projects_with_operations_team" class='nav-link'>Assigned projects</a>
