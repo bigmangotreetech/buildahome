@@ -2,7 +2,7 @@
 {% block content %}
 
 {% if role is not none %}
-{% if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer','Design Head']: %}
+{% if session['role'] in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer','Design Head']: %}
 
 <div class="my-4 d-flex">
     {% if 'category' not in request.args or request.args['category'] == 'architect_drawings' %}
