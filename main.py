@@ -1500,7 +1500,7 @@ def drawings():
 
 def get_drwaings_table_name():
     role = session['role']
-    if role == 'Admin' or role == 'Senior Architect' or role == 'Architect':
+    if role in ['Super Admin','COO','Senior Architect','Architect']:
         return 'architect_drawings'
     elif role == 'Structural Designer':
         return 'structural_drawings'
