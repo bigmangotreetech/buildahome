@@ -1493,7 +1493,14 @@ def drawings():
 
     query_string = query_string[:-2]
 
-    drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on p.project_id=d.project_id"
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer','Design Head']:
+        drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
+                              "p.project_id=d.project_id AND p.is_approved=1" \
+                                  'AND p.project_id IN ' + str(session['projects'])
+    else:
+        drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on " \
+                    "p.project_id=d.project_id AND p.is_approved=1"
+
     cur.execute(drawings_info)
     drawings = cur.fetchall()
     return render_template('drawings.html', role=session['role'], drawing_names=drawing_names, drawings=drawings)
