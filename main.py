@@ -1493,14 +1493,23 @@ def drawings():
 
     query_string = query_string[:-2]
 
-    drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on p.project_id=d.project_id"
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer','Design Head']:
+        drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
+                              "p.project_id=d.project_id AND p.is_approved=1" \
+                                  'WHERE p.project_id IN ' + str(session['projects'])
+    else:
+        drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on " \
+                    "p.project_id=d.project_id WHERE p.is_approved=1"
+
+
+
     cur.execute(drawings_info)
     drawings = cur.fetchall()
     return render_template('drawings.html', role=session['role'], drawing_names=drawing_names, drawings=drawings)
 
 def get_drwaings_table_name():
     role = session['role']
-    if role == 'Admin' or role == 'Senior Architect' or role == 'Architect':
+    if role in ['Super Admin','COO','Senior Architect','Architect','Design Head']:
         return 'architect_drawings'
     elif role == 'Structural Designer':
         return 'structural_drawings'
