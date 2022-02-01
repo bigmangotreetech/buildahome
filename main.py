@@ -1292,7 +1292,7 @@ def approved_projects():
         return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer']:
+        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer','Sales Executive']:
             approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                                       'AND project_id IN '+str(session['projects'])
         else:
