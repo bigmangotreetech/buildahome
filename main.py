@@ -26,7 +26,7 @@ mysql = MySQL(app)
 
 
 app.secret_key = b'bAhSessionKey'
-ALLOWED_EXTENSIONS = ['pdf']
+ALLOWED_EXTENSIONS = ['pdf','jpg','jpeg','png']
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -135,6 +135,28 @@ def login():
         else:
             flash('Incorrect credentials. User not found', 'danger')
             return redirect('/erp/login')
+
+
+@app.route('/mobile_app_banner', methods=['GET','POST'])
+def mobile_app_banner():
+    if request.method == 'GET':
+        return render_template('mobile_app_banner.html')
+    else:
+        if 'banner' in request.files:
+            file = request.files['banner']
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'mobile_banner.png'))
+                flash('Banner updated successfully','success')
+                return redirect(request.referrer)
+            else:
+                flash('Invalid file type. Operation failed', 'failed')
+                return redirect(request.referrer)
+        else:
+            flash('Missing file. Operation failed', 'failed')
+            return redirect(request.referrer)
 
 
 @app.route('/enter_material', methods=['GET', 'POST'])
