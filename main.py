@@ -952,8 +952,8 @@ def view_approved_indents():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_approved_indents'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
-        flash('You do not have permission to view that page', 'danger')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer','Purchase Executive']:
+        flash('You do not have permission to view that page'+str(session['role']), 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
