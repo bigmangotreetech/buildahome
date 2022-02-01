@@ -38,7 +38,7 @@ def get_projects():
         query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                                   'AND project_id IN ' + str(session['projects'])
     else:
-        query = 'SELECT project_id, project_name from projects WHERE is_approved=1'
+        query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0'
     cur.execute(query)
     projects = cur.fetchall()
     return projects
