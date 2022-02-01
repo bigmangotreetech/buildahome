@@ -152,7 +152,7 @@ def mobile_app_banner():
                 flash('Banner updated successfully','success')
                 return redirect(request.referrer)
             else:
-                flash('Invalid file type. Operation failed', 'failed')
+                flash('Invalid file type. Only png images allowed. Operation failed', 'failed')
                 return redirect(request.referrer)
         else:
             flash('Missing file. Operation failed', 'failed')
