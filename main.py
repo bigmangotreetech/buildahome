@@ -26,7 +26,7 @@ mysql = MySQL(app)
 
 
 app.secret_key = b'bAhSessionKey'
-ALLOWED_EXTENSIONS = ['pdf','jpg','jpeg','png']
+ALLOWED_EXTENSIONS = ['pdf','png']
 
 def allowed_file(filename):
     return '.' in filename and \
