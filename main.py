@@ -1517,11 +1517,11 @@ def drawings():
 
     if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer','Design Head']:
         drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
-                              "p.project_id=d.project_id AND p.is_approved=1" \
+                              "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0" \
                                   'WHERE p.project_id IN ' + str(session['projects'])
     else:
         drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on " \
-                    "p.project_id=d.project_id WHERE p.is_approved=1"
+                    "p.project_id=d.project_id WHERE p.is_approved=1 AND p.archived=0"
 
 
 
