@@ -615,6 +615,7 @@ function validateForm() {
                 break;
                         
         }
+        document.getElementById('create_project_submit').disabled=isValid;
     }
   return isValid;
 }

@@ -13,6 +13,9 @@ import os
 import time
 from werkzeug.utils import secure_filename
 
+from models.projects import projects
+from constants.constants import project_fields
+
 app = Flask(__name__)
 # Sql setup
 app.config['MYSQL_HOST'] = 'localhost'
@@ -25,7 +28,7 @@ app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
 mysql = MySQL(app)
 
 
-app.secret_key = b'bAhSessionKey'
+app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf','png']
 
 def allowed_file(filename):
@@ -1224,7 +1227,7 @@ def create_project():
         cur.execute(update_filename_query, (cost_sheet_filename, site_inspection_report_filename, str(project_id)))
         flash('Project created successfully', 'success')
         mysql.connection.commit()
-        return redirect('/erp/create_project')
+        return redirect(request.referrer)
 
 @app.route('/edit_project', methods=['GET','POST'])
 def edit_project():
@@ -1236,23 +1239,17 @@ def edit_project():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        fields = [
-            'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance',
-            'date_of_agreement', 'sales_executive', 'site_area',
-            'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details',
-            'paid_percentage', 'comments', 'is_approved'
-        ]
-        fields_as_string = ", ".join(fields)
+        fields_as_string = ", ".join(project_fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
             request.args['project_id'])
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
-        details = {}
-        for i in range(len(fields) - 1):
-            fields_name_to_show = " ".join(fields[i].split('_')).title()
-            details[fields_name_to_show] = [fields[i], result[i]]
-        return render_template('edit_project.html', details=details, approved=str(result[-1]))
+        project = projects(*result)
+        sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
+        cur.execute(sales_executives_query)
+        result = cur.fetchall()
+        return render_template('edit_project.html', p=project, sales_executives=result)
     else:
 
         column_names = list(request.form.keys())
@@ -1265,8 +1262,13 @@ def edit_project():
         update_project_query = 'UPDATE projects SET '+update_string+' WHERE project_id='+str(request.form['project_id'])
         cur = mysql.connection.cursor()
         cur.execute(update_project_query)
-        flash('Project updated successfully','success')
-        return redirect('/erp/view_project_details?project_id='+str(request.form['project_id']))
+        mysql.connection.commit()
+        if cur.rowcount == 1:
+            flash('Project updated successfully', 'success')
+            return redirect('/erp/view_project_details?project_id='+str(request.form['project_id']))
+        else:
+            flash('Project not updated', 'danger')
+            return redirect(request.referrer)
 
 @app.route('/unapproved_projects', methods=['GET'])
 def unapproved_projects():
