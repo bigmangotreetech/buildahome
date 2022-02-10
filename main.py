@@ -14,7 +14,7 @@ import time
 from werkzeug.utils import secure_filename
 
 from models.projects import projects
-from constants.constants import project_fields
+from constants.constants import project_fields, roles
 
 app = Flask(__name__)
 # Sql setup
@@ -269,24 +269,6 @@ def create_user():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        roles = [
-            'QS Head',
-            'QS Engineer',
-            'Purchase Head',
-            'Purchase Executive',
-            'Project Coordinator',
-            'Project Manager',
-            'Design Head',
-            'Senior Architect',
-            'Architect',
-            'Structural Designer',
-            'Electrical Designer',
-            'PHE Designer',
-            'Site Engineer',
-            'Sales Executive',
-            'Billing',
-            'Planning'
-        ]
         return render_template('create_user.html', roles=roles)
     else:
         required_fields = ['name','role','email','phone','password','confirm_password']
@@ -332,23 +314,6 @@ def edit_user():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        roles = [
-            'QS Head',
-            'QS Engineer',
-            'Purchase Head',
-            'Purchase Executive',
-            'Design Head',
-            'Architect',
-            'Structural Designer',
-            'Electrical Designer',
-            'PHE Designer',
-            'Site Engineer',
-            'Project Coordinator',
-            'Sales Executive',
-            'Project Manager',
-            'Billing',
-            'Planning',
-        ]
         user_id = request.args['user_id']
         cur = mysql.connection.cursor()
         view_user_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE user_id='+str(user_id)
