@@ -60,7 +60,7 @@ def get_projects_for_current_user():
             query = 'SELECT project_id from project_operations_team WHERE purchase_executive='+str(user_id)
             cur.execute(query)
             return cur.fetchall()
-        elif role == 'QS Executive':
+        elif role == 'QS Engineer':
             query = 'SELECT project_id from project_operations_team WHERE qs_executive='+str(user_id)
             cur.execute(query)
             return cur.fetchall()
@@ -1422,7 +1422,7 @@ def assign_design_team():
 @app.route('/assign_operations_team', methods=['GET','POST'])
 def assign_operations_team():
     if request.method == 'GET':
-        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Executive"'
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
@@ -1437,7 +1437,7 @@ def assign_operations_team():
                 project_managers.append({'id': i[0], 'name': i[1]})
             if i[2] == 'Purchase Executive':
                 purchase_executives.append({'id': i[0], 'name': i[1]})
-            if i[2] == 'QS Executive':
+            if i[2] == 'QS Engineer':
                 qs_executives.append({'id': i[0], 'name': i[1]})
         return render_template('assign_operations_team.html', co_ordinators=co_ordinators, project_managers=project_managers, purchase_executives=purchase_executives, qs_executives=qs_executives)
     else:
