@@ -37,13 +37,16 @@ def allowed_file(filename):
 
 def get_projects():
     cur = mysql.connection.cursor()
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer']:
+    projects = []
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer'] and len(session['projects']) > 0:
         query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                                   'AND project_id IN ' + str(session['projects'])
+        cur.execute(query)
+        projects = cur.fetchall()
     else:
         query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0'
-    cur.execute(query)
-    projects = cur.fetchall()
+        cur.execute(query)
+        projects = cur.fetchall()
     return projects
 
 def get_projects_for_current_user():
@@ -1294,13 +1297,16 @@ def approved_projects():
         return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer','Sales Executive']:
+        result = []
+        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer','Sales Executive'] and len(session['projects']) > 0:
             approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                                       'AND project_id IN '+str(session['projects'])
+            cur.execute(approved_projects_query)
+            result = cur.fetchall()
         else:
             approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0'
-        cur.execute(approved_projects_query)
-        result = cur.fetchall()
+            cur.execute(approved_projects_query)
+            result = cur.fetchall()
         return render_template('approved_projects.html', projects=result)
 
 @app.route('/archived_projects', methods=['GET'])
@@ -1311,13 +1317,16 @@ def archived_projects():
         return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer']:
-            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1 ' \
+        result = []
+        if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer'] and len(session['projects']) > 0:
+            archived_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1 ' \
                                       'AND project_id IN '+str(session['projects'])
+            cur.execute(archived_projects_query)
+            result = cur.fetchall()
         else:
-            approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1'
-        cur.execute(approved_projects_query)
-        result = cur.fetchall()
+            archived_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1'
+            cur.execute(archived_projects_query)
+            result = cur.fetchall()
         return render_template('archived_projects.html', projects=result)
 
 @app.route('/view_project_details',methods=['GET'])
@@ -1516,19 +1525,20 @@ def drawings():
         drawing_names.append(i[0].replace('_',' ').capitalize())
 
     query_string = query_string[:-2]
-
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer','Design Head']:
+    drawings = []
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer','Design Head'] and len(session['projects']) > 1:
         drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
                               "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0" \
                                   'WHERE p.project_id IN ' + str(session['projects'])
+        cur.execute(drawings_info)
+        drawings = cur.fetchall()
     else:
         drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on " \
                     "p.project_id=d.project_id WHERE p.is_approved=1 AND p.archived=0"
+        cur.execute(drawings_info)
+        drawings = cur.fetchall()
 
 
-
-    cur.execute(drawings_info)
-    drawings = cur.fetchall()
     return render_template('drawings.html', role=session['role'], drawing_names=drawing_names, drawings=drawings)
 
 def get_drwaings_table_name():
