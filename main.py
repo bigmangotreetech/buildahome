@@ -1330,7 +1330,7 @@ def approve_project():
 @app.route('/projects_with_no_design_team', methods=['GET'])
 def projects_with_no_design_team():
     no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
-                           'on P.project_id = PDT.project_id WHERE P.approved=1 AND P.archived=0 AND PDT.project_id is NULL'
+                           'on P.project_id = PDT.project_id WHERE P.is_approved=1 AND P.archived=0 AND PDT.project_id is NULL'
     cur = mysql.connection.cursor()
     cur.execute(no_design_team_query)
     result = cur.fetchall()
@@ -1339,7 +1339,7 @@ def projects_with_no_design_team():
 @app.route('/projects_with_design_team', methods=['GET'])
 def projects_with_design_team():
     design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
-                        'on P.project_id = PDT.project_id WHERE P.approved=1 AND P.archived=0 AND PDT.project_id is NOT NULL'
+                        'on P.project_id = PDT.project_id WHERE P.is_approved=1 AND P.archived=0 AND PDT.project_id is NOT NULL'
     cur = mysql.connection.cursor()
     cur.execute(design_team_query)
     result = cur.fetchall()
@@ -1348,7 +1348,7 @@ def projects_with_design_team():
 @app.route('/projects_with_no_operations_team', methods=['GET'])
 def projects_with_no_operations_team():
     no_ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
-                        'on P.project_id = POT.project_id WHERE P.approved=1 AND P.archived=0 AND POT.project_id is NULL'
+                        'on P.project_id = POT.project_id WHERE P.is_approved=1 AND P.archived=0 AND POT.project_id is NULL'
     cur = mysql.connection.cursor()
     cur.execute(no_ops_team_query)
     result = cur.fetchall()
@@ -1357,7 +1357,7 @@ def projects_with_no_operations_team():
 @app.route('/projects_with_operations_team', methods=['GET'])
 def projects_with_operations_team():
     ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
-                     'on P.project_id = POT.project_id WHERE P.approved=1 AND P.archived=0 AND POT.project_id is NOT NULL'
+                     'on P.project_id = POT.project_id WHERE P.is_approved=1 AND P.archived=0 AND POT.project_id is NOT NULL'
     cur = mysql.connection.cursor()
     cur.execute(ops_team_query)
     result = cur.fetchall()
