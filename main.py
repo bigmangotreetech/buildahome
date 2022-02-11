@@ -91,6 +91,7 @@ def get_projects_for_current_user():
             query = 'SELECT project_id from project_design_team WHERE senior_architect='+str(user_id)
             cur.execute(query)
             return cur.fetchall()
+        else: return []
 
 @app.route('/', methods=['GET'])
 def index():
