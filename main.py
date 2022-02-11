@@ -68,7 +68,7 @@ def get_projects_for_current_user():
             cur.execute(query)
             return cur.fetchall()
         elif role == 'QS Engineer':
-            query = 'SELECT project_id from project_operations_team WHERE qs_executive='+str(user_id)
+            query = 'SELECT project_id from project_operations_team WHERE qs_engineer='+str(user_id)
             cur.execute(query)
             return cur.fetchall()
         elif role == 'Architect':
@@ -1408,7 +1408,7 @@ def assign_operations_team():
         co_ordinators = []
         project_managers = []
         purchase_executives = []
-        qs_executives = []
+        qs_engineers = []
         result = cur.fetchall()
         for i in result:
             if i[2] == 'Project Coordinator':
@@ -1418,8 +1418,8 @@ def assign_operations_team():
             if i[2] == 'Purchase Executive':
                 purchase_executives.append({'id': i[0], 'name': i[1]})
             if i[2] == 'QS Engineer':
-                qs_executives.append({'id': i[0], 'name': i[1]})
-        return render_template('assign_operations_team.html', co_ordinators=co_ordinators, project_managers=project_managers, purchase_executives=purchase_executives, qs_executives=qs_executives)
+                qs_engineers.append({'id': i[0], 'name': i[1]})
+        return render_template('assign_operations_team.html', co_ordinators=co_ordinators, project_managers=project_managers, purchase_executives=purchase_executives, qs_engineers=qs_engineers)
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())

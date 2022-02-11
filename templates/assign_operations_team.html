@@ -54,12 +54,12 @@
 
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
-                        <label for="">Select QS Executive</label>
+                        <label for="">Select QS Engineer</label>
                     </div>
                     <div class="col-6">
-                        <select name="qs_executive" id=qs_executive" class="form-control select2" required>
+                        <select name="qs_engineer" id=qs_engineer" class="form-control select2" required>
                             <option value=""></option>
-                            {% for i in qs_executives %}
+                            {% for i in qs_engineers %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
                             {% endfor %}
                         </select>
