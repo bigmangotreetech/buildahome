@@ -55,7 +55,9 @@ def get_projects_for_current_user():
         user_id = session['user_id']
         role = session['role']
         cur = mysql.connection.cursor()
-        if role == 'Project Coordinator':
+        if role in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer']:
+            return ['All']
+        elif role == 'Project Coordinator':
             query = 'SELECT project_id from project_operations_team WHERE co_ordinator='+str(user_id)
             cur.execute(query)
             return cur.fetchall()
