@@ -63,7 +63,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'Project Manager':
             query = 'SELECT project_id from project_operations_team WHERE project_manager='+str(user_id)
@@ -71,7 +71,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'Purchase Executive':
             query = 'SELECT project_id from project_operations_team WHERE purchase_executive='+str(user_id)
@@ -79,7 +79,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'QS Engineer':
             query = 'SELECT project_id from project_operations_team WHERE qs_engineer='+str(user_id)
@@ -87,7 +87,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'Architect':
             query = 'SELECT project_id from project_design_team WHERE architect='+str(user_id)
@@ -95,7 +95,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'Structural Designer':
             query = 'SELECT project_id from project_design_team WHERE structural_designer='+str(user_id)
@@ -103,7 +103,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'Electrical Designer':
             query = 'SELECT project_id from project_design_team WHERE electrical_designer='+str(user_id)
@@ -111,7 +111,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'PHE Designer':
             query = 'SELECT project_id from project_design_team WHERE phe_designer='+str(user_id)
@@ -119,7 +119,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         elif role == 'Senior Architect':
             query = 'SELECT project_id from project_design_team WHERE senior_architect='+str(user_id)
@@ -127,7 +127,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i)
+                projects.append(i[0])
             return tuple(projects)
         else: return []
 
