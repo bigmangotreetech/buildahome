@@ -969,7 +969,7 @@ def view_approved_indents():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved" AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
