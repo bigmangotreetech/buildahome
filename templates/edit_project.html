@@ -456,7 +456,7 @@
                     </div>
                     <div class="col-6">
                         <input type="file" name="cost_sheet" id="cost_sheet" accept="application/pdf"/>
-                        <a style="word-break: break-all;" target="_blank" href="/files/{{p.cost_sheet}}">{{p.cost_sheet}}</a>
+                        <a style="word-break: break-all;" target="_blank" href="/files/cost_sheet_{{request.args['project_id']}}{{p.cost_sheet}}">{{p.cost_sheet}}</a>
                         <span name="cost_sheet_error" class="d-none" id="cost_sheet_error"
                         >Please Upload Cost sheet</span
                         >
@@ -473,7 +473,7 @@
                                 id="site_inspection_report"
                                 accept="application/pdf"
                         />
-                        <a style="word-break: break-all;" target="_blank" href="/files/{{p.site_inspection_report}}">{{p.site_inspection_report}}</a>
+                        <a style="word-break: break-all;" target="_blank" href="/files/site_inspection_report_{{request.args['project_id']}}{{p.site_inspection_report}}">{{p.site_inspection_report}}</a>
                         <span
                                 name="site_inspection_report_error"
                                 class="d-none"

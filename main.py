@@ -1404,7 +1404,7 @@ def create_project():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                cost_sheet_filename = 'cost_sheet_for_project_'+str(project_id)+'_'+filename
+                cost_sheet_filename = 'cost_sheet_'+str(project_id)+'_'+filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], cost_sheet_filename))
 
 
@@ -1415,7 +1415,7 @@ def create_project():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                site_inspection_report_filename = 'site_inspection_report'+str(project_id)+'_'+filename
+                site_inspection_report_filename = 'site_inspection_report_'+str(project_id)+'_'+filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], site_inspection_report_filename))
 
         update_filename_query = 'UPDATE projects set cost_sheet=%s, site_inspection_report=%s WHERE project_id=%s'
@@ -1459,12 +1459,8 @@ def edit_project():
         cur = mysql.connection.cursor()
         cur.execute(update_project_query)
         mysql.connection.commit()
-        if cur.rowcount == 1:
-            flash('Project updated successfully', 'success')
-            return redirect('/erp/view_project_details?project_id='+str(request.form['project_id']))
-        else:
-            flash('Project not updated', 'danger')
-            return redirect(request.referrer)
+        flash('Project updated successfully', 'success')
+        return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
 
 @app.route('/unapproved_projects', methods=['GET'])
 def unapproved_projects():
