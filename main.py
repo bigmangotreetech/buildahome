@@ -1264,7 +1264,8 @@ def edit_project():
 
         update_string = ""
         for i in column_names[:-1]:
-            update_string += i+'="'+request.form[i] +'", '
+            if request.form[i].strip() != '':
+                update_string += i+'="'+request.form[i] +'", '
         # Remove the last comma
         update_string = update_string[:-2]
         update_project_query = 'UPDATE projects SET '+update_string+' WHERE project_id='+str(request.form['project_id'])
@@ -1404,7 +1405,7 @@ def projects_with_operations_team():
 @app.route('/assign_design_team', methods=['GET','POST'])
 def assign_design_team():
     if request.method == 'GET':
-        design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
+        design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Senior Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
         cur = mysql.connection.cursor()
         cur.execute(design_team_query)
         architects = []
@@ -1435,6 +1436,64 @@ def assign_design_team():
         cur.execute(assign_design_team_query)
         mysql.connection.commit()
         flash('Design team has been assigned successfully', 'success')
+        return redirect('/erp/projects_with_design_team')
+
+@app.route('/edit_design_team', methods=['GET','POST'])
+def edit_design_team():
+    if request.method == 'GET':
+        if 'project_id' not in request.args:
+            flash('Missing fields', 'danger')
+            return redirect('/erp/projects_with_no_design_team')
+        project_id = request.args['project_id']
+        design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Senior Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
+        cur = mysql.connection.cursor()
+        cur.execute(design_team_query)
+        architects = []
+        structural_designers = []
+        electrical_designers = []
+        phe_designers = []
+        senior_architects = []
+        result = cur.fetchall()
+        for i in result:
+            if i[2] == 'Architect':
+                architects.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Structural Designer':
+                structural_designers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Electrical Designer':
+                electrical_designers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'PHE Designer':
+                phe_designers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Senior Architect':
+                senior_architects.append({'id': i[0], 'name': i[1]})
+        existing_team_query = 'SELECT * FROM project_design_team WHERE project_id='+str(project_id)
+        cur.execute(existing_team_query)
+        res = cur.fetchone()
+        existing_team = {
+            'Architect': res[2],
+            'Structural Designer': res[3],
+            'Electrical Designer': res[4],
+            'PHE Designer': res[5],
+            'Senior Architect': res[6]
+        }
+
+        return render_template('assign_design_team.html',existing_team=existing_team, senior_architects=senior_architects,  architects=architects, structural_designers=structural_designers, electrical_designers=electrical_designers, phe_designers=phe_designers)
+    else:
+
+        cur = mysql.connection.cursor()
+        column_names = list(request.form.keys())
+
+        update_string = ""
+        for i in column_names[:-1]:
+            if request.form[i].strip() != '':
+                update_string += i + '="' + request.form[i] + '", '
+        # Remove the last comma
+        update_string = update_string[:-2]
+        update_project_query = 'UPDATE project_design_team SET ' + update_string + ' WHERE project_id=' + str(
+            request.form['project_id'])
+
+        cur.execute(update_project_query)
+        mysql.connection.commit()
+        flash('Design team has been updated successfully', 'success')
         return redirect('/erp/projects_with_design_team')
 
 @app.route('/assign_operations_team', methods=['GET','POST'])
