@@ -18,7 +18,7 @@
                     <div class="col-6">
                         <select name="senior_architect" id=senior_architect" class="form-control select2" required>
                             <option value=""></option>
-                            {% for i in senior_architect %}
+                            {% for i in senior_architects %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
                             {% endfor %}
                         </select>
