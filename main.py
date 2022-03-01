@@ -1528,19 +1528,26 @@ def archived_projects():
 def view_project_details():
     if request.method == 'GET':
         fields = [
-            'p.project_name', 'p.project_location','p.package_type', 'p.no_of_floors', 'p.project_value', 'p.date_of_initial_advance', 'p.date_of_agreement', 'u.name', 'p.site_area',
-            'p.gf_slab_area', 'p.ff_slab_area', 'p.tf_slab_area', 'p.tef_slab_area', 'p.shr_oht', 'p.elevation_details', 'p.additional_cost',
-            'p.paid_percentage', 'p.comments', 'p.cost_sheet', 'p.site_inspection_report', 'p.is_approved', 'p.archived'
+            'project_name', 'project_location','package_type', 'no_of_floors', 'project_value', 'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
+            'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details', 'additional_cost',
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived'
         ]
         fields_as_string = ", ".join(fields)
-        get_details_query = 'SELECT '+fields_as_string+' from projects p LEFT JOIN App_users u on p.sales_executive=u.user_id AND p.project_id='+str(request.args['project_id'])
+        get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
         details = {}
+
+        sales_executive_query = 'SELECT name from App_users WHERE id='+str(result[7])
+        cur.execute(sales_executive_query)
+        sales_executive_query_result = cur.fetchone()
         for i in range (len(fields) - 1) :
             fields_name_to_show = " ".join(fields[i].split('_')).title()
-            details[fields_name_to_show] = result[i]
+            if fields_name_to_show == 'Sales Executive':
+                details[fields_name_to_show] = sales_executive_query_result[0]
+            else:
+                details[fields_name_to_show] = result[i]
         return render_template('view_project_details.html', details=details, approved=str(result[-2]), archived=str(result[-1]))
 
 @app.route('/approve_project', methods=['GET'])
