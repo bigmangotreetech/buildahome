@@ -1539,7 +1539,7 @@ def view_project_details():
         result = cur.fetchone()
         details = {}
 
-        sales_executive_query = 'SELECT name from App_users WHERE id='+str(result[7])
+        sales_executive_query = 'SELECT name from App_users WHERE user_id='+str(result[7])
         cur.execute(sales_executive_query)
         sales_executive_query_result = cur.fetchone()
         for i in range (len(fields) - 1) :
