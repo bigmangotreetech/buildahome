@@ -1476,7 +1476,7 @@ def edit_design_team():
             'Senior Architect': res[6]
         }
 
-        return render_template('assign_design_team.html',existing_team=existing_team, senior_architects=senior_architects,  architects=architects, structural_designers=structural_designers, electrical_designers=electrical_designers, phe_designers=phe_designers)
+        return render_template('edit_design_team.html',existing_team=existing_team, senior_architects=senior_architects,  architects=architects, structural_designers=structural_designers, electrical_designers=electrical_designers, phe_designers=phe_designers)
     else:
 
         cur = mysql.connection.cursor()
