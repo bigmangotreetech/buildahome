@@ -1491,6 +1491,8 @@ def edit_design_team():
         update_project_query = 'UPDATE project_design_team SET ' + update_string + ' WHERE project_id=' + str(
             request.form['project_id'])
 
+        return update_project_query
+
         cur.execute(update_project_query)
         mysql.connection.commit()
         flash('Design team has been updated successfully', 'success')
