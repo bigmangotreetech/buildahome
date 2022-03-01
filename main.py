@@ -507,6 +507,25 @@ def edit_contractor():
         flash('Contractor updated successfully','success')
         return redirect('/erp/view_contractors')
 
+@app.route('/delete_contractor', methods=['GET'])
+def delete_contractor():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_contractor'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        if 'contractor_id' in request.args:
+            cur = mysql.connection.cursor()
+            contractor_query = 'DELETE from contractors WHERE id=' + request.args['contractor_id']
+            cur.execute(contractor_query)
+            mysql.connection.commit()
+            flash('Contractor deleted', 'danger')
+            return redirect('/erp/view_contractors')
+
+
 @app.route('/vendor_registration', methods=['GET','POST'])
 def vendor_registration():
     if 'email' not in session:
@@ -841,6 +860,24 @@ def view_bills():
         data = get_bills_as_json(bills_query)
         access_level = session['access_level']
         return render_template('view_bills.html', data=data, access_level=access_level)
+
+@app.route('/delete_bill', methods=['GET'])
+def delete_bill():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_bill'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        if 'bill_id' in request.args:
+            cur = mysql.connection.cursor()
+            delete_bill_query = 'DELETE from wo_bills WHERE id=' + request.args['bill_id']
+            cur.execute(delete_bill_query)
+            mysql.connection.commit()
+            flash('Bill deleted', 'danger')
+            return redirect('/erp/view_bills')
 
 @app.route('/view_approved_bills', methods=['GET'])
 def view_approved_bills():

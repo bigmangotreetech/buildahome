@@ -9,6 +9,7 @@
             <th scope="col">PAN</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -21,6 +22,9 @@
             <td>{{contractor[5]}}</td>
             <td>
                 <a href="/erp/edit_contractor?contractor_id={{contractor[0]}}">Edit</a>
+            </td>
+            <td>
+                <a onclick="return confirm('Are you sure you want to delete?');" href="/erp/delete_contractor?contractor_id={{contractor[0]}}" class="text-danger">Delete</a>
             </td>
         </tr>
         {% endfor %}
