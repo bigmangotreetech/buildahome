@@ -360,6 +360,7 @@
                   <label for="elevation_details">Elevation details</label>
                </div>
                <div class="col-6">
+
                   <input
                      type="hidden"
                      name="elevation_details"
@@ -367,6 +368,13 @@
                      class="elevation_details_input"
                      />
                   <div class="elevation-details-section">
+                     {% for x in p.elevation_details.split(' &# ') %}
+                        <input
+                        type="text"
+                        class="form-control elevation-details mb-2"
+                        value="{{x}}"
+                        />
+                    {% endfor %}
                      <input
                         type="text"
                         class="form-control elevation-details d-none mb-2"
