@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Indent Id</th>
+            <th scope="col">Project</th>
+            <th scope="col">Material</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Created by</th>
+            <th scope="col">Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in result %}
+        <tr class="bill-{{i['bill_id']}}">
+            <td>{{i[0]}}</td>
+            <td>{{i[2]}}</td>
+            <td>{{i[3]}}</td>
+            <td>{{i[4]}} {{i[5]}}</td>
+            <td>{{i[7]}}</td>
+            <td>{{i[8]}}</td>
+            <td>
+                <a href="/files/{{i[9]}}"></a>
+            </td>
+            <td><a href="/erp/view_indent_details?indent_id={{i[0]}}">
+                <i class="fa fa-external-link"></i>
+            </a></td>
+
+        </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}
