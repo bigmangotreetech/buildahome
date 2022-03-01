@@ -1382,7 +1382,7 @@ def projects_with_design_team():
     cur = mysql.connection.cursor()
     cur.execute(design_team_query)
     result = cur.fetchall()
-    return render_template('projects_with_no_design_team.html', projects=result)
+    return render_template('projects_with_design_team.html', projects=result)
 
 @app.route('/projects_with_no_operations_team', methods=['GET'])
 def projects_with_no_operations_team():
