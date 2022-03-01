@@ -1158,7 +1158,7 @@ def view_approved_POs():
         current_user_role = session['role']
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved" AND indents.project_id=projects.project_id ' \
+                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="po_uploaded" AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
 
             cur.execute(indents_query)
@@ -1182,7 +1182,7 @@ def view_approved_POs():
                     else:
                         i[8] = str(int(difference_in_hours)) + ' hours'
                 data.append(i)
-            return render_template('approved_indents.html', result=data)
+            return render_template('approved_pos.html', result=data)
         elif current_user_role == 'Purchase Executive':
             current_user_email = session['email']
             access_query = 'SELECT access, role from App_users WHERE email=' + str(current_user_email)
