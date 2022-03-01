@@ -1462,6 +1462,14 @@ def edit_project():
         flash('Project updated successfully', 'success')
         return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
 
+        # This has to be checked. The if condition is returning false even when everything is okay
+        # if cur.rowcount == 1:
+        #     flash('Project updated successfully', 'success')
+        #     return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
+        # else:
+        #     flash('Project not updated', 'danger')
+        #     return redirect(request.referrer)
+
 @app.route('/unapproved_projects', methods=['GET'])
 def unapproved_projects():
     if 'email' not in session:
