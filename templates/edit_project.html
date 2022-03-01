@@ -395,6 +395,13 @@
                      class="additional_cost_input"
                      />
                   <div class="additional-cost-section">
+                     {% for x in p.additional_cost.split(' &# ') %}
+                        <input
+                        type="text"
+                        class="form-control additional-cost mb-2"
+                        value="{{x}}"
+                        />
+                    {% endfor %}
                      <input
                         type="text"
                         class="form-control additional-cost d-none mb-2"
