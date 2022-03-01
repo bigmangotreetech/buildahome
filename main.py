@@ -1459,6 +1459,28 @@ def edit_project():
         cur = mysql.connection.cursor()
         cur.execute(update_project_query)
         mysql.connection.commit()
+        cost_sheet_filename = ''
+        site_inspection_report_filename = ''
+        if 'cost_sheet' in request.files:
+            file = request.files['cost_sheet']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                cost_sheet_filename = 'cost_sheet_' + str(project_id) + '_' + filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], cost_sheet_filename))
+
+        if 'site_inspection_report' in request.files:
+            file = request.files['site_inspection_report']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                site_inspection_report_filename = 'site_inspection_report_' + str(project_id) + '_' + filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], site_inspection_report_filename))
+
         flash('Project updated successfully', 'success')
         return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
 
