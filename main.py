@@ -22,7 +22,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'buildahome'
 app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
-app.config['UPLOAD_FOLDER'] = './'
+app.config['UPLOAD_FOLDER'] = '../static'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
 
 mysql = MySQL(app)
