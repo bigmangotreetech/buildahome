@@ -435,6 +435,78 @@ def view_users():
     result = cur.fetchall()
     return render_template('view_users.html', users=result)
 
+@app.route('/contractor_registration', methods=['GET','POST'])
+def contractor_registration():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/vendor_registration'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        return render_template('contractor_registration.html')
+    else:
+        column_names = list(request.form.keys())
+        values = list(request.form.values())
+
+        cur = mysql.connection.cursor()
+        new_vendor_query = 'INSERT into contractors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
+            tuple(values))
+        cur.execute(new_vendor_query)
+        mysql.connection.commit()
+        flash ('Contractor registered', 'success')
+        return redirect('/erp/view_contractors')
+
+@app.route('/view_contractors', methods=['GET'])
+def view_contractors():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_contractors'
+        return redirect('/erp/login')
+
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
+    cur = mysql.connection.cursor()
+    vendors_query = 'SELECT id, name, code, pan, phone_number, address FROM contractors'
+    cur.execute(vendors_query)
+    result = cur.fetchall()
+    return render_template('view_contractors.html', vendors=result)
+
+@app.route('/edit_contractor', methods=['GET','POST'])
+def edit_contractor():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/edit_contractor'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        if 'contractor_id' in request.args:
+            cur = mysql.connection.cursor()
+            contractor_query = 'SELECT * from contractors WHERE id=' + request.args['contractor_id']
+            cur.execute(contractor_query)
+            contractor_details = cur.fetchone()
+            return render_template('edit_contractor.html', contractor_details=contractor_details[1:], contractor_id=request.args['contractor_id'])
+    else:
+        column_names = list(request.form.keys())
+
+        update_string = ""
+        for i in column_names[:-1]:
+            update_string += i + '="' + request.form[i] + '", '
+        # Remove the last comma
+        update_string = update_string[:-2]
+        update_vendor_query = 'UPDATE contractors SET ' + update_string + ' WHERE id=' + str(
+            request.form['contractor_id'])
+        cur = mysql.connection.cursor()
+        cur.execute(update_vendor_query)
+        mysql.connection.commit()
+        flash('Contractor updated successfully','success')
+        return redirect('/erp/view_contractors')
+
 @app.route('/vendor_registration', methods=['GET','POST'])
 def vendor_registration():
     if 'email' not in session:
