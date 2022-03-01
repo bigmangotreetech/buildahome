@@ -1538,6 +1538,7 @@ def edit_operations_team():
         if 'project_id' not in request.args:
             flash('Missing fields', 'danger')
             return redirect('/erp/projects_with_no_operations_team')
+        project_id = request.args['project_id']
         operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
