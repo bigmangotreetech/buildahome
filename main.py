@@ -1463,24 +1463,24 @@ def edit_project():
         site_inspection_report_filename = ''
         if 'cost_sheet' in request.files:
             file = request.files['cost_sheet']
-            if file.filename == '':
-                flash('No selected file', 'danger ')
-                return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 cost_sheet_filename = 'cost_sheet_' + str(request.form['project_id']) + '_' + filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], cost_sheet_filename))
+                update_filename_query = 'UPDATE projects set cost_sheet=%s WHERE project_id=%s'
+                cur.execute(update_filename_query,
+                            (cost_sheet_filename, str(request.form['project_id'])))
 
         if 'site_inspection_report' in request.files:
-            file = request.files['site_inspection_report']
-            if file.filename == '':
-                flash('No selected file', 'danger ')
-                return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 site_inspection_report_filename = 'site_inspection_report_' + str(request.form['project_id']) + '_' + filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], site_inspection_report_filename))
+                update_filename_query = 'UPDATE projects set site_inspection_report=%s WHERE project_id=%s'
+                cur.execute(update_filename_query,
+                            (site_inspection_report_filename, str(request.form['project_id'])))
 
+        mysql.connection.commit()
         flash('Project updated successfully', 'success')
         return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
 
