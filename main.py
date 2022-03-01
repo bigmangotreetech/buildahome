@@ -22,7 +22,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'buildahome'
 app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
-app.config['UPLOAD_FOLDER'] = '../app.buildahome.in/files'
+app.config['UPLOAD_FOLDER'] = '/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
 
 mysql = MySQL(app)
@@ -1468,7 +1468,7 @@ def edit_project():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                cost_sheet_filename = filename
+                cost_sheet_filename = 'cost_sheet_' + str(request.form['project_id']) + '_' + filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], cost_sheet_filename))
 
         if 'site_inspection_report' in request.files:
