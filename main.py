@@ -470,10 +470,10 @@ def view_contractors():
         return redirect(request.referrer)
 
     cur = mysql.connection.cursor()
-    vendors_query = 'SELECT id, name, code, pan, phone_number, address FROM contractors'
-    cur.execute(vendors_query)
+    contractors_query = 'SELECT id, name, code, pan, phone_number, address FROM contractors'
+    cur.execute(contractors_query)
     result = cur.fetchall()
-    return render_template('view_contractors.html', vendors=result)
+    return render_template('view_contractors.html', contractors=result)
 
 @app.route('/edit_contractor', methods=['GET','POST'])
 def edit_contractor():
