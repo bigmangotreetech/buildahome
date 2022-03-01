@@ -1472,6 +1472,7 @@ def edit_project():
                             (cost_sheet_filename, str(request.form['project_id'])))
 
         if 'site_inspection_report' in request.files:
+            file = request.files['site_inspection_report']
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 site_inspection_report_filename = 'site_inspection_report_' + str(request.form['project_id']) + '_' + filename
