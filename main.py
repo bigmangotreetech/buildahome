@@ -1399,7 +1399,7 @@ def unapproved_projects():
         return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        unapproved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=0 AND archived=0'
+        unapproved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=0 AND archived=0 ORDER BY project_number'
         cur.execute(unapproved_projects_query)
         result = cur.fetchall()
         return render_template('unapproved_projects.html', projects=result)
@@ -1420,7 +1420,7 @@ def approved_projects():
                 cur.execute(approved_projects_query)
                 result = cur.fetchall()
             else:
-                approved_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0'
+                approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
                 cur.execute(approved_projects_query)
                 result = cur.fetchall()
         return render_template('approved_projects.html', projects=result)
@@ -1441,7 +1441,7 @@ def archived_projects():
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
             else:
-                archived_projects_query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=1'
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=1 ORDER BY project_number'
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
         return render_template('archived_projects.html', projects=result)
