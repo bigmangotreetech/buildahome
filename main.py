@@ -1528,12 +1528,13 @@ def archived_projects():
 def view_project_details():
     if request.method == 'GET':
         fields = [
-            'project_name', 'project_location', 'no_of_floors', 'project_value', 'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
-            'gf_slab_area', 'ff_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived'
+            'p.project_name', 'p.project_location','p.package_type', 'p.no_of_floors', 'p.project_value', 'p.date_of_initial_advance', 'p.date_of_agreement', 'u.name', 'p.site_area',
+            'p.gf_slab_area', 'p.ff_slab_area', 'p.tf_slab_area', 'p.tef_slab_area', 'p.shr_oht', 'p.elevation_details', 'p.additional_cost',
+            'p.paid_percentage', 'p.comments', 'p.cost_sheet', 'p.site_inspection_report', 'p.is_approved', 'p.archived'
         ]
         fields_as_string = ", ".join(fields)
-        get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
+        get_details_query = 'SELECT '+fields_as_string+' from projects p WHERE p.project_id='+str(request.args['project_id'])+' ' \
+                            'LEFT OUTER JOIN App_users u on p.sales_executive=u.user_id'
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
