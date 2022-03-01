@@ -201,7 +201,11 @@
                         >
                             <option value="">Select</option>
                             {% for i in sales_executives %}
+                            {% if p.sales_executive|string == i[0]|string %}
+                            <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
+                            {% else %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                         <br/>
