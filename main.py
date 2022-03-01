@@ -1533,8 +1533,7 @@ def view_project_details():
             'p.paid_percentage', 'p.comments', 'p.cost_sheet', 'p.site_inspection_report', 'p.is_approved', 'p.archived'
         ]
         fields_as_string = ", ".join(fields)
-        get_details_query = 'SELECT '+fields_as_string+' from projects p WHERE p.project_id='+str(request.args['project_id'])+' ' \
-                            'LEFT OUTER JOIN App_users u on p.sales_executive=u.user_id'
+        get_details_query = 'SELECT '+fields_as_string+' from projects p WHERE p.project_id='+str(request.args['project_id'])+' LEFT OUTER JOIN App_users u on p.sales_executive=u.user_id'
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
