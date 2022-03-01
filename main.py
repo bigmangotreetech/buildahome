@@ -1500,6 +1500,7 @@ def edit_design_team():
 @app.route('/assign_operations_team', methods=['GET','POST'])
 def assign_operations_team():
     if request.method == 'GET':
+
         operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
@@ -1517,6 +1518,7 @@ def assign_operations_team():
                 purchase_executives.append({'id': i[0], 'name': i[1]})
             if i[2] == 'QS Engineer':
                 qs_engineers.append({'id': i[0], 'name': i[1]})
+
         return render_template('assign_operations_team.html', co_ordinators=co_ordinators, project_managers=project_managers, purchase_executives=purchase_executives, qs_engineers=qs_engineers)
     else:
         column_names = list(request.form.keys())
@@ -1529,6 +1531,58 @@ def assign_operations_team():
         mysql.connection.commit()
         flash('Operations team has been assigned successfully','success')
         return redirect('/erp/projects_with_operations_team')
+
+@app.route('/edit_operations_team', methods=['GET','POST'])
+def edit_operations_team():
+    if request.method == 'GET':
+        if 'project_id' not in request.args:
+            flash('Missing fields', 'danger')
+            return redirect('/erp/projects_with_no_operations_team')
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
+        cur = mysql.connection.cursor()
+        cur.execute(operations_team_query)
+        co_ordinators = []
+        project_managers = []
+        purchase_executives = []
+        qs_engineers = []
+        result = cur.fetchall()
+        for i in result:
+            if i[2] == 'Project Coordinator':
+                co_ordinators.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Project Manager':
+                project_managers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'Purchase Executive':
+                purchase_executives.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'QS Engineer':
+                qs_engineers.append({'id': i[0], 'name': i[1]})
+        existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project_id)
+        cur.execute(existing_team_query)
+        res = cur.fetchone()
+        existing_team = {
+            'Project Coordinator': res[2],
+            'Project Manager': res[3],
+            'Purchase Executive': res[4],
+            'QS Engineer': res[5],
+        }
+        return render_template('edit_operations_team.html',existing_team=existing_team, co_ordinators=co_ordinators, project_managers=project_managers, purchase_executives=purchase_executives, qs_engineers=qs_engineers)
+    else:
+        cur = mysql.connection.cursor()
+        column_names = list(request.form.keys())
+
+        update_string = ""
+        for i in column_names[:-1]:
+            if request.form[i].strip() != '':
+                update_string += i + '="' + request.form[i] + '", '
+        # Remove the last comma
+        update_string = update_string[:-2]
+        update_project_query = 'UPDATE project_operations_team SET ' + update_string + ' WHERE project_id=' + str(
+            request.form['project_id'])
+
+        cur.execute(update_project_query)
+        mysql.connection.commit()
+        flash('Opeartions team has been updated successfully', 'success')
+        return redirect('/erp/projects_with_operations_team')
+
 
 @app.route('/revised_drawings', methods=['GET',"POST"])
 def revised_drawings():
