@@ -19,7 +19,11 @@
                         <select name="senior_architect" id=senior_architect" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in senior_architects %}
+                            {% if i == existing_team['Senior Architect'] %}
+                            <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
+                            {% else %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -33,7 +37,11 @@
                         <select name="architect" id=architect" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in architects %}
+                            {% if i == existing_team['Architect'] %}
+                            <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
+                            {% else %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -44,10 +52,15 @@
                         <label for="">Select Structural Designer</label>
                     </div>
                     <div class="col-6">
-                        <select name="structural_designer" id=structural_designer" class="form-control select2" required>
+                        <select name="structural_designer" id=structural_designer" class="form-control select2"
+                                required>
                             <option value=""></option>
                             {% for i in structural_designers %}
+                            {% if i == existing_team['Structural Designer'] %}
+                            <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
+                            {% else %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -58,10 +71,15 @@
                         <label for="">Select Electrical Designer</label>
                     </div>
                     <div class="col-6">
-                        <select name="electrical_designer" id=electrical_designer" class="form-control select2" required>
+                        <select name="electrical_designer" id=electrical_designer" class="form-control select2"
+                                required>
                             <option value=""></option>
                             {% for i in electrical_designers %}
+                            {% if i == existing_team['Electrical Designer'] %}
+                            <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
+                            {% else %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -75,7 +93,11 @@
                         <select name="phe_designer" id=phe_designer" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in phe_designers %}
+                            {% if i == existing_team['PHE Designer'] %}
+                            <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
+                            {% else %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
