@@ -11,7 +11,11 @@
             {% for i in details %}
             <div class="row mx-0 mb-3 form-group">
                 <div class="col-6">
+                    {% if i=='Is Approved' %}
+                    <label for="{{i}}">Approval Status</label>
+                    {% else %}
                     <label for="{{i}}">{{i}}</label>
+                    {% endif %}
                 </div>
                 <div class="col-6">
                     {% if i=='Elevation Details' or i=='Additional Cost' %}
@@ -20,6 +24,12 @@
                     {% endfor %}
                     {% elif i=='Cost Sheet' or i=='Site Inspection Report'  %}
                     <a style="word-break: break-all;" target="_blank" href="/files/{{details[i]}}">{{details[i]}}</a>
+                    {% elif i=='Is Approved' %}
+                        {% if  details[i]|string == "0" %}
+                        <b>Not approved</b>
+                        {% else %}
+                        <b>Approved</b>
+                        {% endif %}
                     {% else %}
                     {{details[i]}}
                     {% endif %}
