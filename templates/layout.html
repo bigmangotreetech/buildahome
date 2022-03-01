@@ -78,6 +78,8 @@
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
+    <a href="/erp/contractor_registration" class='nav-link'>Contractor Registration</a>
+    <a href="/erp/view_contractors" class='nav-link'>View Contractors</a>
     <div class="nav-section-header">Work orders</div>
     <a href="/erp/create_work_order" class='nav-link'>Create work order</a>
     <a href="/erp/view_unsigned_work_order" class='nav-link'>Unsigned work order</a>
