@@ -1479,7 +1479,7 @@ def send_to_s3(file, bucket_name, acl="public-read"):
     except Exception as e:
         print("Something Happened: ", e)
         return e
-    return "{}{}".format(app.config["S3_LOCATION"], file.filename)
+    return file.filename
 
 
 @app.route('/edit_project', methods=['GET','POST'])
