@@ -1464,7 +1464,7 @@ def create_project():
         mysql.connection.commit()
         return redirect(request.referrer)
 
-def send_to_s3(file, bucket_name, , acl="public-read"):
+def send_to_s3(file, bucket_name, acl="public-read"):
     try:
         s3.upload_fileobj(
             file,
