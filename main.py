@@ -366,6 +366,18 @@ def shifting_entry():
         quantity = request.form['quantity']
         description = 'Shifting entry'
 
+        material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id=' + str(
+            to_project) + ' AND material="' + str(material) + '"'
+        cur.execute(material_quantity_query)
+        result = cur.fetchone()
+        if result is None:
+            flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
+            return redirect('/erp/enter_material')
+        if float(result[0]) < (float(quantity)):
+            flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded',
+                  'danger')
+            return redirect('/erp/enter_material')
+
         check_if_shifting_is_possible = 'SELECT SUM(quantity) from procurement WHERE project_id=%s AND material=%s'
         cur.execute(check_if_shifting_is_possible, (from_project, material))
         result = cur.fetchone()
@@ -378,8 +390,8 @@ def shifting_entry():
         cur.execute(deduction_query, values)
 
         addition_query = "INSERT into procurement (material, description, project_id," \
-                          "quantity) values (%s, %s, %s, %s)"
-        values = (material, description, to_project, int(quantity) * -1)
+                          "quantity) values (%s, %s,  %s, %s)"
+        values = (material, description, to_project, quantity)
         cur.execute(addition_query, values)
 
         mysql.connection.commit()
