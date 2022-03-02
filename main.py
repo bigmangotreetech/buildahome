@@ -360,8 +360,31 @@ def shifting_entry():
         if from_project == to_project:
             flash('Shifting entry failed. Cannot shift to same project','danger')
             return redirect(request.referrer)
+
+        cur = mysql.connection.cursor()
         material = request.form['material']
         quantity = request.form['quantity']
+        description = 'Shifting entry'
+
+        check_if_shifting_is_possible = 'SELECT SUM(quantity) from procurement WHERE project_id=%s AND material=%s'
+        cur.execute(check_if_shifting_is_possible, (from_project, material))
+        result = cur.fetchone()
+        if result is None or int(result[0]) < int(quantity):
+            flash('Shifting entry failed. Insufficient quantity in source project', 'danger')
+            return redirect(request.referrer)
+        deduction_query = "INSERT into procurement (material, description, project_id," \
+                "quantity) values (%s, %s, %s, %s)"
+        values = (material, description, from_project, int(quantity) * -1)
+        cur.execute(deduction_query, values)
+
+        addition_query = "INSERT into procurement (material, description, project_id," \
+                          "quantity) values (%s, %s, %s, %s)"
+        values = (material, description, to_project, int(quantity) * -1)
+        cur.execute(addition_query, values)
+
+        mysql.connection.commit()
+        flash('Shifting entry successful. Material Shifted!', 'success')
+        return redirect(request.referrer)
 
 @app.route('/create_user', methods=['GET','POST'])
 def create_user():
