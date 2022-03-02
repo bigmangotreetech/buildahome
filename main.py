@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, flash, jsonify, url_for
 from flask_mysqldb import MySQL
 import hashlib
-
+import boto3, botocore
 import requests, json
 
 
@@ -24,9 +24,17 @@ app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = '../static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
+app.config['S3_KEY'] = 'RWBMkQ5UOeAUbg3GZmLb5EOq01rXfKUz+aIS4xvG'
+app.config['S3_SECRET'] = 'buildahomeerp'
 
 mysql = MySQL(app)
 
+
+s3 = boto3.client(
+   "s3",
+   aws_access_key_id=app.config['S3_KEY'],
+   aws_secret_access_key=app.config['S3_SECRET']
+)
 
 app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf','png']
@@ -1456,6 +1464,23 @@ def create_project():
         mysql.connection.commit()
         return redirect(request.referrer)
 
+def send_to_s3(file, bucket_name, , acl="public-read"):
+    try:
+        s3.upload_fileobj(
+            file,
+            bucket_name,
+            file.filename,
+            ExtraArgs={
+                "ACL": acl,
+                "ContentType": file.content_type  # Set appropriate content type as per the file
+            }
+        )
+    except Exception as e:
+        print("Something Happened: ", e)
+        return e
+    return "{}{}".format(app.config["S3_LOCATION"], file.filename)
+
+
 @app.route('/edit_project', methods=['GET','POST'])
 def edit_project():
     if 'email' not in session:
@@ -1498,6 +1523,10 @@ def edit_project():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 cost_sheet_filename = 'cost_sheet_' + str(request.form['project_id']) + '_' + filename
+
+                output = send_to_s3(file, app.config["S3_BUCKET"])
+                return str(output)
+
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], cost_sheet_filename))
                 update_filename_query = 'UPDATE projects set cost_sheet=%s WHERE project_id=%s'
                 cur.execute(update_filename_query,
