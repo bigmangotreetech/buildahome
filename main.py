@@ -298,6 +298,38 @@ def view_inventory():
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project, material=material, material_total_quantity=material_total_quantity)
 
 
+@app.route('/shifting_entry', methods=['GET','POST'])
+def shifting_entry():
+    if request.method == 'GET':
+        if 'email' not in session:
+            flash('You need to login to continue', 'danger')
+            session['last_route'] = '/erp/view_inventory'
+            return redirect('/erp/login')
+        projects = get_projects()
+        material_quantity_data = {
+            'Cement': '',
+            'Concrete': '',
+            'Steel': '',
+            'M Sand': '',
+            'P Sand': '',
+            'Aggregates': '',
+            'Wall Material': '',
+            'Door Window': '',
+            'Flooring': '',
+            'Sanitary': '',
+            'Hardware': ''
+        }
+
+        return render_template('shifting_entry.html', projects=projects, material_quantity_data=material_quantity_data)
+    else:
+        from_project = request.form['from_project']
+        to_project = request.form['to_project']
+        if from_project == to_project:
+            flash('Shifting entry failed. Cannot shift to same project','danger')
+            return redirect(request.referrer)
+        material = request.form['material']
+        quantity = request.form['quantity']
+
 @app.route('/create_user', methods=['GET','POST'])
 def create_user():
     if 'email' not in session:
