@@ -83,7 +83,7 @@ def get_projects_for_current_user():
         user_id = session['user_id']
         role = session['role']
         cur = mysql.connection.cursor()
-        if role in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer']:
+        if role in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head']:
             return ('All')
         elif role == 'Project Coordinator':
             query = 'SELECT project_id from project_operations_team WHERE co_ordinator='+str(user_id)
@@ -1993,14 +1993,13 @@ def drawings():
                                       'WHERE p.project_id IN ' + str(session['projects'])
             cur.execute(drawings_info)
             drawings = cur.fetchall()
-            return '1'
 
         else:
             drawings_info = "SELECT "+ query_string +" FROM projects p LEFT OUTER JOIN "+table_name+" d on " \
                         "p.project_id=d.project_id WHERE p.is_approved=1 AND p.archived=0"
             cur.execute(drawings_info)
             drawings = cur.fetchall()
-            return '2s'
+
     return render_template('drawings.html', role=session['role'], drawing_names=drawing_names, drawings=drawings)
 
 def get_drwaings_table_name():
