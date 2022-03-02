@@ -25,7 +25,7 @@ app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = '../static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
 app.config['S3_SECRET'] = 'RWBMkQ5UOeAUbg3GZmLb5EOq01rXfKUz+aIS4xvG'
-app.config['S3_KEY'] = 'AKIAJIK4Q2RPVOLL7PKQ'
+app.config['S3_KEY'] = 'AKIA25KGDJYARPIVQ763'
 app.config['S3_BUCKET'] = 'buildahomeerp'
 
 mysql = MySQL(app)
