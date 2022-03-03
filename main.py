@@ -24,10 +24,10 @@ app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = '../static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
-app.config['S3_SECRET'] = 'RWBMkQ5UOeAUbg3GZmLb5EOq01rXfKUz+aIS4xvG'
-app.config['S3_KEY'] = 'AKIA25KGDJYARPIVQ763'
-app.config['S3_BUCKET'] = 'buildahomeerp'
-app.config['S3_LOCATION'] = 'https://buildahomeerp.s3.ap-south-1.amazonaws.com/'
+app.config['S3_SECRET'] = os.environ.get('S3_SECRET')
+app.config['S3_KEY'] = os.environ.get('S3_KEY')
+app.config['S3_BUCKET'] = os.environ.get('S3_BUCKET')
+app.config['S3_LOCATION'] = os.environ.get('S3_LOCATION')
 
 
 mysql = MySQL(app)
