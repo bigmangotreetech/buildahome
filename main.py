@@ -1994,7 +1994,7 @@ def drawings():
         if session['role'] not in ['Super Admin','Purchase Head', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head']:
             drawings_info = "SELECT " + query_string + " FROM projects p OUTER JOIN " + table_name + " d on " \
                                   "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0" \
-                                      'AND p.project_id IN ' + str(session['projects'])
+                                      ' AND p.project_id IN ' + str(session['projects'])
 
             cur.execute(drawings_info)
             drawings = cur.fetchall()
