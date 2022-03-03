@@ -1992,7 +1992,7 @@ def drawings():
     drawings = []
     if len(session['projects']) > 0:
         if session['role'] not in ['Super Admin','Purchase Head', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head']:
-            drawings_info = "SELECT " + query_string + " FROM projects p LEFT INNER JOIN " + table_name + " d on " \
+            drawings_info = "SELECT " + query_string + " FROM projects p INNER JOIN " + table_name + " d on " \
                                   "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0" \
                                       ' AND p.project_id IN ' + str(session['projects'])
             cur.execute(drawings_info)
