@@ -59,6 +59,7 @@ def send_to_s3(file, bucket_name, filename, acl="public-read"):
         return e
     return 'success'
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -1579,6 +1580,7 @@ def edit_project():
                 filename = secure_filename(file.filename)
                 cost_sheet_filename = 'cost_sheet_' + str(request.form['project_id']) + '_' + filename
                 output = send_to_s3(file, app.config["S3_BUCKET"], cost_sheet_filename)
+                return output
                 if output == 'success':
                     update_filename_query = 'UPDATE projects set cost_sheet=%s WHERE project_id=%s'
                     cur.execute(update_filename_query,
