@@ -67,7 +67,7 @@ def get_projects():
     cur = mysql.connection.cursor()
     projects = []
     if len(session['projects']) > 0:
-        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer']:
+        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head']:
             query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                                       'AND project_id IN ' + str(session['projects'])
             cur.execute(query)
@@ -1930,6 +1930,8 @@ def revised_drawings():
             reviewed_drawings_query = 'SELECT id, type, name from revised_drawings WHERE project_id='+str(request.args['project_id'])
             cur.execute(reviewed_drawings_query)
             drawings = cur.fetchall()
+
+
 
 
         return render_template('revised_drawings.html', drawings=drawings, projects=projects)
