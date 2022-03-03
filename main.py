@@ -1930,6 +1930,8 @@ def revised_drawings():
             reviewed_drawings_query = 'SELECT id, type, name from revised_drawings WHERE project_id='+str(request.args['project_id'])
             cur.execute(reviewed_drawings_query)
             drawings = cur.fetchall()
+
+
         return render_template('revised_drawings.html', drawings=drawings, projects=projects)
 
 
