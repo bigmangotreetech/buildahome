@@ -1070,7 +1070,7 @@ def project_contractor_info():
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
     get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance from work_orders wo ' \
-                   'INNER JOIN contractors co on co.id=wo.contractor_id AND wo.project_id='+str(request.args['project_id'])+' ORDER BY wo.trade'
+                   'INNER JOIN contractors c on c.id=wo.contractor_id AND wo.project_id='+str(request.args['project_id'])+' ORDER BY wo.trade'
     cur.execute(get_wo_query)
     res = cur.fetchall()
     return res
