@@ -823,17 +823,19 @@ def create_work_order():
         trades = []
         for i in result:
             trades.append(i[0])
-        return render_template('create_work_order.html', projects=projects, floors=floors, trades=trades)
+        contractors = []
+        contractors_query = 'SELECT id, name FROM contractors'
+        cur.execute(contractors_query)
+        result = cur.fetchall()
+        for i in result:
+            contractors.append(i)
+        return render_template('create_work_order.html', projects=projects, floors=floors, trades=trades, contractors=contractors)
     else:
         project_id = request.form['project']
         trade = request.form['trade']
         floors = request.form['floors']
+        contractor_id = request.form['contractor_id']
         wo_value = request.form['wo_value']
-        contractor_name = request.form['contractor_name']
-        contractor_pan = request.form['contractor_pan']
-        contractor_code = request.form['contractor_code']
-        contractor_address = request.form['contractor_address']
-        contractor_phone = request.form['contractor_phone']
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND floors="'+str(floors)+'" AND trade="'+str(trade)+'"'
@@ -844,9 +846,9 @@ def create_work_order():
             flash("Work order already exists. Operation failed",'danger')
             return redirect('/erp/create_work_order')
         else:
-            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no, contractor_phone) ' \
-                           'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            values = (project_id, wo_value, trade, floors, contractor_name, contractor_code, contractor_pan, wo_number, contractor_address, cheque_no, contractor_phone)
+            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, wo_number, cheque_no, contractor_id) ' \
+                           'values (%s, %s, %s, %s, %s, %s, %s)'
+            values = (project_id, wo_value, trade, floors, wo_number,cheque_no, contractor_id)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
@@ -906,16 +908,13 @@ def update_trades_for_project():
 def update_payment_stages():
     project_id = request.form['project_id']
     trade = request.form['trade']
-    work_order_query = 'SELECT value, floors, contractor_name, contractor_code, contractor_pan from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" ORDER BY id'
+    work_order_query = 'SELECT value, floors, from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" ORDER BY id'
     cur = mysql.connection.cursor()
     cur.execute(work_order_query)
     res = cur.fetchone()
     if res is not None:
         work_order_value = res[0]
         floors = res[1]
-        contractor_name = res[2]
-        contractor_code = res[3]
-        contractor_pan = res[4]
         payment_stages_query = 'SELECT stage, payment_percentage from labour_stages WHERE floors="'+str(floors)+'" AND trade="'+trade+'"'
         cur.execute(payment_stages_query)
         result = cur.fetchall()
@@ -923,7 +922,7 @@ def update_payment_stages():
         for i in result:
             stages[i[0]] = i[1].replace('%','')
 
-        response = {'work_order_value': work_order_value, 'contractor_name': contractor_name, 'contractor_code': contractor_code, 'contractor_pan': contractor_pan, 'stages' : stages}
+        response = {'work_order_value': work_order_value, 'stages' : stages}
         return jsonify(response)
 
 def get_bills_as_json(bills_query):
@@ -1070,7 +1069,8 @@ def project_contractor_info():
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
-    get_wo_query = 'SELECT * from work_orders WHERE project_id='+str(project_id)+' ORDER BY trade'
+    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance from work_orders WHERE project_id='+str(project_id)+' ' \
+                   'INNER JOIN contractors co on co.id=wo.contractor_id ORDER BY wo.trade'
     cur.execute(get_wo_query)
     res = cur.fetchall()
     return res
@@ -1105,8 +1105,8 @@ def view_unsigned_work_order():
     if request.method == 'GET':
         work_orders = []
 
-        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, wo.contractor_name FROM work_orders wo ' \
-                         'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0'
+        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name FROM work_orders wo ' \
+                         'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 INNER JOIN contractors c on c.id=wo.contractor_id'
         cur = mysql.connection.cursor()
         cur.execute(unsigned_query)
         result = cur.fetchall()
@@ -1136,8 +1136,8 @@ def view_unapproved_work_order():
     if request.method == 'GET':
         work_orders = []
 
-        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, wo.contractor_name FROM work_orders wo ' \
-                         'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0'
+        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name FROM work_orders wo ' \
+                         'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 INNER JOIN contractors c on c.id=wo.contractor_id'
         cur = mysql.connection.cursor()
         cur.execute(unsigned_query)
         result = cur.fetchall()

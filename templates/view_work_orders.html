@@ -36,13 +36,13 @@
             {% for i in work_orders %}
             <tr>
                 <td>
-                    <a href="/erp/project_contractor_info?project_id={{i[1]}}&&name={{i[5]}}&&code={{i[6]}}">{{i[5]}}</a>
+                    <a href="/erp/project_contractor_info?project_id={{request.args['project_id']}}&&name={{i[1]}}&&code={{i[3]}}">{{i[1]}}</a>
                 </td>
-                <td>{{i[7]}}</td>
-                <td>{{i[6]}}</td>
-                <td>{{i[3]}}</td>
                 <td>{{i[2]}}</td>
-                <td>{{i[8]}}</td>
+                <td>{{i[3]}}</td>
+                <td>{{i[4]}}</td>
+                <td>{{i[5]}}</td>
+                <td>{{i[6]}}</td>
                 <td>
                     <a style="word-break: break-all;" target="_blank" href="/erp/files/work_order_{{i[0]}}.pdf">
                         View
