@@ -1420,10 +1420,11 @@ def upload_signed_wo():
 def approve_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
-            work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, wo.contractor_name,' \
-                               'wo.contractor_pan, wo.contractor_code, wo.contractor_address, wo.wo_number, wo.cheque_no' \
+            work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no' \
                                ' FROM work_orders wo ' \
-                             'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 AND wo.id='+str(request.args['wo_id'])
+                           'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 AND wo.id='+str(request.args['wo_id'])+' ' \
+                           'INNER JOIN contractors c on c.id=wo.contractor_oid'
             cur = mysql.connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
