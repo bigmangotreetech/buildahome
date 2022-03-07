@@ -106,7 +106,7 @@ $(document).ready(function () {
         const project_id = $("#project").val()
         $('input[name="project_id"]').val(project_id)
 
-        const trade = $( "#trade option:selected" ).text(
+        const trade = $( "#trade option:selected" ).text()
         $('input[name="trade"]').val(trade)
 
         const stage = $(".select_payment_stage select").find('option:selected').text()
