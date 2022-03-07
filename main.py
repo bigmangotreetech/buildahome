@@ -1707,7 +1707,6 @@ def view_project_details():
         cur.execute(get_details_query)
         result = cur.fetchone()
         details = {}
-        return str(details)
 
 
         sales_executive_query = 'SELECT name from App_users WHERE user_id='+str(result[8])
@@ -1715,7 +1714,7 @@ def view_project_details():
         sales_executive_query_result = cur.fetchone()
         for i in range (len(fields) - 1) :
             fields_name_to_show = " ".join(fields[i].split('_')).title()
-            if fields_name_to_show == 'Sales Executive' and (result[8] != 0 or result[8] is not None):
+            if fields_name_to_show == 'Sales Executive' and (int(result[8]) != 0 or result[8] is not None):
                 details[fields_name_to_show] = sales_executive_query_result[0]
             else:
                 details[fields_name_to_show] = result[i]
