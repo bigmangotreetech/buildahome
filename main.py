@@ -915,12 +915,16 @@ def update_trades_for_project():
 @app.route('/update_payment_stages', methods=['POST'])
 def update_payment_stages():
     work_order_id_for_trade = request.form['work_order_id_for_trade']
-    work_order_query = 'SELECT value from work_orders WHERE id='+str(work_order_id_for_trade)
+    work_order_query = 'SELECT wo.value, c.name, c.code, c.pan from work_orders INNER JOIN contractors ON ' \
+                       'wo.contractor_id=c.id WHERE wo.id='+str(work_order_id_for_trade)
     cur = mysql.connection.cursor()
     cur.execute(work_order_query)
     res = cur.fetchone()
     if res is not None:
         work_order_value = res[0]
+        contractor_name = res[1]
+        contractor_code = res[2]
+        contractor_pan = res[3]
         payment_stages_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id='+str(work_order_id_for_trade)
         cur.execute(payment_stages_query)
         result = cur.fetchall()
@@ -928,7 +932,12 @@ def update_payment_stages():
         for i in result:
             stages[i[0]] = i[1].replace('%','')
 
-        response = {'work_order_value': work_order_value, 'stages' : stages}
+        response = {'work_order_value': work_order_value,
+                    'stages': stages,
+                    'contractor_name': contractor_name,
+                    'contractor_code': contractor_code,
+                    'contractor_pan': contractor_pan
+                    }
         return jsonify(response)
 
 @app.route('/get_standard_milestones_and_percentages', methods=['POST'])
