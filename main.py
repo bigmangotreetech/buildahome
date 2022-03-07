@@ -1697,17 +1697,18 @@ def archived_projects():
 def view_project_details():
     if request.method == 'GET':
         fields = [
-            'project_name','project_number', 'project_location','package_type', 'no_of_floors', 'project_value', 'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
+            'project_name','project_number', 'project_location','package_type', 'no_of_floors', 'project_value',
+            'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'sf_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht', 'elevation_details', 'additional_cost',
             'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived'
         ]
         fields_as_string = ", ".join(fields)
+        return jsonify(fields_as_string)
         get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
         details = {}
-        return jsonify(result)
 
 
         sales_executive_query = 'SELECT name from App_users WHERE user_id='+str(result[8])
