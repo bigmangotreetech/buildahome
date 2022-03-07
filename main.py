@@ -838,6 +838,10 @@ def create_work_order():
         wo_value = request.form['wo_value']
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
+
+        milestones = request.form.getlist('milestone[]')
+        percentages = request.form.getlist('percentage[]')
+
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND floors="'+str(floors)+'" AND trade="'+str(trade)+'"'
         cur = mysql.connection.cursor()
         cur.execute(check_if_exist_query)
@@ -850,6 +854,13 @@ def create_work_order():
                            'values (%s, %s, %s, %s, %s, %s, %s)'
             values = (project_id, wo_value, trade, floors, wo_number,cheque_no, contractor_id)
             cur.execute(insert_query, values)
+
+            work_order_id = cur.lastrowid
+            for i in range(len(milestones)):
+                if milestones[i].strip()  != '' and percentages[i].strip() != '':
+                    insert_milestones_query = 'INSERT into wo_milestones work_order_id, stage, percentage values(%s, %s, %s)'
+                    cur.execute(insert_milestones_query, (work_order_id, milestones[i], percentages[i]))
+
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
             return redirect('/erp/create_work_order')
