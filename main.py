@@ -838,8 +838,8 @@ def create_work_order():
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
 
-        milestones = request.form.getlist('milestone')
-        percentages = request.form.getlist('percentage')
+        milestones = request.form.getlist('milestone[]')
+        percentages = request.form.getlist('percentage[]')
 
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'"'
         cur = mysql.connection.cursor()
@@ -862,6 +862,8 @@ def create_work_order():
 
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
+            return jsonify(request.form)
+
             return redirect('/erp/create_work_order')
 
 
