@@ -915,7 +915,7 @@ def update_trades_for_project():
 @app.route('/update_payment_stages', methods=['POST'])
 def update_payment_stages():
     work_order_id_for_trade = request.form['work_order_id_for_trade']
-    work_order_query = 'SELECT wo.value, c.name, c.code, c.pan from work_orders wo INNER JOIN contractors ON ' \
+    work_order_query = 'SELECT wo.value, c.name, c.code, c.pan from work_orders wo INNER JOIN contractors c ON ' \
                        'wo.contractor_id=c.id WHERE wo.id='+str(work_order_id_for_trade)
     cur = mysql.connection.cursor()
     cur.execute(work_order_query)
