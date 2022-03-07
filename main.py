@@ -947,7 +947,7 @@ def get_standard_milestones_and_percentages():
     milestones_and_percentages = {}
     for i in result:
         milestones_and_percentages[i[0]] = i[1].replace('%', '')
-    response = {'milestones_and_percentages': milestones_and_percentages}
+    response = {'milestones_and_percentages': milestones_and_percentages, 'message': 'success'}
     return jsonify(response)
 
 
