@@ -839,6 +839,7 @@ def create_work_order():
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
 
+        return jsonify(request.form)
         milestones = request.form.getlist('milestone')
         percentages = request.form.getlist('percentage')
 
