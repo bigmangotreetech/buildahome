@@ -862,7 +862,6 @@ def create_work_order():
 
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
-            return jsonify(request.form)
 
             return redirect('/erp/create_work_order')
 
@@ -907,27 +906,22 @@ def create_bill():
 @app.route('/update_trades_for_project', methods=['POST'])
 def update_trades_for_project():
     project_id = request.form['project_id']
-    trades_query = 'SELECT DISTINCT trade from work_orders WHERE project_id='+str(project_id)
+    trades_query = 'SELECT id, trade from work_orders WHERE project_id='+str(project_id)
     cur = mysql.connection.cursor()
     cur.execute(trades_query)
-    trades = []
     result = cur.fetchall()
-    for i in result:
-        trades.append(i[0])
-    return jsonify(trades)
+    return jsonify(list(result))
 
 @app.route('/update_payment_stages', methods=['POST'])
 def update_payment_stages():
-    project_id = request.form['project_id']
-    trade = request.form['trade']
-    work_order_query = 'SELECT value, floors, from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'" ORDER BY id'
+    work_order_id_for_trade = request.form['work_order_id_for_trade']
+    work_order_query = 'SELECT value from work_orders WHERE id='+str(work_order_id_for_trade)
     cur = mysql.connection.cursor()
     cur.execute(work_order_query)
     res = cur.fetchone()
     if res is not None:
         work_order_value = res[0]
-        floors = res[1]
-        payment_stages_query = 'SELECT stage, payment_percentage from labour_stages WHERE floors="'+str(floors)+'" AND trade="'+trade+'"'
+        payment_stages_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id="'+str(work_order_id_for_trade)
         cur.execute(payment_stages_query)
         result = cur.fetchall()
         stages = {}

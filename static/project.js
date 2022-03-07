@@ -45,8 +45,8 @@ $(document).ready(function () {
                 success: function (data) {
                     for (const trade of data) {
                         $(".select_trade_for_bill select").append($("<option></option>")
-                            .attr("value", trade)
-                            .text(trade))
+                            .attr("value", trade[0])
+                            .text(trade[1]))
                     }
                 }
             });
@@ -57,8 +57,8 @@ $(document).ready(function () {
     })
 
     $(".select_trade_for_bill select").on('change', function () {
-        const trade = $(this).val()
-        if (trade) {
+        const work_order_id_for_trade = $(this).val()
+        if (work_order_id_for_trade) {
             $(".select_payment_stage select").empty()
             $(".select_payment_stage select").append($("<option></option>"))
             project_id = $("#project").val()
@@ -67,7 +67,7 @@ $(document).ready(function () {
                 url: '/erp/update_payment_stages',
                 type: "POST",
                 dataType: 'json',
-                data: { 'project_id': project_id, 'trade': trade },
+                data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
                 success: function (data) {
                     $('.total_wo_value').text(data['work_order_value'])
                     $('.contractor_name').text(data['contractor_name'])
