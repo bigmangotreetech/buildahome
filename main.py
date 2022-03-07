@@ -933,9 +933,9 @@ def get_standard_milestones_and_percentages():
         return jsonify({'message': 'Trade field empty'})
     if str(project_id).strip() == '':
         return jsonify({'message': 'Project id field empty'})
-    get_floors_for_project_query = 'SELECT no_of_floors from projects WHERE project_id=%s'
+    get_floors_for_project_query = 'SELECT no_of_floors from projects WHERE project_id='+project_id
     cur = mysql.connection.cursor()
-    cur.execute(get_floors_for_project_query, (project_id))
+    cur.execute(get_floors_for_project_query)
     res = cur.fetchone()
     if res is None or len(res) == 0:
         return jsonify({'message': 'Project not found with id '+str(project_id)})

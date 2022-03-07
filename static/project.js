@@ -394,8 +394,8 @@ $(document).ready(function() {
         }
    })
 
-   $('.work-order-trade-select').on('change', function() {
-       selected_trade = $(this).val()
+   function showStandardMilestones() {
+       selected_trade = $('.work-order-trade-select').val()
        project_id = $(".work_order_project_select").val()
        if (selected_trade.trim() === '' || project_id.trim() === '') return false;
        $.ajax({
@@ -425,7 +425,11 @@ $(document).ready(function() {
             }
           }
          });
-   })
+   }
+
+
+   $('.work-order-trade-select').on('change', showStandardMilestones)
+   $('.work_order_project_select').on('change', showStandardMilestones)
 
    
 
