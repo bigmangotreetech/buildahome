@@ -1707,6 +1707,7 @@ def view_project_details():
         cur.execute(get_details_query)
         result = cur.fetchone()
         details = {}
+        return jsonify(result)
 
 
         sales_executive_query = 'SELECT name from App_users WHERE user_id='+str(result[8])
