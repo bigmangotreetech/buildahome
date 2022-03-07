@@ -408,12 +408,14 @@ $(document).ready(function() {
             'project_id': project_id
           },
           success: function(data){
+            console.log(data)
             if(data['message'] == 'success') {
                 $('.error_message').addClass('d-none')
                 $('.milestones_section').removeClass('d-none')
                 const milestones_and_percentages = data['milestones_and_percentages']
                 for(stage of Object.keys(milestones_and_percentages)) {
-                    milestones_and_percentages_item = $('.milestones_and_percentages_item').clone()
+                    milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
+                    milestones_and_percentages_item.removeClass('template')
                     milestones_and_percentages_item.find('.milestone-field').val(stage)
                     milestones_and_percentages_item.find('.percentage-field').val(milestones_and_percentages[stage])
                     milestones_and_percentages_item.removeClass('d-none')
