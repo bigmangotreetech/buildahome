@@ -394,6 +394,39 @@ $(document).ready(function() {
         }
    })
 
+   $('.work-order-trade-select').on('change', function() {
+       selected_trade = $(this).val()
+       project_id = $(".work_order_project_select").val()
+       if (selected_trade.trim() === '' || project_id.trim() === '') return false;
+       $.ajax({
+          url: '/erp/get_standard_milestones_and_percentages',
+          type: "POST",
+          dataType: 'json',
+          data: {
+            'trade': selected_trade,
+            'project_id': project_id
+          },
+          success: function(data){
+            if(data['message'] == 'success') {
+                $('.error_message').addClass('d-none')
+                $('.milestones_section').removeClass('d-none')
+                const milestones_and_percentages = data['milestones_and_percentages']
+                for(stage of Object.keys(milestones_and_percentages)) {
+                    milestones_and_percentages_item = $('.milestones_and_percentages_item').clone()
+                    milestones_and_percentages_item.find('.milestone-field').val(stage)
+                    milestones_and_percentages_item.find('.percentage-field').val(stage)
+                    milestones_and_percentages_item.removeClass('d-none')
+                    $('.milestones_section').append(milestones_and_percentages_item)
+                }
+            } else {
+                $('.error_message').text(data['message'])
+                $('.error_message').removeClass('d-none')
+                $('.milestones_section').addClass('d-none')
+            }
+          }
+         });
+   })
+
    
 
 

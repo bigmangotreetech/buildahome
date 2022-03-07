@@ -14,7 +14,8 @@
                         <label for="project">Project</label>
                     </div>
                     <div class="col-6">
-                        <select name="project" id="project" class="form-control select2 work_order_project_select" required>
+                        <select name="project" id="project" class="form-control select2 work_order_project_select"
+                                required>
                             <option value=""></option>
                             {% for i in projects %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
@@ -22,25 +23,13 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mx-0 mb-3 form-group wo-floors-section">
-                    <div class="col-6">
-                        <label for="floors">Floors</label>
-                    </div>
-                    <div class="col-6">
-                        <select name="floors" id="floors" class="form-control select2" required>
-                            <option value=""></option>
-                            {% for i in floors %}
-                            <option value="{{i}}">{{i}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="trade">Trade</label>
                     </div>
                     <div class="col-6">
-                        <select name="trade" id="trade" class="form-control select2" required>
+                        <select name="trade" id="trade" class="form-control select2 work-order-trade-select" required>
                             <option value=""></option>
                             {% for i in trades %}
                             <option value="{{i}}">{{i}}</option>
@@ -88,6 +77,20 @@
                         <input name="cheque_no" id="cheque_no" class="form-control">
                     </div>
                 </div>
+
+                <div class="row mx-0 mb-3 form-group milestones_section d-none">
+                    <div class="row mx-0 mb-3 form-group">
+                        <div class="col-8">
+                            <label class="font-weight-bold">Milestones and percentages</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mx-0 mb-3 form-group text-danger error_message d-none"></div>
+
+
+
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
                         <button class="btn btn-block bg-indigo text-white">Create</button>
@@ -95,6 +98,15 @@
                 </div>
             </form>
         </div>
+    </div>
+</div>
+
+<div class="row mx-0 mb-3 form-group milestones_and_percentages_item d-none">
+    <div class="col-6">
+        <input name="milestone[]" class="form-control milestone-field">
+    </div>
+    <div class="col-6">
+        <input name="percentage[]" class="form-control percentage-field">
     </div>
 </div>
 

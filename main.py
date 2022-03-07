@@ -925,6 +925,32 @@ def update_payment_stages():
         response = {'work_order_value': work_order_value, 'stages' : stages}
         return jsonify(response)
 
+@app.route('/get_standard_milestones_and_percentages', methods=['POST'])
+def get_standard_milestones_and_percentages():
+    trade = request.form['trade']
+    project_id = request.form['project_id']
+    if str(trade).strip() == '':
+        return jsonify({'message': 'Trade field empty'})
+    if str(project_id).strip() == '':
+        return jsonify({'message': 'Project id field empty'})
+    get_floors_for_project_query = 'SELECT no_of_floors from projects WHERE project_id=%s'
+    cur = mysql.connection.cursor()
+    cur.execute(get_floors_for_project_query, (project_id))
+    res = cur.fetchone()
+    if res is None or len(res) == 0:
+        return jsonify({'message': 'Project not found with id '+str(project_id)})
+    floors = res[0]
+    payment_stages_query = 'SELECT stage, payment_percentage from labour_stages WHERE floors="' + str(
+        floors) + '" AND trade="' + trade + '"'
+    cur.execute(payment_stages_query)
+    result = cur.fetchall()
+    milestones_and_percentages = {}
+    for i in result:
+        milestones_and_percentages[i[0]] = i[1].replace('%', '')
+    response = {'milestones_and_percentages': milestones_and_percentages}
+    return jsonify(response)
+
+
 def get_bills_as_json(bills_query):
     cur = mysql.connection.cursor()
     cur.execute(bills_query)
