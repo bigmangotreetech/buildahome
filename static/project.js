@@ -398,6 +398,7 @@ $(document).ready(function() {
        selected_trade = $('.work-order-trade-select').val()
        project_id = $(".work_order_project_select").val()
        if (selected_trade.trim() === '' || project_id.trim() === '') return false;
+       $('.milestones_section').find('.milestones_and_percentages_item').remove()
        $.ajax({
           url: '/erp/get_standard_milestones_and_percentages',
           type: "POST",
@@ -414,7 +415,7 @@ $(document).ready(function() {
                 for(stage of Object.keys(milestones_and_percentages)) {
                     milestones_and_percentages_item = $('.milestones_and_percentages_item').clone()
                     milestones_and_percentages_item.find('.milestone-field').val(stage)
-                    milestones_and_percentages_item.find('.percentage-field').val(stage)
+                    milestones_and_percentages_item.find('.percentage-field').val(milestones_and_percentages[stage])
                     milestones_and_percentages_item.removeClass('d-none')
                     $('.milestones_section').append(milestones_and_percentages_item)
                 }
