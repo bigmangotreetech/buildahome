@@ -1703,7 +1703,6 @@ def view_project_details():
             'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived'
         ]
         fields_as_string = ", ".join(fields)
-        return jsonify(fields_as_string)
         get_details_query = 'SELECT '+fields_as_string+' from projects WHERE project_id='+str(request.args['project_id'])
         cur = mysql.connection.cursor()
         cur.execute(get_details_query)
@@ -1716,7 +1715,7 @@ def view_project_details():
         sales_executive_query_result = cur.fetchone()
         for i in range (len(fields) - 1) :
             fields_name_to_show = " ".join(fields[i].split('_')).title()
-            if fields_name_to_show == 'Sales Executive' and (int(result[8]) != 0 or result[8] is not None):
+            if fields_name_to_show == 'Sales Executive' and sales_executive_query_result is not None:
                 details[fields_name_to_show] = sales_executive_query_result[0]
             else:
                 details[fields_name_to_show] = result[i]
