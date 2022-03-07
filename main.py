@@ -1708,12 +1708,13 @@ def view_project_details():
         result = cur.fetchone()
         details = {}
 
+
         sales_executive_query = 'SELECT name from App_users WHERE user_id='+str(result[8])
         cur.execute(sales_executive_query)
         sales_executive_query_result = cur.fetchone()
         for i in range (len(fields) - 1) :
             fields_name_to_show = " ".join(fields[i].split('_')).title()
-            if fields_name_to_show == 'Sales Executive':
+            if fields_name_to_show == 'Sales Executive' and (result[8] != 0 or result[8] is not None):
                 details[fields_name_to_show] = sales_executive_query_result[0]
             else:
                 details[fields_name_to_show] = result[i]
