@@ -833,17 +833,15 @@ def create_work_order():
     else:
         project_id = request.form['project']
         trade = request.form['trade']
-        floors = request.form['floors']
         contractor_id = request.form['contractor_id']
         wo_value = request.form['wo_value']
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
 
-        return jsonify(request.form)
         milestones = request.form.getlist('milestone')
         percentages = request.form.getlist('percentage')
 
-        check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND floors="'+str(floors)+'" AND trade="'+str(trade)+'"'
+        check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'"'
         cur = mysql.connection.cursor()
         cur.execute(check_if_exist_query)
         result = cur.fetchone()
@@ -851,9 +849,9 @@ def create_work_order():
             flash("Work order already exists. Operation failed",'danger')
             return redirect('/erp/create_work_order')
         else:
-            insert_query = 'INSERT into work_orders (project_id, value, trade, floors, wo_number, cheque_no, contractor_id) ' \
-                           'values (%s, %s, %s, %s, %s, %s, %s)'
-            values = (project_id, wo_value, trade, floors, wo_number,cheque_no, contractor_id)
+            insert_query = 'INSERT into work_orders (project_id, value, trade, wo_number, cheque_no, contractor_id) ' \
+                           'values (%s, %s, %s, %s, %s, %s)'
+            values = (project_id, wo_value, trade, wo_number,cheque_no, contractor_id)
             cur.execute(insert_query, values)
 
             work_order_id = cur.lastrowid
