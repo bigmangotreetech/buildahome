@@ -412,6 +412,7 @@ $(document).ready(function() {
             if(data['message'] == 'success') {
                 $('.error_message').addClass('d-none')
                 $('.milestones_section').removeClass('d-none')
+                $('.add-milestone-stage-btn').removeClass('d-none')
                 const milestones_and_percentages = data['milestones_and_percentages']
                 for(stage of Object.keys(milestones_and_percentages)) {
                     milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
@@ -425,6 +426,7 @@ $(document).ready(function() {
                 $('.error_message').text(data['message'])
                 $('.error_message').removeClass('d-none')
                 $('.milestones_section').addClass('d-none')
+                $('.add-milestone-stage-btn').addClass('d-none')
             }
           }
          });
@@ -433,7 +435,12 @@ $(document).ready(function() {
 
    $('.work-order-trade-select').on('change', showStandardMilestones)
    $('.work_order_project_select').on('change', showStandardMilestones)
-
+   $('.add-milestone-stage-btn').on('click', function() {
+            milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
+            milestones_and_percentages_item.removeClass('template')
+            milestones_and_percentages_item.removeClass('d-none')
+            $('.milestones_section').append(milestones_and_percentages_item)
+   })
    
 
 
