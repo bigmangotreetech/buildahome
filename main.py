@@ -921,7 +921,7 @@ def update_payment_stages():
     res = cur.fetchone()
     if res is not None:
         work_order_value = res[0]
-        payment_stages_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id="'+str(work_order_id_for_trade)
+        payment_stages_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id='+str(work_order_id_for_trade)
         cur.execute(payment_stages_query)
         result = cur.fetchall()
         stages = {}
