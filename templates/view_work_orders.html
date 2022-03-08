@@ -41,7 +41,7 @@
             {% for i in work_orders %}
             <tr>
                 <td>
-                    <a href="/erp/project_contractor_info?project_id={{request.args['project_id']}}&&name={{i[1]}}&&code={{i[3]}}">{{i[1]}}</a>
+                    <a href="/erp/project_contractor_info?trade={{i[4]}}project_id={{request.args['project_id']}}&&name={{i[1]}}&&code={{i[3]}}">{{i[1]}}</a>
                 </td>
                 <td>{{i[2]}}</td>
                 <td>{{i[3]}}</td>

@@ -1082,14 +1082,15 @@ def project_contractor_info():
     project_id = request.args['project_id']
     contractor_name = request.args['name']
     contractor_code = request.args['code']
+    trade = request.args['trade']
     cur = mysql.connection.cursor()
     get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
                    'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount' \
                    ' FROM work_orders w INNER JOIN wo_bills b INNER JOIN contractors c on ' \
-                   'c.name=b.contractor_name AND c.code = b.contractor_code AND ' \
+                   ' b.trade=%s AND c.name=b.contractor_name AND c.code = b.contractor_code AND ' \
                    'w.project_id=%s AND c.name=%s AND c.code=%s ' \
                    'WHERE b.approval_2_amount IS NOT NULL AND w.contractor_id=c.id ORDER BY w.trade'
-    cur.execute(get_wo_query, (project_id, contractor_name, contractor_code))
+    cur.execute(get_wo_query, (trade, project_id, contractor_name, contractor_code))
     bills = cur.fetchall()
 
     get_project_query = 'SELECT project_name, project_number from projects WHERE project_id='+str(project_id)
