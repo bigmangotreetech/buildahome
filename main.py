@@ -1089,7 +1089,7 @@ def project_contractor_info():
                    ' FROM wo_bills b INNER JOIN work_orders w on b.project_id=w.project_id AND b.trade=w.trade' \
                    ' INNER JOIN contractors c on' \
                    ' c.name=b.contractor_name AND c.code = b.contractor_code AND c.pan = b.contractor_pan AND' \
-                   ' WHERE w.project_id=%s AND c.name=%s AND c.code=%s AND ' \
+                   ' WHERE b.trade=%s AND w.project_id=%s AND c.name=%s AND c.code=%s AND ' \
                    ' b.approval_2_amount IS NOT NULL AND w.contractor_id=c.id ORDER BY w.trade'
 
 
