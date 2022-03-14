@@ -830,6 +830,17 @@ def create_work_order():
         milestones = request.form.getlist('milestone[]')
         percentages = request.form.getlist('percentage[]')
 
+        percentage_sum_total = 0
+        try:
+            for i in percentages:
+                percentage_sum_total += float(i)
+            if int(percentage_sum_total) != 100:
+                flash('Percentages do not add up to 100', 'danger')
+                return redirect(request.referrer)
+        except:
+            flash('Percentages do not add up to 100','danger')
+            return redirect(request.referrer)
+
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'"'
         cur = mysql.connection.cursor()
         cur.execute(check_if_exist_query)
