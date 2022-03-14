@@ -1406,7 +1406,7 @@ def upload_po_for_indent():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                output = send_to_s3(file, app.config["S3_BUCKET"], filename)
+                output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id)+'_'+filename)
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
