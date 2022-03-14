@@ -542,9 +542,7 @@ def contractor_registration():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/vendor_registration'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
-        flash('You do not have permission to view that page', 'danger')
-        return redirect(request.referrer)
+
     if request.method == 'GET':
         return render_template('contractor_registration.html')
     else:
@@ -566,9 +564,6 @@ def view_contractors():
         session['last_route'] = '/erp/view_contractors'
         return redirect('/erp/login')
 
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
-        flash('You do not have permission to view that page', 'danger')
-        return redirect(request.referrer)
 
     cur = mysql.connection.cursor()
     contractors_query = 'SELECT id, name, code, pan, phone_number, address FROM contractors'
@@ -582,9 +577,6 @@ def edit_contractor():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/edit_contractor'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
-        flash('You do not have permission to view that page', 'danger')
-        return redirect(request.referrer)
     if request.method == 'GET':
         if 'contractor_id' in request.args:
             cur = mysql.connection.cursor()
@@ -614,9 +606,6 @@ def delete_contractor():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/delete_contractor'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive']:
-        flash('You do not have permission to view that page', 'danger')
-        return redirect(request.referrer)
     if request.method == 'GET':
         if 'contractor_id' in request.args:
             cur = mysql.connection.cursor()
