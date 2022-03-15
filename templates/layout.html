@@ -51,11 +51,11 @@
 <div class="position-fixed sidebar p-3 bg-indigo">
 
     <div class="nav-section-header">Project</div>
-    {% if session['role'] in ['Super Admin','COO','Sales Executive'] %}
+    {% if session['role'] in ['Super Admin','COO','Sales Executive','Billing'] %}
     <a href="/erp/create_project" class='nav-link'>Create project</a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin'] %}
+    {% if session['role'] in ['Super Admin','Billing'] %}
     <a href="/erp/unapproved_projects" class='nav-link'>Unapproved projects</a>
     {% endif %}
 

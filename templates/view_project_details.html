@@ -38,7 +38,7 @@
                 </div>
             </div>
             {% endfor %}
-            {% if session['role'] in ['Super Admin','COO'] %}
+            {% if session['role'] in ['Super Admin','COO','Billing'] %}
             <div class="row mx-0 mb-3 form-group">
                 <div class="ml-auto">
                     {% if archived=='0' %}
