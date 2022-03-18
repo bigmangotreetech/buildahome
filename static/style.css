@@ -99,6 +99,16 @@ body {
     overflow-y: auto;
     position: absolute;
 }
+.nav-link.active {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.nav-link.active:after {
+    background-color: white;
+    height: 3px;
+    width: 10px;
+}
 
 .nav-link {
     display: block;

@@ -1,6 +1,8 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
+    if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView()
+
     $(document).mouseup(function (e) {
         var container = $(".sidebar");
         var menu_icon = $('.mobile-menu-icon');
