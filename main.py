@@ -544,7 +544,14 @@ def contractor_registration():
         return redirect('/erp/login')
 
     if request.method == 'GET':
-        return render_template('contractor_registration.html')
+        cur = mysql.connection.cursor()
+        trades_query = 'SELECT DISTINCT trade from labour_stages'
+        cur.execute(trades_query)
+        result = cur.fetchall()
+        trades = []
+        for i in result:
+            trades.append(i[0])
+        return render_template('contractor_registration.html',trades=trades)
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())
