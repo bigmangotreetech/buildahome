@@ -590,7 +590,13 @@ def edit_contractor():
             contractor_query = 'SELECT * from contractors WHERE id=' + request.args['contractor_id']
             cur.execute(contractor_query)
             contractor_details = cur.fetchone()
-            return render_template('edit_contractor.html', contractor_details=contractor_details[1:], contractor_id=request.args['contractor_id'])
+            trades_query = 'SELECT DISTINCT trade from labour_stages'
+            cur.execute(trades_query)
+            result = cur.fetchall()
+            trades = []
+            for i in result:
+                trades.append(i[0])
+            return render_template('edit_contractor.html', trades=trades,contractor_details=contractor_details[1:], contractor_id=request.args['contractor_id'])
     else:
         column_names = list(request.form.keys())
 
