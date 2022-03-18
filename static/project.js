@@ -399,7 +399,7 @@ $(document).ready(function () {
     })
 
     function showStandardMilestones() {
-        selected_trade = $('.work-order-trade-select').val()
+        selected_trade = $('.work-order-select-contractor').find(":selected").attr('data-trade')
         project_id = $(".work_order_project_select").val()
         if (selected_trade.trim() === '' || project_id.trim() === '') return false;
         $('.milestones_section').find('.milestones_and_percentages_item').remove()
@@ -437,7 +437,7 @@ $(document).ready(function () {
     }
 
 
-    $('.work-order-trade-select').on('change', showStandardMilestones)
+    $('.work-order-select-contractor').on('change', showStandardMilestones)
     $('.work_order_project_select').on('change', showStandardMilestones)
     $('.add-milestone-stage-btn').on('click', function () {
         milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
