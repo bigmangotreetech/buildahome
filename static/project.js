@@ -451,6 +451,7 @@ $(document).ready(function () {
         e.preventDefault();
         percentage = 0;
         $('.percentage-field').each(function(index, element) {
+            if (element.value)
             percentage += parseFloat(element.value)
         })
         if (parseInt(percentage) != 100) {
