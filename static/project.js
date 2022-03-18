@@ -453,7 +453,7 @@ $(document).ready(function () {
             percentage += parseFloat(element.value)
         })
         if (parseInt(percentage) != 100) {
-            alert('Percentages do not add up to 100')
+            alert(`Percentages only add up to ${percentage.toString()}. Percentages need to add up to 100`)
             return false;
         }
         return true
