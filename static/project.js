@@ -401,7 +401,7 @@ $(document).ready(function () {
     function showStandardMilestones() {
         selected_trade = $('.work-order-select-contractor').find(":selected").attr('data-trade')
         project_id = $(".work_order_project_select").val()
-        if (selected_trade.trim() === '' || project_id.trim() === '') return false;
+        if (selected_trade.toString().length && selected_trade.trim() === '' || project_id.trim() === '') return false;
         $('.milestones_section').find('.milestones_and_percentages_item').remove()
         $.ajax({
             url: '/erp/get_standard_milestones_and_percentages',
