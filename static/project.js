@@ -1,7 +1,9 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
-    if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView()
+    if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView({
+            behavior: "smooth"
+        })
 
     $(document).mouseup(function (e) {
         var container = $(".sidebar");

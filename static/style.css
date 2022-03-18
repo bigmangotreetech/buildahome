@@ -107,8 +107,11 @@ body {
 .nav-link.active::after {
     content: "";
     background-color: white;
-    height: 3px;
+    height: 10px;
     width: 10px;
+    display: inline-flex;
+    margin-left: 10px;
+    border-radius: 50%;
 }
 
 .nav-link {
