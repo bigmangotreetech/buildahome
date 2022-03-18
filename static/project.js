@@ -447,7 +447,8 @@ $(document).ready(function () {
         return false
     })
 
-    $('.create_work_order_submit').on('click', function() {
+    $('.create_work_order_submit').on('click', function(e) {
+        e.preventDefault();
         percentages = 0;
         $('.percentage-field').each(function(index, element) {
             percentage += parseFloat(element.value)
@@ -456,8 +457,7 @@ $(document).ready(function () {
             alert(`Percentages only add up to ${percentage.toString()}. Percentages need to add up to 100`)
             return false;
         }
-        return true
-
+        $('.create_work_order_submit').parents('form').submit()
     })
 
 
