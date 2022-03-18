@@ -820,7 +820,7 @@ def create_work_order():
         for i in result:
             trades.append(i[0])
         contractors = []
-        contractors_query = 'SELECT id, name FROM contractors'
+        contractors_query = 'SELECT id, name, trade FROM contractors'
         cur.execute(contractors_query)
         result = cur.fetchall()
         for i in result:
@@ -828,7 +828,6 @@ def create_work_order():
         return render_template('create_work_order.html', projects=projects, floors=floors, trades=trades, contractors=contractors)
     else:
         project_id = request.form['project']
-        trade = request.form['trade']
         contractor_id = request.form['contractor_id']
         wo_value = request.form['wo_value']
         wo_number = request.form['wo_number']
@@ -848,8 +847,17 @@ def create_work_order():
             flash('Percentages do not add up to 100','danger')
             return redirect(request.referrer)
 
-        check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'"'
+
         cur = mysql.connection.cursor()
+        trade_query = 'SELECT trade from contractors WHERE id='+contractor_id
+        cur.execute(trade_query)
+        res = cur.fetchone()
+        if res is None:
+            flash('The contractor you selected does not have a trade associated with them. Operation failed', 'danger')
+            return redirect(request.referrer)
+        trade = res[0]
+
+        check_if_exist_query = 'SELECT id from work_orders WHERE project_id='+str(project_id)+' AND trade="'+str(trade)+'"'
         cur.execute(check_if_exist_query)
         result = cur.fetchone()
         if result is not None:

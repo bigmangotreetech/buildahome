@@ -24,19 +24,7 @@
                     </div>
                 </div>
 
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
-                        <label for="trade">Trade</label>
-                    </div>
-                    <div class="col-6">
-                        <select name="trade" id="trade" class="form-control select2 work-order-trade-select" required>
-                            <option value=""></option>
-                            {% for i in trades %}
-                            <option value="{{i}}">{{i}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+                <input type="hidden" name="trade" id="trade">
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="contractor_id">Contractor</label>
@@ -45,7 +33,7 @@
                         <select name="contractor_id" id="contractor_id" class="form-control select2" required>
                             <option value=""></option>
                             {% for i in contractors %}
-                            <option value="{{i[0]}}">{{i[1]}}</option>
+                            <option value="{{i[0]}}">{{i[1]}} - {{i[2]}}</option>
                             {% endfor %}
                         </select>
                     </div>
