@@ -60,7 +60,7 @@
     {% endif %}
 
     <a href="/erp/archived_projects" class='nav-link {% if "archived_projects" in request.path %} active {% endif %}'>Archived Projects</a>
-    <a href="/erp/projects" class='nav-link {% if "/projects" in request.path %} active {% endif %}'>Projects</a>
+    <a href="/erp/projects" class='nav-link {% if "/projects" in request.path and /projects_" not in request.path %} active {% endif %}'>Projects</a>
 
     {% if session['role'] in ['Super Admin','COO','Billing'] %}
     <div class="nav-section-header ">Users</div>
