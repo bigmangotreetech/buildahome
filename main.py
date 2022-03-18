@@ -163,7 +163,6 @@ def get_projects_for_current_user():
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
     response = redirect(app.config['S3_LOCATION']+filename)
-    response.headers = {'Content-Type': 'application/pdf'}
     return response
 
 

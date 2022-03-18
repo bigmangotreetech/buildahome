@@ -447,6 +447,19 @@ $(document).ready(function () {
         return false
     })
 
+    $('.create_work_order_submit').on('click', function() {
+        percentages = 0;
+        $('.percentage-field').each(function(index, element) {
+            percentage += parseFloat(element.value)
+        })
+        if (parseInt(percentage) != 100) {
+            alert('Percentages do not add up to 100')
+            return false;
+        }
+        return true
+
+    })
+
 
 
 
