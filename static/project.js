@@ -449,7 +449,7 @@ $(document).ready(function () {
 
     $('.create_work_order_submit').on('click', function(e) {
         e.preventDefault();
-        percentages = 0;
+        percentage = 0;
         $('.percentage-field').each(function(index, element) {
             percentage += parseFloat(element.value)
         })
