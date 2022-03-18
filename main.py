@@ -1109,7 +1109,7 @@ def project_contractor_info():
     get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
                    'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount' \
                    ' FROM wo_bills b JOIN work_orders w on b.project_id=w.project_id AND b.trade=w.trade' \
-                   '  JOIN contractors c on' \
+                   ' OUTER JOIN contractors c on' \
                    ' c.name=b.contractor_name AND c.code = b.contractor_code AND c.pan = b.contractor_pan' \
                    ' WHERE b.trade=%s AND w.project_id=%s AND c.name=%s AND c.code=%s AND ' \
                    ' b.approval_2_amount != "" AND b.approval_2_amount IS NOT NULL AND w.contractor_id=c.id ORDER BY w.trade'
