@@ -5,39 +5,35 @@
         <h4>Contractors</h4>
     </div>
 </div>
-<div class="p-5 w-100 table-responsive">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Contractor name</th>
-            <th scope="col">Contractor code</th>
-            <th scope="col">PAN</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Address</th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for contractor in contractors %}
-        <tr>
-            <td>{{contractor[1]}}</td>
-            <td>{{contractor[2]}}</td>
-            <td>{{contractor[3]}}</td>
-            <td>{{contractor[4]}}</td>
-            <td>{{contractor[5]}}</td>
-            <td>
+<div class="p-5 w-100 row">
+    {% for contractor in contractors %}
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="m-3 border rounded p-3">
+            <div class="d-flex">
+                <div class="my-auto mr-2">
+                    <img alt="" height="80" width="80"
+                         src="/erp/files/contractor_dp_{{contractor[0]}}" alt=""
+                         style="background-size: contain; background-image:url('./static/profile_picture.PNG'); border-radius: 50%">
+
+                </div>
+                <div class="my-auto">
+                    <div class="mb-2">{{contractor[1]}}</div>
+                    <div class="mb-2">Code: {{contractor[2]}}</div>
+                    <div class="mb-2">PAN: {{contractor[3]}}</div>
+                    <div class="mb-2">Phone: {{contractor[4]}}</div>
+                </div>
+            </div>
+            <div class="mt-2">
+                Address: {{contractor[5]}}
+            </div>
+            <div class="d-flex mt-3 justify-content-end">
                 <a href="/erp/edit_contractor?contractor_id={{contractor[0]}}">Edit</a>
-            </td>
-            <td>
-                <a onclick="return confirm('Are you sure you want to delete?');" href="/erp/delete_contractor?contractor_id={{contractor[0]}}" class="text-danger">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
+                <a onclick="return confirm('Are you sure you want to delete?');"
+                   href="/erp/delete_contractor?contractor_id={{contractor[0]}}" class="text-danger">Delete</a>
+            </div>
+        </div>
+    </div>
 
-
-        </tbody>
-    </table>
-
-
+    {% endfor %}
 </div>
 {% endblock %}
