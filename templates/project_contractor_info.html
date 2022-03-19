@@ -2,9 +2,10 @@
 {% block content %}
 <div class=" mt-5 px-5">
     <div class="mb-3">
-        <b>Project</b>: <span class="project_id">{{project[0]}}</span>
+        <b>Project</b>: {{project[0]}}
     </div>
     <div class="d-none work_order_id">{{data['work_order_id']}}</div>
+    <div class="d-none work_order_id">{{request.args['project_id']}}</div>
     <div class="mb-3">
         <b>Contractor Name</b>: <span class="contractor_name">{{data['name']}}</span>
     </div>
