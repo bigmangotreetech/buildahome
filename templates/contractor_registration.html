@@ -3,7 +3,7 @@
 <div class="my-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form action="/erp/contractor_registration" method="post">
+            <form action="/erp/contractor_registration" method="post" enctype="multipart/form-data">
                 <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
                     <div class="col-12">
                         <h4>Contractor registration</h4>
@@ -70,6 +70,14 @@
                     </div>
                 </div>
 
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="profile_picture">Profile picture</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="file" name="profile_picture" id="profile_picture" class="form-control">
+                    </div>
+                </div>
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
                         <button class="btn btn-block bg-indigo text-white">Submit</button>

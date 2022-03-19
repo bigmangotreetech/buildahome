@@ -40,7 +40,7 @@ s3 = boto3.client(
 )
 
 app.secret_key = 'bAhSessionKey'
-ALLOWED_EXTENSIONS = ['pdf','png']
+ALLOWED_EXTENSIONS = ['pdf','png','jpeg','jpg']
 
 
 def send_to_s3(file, bucket_name, filename, acl="public-read"):
@@ -561,6 +561,18 @@ def contractor_registration():
         new_vendor_query = 'INSERT into contractors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
         cur.execute(new_vendor_query)
+        if 'profile_picture' in request.files:
+            file = request.files['cost_sheet']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                picture_filename = 'contractor_dp_' + str(cur.lastrowid) + '.'+ filename.rsplit('.', 1)[1].lower()
+                output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
+                if output != 'success':
+                    flash('File upload failed', 'danger')
+                    return redirect(request.referrer)
         mysql.connection.commit()
         flash ('Contractor registered', 'success')
         return redirect('/erp/view_contractors')
@@ -611,6 +623,19 @@ def edit_contractor():
         cur = mysql.connection.cursor()
         cur.execute(update_vendor_query)
         mysql.connection.commit()
+
+        if 'profile_picture' in request.files:
+            file = request.files['cost_sheet']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                picture_filename = 'contractor_dp_' + str( request.form['contractor_id']) + '.' + filename.rsplit('.', 1)[1].lower()
+                output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
+                if output != 'success':
+                    flash('File upload failed', 'danger')
+                    return redirect(request.referrer)
         flash('Contractor updated successfully','success')
         return redirect('/erp/view_contractors')
 

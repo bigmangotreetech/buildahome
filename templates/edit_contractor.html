@@ -8,7 +8,7 @@
                     <h4>Contractor details</h4>
                 </div>
             </div>
-            <form action="/erp/edit_contractor" method="post">
+            <form action="/erp/edit_contractor" method="post" enctype="multipart/form-data">
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label>Name</label>
@@ -64,6 +64,18 @@
                             {% endif %}
                             {% endfor %}
                         </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="profile_picture">Profile picture</label>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-2">
+                            <img src="/erp/files/{{request.args['contractor_id']}}" alt="" style="background-image:url('../static/profile_picture.PNG'); border-radius: 50%">
+                        </div>
+                        <input type="file" name="profile_picture" id="profile_picture" class="form-control">
                     </div>
                 </div>
 
