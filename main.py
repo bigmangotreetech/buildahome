@@ -562,7 +562,7 @@ def contractor_registration():
             tuple(values))
         cur.execute(new_vendor_query)
         if 'profile_picture' in request.files:
-            file = request.files['cost_sheet']
+            file = request.files['profile_picture']
             if file.filename == '':
                 flash('No selected file', 'danger ')
                 return redirect(request.url)
@@ -625,7 +625,7 @@ def edit_contractor():
         mysql.connection.commit()
 
         if 'profile_picture' in request.files:
-            file = request.files['cost_sheet']
+            file = request.files['profile_picture']
             if file.filename == '':
                 flash('No selected file', 'danger ')
                 return redirect(request.url)
