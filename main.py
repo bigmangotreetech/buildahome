@@ -568,7 +568,7 @@ def contractor_registration():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                picture_filename = 'contractor_dp_' + str(cur.lastrowid) + '.'+ filename.rsplit('.', 1)[1].lower()
+                picture_filename = 'contractor_dp_' + str(cur.lastrowid)
                 output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
                 if output != 'success':
                     flash('File upload failed', 'danger')
@@ -631,7 +631,7 @@ def edit_contractor():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                picture_filename = 'contractor_dp_' + str( request.form['contractor_id']) + '.' + filename.rsplit('.', 1)[1].lower()
+                picture_filename = 'contractor_dp_' + str( request.form['contractor_id'])
                 output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
                 if output != 'success':
                     flash('File upload failed', 'danger')
