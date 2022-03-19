@@ -461,6 +461,35 @@ $(document).ready(function () {
         $('.create_work_order_submit').parents('form').submit()
     })
 
+    $('.clear-balance-btn').on('click', function() {
+        balance_amnt = parseInt($('.balance').text())
+        if (balance_amnt) {
+            contractor_name = $('.contractor_name').text()
+            contractor_code = $('.contractor_code').text()
+            contractor_pan = $('.contractor_pan').text()
+            project_id = $('.project_id').text()
+            trade =  $('.trade').text()
+            work_order_id = $('.work_order_id').text()
+            $.ajax({
+                url: '/erp/clear_wo_balance',
+                type: "POST",
+                dataType: 'json',
+                data: {
+                 'balance_amnt': balance_amnt,
+                 'contractor_name': contractor_name,
+                 'contractor_code': contractor_code,
+                 'contractor_pan': contractor_pan,
+                 'project_id': project_id,
+                 'trade': trade,
+                 'work_order_id': work_order_id,
+
+                },
+                success: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+    })
 
 
 

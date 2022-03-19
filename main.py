@@ -1107,7 +1107,7 @@ def project_contractor_info():
     trade = request.args['trade']
     cur = mysql.connection.cursor()
     get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
-                   'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount' \
+                   'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount, w.id ' \
                    ' FROM wo_bills b JOIN work_orders w on b.project_id=w.project_id AND b.trade=w.trade' \
                    ' LEFT OUTER JOIN contractors c on' \
                    ' c.name=b.contractor_name AND c.code = b.contractor_code AND c.pan = b.contractor_pan' \
@@ -1128,16 +1128,38 @@ def project_contractor_info():
     project = cur.fetchone()
 
 
-    data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': ''}
+    data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
     if len(bills) > 0:
         data['name'] = bills[0][0]
         data['code'] = bills[0][1]
         data['pan'] = bills[0][2]
         data['value'] = bills[0][3]
-        data['balance'] = bills[0][4]
+        data['balance'] = int(bills[0][4])
         data['trade'] = bills[0][5]
+        data['work_order_id'] = bills[0][10]
 
     return render_template('project_contractor_info.html', bills=bills, project=project, data=data)
+
+@app.route('/clear_wo_balance', methods=['POST'])
+def clear_wo_balance():
+    balance_amnt = request.form['balance_amnt']
+    contractor_name = request.form['contractor_name']
+    contractor_code = request.form['contractor_code']
+    contractor_pan = request.form['contractor_pan']
+    project_id = request.form['project_id']
+    trade = request.form['trade']
+    work_order_id = request.form['work_order_id']
+    stage = 'Clearing balance'
+
+    cur = mysql.connection.cursor()
+    bills_query = 'INSERT into wo_bills (project_id,trade, stage, contractor_name, contractor_code, contractor_pan, approval_1_amount) values (%s,%s, %s,%s,%s,%s,%s)'
+    cur.execute(bills_query, (project_id, trade, stage, contractor_name,contractor_code, contractor_pan, balance_amnt))
+
+    work_order_query = 'UPDATE work_orders SET balance=0 WHERE id='+work_order_id
+    cur.execute(work_order_query)
+
+    mysql.connection.commit()
+    return jsonify({'message':'success'})
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()

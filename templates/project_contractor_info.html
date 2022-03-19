@@ -2,27 +2,33 @@
 {% block content %}
 <div class=" mt-5 px-5">
     <div class="mb-3">
-        <b>Project</b>: {{project[0]}}
+        <b>Project</b>: <span class="project_id">{{project[0]}}</span>
     </div>
-
+    <div class="d-none work_order_id">{{data['work_order_id}}</div>
     <div class="mb-3">
-        <b>Contractor Name</b>: {{data['name']}}
-    </div>
-    <div class="mb-3">
-        <b>Contractor Code</b>: {{data['code']}}
+        <b>Contractor Name</b>: <span class="contractor_name">{{data['name']}}</span>
     </div>
     <div class="mb-3">
-        <b>Contractor PAN</b>: {{data['pan']}}
+        <b>Contractor Code</b>: <span class="contractor_code">{{data['code']}}</span>
     </div>
     <div class="mb-3">
-        <b>Nature of work</b>: {{data['trade']}}
+        <b>Contractor PAN</b>: <span class="contractor_pan">{{data['pan']}}</span>
+    </div>
+    <div class="mb-3">
+        <b>Nature of work</b>: <span class="trade">{{data['trade']}}</span>
     </div>
     <div class="mb-3">
         <b>WO value</b>: {{data['value']}}
     </div>
     <div class="mb-3">
-        <b>Balance</b>: {{data['balance']}}
+        <b>Balance</b>: <span class="balance">{{data['balance']}}</span>
     </div>
+    {% if data['balance']|string|int > 0 %}
+    <div class="mb-3">
+        <button class="btn clear-balance-btn">Clear balance</button>
+    </div>
+    {% endif %}
+
 </div>
 <div class="p-5 w-100 table-responsive">
     <table class="table table-striped">
