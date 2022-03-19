@@ -10,7 +10,7 @@
     <div class="col-12 col-md-6 col-lg-4 mb-3">
         <div class="h-100 border border-radius-10 bg-light p-3 overflow-hidden">
             <div class="d-flex">
-                <div class="mb-auto mr-2">
+                <div class="mb-auto mr-4">
                     <img alt="" height="80" width="80"
                          onerror="this.src='./static/profile_picture.PNG'"
                          src="/erp/files/contractor_dp_{{contractor[0]}}" alt=""
@@ -21,11 +21,11 @@
                     <div class="mb-4 fs-18">{{contractor[1]}}</div>
                     <div class="mb-2 fs-12"><b>Code</b>: {{contractor[2]}}</div>
                     <div class="mb-2 fs-12"><b>PAN</b>: {{contractor[3]}}</div>
-                    <div class="mb-2 fs-12"><b>Phone</b>: {{contractor[4]}}</div>
                 </div>
             </div>
             <div class="mt-2">
-                Address: {{contractor[5]}}
+                <div class="mb-2 fs-12"><b>Phone</b>: {{contractor[4]}}</div>
+                <div class="mb-2 fs-12"><b>Address</b>: {{contractor[5]}}</div>
             </div>
             <div class="d-flex mt-3 justify-content-end">
                 <a href="/erp/edit_contractor?contractor_id={{contractor[0]}}">Edit</a>
