@@ -2174,13 +2174,13 @@ def upload_drawing():
             update_drawing_query = 'UPDATE '+table_name+' set '+drawing_name+'="'+drawing_filename+'" WHERE id='+str(result[0])
             cur.execute(update_drawing_query)
             mysql.connection.commit()
-            flash('Drawing uploaded!', 'success')
-            return redirect('/erp/drawings')
+            flash(drawing_name+' Drawing uploaded to project '+request.form['project_name'], 'success')
+            return redirect('/erp/ddrawing_namerawings')
         else:
             insert_drawing_query = 'INSERT into '+table_name+' (project_id, '+drawing_name+') values (%s, %s)'
             cur.execute(insert_drawing_query, (str(project_id), drawing_filename))
             mysql.connection.commit()
-            flash('Drawing uploaded!', 'success')
+            flash(drawing_name+' Drawing uploaded to project '+request.form['project_name'], 'success')
             return redirect('/erp/drawings')
 
 @app.route('/mark_drawing_in_progress', methods=['POST'])
