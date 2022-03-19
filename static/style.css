@@ -157,3 +157,7 @@ body {
     font-size: 12px;
     
 }
+
+.border-radius-10 {
+    border-radius: 10px;
+}
