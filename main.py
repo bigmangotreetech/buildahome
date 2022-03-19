@@ -1134,7 +1134,7 @@ def project_contractor_info():
         data['code'] = bills[0][1]
         data['pan'] = bills[0][2]
         data['value'] = bills[0][3]
-        data['balance'] = int(bills[0][4])
+        data['balance'] = int(float(bills[0][4]))
         data['trade'] = bills[0][5]
         data['work_order_id'] = bills[0][10]
 
