@@ -1068,7 +1068,7 @@ def export_bills():
     data = get_bills_as_json(bills_query)
     rb = open_workbook("../static/bills.xls")
     wb = copy(rb)
-    ws = wb.add_sheet('Bills sheet 1')
+    ws = wb.add_sheet('Bills sheet 2')
     row = 1
     column = 0
     for project in data:
@@ -1096,7 +1096,7 @@ def export_bills():
 
             ws.write(row, column, i['approval_2_amount'])
             column = column + 1
-        row = row + 1
+            row = row + 1
     wb.save('bills.xls')
 
 
