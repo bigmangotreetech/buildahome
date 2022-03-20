@@ -19,6 +19,8 @@
         </tr>
         </thead>
         <tbody>
+        {% set first_bill_id = 0 %}
+
         {% for project in data %}
         <tr class="bg-white">
             <td class="border border-white"></td>
@@ -26,7 +28,6 @@
         <tr class="h5 mt-4 mb-2 border border-white bg-white">
             <td>{{data[project]['project_name']}}</td>
         </tr>
-        {% set first_bill_id = 0 %}
         {% for i in data[project]['bills'] %}
         <tr>
             <td>{% if first_bill_id == 0 %}
