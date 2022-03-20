@@ -1096,6 +1096,7 @@ def export_bills():
 
             ws.write(row, column, i['approval_2_amount'])
             column = column + 1
+        row = row + 1
     wb.save('bills.xls')
 
 
