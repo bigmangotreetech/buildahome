@@ -28,7 +28,7 @@
         </tr>
         {% set first_bill_id = 0 %}
         {% for i in data[project]['bills'] %}
-        {% if first_bill_id = 0 %}
+        {% if first_bill_id == 0 %}
         {% set first_bill_id = i['bill_id'] %}
         {% endif %}
         <tr class="bill-{{i['bill_id']}}">
