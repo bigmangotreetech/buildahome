@@ -1070,11 +1070,12 @@ def export_bills():
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
-    current_time = current_time.strftime('%d %m at %H %M')
+    current_time = current_time.strftime('%d/%m at %H:%M')
     ws = wb.add_sheet('Bills - '+str(current_time))
     row = 1
     column = 0
     for project in data:
+        colum = 0
         ws.write(row, column, data[project]['project_name'])
         row = row+1
         for i in data[project]['bills']:
@@ -1100,6 +1101,7 @@ def export_bills():
             ws.write(row, column, i['approval_2_amount'])
             column = column + 1
             row = row + 1
+        row = row + 1
     wb.save('../static/bills.xls')
 
 
