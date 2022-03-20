@@ -19,7 +19,6 @@
         </tr>
         </thead>
         <tbody>
-        {% set first_bill_id = 0 %}
 
         {% for project in data %}
         <tr class="bg-white">
@@ -29,14 +28,7 @@
             <td>{{data[project]['project_name']}}</td>
         </tr>
         {% for i in data[project]['bills'] %}
-        <tr>
-            <td>{% if first_bill_id == 0 %}
-                {% set first_bill_id = i['bill_id'] %}
-                {{i['bill_id']}}
-                {{first_bill_id}}
-                {% endif %}
-            </td>
-        </tr>
+
         <tr class="bill-{{i['bill_id']}}">
             <td class="contractor_name border-right">{{i['contractor_name']}}</td>
             <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
