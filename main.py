@@ -1068,33 +1068,33 @@ def export_bills():
     data = get_bills_as_json(bills_query)
     rb = open_workbook("../static/bills.xls")
     wb = copy(rb)
-    wb.add_sheet('A Test Sheet')
+    ws = wb.add_sheet('A Test Sheet')
     row = 1
     column = 0
     for project in data:
-        wb.write(row, column, data[project]['project_name'])
+        ws.write(row, column, data[project]['project_name'])
         row = row+1
         for i in data[project]['bills']:
             column = 0
-            wb.write(row, column, i['contractor_name'])
+            ws.write(row, column, i['contractor_name'])
             column = column+1
 
-            wb.write(row, column, i['contractor_pan'])
+            ws.write(row, column, i['contractor_pan'])
             column = column + 1
 
-            wb.write(row, column, i['contractor_code'])
+            ws.write(row, column, i['contractor_code'])
             column = column + 1
 
-            wb.write(row, column, i['trade'])
+            ws.write(row, column, i['trade'])
             column = column + 1
 
-            wb.write(row, column, i['stage'])
+            ws.write(row, column, i['stage'])
             column = column + 1
 
-            wb.write(row, column, i['total_payable'])
+            ws.write(row, column, i['total_payable'])
             column = column + 1
 
-            wb.write(row, column, i['approval_2_amount'])
+            ws.write(row, column, i['approval_2_amount'])
             column = column + 1
     wb.save('bills.xls')
 
