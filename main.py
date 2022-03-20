@@ -1068,7 +1068,7 @@ def export_bills():
     data = get_bills_as_json(bills_query)
     rb = open_workbook("../static/bills.xls")
     wb = copy(rb)
-    ws = wb.add_sheet('Bills sheet')
+    ws = wb.add_sheet('Bills sheet 1')
     row = 1
     column = 0
     for project in data:
