@@ -1066,10 +1066,10 @@ def export_bills():
                   ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ' \
                   '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.id > '+str(bill_id)
     data = get_bills_as_json(bills_query)
-    rb = open_workbook("../static/bills.xls")
+    rb = open_workbook("../static/bills.xlsx")
     wb = xlwt.copy(rb)
     wb.add_sheet('A Test Sheet')
-    row = 0
+    row = 1
     column = 0
     for project in data:
         wb.write(row, column, data[project]['project_name'])
@@ -1096,7 +1096,7 @@ def export_bills():
 
             wb.write(row, column, i['approval_2_amount'])
             column = column + 1
-    wb.save('bills.xls')
+    wb.save('bills.xlsx')
 
 
     return jsonify(data)
