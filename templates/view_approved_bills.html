@@ -26,7 +26,11 @@
         <tr class="h5 mt-4 mb-2 border border-white bg-white">
             <td>{{data[project]['project_name']}}</td>
         </tr>
+        {% set first_bill_id = 0 %}
         {% for i in data[project]['bills'] %}
+        {% if first_bill_id = 0 %}
+        {% set first_bill_id = i['bill_id'] %}
+        {% endif %}
         <tr class="bill-{{i['bill_id']}}">
             <td class="contractor_name border-right">{{i['contractor_name']}}</td>
             <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
@@ -42,6 +46,11 @@
 
         </tbody>
     </table>
+
+    <a class="d-flex justify-content-end btn bg-indigo text-white"
+         href="/erp/export_bills?last_bill_id={{first_bill_id}}"
+         onclick="return confirm('Are you sure you want to export these bills?')">Export
+    </a>
 
 
 </div>
