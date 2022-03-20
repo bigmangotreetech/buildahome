@@ -1046,15 +1046,10 @@ def view_bills():
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                          ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL)'
         data = get_bills_as_json(bills_query)
-        first_bill_id=0
-        for project in data:
-            for i in data[project]['bills']:
-                first_bill_id = i['bill_id']
-                break
-            break
+
 
         access_level = session['access_level']
-        return render_template('view_bills.html', data=data, access_level=access_level,first_bill_id=first_bill_id)
+        return render_template('view_bills.html', data=data, access_level=access_level)
 
 @app.route('/export_bills', methods=['GET'])
 def export_bills():
@@ -1103,7 +1098,13 @@ def view_approved_bills():
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                          ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND (wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
         data = get_bills_as_json(bills_query)
-        return render_template('view_approved_bills.html', data=data)
+        first_bill_id = 0
+        for project in data:
+            for i in data[project]['bills']:
+                first_bill_id = i['bill_id']
+                break
+            break
+        return render_template('view_approved_bills.html', data=data,first_bill_id=first_bill_id)
 
 def update_work_order_balance(project_id, trade, difference_amount):
     get_wo_query = 'SELECT id, balance from work_orders WHERE project_id=' + str(
