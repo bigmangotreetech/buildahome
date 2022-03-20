@@ -28,11 +28,14 @@
         </tr>
         {% set first_bill_id = 0 %}
         {% for i in data[project]['bills'] %}
-        {% if first_bill_id == 0 %}
-            {% set first_bill_id = i['bill_id'] %}
-        {{i['bill_id']}}
-        {{first_bill_id}}
-        {% endif %}
+        <tr>
+            <td>{% if first_bill_id == 0 %}
+                {% set first_bill_id = i['bill_id'] %}
+                {{i['bill_id']}}
+                {{first_bill_id}}
+                {% endif %}
+            </td>
+        </tr>
         <tr class="bill-{{i['bill_id']}}">
             <td class="contractor_name border-right">{{i['contractor_name']}}</td>
             <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
@@ -51,12 +54,10 @@
 
     <div class="d-flex justify-content-end">
         <a class="btn bg-indigo text-white"
-         href="/erp/export_bills?first_bill_id={{first_bill_id}}"
-         onclick="return confirm('Are you sure you want to export these bills?')">Export
-    </a>
+           href="/erp/export_bills?first_bill_id={{first_bill_id}}"
+           onclick="return confirm('Are you sure you want to export these bills?')">Export
+        </a>
     </div>
-
-
 
 
 </div>
