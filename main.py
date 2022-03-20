@@ -3,6 +3,11 @@ from flask_mysqldb import MySQL
 import hashlib
 import boto3, botocore
 import requests, json
+import xlwt
+from xlrd import open_workbook
+from xlutils.copy import copy
+
+
 
 
 from datetime import datetime
@@ -1061,6 +1066,39 @@ def export_bills():
                   ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ' \
                   '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.id > '+str(bill_id)
     data = get_bills_as_json(bills_query)
+    rb = open_workbook("../static/bills.xls")
+    wb = xlwt.copy(rb)
+    wb.add_sheet('A Test Sheet')
+    row = 0
+    column = 0
+    for project in data:
+        wb.write(row, column, data[project]['project_name'])
+        row = row+1
+        for i in data[project]['bills']:
+            column = 0
+            wb.write(row, column, i['contractor_name'])
+            column = column+1
+
+            wb.write(row, column, i['contractor_pan'])
+            column = column + 1
+
+            wb.write(row, column, i['contractor_code'])
+            column = column + 1
+
+            wb.write(row, column, i['trade'])
+            column = column + 1
+
+            wb.write(row, column, i['stage'])
+            column = column + 1
+
+            wb.write(row, column, i['total_payable'])
+            column = column + 1
+
+            wb.write(row, column, i['approval_2_amount'])
+            column = column + 1
+    wb.save('bills.xls')
+
+
     return jsonify(data)
 
 
