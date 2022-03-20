@@ -1070,8 +1070,8 @@ def export_bills():
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
-    current_time = current_time.strftime('%A %d %B at %H %M')
-    ws = wb.add_sheet('Bills as on '+str(current_time))
+    current_time = current_time.strftime('%d %m at %H %M')
+    ws = wb.add_sheet('Bills - '+str(current_time))
     row = 1
     column = 0
     for project in data:
