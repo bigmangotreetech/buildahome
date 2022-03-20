@@ -1067,7 +1067,7 @@ def export_bills():
                   '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.id > '+str(bill_id)
     data = get_bills_as_json(bills_query)
     rb = open_workbook("../static/bills.xls")
-    wb = xlwt.copy(rb)
+    wb = copy(rb)
     wb.add_sheet('A Test Sheet')
     row = 1
     column = 0
