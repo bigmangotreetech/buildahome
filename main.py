@@ -1050,6 +1050,8 @@ def view_bills():
         for project in data:
             for i in data[project]['bills']:
                 first_bill_id = i['bill_id']
+                break
+            break
 
         access_level = session['access_level']
         return render_template('view_bills.html', data=data, access_level=access_level,first_bill_id=first_bill_id)
