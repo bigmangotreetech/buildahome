@@ -1196,6 +1196,30 @@ def view_approved_bills():
             break
         return render_template('view_approved_bills.html', data=data,first_bill_id=first_bill_id)
 
+@app.route('/view_archived_bills', methods=['GET'])
+def view_archived_bills():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_approved_bills'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
+                         'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
+                         'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
+                         'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
+                         ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=1 AND (wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
+        data = get_bills_as_json(bills_query)
+        first_bill_id = 0
+        for project in data:
+            for i in data[project]['bills']:
+                first_bill_id = i['bill_id']
+                break
+            break
+        return render_template('view_archived_bills.html', data=data,first_bill_id=first_bill_id)
+
 def update_work_order_balance(project_id, trade, difference_amount):
     get_wo_query = 'SELECT id, balance from work_orders WHERE project_id=' + str(
         project_id) + ' AND trade="' + trade + '"'

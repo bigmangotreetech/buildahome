@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="col-12">
+        <h4>Archived bills</h4>
+    </div>
+</div>
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Contractor Name</th>
+            <th scope="col">Contractor PAN</th>
+            <th scope="col">Contractor Code</th>
+            <th scope="col">Trade</th>
+            <th scope="col">Payment Stage</th>
+            <th scope="col">Total Payable</th>
+            <th scope="col">Approved amount</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for project in data %}
+        <tr class="bg-white">
+            <td class="border border-white"></td>
+        </tr>
+        <tr class="h5 mt-4 mb-2 border border-white bg-white">
+            <td>{{data[project]['project_name']}}</td>
+        </tr>
+        {% for i in data[project]['bills'] %}
+
+        <tr class="bill-{{i['bill_id']}}">
+            <td class="contractor_name border-right">{{i['contractor_name']}}</td>
+            <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
+            <td class="contractor_code border-right">{{i['contractor_code']}}</td>
+            <td class="trade border-right">{{i['trade']}}</td>
+            <td class="stage border-right">{{i['stage']}}</td>
+            <td class="total_payable border-right">{{i['total_payable']}}</td>
+            <td class="approval_2 ">{{i['approval_2_amount']}}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+
+
+</div>
+{% endblock %}

@@ -52,82 +52,117 @@
 
     <div class="nav-section-header">Project</div>
     {% if session['role'] in ['Super Admin','COO','Sales Executive','Billing'] %}
-    <a href="/erp/create_project" class='nav-link {% if "create_project" in request.path %} active {% endif %}'>Create project</a>
+    <a href="/erp/create_project" class='nav-link {% if "create_project" in request.path %} active {% endif %}'>Create
+        project</a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','Billing'] %}
-    <a href="/erp/unapproved_projects" class='nav-link {% if "unapproved_projects" in request.path %} active {% endif %}'>Unapproved projects</a>
+    <a href="/erp/unapproved_projects"
+       class='nav-link {% if "unapproved_projects" in request.path %} active {% endif %}'>Unapproved projects</a>
     {% endif %}
 
-    <a href="/erp/archived_projects" class='nav-link {% if "archived_projects" in request.path %} active {% endif %}'>Archived Projects</a>
-    <a href="/erp/projects" class='nav-link {% if "/projects" in request.path and "/projects_" not in request.path %} active {% endif %}'>Projects</a>
+    <a href="/erp/archived_projects" class='nav-link {% if "archived_projects" in request.path %} active {% endif %}'>Archived
+        Projects</a>
+    <a href="/erp/projects"
+       class='nav-link {% if "/projects" in request.path and "/projects_" not in request.path %} active {% endif %}'>Projects</a>
 
     {% if session['role'] in ['Super Admin','COO','Billing'] %}
     <div class="nav-section-header ">Users</div>
-    <a href='/erp/create_user {% if "/create_user" in request.path %} active {% endif %}' class='nav-link'>Create user</a>
+    <a href='/erp/create_user {% if "/create_user" in request.path %} active {% endif %}' class='nav-link'>Create
+        user</a>
     <a href='/erp/view_users {% if "/view_users" in request.path %} active {% endif %}' class='nav-link'>View users</a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive'] %}
     <div class="nav-section-header">Material</div>
-    <a href="/erp/vendor_registration" class='nav-link {% if "/vendor_registration" in request.path %} active {% endif %}'>Vendor Registration</a>
-    <a href="/erp/view_vendors" class='nav-link {% if "/view_vendors" in request.path %} active {% endif %}'>View Vendors</a>
-    <a href="/erp/enter_material" class='nav-link {% if "/enter_material" in request.path %} active {% endif %}'>Enter Material</a>
-    <a href="/erp/kyp_material" class='nav-link {% if "/kyp_material" in request.path %} active {% endif %}'>KYP For material</a>
-    <a href="/erp/view_inventory" class='nav-link {% if "/view_inventory" in request.path %} active {% endif %}'>View inventory</a>
-    <a href="/erp/shifting_entry" class='nav-link {% if "/shifting_entry" in request.path %} active {% endif %}'>Shifting Entry</a>
+    <a href="/erp/vendor_registration"
+       class='nav-link {% if "/vendor_registration" in request.path %} active {% endif %}'>Vendor Registration</a>
+    <a href="/erp/view_vendors" class='nav-link {% if "/view_vendors" in request.path %} active {% endif %}'>View
+        Vendors</a>
+    <a href="/erp/enter_material" class='nav-link {% if "/enter_material" in request.path %} active {% endif %}'>Enter
+        Material</a>
+    <a href="/erp/kyp_material" class='nav-link {% if "/kyp_material" in request.path %} active {% endif %}'>KYP For
+        material</a>
+    <a href="/erp/view_inventory" class='nav-link {% if "/view_inventory" in request.path %} active {% endif %}'>View
+        inventory</a>
+    <a href="/erp/shifting_entry" class='nav-link {% if "/shifting_entry" in request.path %} active {% endif %}'>Shifting
+        Entry</a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive'] %}
     <div class="nav-section-header">Indents</div>
-    <a href="/erp/view_approved_indents" class='nav-link {% if "/view_approved_indents" in request.path %} active {% endif %}'>Approved Indents</a>
-    <a href="/erp/view_approved_POs" class='nav-link {% if "/view_approved_POs" in request.path %} active {% endif %}'>Approved POs</a>
+    <a href="/erp/view_approved_indents"
+       class='nav-link {% if "/view_approved_indents" in request.path %} active {% endif %}'>Approved Indents</a>
+    <a href="/erp/view_approved_POs" class='nav-link {% if "/view_approved_POs" in request.path %} active {% endif %}'>Approved
+        POs</a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
 
     <div class="nav-section-header">Work orders</div>
-    <a href="/erp/contractor_registration" class='nav-link {% if "/contractor_registration" in request.path %} active {% endif %}'>Contractor Registration</a>
-    <a href="/erp/view_contractors" class='nav-link {% if "/view_contractors" in request.path %} active {% endif %}'>View Contractors</a>
-    <a href="/erp/create_work_order" class='nav-link {% if "/create_work_order" in request.path %} active {% endif %}'>Create work order</a>
-    <a href="/erp/view_unsigned_work_order" class='nav-link {% if "/view_unsigned_work_order" in request.path %} active {% endif %}'>Unsigned work order</a>
+    <a href="/erp/contractor_registration"
+       class='nav-link {% if "/contractor_registration" in request.path %} active {% endif %}'>Contractor
+        Registration</a>
+    <a href="/erp/view_contractors" class='nav-link {% if "/view_contractors" in request.path %} active {% endif %}'>View
+        Contractors</a>
+    <a href="/erp/create_work_order" class='nav-link {% if "/create_work_order" in request.path %} active {% endif %}'>Create
+        work order</a>
+    <a href="/erp/view_unsigned_work_order"
+       class='nav-link {% if "/view_unsigned_work_order" in request.path %} active {% endif %}'>Unsigned work order</a>
 
     {% if session['role'] in ['Super Admin','COO','QS Head'] %}
-    <a href="/erp/view_unapproved_work_order" class='nav-link {% if "/view_unapproved_work_order" in request.path %} active {% endif %}'>Unapproved work order</a>
+    <a href="/erp/view_unapproved_work_order"
+       class='nav-link {% if "/view_unapproved_work_order" in request.path %} active {% endif %}'>Unapproved work
+        order</a>
     {% endif %}
 
-    <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path %} active {% endif %}'>View work order</a>
+    <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path %} active {% endif %}'>View
+        work order</a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
     <div class="nav-section-header">Bills</div>
-    <a href="/erp/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>Create bill</a>
+    <a href="/erp/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>Create
+        bill</a>
 
     {% if session['role'] in ['Super Admin','COO','QS Head'] %}
-    <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>Unapproved bills</a>
+    <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>Unapproved
+        bills</a>
     {% endif %}
 
-    <a href="/erp/view_approved_bills" class='nav-link {% if "/view_approved_bills" in request.path %} active {% endif %}'>Approved bills</a>
+    <a href="/erp/view_approved_bills"
+       class='nav-link {% if "/view_approved_bills" in request.path %} active {% endif %}'>Approved bills</a>
+    <a href="/erp/view_archived_bills"
+       class='nav-link {% if "/view_archived_bills" in request.path %} active {% endif %}'>Archived bills</a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Design Head','Senior Architect','Architect','Structural Designer', 'Electrical
+    {% if session['role'] in ['Super Admin','COO','Design Head','Senior Architect','Architect','Structural Designer',
+    'Electrical
     Engineer', 'PHE Designer'] %}
     <div class="nav-section-header">Design team</div>
     <a href="/erp/drawings" class='nav-link {% if "/drawings" in request.path %} active {% endif %}'>Drawings</a>
-    <a href="/erp/revised_drawings" class='nav-link {% if "/revised_drawings" in request.path %} active {% endif %}'>Revised Drawings</a>
+    <a href="/erp/revised_drawings" class='nav-link {% if "/revised_drawings" in request.path %} active {% endif %}'>Revised
+        Drawings</a>
     {% if session['role'] in ['Super Admin','COO','Design Head'] %}
-    <a href="/erp/projects_with_design_team" class='nav-link {% if "/projects_with_design_team" in request.path %} active {% endif %}'>Assigned projects</a>
+    <a href="/erp/projects_with_design_team"
+       class='nav-link {% if "/projects_with_design_team" in request.path %} active {% endif %}'>Assigned projects</a>
     {% endif %}
     {% if session['role'] in ['Super Admin','COO','Design Head'] %}
-    <a href="/erp/projects_with_no_design_team" class='nav-link {% if "/projects_with_no_design_team" in request.path %} active {% endif %}'>Unassigned project</a>
+    <a href="/erp/projects_with_no_design_team"
+       class='nav-link {% if "/projects_with_no_design_team" in request.path %} active {% endif %}'>Unassigned
+        project</a>
     {% endif %}
 
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','Planning'] %}
     <div class="nav-section-header">Operations team</div>
-    <a href="/erp/projects_with_operations_team" class='nav-link {% if "/projects_with_operations_team" in request.path %} active {% endif %}'>Assigned projects</a>
-    <a href="/erp/projects_with_no_operations_team" class='nav-link {% if "/projects_with_no_operations_team" in request.path %} active {% endif %}'>Unassigned project</a>
+    <a href="/erp/projects_with_operations_team"
+       class='nav-link {% if "/projects_with_operations_team" in request.path %} active {% endif %}'>Assigned
+        projects</a>
+    <a href="/erp/projects_with_no_operations_team"
+       class='nav-link {% if "/projects_with_no_operations_team" in request.path %} active {% endif %}'>Unassigned
+        project</a>
     {% endif %}
 
 </div>
