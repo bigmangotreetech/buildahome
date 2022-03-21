@@ -4,8 +4,9 @@ $(document).ready(function () {
     window.onload = function(){
         console.log(window.location.href.includes('exported=true'))
         setTimeout(() => {
-            if(window.location.href.includes('exported=true'))
-            window.open('/erp/static/bills.xls', '_blank').focus()
+            if(window.location.href.includes('exported=true')) {
+                window.location.href = '/erp/static/bills.xls'
+            }
         }, 2000)
     }
 
