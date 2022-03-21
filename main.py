@@ -1067,7 +1067,7 @@ def export_bills():
                   '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.is_archived=0 AND wo_bills.id > '+str(bill_id)
     data = get_bills_as_json(bills_query)
     cur = mysql.connection.cursor()
-    rb = open_workbook("https://erpbuildahome.s3.ap-south-1.amazonaws.com/bills.xls")
+    rb = open_workbook("../static/bills.xls")
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
@@ -1146,12 +1146,10 @@ def export_bills():
             row = row + 1
         row = row + 1
     mysql.connection.commit()
-    wb.save()
-
-    send_to_s3(wb, app.config["S3_BUCKET"], 'bills.xls')
+    wb.save('../static/bills.xls')
 
     flash('Bills exported successfully','success')
-    return redirect(request.referrer)
+    return redirect(request.referrer+'?exported=true')
 
 
 
