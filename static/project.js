@@ -3,8 +3,10 @@ $(document).ready(function () {
 
     window.onload = function(){
         console.log(window.location.href.includes('exported=true'))
-        if(window.location.href.includes('exported=true'))
-            window.open('/erp/static/bills.xls', '_blank')
+        setTimeout(() => {
+            if(window.location.href.includes('exported=true'))
+            window.open('/erp/static/bills.xls', '_blank').focus()
+        }, 2000)
     }
 
     if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView({
