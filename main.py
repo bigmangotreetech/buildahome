@@ -1079,8 +1079,7 @@ def export_bills():
         column = 0
         cwidth = ws.col(column).width
         if (len(data[project]['project_name']) * 367) > cwidth:
-            ws.col(data[project]['project_name']).width = (len(data[project]['project_name']) * 367)
-        ws.col(column).width = cwidth
+            ws.col(column).width = (len(data[project]['project_name']) * 367)
 
         ws.write(row, column, data[project]['project_name'], read_only)
         row = row+1
@@ -1089,50 +1088,43 @@ def export_bills():
             ws.write(row, column, i['contractor_name'], read_only)
             cwidth = ws.col(column).width
             if (len(i['contractor_name']) * 367) > cwidth:
-                ws.col(i['contractor_name']).width = (len(i['contractor_name']) * 367)
-            ws.col(column).width = cwidth
+                ws.col(column).width = (len(i['contractor_name']) * 367)
             column = column+1
 
             ws.write(row, column, i['contractor_pan'], read_only)
             cwidth = ws.col(column).width
             if (len(i['contractor_pan']) * 367) > cwidth:
-                ws.col(i['contractor_pan']).width = (len(i['contractor_pan']) * 367)
-            ws.col(column).width = cwidth
+                ws.col(column).width = (len(i['contractor_pan']) * 367)
             column = column + 1
 
             ws.write(row, column, i['contractor_code'], read_only)
             cwidth = ws.col(column).width
             if (len(i['contractor_code']) * 367) > cwidth:
-                ws.col(i['contractor_code']).width = (len(i['contractor_code']) * 367)
-            ws.col(column).width = cwidth
+                ws.col(column).width = (len(i['contractor_code']) * 367)
             column = column + 1
 
             ws.write(row, column, i['trade'], read_only)
             cwidth = ws.col(column).width
             if (len(i['trade']) * 367) > cwidth:
-                ws.col(i['trade']).width = (len(i['trade']) * 367)
-            ws.col(column).width = cwidth
+                ws.col(column).width = (len(i['trade']) * 367)
             column = column + 1
 
             ws.write(row, column, i['stage'], read_only)
             cwidth = ws.col(column).width
             if (len(i['stage']) * 367) > cwidth:
-                ws.col(i['stage']).width = (len(i['stage']) * 367)
-            ws.col(column).width = cwidth
+                ws.col(column).width = (len(i['stage']) * 367)
             column = column + 1
 
             ws.write(row, column, i['total_payable'], read_only)
             cwidth = ws.col(column).width
             if (len(i['total_payable']) * 367) > cwidth:
-                ws.col(i['total_payable']).width = (len(i['total_payable']) * 367)
-            ws.col(column).width = cwidth
+                ws.col(column).width = (len(i['total_payable']) * 367)
             column = column + 1
 
             ws.write(row, column, i['approval_2_amount'], read_only)
             cwidth = ws.col(column).width
             if (len(i['approval_2_amount']) * 367) > cwidth:
-                ws.col(i['approval_2_amount']).width = (len(i['approval_2_amount']) * 367)
-            ws.col(column).width = cwidth
+                ws.col(column).width = (len(i['approval_2_amount']) * 367)
             column = column + 1
             row = row + 1
         row = row + 1
