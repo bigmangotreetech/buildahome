@@ -1074,34 +1074,46 @@ def export_bills():
     ws = wb.add_sheet('Bills - '+str(current_time))
     row = 1
     column = 0
+    read_only = xlwt.easyxf("")
     for project in data:
         colum = 0
-        ws.write(row, column, data[project]['project_name'])
+        ws.write(row, column, data[project]['project_name'], read_only)
         row = row+1
         for i in data[project]['bills']:
             column = 0
-            ws.write(row, column, i['contractor_name'])
+            ws.write(row, column, i['contractor_name'], read_only)
             column = column+1
 
-            ws.write(row, column, i['contractor_pan'])
+            ws.write(row, column, i['contractor_pan'], read_only)
             column = column + 1
 
-            ws.write(row, column, i['contractor_code'])
+            ws.write(row, column, i['contractor_code'], read_only)
             column = column + 1
 
-            ws.write(row, column, i['trade'])
+            ws.write(row, column, i['trade'], read_only)
             column = column + 1
 
-            ws.write(row, column, i['stage'])
+            ws.write(row, column, i['stage'], read_only)
             column = column + 1
 
-            ws.write(row, column, i['total_payable'])
+            ws.write(row, column, i['total_payable'], read_only)
             column = column + 1
 
-            ws.write(row, column, i['approval_2_amount'])
+            ws.write(row, column, i['approval_2_amount'], read_only)
             column = column + 1
             row = row + 1
         row = row + 1
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter  # Get the column name
+        for cell in col:
+            try:  # Necessary to avoid error on empty cells
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = (max_length + 2) * 1.2
+        ws.column_dimensions[column].width = adjusted_width
     wb.save('../static/bills.xls')
 
 
