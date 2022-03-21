@@ -1,7 +1,7 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
-    if(window.location.href.includes('exported=true')
+    if(window.location.href.includes('exported=true'))
         window.open('/erp/static/bills.xls', '_blank')
 
     if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView({
