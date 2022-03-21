@@ -1064,15 +1064,29 @@ def export_bills():
                   'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                   'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                   ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ' \
-                  '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.id > '+str(bill_id)
+                  '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.is_archived=0 AND wo_bills.id > '+str(bill_id)
     data = get_bills_as_json(bills_query)
+    cur = mysql.connection.cursor()
     rb = open_workbook("../static/bills.xls")
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
     current_time = current_time.strftime('%d %m at %H %M')
-    ws = wb.add_sheet('Bills '+str(current_time))
-    row = 1
+    ws = wb.add_sheet('Bills on '+str(current_time))
+    style = xlwt.XFStyle()
+
+    # font
+    font = xlwt.Font()
+    font.bold = True
+    style.font = font
+
+    ws.write(1, 0, 'Contractor Name', style=style)
+    ws.write(1, 1, 'Contractor PAN', style=style)
+    ws.write(1, 2, 'Contractor Code', style=style)
+    ws.write(1, 3, 'Trade', style=style)
+    ws.write(1, 4, 'Stage', style=style)
+    ws.write(1, 5, 'Amount', style=style)
+    row = 2
     column = 0
     read_only = xlwt.easyxf("")
     for project in data:
@@ -1084,6 +1098,9 @@ def export_bills():
         ws.write(row, column, data[project]['project_name'], read_only)
         row = row+1
         for i in data[project]['bills']:
+            archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE id='+str(i['bill_id'])
+            cur.execute(archive_bill)
+
             column = 0
             ws.write(row, column, i['contractor_name'], read_only)
             cwidth = ws.col(column).width
@@ -1128,7 +1145,7 @@ def export_bills():
             column = column + 1
             row = row + 1
         row = row + 1
-
+    mysql.connection.commit()
     wb.save('../static/bills.xls')
 
 
@@ -1167,7 +1184,7 @@ def view_approved_bills():
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                          'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
-                         ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND (wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
+                         ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND (wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
         data = get_bills_as_json(bills_query)
         first_bill_id = 0
         for project in data:
