@@ -1076,44 +1076,67 @@ def export_bills():
     column = 0
     read_only = xlwt.easyxf("")
     for project in data:
-        colum = 0
+        column = 0
+        cwidth = ws.col(column).width
+        if (len(data[project]['project_name']) * 367) > cwidth:
+            ws.col(data[project]['project_name']).width = (len(data[project]['project_name']) * 367)
+        ws.col(column).width = cwidth
+
         ws.write(row, column, data[project]['project_name'], read_only)
         row = row+1
         for i in data[project]['bills']:
             column = 0
             ws.write(row, column, i['contractor_name'], read_only)
+            cwidth = ws.col(column).width
+            if (len(i['contractor_name']) * 367) > cwidth:
+                ws.col(i['contractor_name']).width = (len(i['contractor_name']) * 367)
+            ws.col(column).width = cwidth
             column = column+1
 
             ws.write(row, column, i['contractor_pan'], read_only)
+            cwidth = ws.col(column).width
+            if (len(i['contractor_pan']) * 367) > cwidth:
+                ws.col(i['contractor_pan']).width = (len(i['contractor_pan']) * 367)
+            ws.col(column).width = cwidth
             column = column + 1
 
             ws.write(row, column, i['contractor_code'], read_only)
+            cwidth = ws.col(column).width
+            if (len(i['contractor_code']) * 367) > cwidth:
+                ws.col(i['contractor_code']).width = (len(i['contractor_code']) * 367)
+            ws.col(column).width = cwidth
             column = column + 1
 
             ws.write(row, column, i['trade'], read_only)
+            cwidth = ws.col(column).width
+            if (len(i['trade']) * 367) > cwidth:
+                ws.col(i['trade']).width = (len(i['trade']) * 367)
+            ws.col(column).width = cwidth
             column = column + 1
 
             ws.write(row, column, i['stage'], read_only)
+            cwidth = ws.col(column).width
+            if (len(i['stage']) * 367) > cwidth:
+                ws.col(i['stage']).width = (len(i['stage']) * 367)
+            ws.col(column).width = cwidth
             column = column + 1
 
             ws.write(row, column, i['total_payable'], read_only)
+            cwidth = ws.col(column).width
+            if (len(i['total_payable']) * 367) > cwidth:
+                ws.col(i['total_payable']).width = (len(i['total_payable']) * 367)
+            ws.col(column).width = cwidth
             column = column + 1
 
             ws.write(row, column, i['approval_2_amount'], read_only)
+            cwidth = ws.col(column).width
+            if (len(i['approval_2_amount']) * 367) > cwidth:
+                ws.col(i['approval_2_amount']).width = (len(i['approval_2_amount']) * 367)
+            ws.col(column).width = cwidth
             column = column + 1
             row = row + 1
         row = row + 1
-    for col in ws.columns:
-        max_length = 0
-        column = col[0].column_letter  # Get the column name
-        for cell in col:
-            try:  # Necessary to avoid error on empty cells
-                if len(str(cell.value)) > max_length:
-                    max_length = len(str(cell.value))
-            except:
-                pass
-        adjusted_width = (max_length + 2) * 1.2
-        ws.column_dimensions[column].width = adjusted_width
+
     wb.save('../static/bills.xls')
 
 
