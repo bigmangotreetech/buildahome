@@ -1085,7 +1085,7 @@ def export_bills():
     style.font = font
 
     accountancy_format = xlwt.XFStyle()
-    accountancy_format.num_format_str = '0'
+    accountancy_format.num_format_str = '000000000000'
 
     ws.write(1, 0, 'Contractor Name', style=style)
     ws.write(1, 1, 'Contractor PAN', style=style)
