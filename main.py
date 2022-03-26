@@ -1140,10 +1140,10 @@ def export_bills():
                 ws.col(column).width = (len(i['total_payable']) * 367)
             column = column + 1
 
-            ws.write(row, column, int(i['approval_2_amount']), read_only)
+            ws.write(row, column, str(int(i['approval_2_amount'])), read_only)
             cwidth = ws.col(column).width
-            if (len(i['approval_2_amount']) * 367) > cwidth:
-                ws.col(column).width = (len(i['approval_2_amount']) * 367)
+            if (len(str(int(i['approval_2_amount']))) * 367) > cwidth:
+                ws.col(column).width = (len(str(int(i['approval_2_amount']))) * 367)
             column = column + 1
             row = row + 1
         row = row + 1
