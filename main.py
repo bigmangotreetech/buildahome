@@ -1065,6 +1065,7 @@ def export_bills():
                   'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
                   ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.id > '+str(bill_id)+' AND  ' \
                   '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.is_archived=0'
+
     data = get_bills_as_json(bills_query)
     cur = mysql.connection.cursor()
     archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE approval_2_amount != 0 AND approval_2_amount IS NOT NULL'
