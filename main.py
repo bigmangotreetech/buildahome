@@ -1139,7 +1139,7 @@ def export_bills():
             column = column + 1
 
 
-            ws.write(row, column, i['approval_2_amount'], style=accountancy_format)
+            ws.write(row, column, float(i['approval_2_amount']))
             cwidth = ws.col(column).width
             if (len(i['approval_2_amount']) * 367) > cwidth:
                 ws.col(column).width = (len(i['approval_2_amount']) * 367)
