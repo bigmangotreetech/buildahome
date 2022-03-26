@@ -1084,6 +1084,8 @@ def export_bills():
     font.bold = True
     style.font = font
 
+    accountancy_format = wb.add_format({'num_format': '@'})
+
     ws.write(1, 0, 'Contractor Name', style=style)
     ws.write(1, 1, 'Contractor PAN', style=style)
     ws.write(1, 2, 'Contractor Code', style=style)
@@ -1136,7 +1138,7 @@ def export_bills():
             column = column + 1
 
 
-            ws.write(row, column, i['approval_2_amount'], read_only)
+            ws.write(row, column, i['approval_2_amount'], accountancy_format)
             cwidth = ws.col(column).width
             if (len(i['approval_2_amount']) * 367) > cwidth:
                 ws.col(column).width = (len(i['approval_2_amount']) * 367)
