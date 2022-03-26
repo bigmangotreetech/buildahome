@@ -4,8 +4,10 @@ $(document).ready(function () {
     if($('.approved_amount').length && $('.total_paid').length) {
         total_paid = 0;
         $('.approved_amount').each(function(index, element) {
-            if ($(element).val().toString().length)
-                total_paid += parseInt($(element).val())
+            if ($(element).text().toString().length) {
+                console.log($(element).text())
+                total_paid += parseInt($(element).text())
+            }
         })
         $('.total_paid').text(total_paid)
     }
