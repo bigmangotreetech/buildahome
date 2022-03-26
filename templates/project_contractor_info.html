@@ -24,6 +24,9 @@
     <div class="mb-3">
         <b>Balance</b>: <span class="balance">{{data['balance']|int}}</span>
     </div>
+    <div class="mb-3">
+        <b>Total paid</b>: <span class="total_paid"></span>
+    </div>
     {% if data['balance']|string|int > 0 %}
     <div class="mb-3">
         <button class="btn clear-balance-btn">Clear balance</button>
@@ -50,7 +53,7 @@
             <td>{{i[6]}}</td>
             <td>{{i[7]}}</td>
             <td>{{i[8]|int}}</td>
-            <td>{{i[9]|int}}</td>
+            <td class="approved_amount">{{i[9]|int}}</td>
 
         </tr>
         {% endfor %}

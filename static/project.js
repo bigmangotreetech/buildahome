@@ -1,6 +1,15 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
+    if($('.approved_amount').length && $('.total_paid').length) {
+        total_paid = 0;
+        $('.approved_amount').each(function(index, element) {
+            if ($(element).val().toString().length)
+                total_paid += parseInt($(element).val())
+        })
+        $('.total_paid').text(total_paid)
+    }
+
     window.onload = function(){
         console.log(window.location.href.includes('exported=true'))
         setTimeout(() => {
