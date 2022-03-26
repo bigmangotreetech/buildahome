@@ -35,8 +35,8 @@
             <td class="contractor_code border-right">{{i['contractor_code']}}</td>
             <td class="trade border-right">{{i['trade']}}</td>
             <td class="stage border-right">{{i['stage']}}</td>
-            <td class="total_payable border-right">{{i['total_payable']}}</td>
-            <td class="approval_2 ">{{i['approval_2_amount']}}</td>
+            <td class="total_payable border-right">{{i['total_payable']|int}}</td>
+            <td class="approval_2 ">{{i['approval_2_amount']|int}}</td>
         </tr>
         {% endfor %}
         {% endfor %}
