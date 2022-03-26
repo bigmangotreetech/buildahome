@@ -1067,7 +1067,7 @@ def export_bills():
                   '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.is_archived=0 AND wo_bills.id > '+str(bill_id)
     data = get_bills_as_json(bills_query)
     cur = mysql.connection.cursor()
-    archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE 1'
+    archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE approval_2_amount = 0 AND approval_2_amount IS NULL'
     cur.execute(archive_bill)
     rb = open_workbook("../static/bills.xls")
     wb = copy(rb)
@@ -1186,7 +1186,8 @@ def view_approved_bills():
                          'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                          'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                          'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
-                         ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND (wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
+                         ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
+                         '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
         data = get_bills_as_json(bills_query)
         first_bill_id = 0
         for project in data:
