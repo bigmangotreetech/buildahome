@@ -22,7 +22,7 @@
         <b>WO value</b>: {{data['value']}}
     </div>
     <div class="mb-3">
-        <b>Balance</b>: <span class="balance">{{data['balance']}}</span>
+        <b>Balance</b>: <span class="balance">{{data['balance']|int}}</span>
     </div>
     {% if data['balance']|string|int > 0 %}
     <div class="mb-3">
