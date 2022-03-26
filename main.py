@@ -1067,7 +1067,7 @@ def export_bills():
                   '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.is_archived=0 AND wo_bills.id > '+str(bill_id)
     data = get_bills_as_json(bills_query)
     cur = mysql.connection.cursor()
-    archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE approval_2_amount = 0 AND approval_2_amount IS NULL'
+    archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE approval_2_amount != 0 AND approval_2_amount IS NOT NULL'
     cur.execute(archive_bill)
     rb = open_workbook("../static/bills.xls")
     wb = copy(rb)
