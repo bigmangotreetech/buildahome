@@ -1311,7 +1311,7 @@ def clear_wo_balance():
     stage = 'Clearing balance'
 
     cur = mysql.connection.cursor()
-    bills_query = 'INSERT into wo_bills (project_id,trade, stage, contractor_name, contractor_code, contractor_pan, approval_2_amount) values (%s,%s, %s,%s,%s,%s,%s)'
+    bills_query = 'INSERT into wo_bills (project_id,trade, stage, contractor_name, contractor_code, contractor_pan, total_payable) values (%s,%s, %s,%s,%s,%s,%s)'
     cur.execute(bills_query, (project_id, trade, stage, contractor_name,contractor_code, contractor_pan, balance_amnt))
 
     work_order_query = 'UPDATE work_orders SET balance=0 WHERE id='+work_order_id
