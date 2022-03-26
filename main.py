@@ -1063,8 +1063,8 @@ def export_bills():
                   'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                   'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                   'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
-                  ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ' \
-                  '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.is_archived=0 AND wo_bills.id > '+str(bill_id)
+                  ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.id > '+str(bill_id)+' AND  ' \
+                  '( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) WHERE wo_bills.is_archived=0'
     data = get_bills_as_json(bills_query)
     cur = mysql.connection.cursor()
     archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE approval_2_amount != 0 AND approval_2_amount IS NOT NULL'
@@ -1073,7 +1073,7 @@ def export_bills():
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
-    current_time = current_time.strftime('%d %m at %H %M')
+    current_time = current_time.strftime('%d %m %Y at %H %M')
     ws = wb.add_sheet('Bills on '+str(current_time))
     style = xlwt.XFStyle()
 
@@ -1139,7 +1139,7 @@ def export_bills():
                 ws.col(column).width = (len(i['total_payable']) * 367)
             column = column + 1
 
-            ws.write(row, column, i['approval_2_amount'], read_only)
+            ws.write(row, column, int(i['approval_2_amount']), read_only)
             cwidth = ws.col(column).width
             if (len(i['approval_2_amount']) * 367) > cwidth:
                 ws.col(column).width = (len(i['approval_2_amount']) * 367)
