@@ -2238,7 +2238,7 @@ def edit_team():
         cur.execute(update_project_query)
         mysql.connection.commit()
         flash('Team updated successfully', 'success')
-        return redirect('/erp/approved_projects')
+        return redirect('/erp/projects')
 
 @app.route('/assign_design_team', methods=['GET', 'POST'])
 def assign_design_team():
