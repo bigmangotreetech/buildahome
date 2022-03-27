@@ -2153,16 +2153,30 @@ def edit_team():
                 phe_designers.append({'id': i[0], 'name': i[1]})
             if i[2] == 'Senior Architect':
                 senior_architects.append({'id': i[0], 'name': i[1]})
+
+        existing_team = {
+            'Architect': 'None',
+            'Structural Designer': 'None',
+            'Electrical Designer': 'None',
+            'PHE Designer': 'None',
+            'Senior Architect': 'None',
+            'Project Coordinator': 'None',
+            'Project Manager': 'None',
+            'Purchase Executive': 'None',
+            'QS Engineer': 'None'
+        }
+
+
         existing_team_query = 'SELECT * FROM project_design_team WHERE project_id=' + str(project_id)
         cur.execute(existing_team_query)
         res = cur.fetchone()
-        existing_team = {
-            'Architect': res[2],
-            'Structural Designer': res[3],
-            'Electrical Designer': res[4],
-            'PHE Designer': res[5],
-            'Senior Architect': res[6]
-        }
+        if res is not None:
+            existing_team['Architect'] = res[2]
+            existing_team['Structural Designer'] = res[3]
+            existing_team['Electrical Designer'] = res[4]
+            existing_team['PHE Designer'] = res[5]
+            existing_team['Senior Architect'] = res[6]
+
 
         operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
         cur = mysql.connection.cursor()
@@ -2184,10 +2198,11 @@ def edit_team():
         existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project_id)
         cur.execute(existing_team_query)
         res = cur.fetchone()
-        existing_team['Project Coordinator'] = res[2]
-        existing_team['Project Manager'] = res[3]
-        existing_team['Purchase Executive'] = res[4]
-        existing_team['QS Engineer'] = res[5]
+        if res is not None:
+            existing_team['Project Coordinator'] = res[2]
+            existing_team['Project Manager'] = res[3]
+            existing_team['Purchase Executive'] = res[4]
+            existing_team['QS Engineer'] = res[5]
 
 
         return render_template('edit_team.html', existing_team=existing_team,
