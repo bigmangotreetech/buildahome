@@ -17,7 +17,7 @@
                         <label for="">Select Senior Architect</label>
                     </div>
                     <div class="col-6">
-                        <select name="senior_architect" id=senior_architect" class="form-control select2" required>
+                        <select name="senior_architect" id=senior_architect" class="form-control select2">
                             <option value=""></option>
                             {% for i in senior_architects %}
                             {% if i['id']|string == existing_team['Senior Architect']|string %}
@@ -35,7 +35,7 @@
                         <label for="">Select Architect</label>
                     </div>
                     <div class="col-6">
-                        <select name="architect" id=architect" class="form-control select2" required>
+                        <select name="architect" id=architect" class="form-control select2">
                             <option value=""></option>
                             {% for i in architects %}
                             {% if i['id']|string == existing_team['Architect']|string %}
@@ -91,7 +91,7 @@
                         <label for="">Select PHE Designer</label>
                     </div>
                     <div class="col-6">
-                        <select name="phe_designer" id=phe_designer" class="form-control select2" required>
+                        <select name="phe_designer" id=phe_designer" class="form-control select2">
                             <option value=""></option>
                             {% for i in phe_designers %}
                             {% if i['id']|string == existing_team['PHE Designer']|string %}
@@ -109,7 +109,7 @@
                         <label for="">Select Project Coordinator</label>
                     </div>
                     <div class="col-6">
-                        <select name="co_ordinator" id=co_ordinator" class="form-control select2" required>
+                        <select name="co_ordinator" id=co_ordinator" class="form-control select2">
                             <option value=""></option>
                             {% for i in co_ordinators %}
                             {% if i['id']|string == existing_team['Project Coordinator']|string %}
@@ -127,7 +127,7 @@
                         <label for="">Select Project Manager</label>
                     </div>
                     <div class="col-6">
-                        <select name="project_manager" id=project_manager" class="form-control select2" required>
+                        <select name="project_manager" id=project_manager" class="form-control select2">
                             <option value=""></option>
                             {% for i in project_managers %}
                             {% if i['id']|string == existing_team['Project Manager']|string %}
@@ -145,7 +145,7 @@
                         <label for="">Select Purchase Executive</label>
                     </div>
                     <div class="col-6">
-                        <select name="purchase_executive" id=purchase_executive" class="form-control select2" required>
+                        <select name="purchase_executive" id=purchase_executive" class="form-control select2">
                             <option value=""></option>
                             {% for i in purchase_executives %}
                             {% if i['id']|string == existing_team['Purchase Executive']|string %}
@@ -163,7 +163,7 @@
                         <label for="">Select QS Engineer</label>
                     </div>
                     <div class="col-6">
-                        <select name="qs_engineer" id=qs_engineer" class="form-control select2" required>
+                        <select name="qs_engineer" id=qs_engineer" class="form-control select2">
                             <option value=""></option>
                             {% for i in qs_engineers %}
                             {% if i['id']|string == existing_team['QS Engineer']|string %}
