@@ -6,7 +6,7 @@ $(document).ready(function () {
             $('#edit_vendor_material_type_select').val($('.edit_vendor_material_type').text())
             $('#edit_vendor_material_type_select').trigger('change')
         }
-    }, 2000)
+    }, 1000)
 
     if($('.approved_amount').length && $('.total_paid').length) {
         total_paid = 0;
