@@ -53,7 +53,7 @@
                     </div>
                     <div class="col-6">
                         <select name="structural_designer" id=structural_designer" class="form-control select2"
-                                required>
+                                >
                             <option value=""></option>
                             {% for i in structural_designers %}
                             {% if i['id']|string == existing_team['Structural Designer']|string %}
@@ -72,7 +72,7 @@
                     </div>
                     <div class="col-6">
                         <select name="electrical_designer" id=electrical_designer" class="form-control select2"
-                                required>
+                                >
                             <option value=""></option>
                             {% for i in electrical_designers %}
                             {% if i['id']|string == existing_team['Electrical Designer']|string %}
