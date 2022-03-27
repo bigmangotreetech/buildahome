@@ -2226,6 +2226,7 @@ def edit_team():
             request.form['project_id'])
         cur.execute(update_project_query)
 
+
         update_string = ""
         for i in column_names[5:-1]:
             if request.form[i].strip() != '':
