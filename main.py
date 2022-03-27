@@ -799,7 +799,7 @@ def get_vendors():
         vendors[str(i[0])] = str(i[1]) + str(i[2])
     return vendors
 
-@app.route('/get_vendors_for_material', methods=['GET'])
+@app.route('/get_vendors_for_material', methods=['POST'])
 def get_vendors_for_material():
     material_selected = request.form['material_selected']
     cur = mysql.connection.cursor()

@@ -66,7 +66,7 @@ $(document).ready(function () {
         const material_selected = $(this).val()
         $.ajax({
                 url: '/erp/get_vendors_for_material',
-                type: "GET",
+                type: "POST",
                 dataType: 'json',
                 data: { 'material_selected': material_selected },
                 success: function (data) {
