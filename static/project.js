@@ -62,16 +62,16 @@ $(document).ready(function () {
     })
 
     $(".material-select").on('change', function() {
-        $(".material-select").empty()
+        $(".vendor-select").empty()
         const material_selected = $(this).val()
         $.ajax({
                 url: '/erp/get_vendors_for_material',
-                type: "POST",
+                type: "GET",
                 dataType: 'json',
                 data: { 'material_selected': material_selected },
                 success: function (data) {
                     for (const vendor of data) {
-                        $(".material-select").append($("<option></option>")
+                        $(".vendor-select").append($("<option></option>")
                             .attr("value", vendor[0])
                             .text(vendor[1]))
                     }
