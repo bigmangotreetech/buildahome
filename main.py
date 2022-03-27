@@ -799,6 +799,15 @@ def get_vendors():
         vendors[str(i[0])] = str(i[1]) + str(i[2])
     return vendors
 
+@app.route('/get_vendors_for_material', methods=['GET'])
+def get_vendors_for_material():
+    material_selected = request.form['material_selected']
+    cur = mysql.connection.cursor()
+    query = 'SELECT id, name from vendors WHERE material_type="'+material_selected+"'"
+    cur.execute(query)
+    res = cur.fetchall()
+    return jsonify(res)
+
 
 @app.route('/kyp_material', methods=['GET', 'POST'])
 def kyp_material():
@@ -810,17 +819,68 @@ def kyp_material():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     material_quantity_data = {
-        'Cement': '',
-        'Concrete': '',
-        'Steel': '',
-        'M Sand': '',
-        'P Sand': '',
-        'Aggregates': '',
-        'Wall Material': '',
-        'Door Window': '',
-        'Flooring': '',
+        'PCC M 7.5': '',
+        'PCC M 15': '',
+        'M 20': '',
+        'M 25': '',
+        'Red Bricks': '',
+        'Exposed Bricks': '',
+        'Wirecut bricks': '',
+        'Earth Blocks': '',
+        'Interlocking Blocks': '',
+        'Solid blocks 4"': '',
+        'Solid blocks 6"': '',
+        'Solid blocks 8"': '',
+        'Porotherm Full blocks 8"': '',
+        'Porotherm Full blocks 6"': '',
+        'Porotherm Full blocks 4"': '',
+        'Porotherm End blocks 8"': '',
+        'Porotherm End blocks 6"': '',
+        'Porotherm End blocks 4"': '',
+        'AAC Blocks 8"': '',
+        'AAC Blocks 6"': '',
+        'AAC Blocks 4"': '',
+        'Glass blocks': '',
+        'Jaali blocks': '',
+        'Door frames': '',
+        'Door Beading': '',
+        'Door Shutters': '',
+        'Windows frames': '',
+        'Windows shutters': '',
+        'UPVC windows': '',
+        'Aluminum windows': '',
+        'Window glass': '',
+        'Hexagonl Rod': '',
+        'Granite': '',
+        'Tiles': '',
+        'Marble': '',
+        'Kota stone': '',
+        'HPL Cladding': '',
+        'Shera Cladding': '',
+        'Floor mat': '',
+        'Plumbing': '',
         'Sanitary': '',
-        'Hardware': ''
+        'Aggregates 12mm': '',
+        'Aggregates 20mm': '',
+        'Aggregates 40mm': '',
+        'Cinder': '',
+        'Size stone': '',
+        'Boulders': '',
+        'River sand': '',
+        'POP': '',
+        'white cement': '',
+        'tile adhesive': '',
+        'tile grout': '',
+        'lime paste': '',
+        'Sponge': '',
+        'chicken mesh': '',
+        'Motor': '',
+        'Curing Pipe': '',
+        'Helmet': '',
+        'Jackets': '',
+        'GI sheets': '',
+        'Tarpaulin': '',
+        'Nails': ''
     }
     if request.method == 'GET':
         cur = mysql.connection.cursor()

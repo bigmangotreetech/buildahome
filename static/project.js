@@ -54,6 +54,25 @@ $(document).ready(function () {
         })
     })
 
+    $(".material-select").on('change', function() {
+        $(".material-select").empty()
+        const material_selected = $(this).val()
+        $.ajax({
+                url: '/erp/get_vendors_for_material',
+                type: "POST",
+                dataType: 'json',
+                data: { 'material_selected': material_selected },
+                success: function (data) {
+                    for (const vendor of data) {
+                        $(".material-select").append($("<option></option>")
+                            .attr("value", vendor[0])
+                            .text(vendor[1]))
+                    }
+                }
+            });
+
+    })
+
     $(".update_trades_for_project").on('change', function () {
         const project_id = $(this).val()
 

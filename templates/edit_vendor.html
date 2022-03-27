@@ -62,7 +62,157 @@
                         <label>Material type</label>
                     </div>
                     <div class="col-6">
-                        <input name="material_type" class="form-control" value="{{vendor_details[6]}}">
+                        <select name="material_type" id="">
+                            <option value="PCC M 7.5" {% if vendor_details[6]=="PCC M 7.5
+                            " %} selected="true" {% endif %} >PCC M 7.5</option>
+                            <option value="PCC M 15" {% if vendor_details[6]=="PCC M 15
+                            " %} selected="true" {% endif %} >PCC M 15</option>
+                            <option value="M 20" {% if vendor_details[6]=="M 20
+                            " %} selected="true" {% endif %} >M 20</option>
+                            <option value="M 25" {% if vendor_details[6]=="M 25
+                            " %} selected="true" {% endif %} >M 25</option>
+                            <option value="Red Bricks" {% if vendor_details[6]=="Red Bricks
+                            " %} selected="true" {% endif %} >Red Bricks</option>
+                            <option value="Exposed Bricks" {% if vendor_details[6]=="Exposed Bricks
+                            " %} selected="true" {% endif %} >Exposed Bricks</option>
+                            <option value="Wirecut bricks" {% if vendor_details[6]=="Wirecut bricks
+                            " %} selected="true" {% endif %} >Wirecut bricks</option>
+                            <option value="Earth Blocks" {% if vendor_details[6]=="Earth Blocks
+                            " %} selected="true" {% endif %} >Earth Blocks</option>
+                            <option value="Interlocking Blocks" {% if vendor_details[6]=="Interlocking Blocks
+                            " %} selected="true" {% endif %} >Interlocking Blocks</option>
+                            <option value="Solid blocks 4"
+                            " {% if vendor_details[6]=="Solid blocks 4"" %} selected="true" {% endif %} >Solid blocks
+                            4"</option>
+                            <option value="Solid blocks 6"
+                            " {% if vendor_details[6]=="Solid blocks 6"" %} selected="true" {% endif %} >Solid blocks
+                            6"</option>
+                            <option value="Solid blocks 8"
+                            " {% if vendor_details[6]=="Solid blocks 8"" %} selected="true" {% endif %} >Solid blocks
+                            8"</option>
+                            <option value="Porotherm Full blocks 8"
+                            " {% if vendor_details[6]=="Porotherm Full blocks 8"" %} selected="true" {% endif %}
+                            >Porotherm Full blocks 8"</option>
+                            <option value="Porotherm Full blocks 6"
+                            " {% if vendor_details[6]=="Porotherm Full blocks 6"" %} selected="true" {% endif %}
+                            >Porotherm Full blocks 6"</option>
+                            <option value="Porotherm Full blocks 4"
+                            " {% if vendor_details[6]=="Porotherm Full blocks 4"" %} selected="true" {% endif %}
+                            >Porotherm Full blocks 4"</option>
+                            <option value="Porotherm End blocks 8"
+                            " {% if vendor_details[6]=="Porotherm End blocks 8"" %} selected="true" {% endif %}
+                            >Porotherm End blocks 8"</option>
+                            <option value="Porotherm End blocks 6"
+                            " {% if vendor_details[6]=="Porotherm End blocks 6"" %} selected="true" {% endif %}
+                            >Porotherm End blocks 6"</option>
+                            <option value="Porotherm End blocks 4"
+                            " {% if vendor_details[6]=="Porotherm End blocks 4"" %} selected="true" {% endif %}
+                            >Porotherm End blocks 4"</option>
+                            <option value="AAC Blocks 8"
+                            " {% if vendor_details[6]=="AAC Blocks 8"" %} selected="true" {% endif %} >AAC Blocks
+                            8"</option>
+                            <option value="AAC Blocks 6"
+                            " {% if vendor_details[6]=="AAC Blocks 6"" %} selected="true" {% endif %} >AAC Blocks
+                            6"</option>
+                            <option value="AAC Blocks 4"
+                            " {% if vendor_details[6]=="AAC Blocks 4"" %} selected="true" {% endif %} >AAC Blocks
+                            4"</option>
+                            <option value="Glass blocks" {% if vendor_details[6]=="Glass blocks
+                            " %} selected="true" {% endif %} >Glass blocks</option>
+                            <option value="Jaali blocks" {% if vendor_details[6]=="Jaali blocks
+                            " %} selected="true" {% endif %} >Jaali blocks</option>
+                            <option value="Door frames" {% if vendor_details[6]=="Door frames
+                            " %} selected="true" {% endif %} >Door frames</option>
+                            <option value="Door Beading" {% if vendor_details[6]=="Door Beading
+                            " %} selected="true" {% endif %} >Door Beading</option>
+                            <option value="Door Shutters" {% if vendor_details[6]=="Door Shutters
+                            " %} selected="true" {% endif %} >Door Shutters</option>
+                            <option value="Windows frames" {% if vendor_details[6]=="Windows frames
+                            " %} selected="true" {% endif %} >Windows frames</option>
+                            <option value="Windows shutters" {% if vendor_details[6]=="Windows shutters
+                            " %} selected="true" {% endif %} >Windows shutters</option>
+                            <option value="UPVC windows" {% if vendor_details[6]=="UPVC windows
+                            " %} selected="true" {% endif %} >UPVC windows</option>
+                            <option value="Aluminum windows" {% if vendor_details[6]=="Aluminum windows
+                            " %} selected="true" {% endif %} >Aluminum windows</option>
+                            <option value="Window glass" {% if vendor_details[6]=="Window glass
+                            " %} selected="true" {% endif %} >Window glass</option>
+                            <option value="Hexagonl Rod" {% if vendor_details[6]=="Hexagonl Rod
+                            " %} selected="true" {% endif %} >Hexagonl Rod</option>
+                            <option value="Granite" {% if vendor_details[6]=="Granite" %} selected="true" {% endif %}>
+                                Granite
+                            </option>
+                            <option value="Tiles" {% if vendor_details[6]=="Tiles" %} selected="true" {% endif %}>
+                                Tiles
+                            </option>
+                            <option value="Marble" {% if vendor_details[6]=="Marble" %} selected="true" {% endif %}>
+                                Marble
+                            </option>
+                            <option value="Kota stone" {% if vendor_details[6]=="Kota stone
+                            " %} selected="true" {% endif %} >Kota stone</option>
+                            <option value="HPL Cladding" {% if vendor_details[6]=="HPL Cladding
+                            " %} selected="true" {% endif %} >HPL Cladding</option>
+                            <option value="Shera Cladding" {% if vendor_details[6]=="Shera Cladding
+                            " %} selected="true" {% endif %} >Shera Cladding</option>
+                            <option value="Floor mat" {% if vendor_details[6]=="Floor mat
+                            " %} selected="true" {% endif %} >Floor mat</option>
+                            <option value="Plumbing" {% if vendor_details[6]=="Plumbing" %} selected="true" {% endif %}>
+                                Plumbing
+                            </option>
+                            <option value="Sanitary" {% if vendor_details[6]=="Sanitary" %} selected="true" {% endif %}>
+                                Sanitary
+                            </option>
+                            <option value="Aggregates 12mm" {% if vendor_details[6]=="Aggregates 12mm
+                            " %} selected="true" {% endif %} >Aggregates 12mm</option>
+                            <option value="Aggregates 20mm" {% if vendor_details[6]=="Aggregates 20mm
+                            " %} selected="true" {% endif %} >Aggregates 20mm</option>
+                            <option value="Aggregates 40mm" {% if vendor_details[6]=="Aggregates 40mm
+                            " %} selected="true" {% endif %} >Aggregates 40mm</option>
+                            <option value="Cinder" {% if vendor_details[6]=="Cinder" %} selected="true" {% endif %}>
+                                Cinder
+                            </option>
+                            <option value="Size stone" {% if vendor_details[6]=="Size stone
+                            " %} selected="true" {% endif %} >Size stone</option>
+                            <option value="Boulders" {% if vendor_details[6]=="Boulders" %} selected="true" {% endif %}>
+                                Boulders
+                            </option>
+                            <option value="River sand" {% if vendor_details[6]=="River sand
+                            " %} selected="true" {% endif %} >River sand</option>
+                            <option value="POP" {% if vendor_details[6]=="POP" %} selected="true" {% endif %}>POP
+                            </option>
+                            <option value="white cement" {% if vendor_details[6]=="white cement
+                            " %} selected="true" {% endif %} >white cement</option>
+                            <option value="tile adhesive" {% if vendor_details[6]=="tile adhesive
+                            " %} selected="true" {% endif %} >tile adhesive</option>
+                            <option value="tile grout" {% if vendor_details[6]=="tile grout
+                            " %} selected="true" {% endif %} >tile grout</option>
+                            <option value="lime paste" {% if vendor_details[6]=="lime paste
+                            " %} selected="true" {% endif %} >lime paste</option>
+                            <option value="Sponge" {% if vendor_details[6]=="Sponge" %} selected="true" {% endif %}>
+                                Sponge
+                            </option>
+                            <option value="chicken mesh" {% if vendor_details[6]=="chicken mesh
+                            " %} selected="true" {% endif %} >chicken mesh</option>
+                            <option value="Motor" {% if vendor_details[6]=="Motor" %} selected="true" {% endif %}>
+                                Motor
+                            </option>
+                            <option value="Curing Pipe" {% if vendor_details[6]=="Curing Pipe
+                            " %} selected="true" {% endif %} >Curing Pipe</option>
+                            <option value="Helmet" {% if vendor_details[6]=="Helmet" %} selected="true" {% endif %}>
+                                Helmet
+                            </option>
+                            <option value="Jackets" {% if vendor_details[6]=="Jackets" %} selected="true" {% endif %}>
+                                Jackets
+                            </option>
+                            <option value="GI sheets" {% if vendor_details[6]=="GI sheets
+                            " %} selected="true" {% endif %} >GI sheets</option>
+                            <option value="Tarpaulin" {% if vendor_details[6]=="Tarpaulin" %} selected="true" {% endif
+                                    %}>Tarpaulin
+                            </option>
+                            <option value="Nails" {% if vendor_details[6]=="Nails" %} selected="true" {% endif %}>
+                                Nails
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
