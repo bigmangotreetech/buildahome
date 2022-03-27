@@ -1888,7 +1888,7 @@ def approved_projects():
         cur = mysql.connection.cursor()
         result = []
         if len(session['projects']) > 0:
-            if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer','Purchase Head','Sales Executive']:
+            if session['role'] not in ['Super Admin','COO','QS Head','Site Engineer','Purchase Head','Sales Executive','Billing']:
                 approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN '+str(session['projects'])+' ORDER BY project_number'
                 cur.execute(approved_projects_query)
