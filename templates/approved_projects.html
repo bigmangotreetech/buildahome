@@ -12,7 +12,9 @@
             <th scope="col">Project number</th>
             <th scope="col">Project Name</th>
             <th scope="col"></th>
+            {% if session['role'] in ['Super Admin','COO','Design Head','Planning'] %}
             <th scope="col"></th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -23,9 +25,11 @@
             <td>
                 <a href="/erp/view_project_details?project_id={{project[0]}}">View details</a>
             </td>
+            {% if session['role'] in ['Super Admin','COO','Design Head','Planning'] %}
             <td>
                 <a href="/erp/edit_team?project_id={{project[0]}}">View team</a>
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
 

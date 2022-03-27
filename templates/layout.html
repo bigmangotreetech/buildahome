@@ -143,27 +143,27 @@
     <a href="/erp/drawings" class='nav-link {% if "/drawings" in request.path %} active {% endif %}'>Drawings</a>
     <a href="/erp/revised_drawings" class='nav-link {% if "/revised_drawings" in request.path %} active {% endif %}'>Revised
         Drawings</a>
-    {% if session['role'] in ['Super Admin','COO','Design Head'] %}
-    <a href="/erp/projects_with_design_team"
-       class='nav-link {% if "/projects_with_design_team" in request.path %} active {% endif %}'>Assigned projects</a>
-    {% endif %}
-    {% if session['role'] in ['Super Admin','COO','Design Head'] %}
-    <a href="/erp/projects_with_no_design_team"
-       class='nav-link {% if "/projects_with_no_design_team" in request.path %} active {% endif %}'>Unassigned
-        project</a>
-    {% endif %}
+<!--    {% if session['role'] in ['Super Admin','COO','Design Head'] %}-->
+<!--    <a href="/erp/projects_with_design_team"-->
+<!--       class='nav-link {% if "/projects_with_design_team" in request.path %} active {% endif %}'>Assigned projects</a>-->
+<!--    {% endif %}-->
+<!--    {% if session['role'] in ['Super Admin','COO','Design Head'] %}-->
+<!--    <a href="/erp/projects_with_no_design_team"-->
+<!--       class='nav-link {% if "/projects_with_no_design_team" in request.path %} active {% endif %}'>Unassigned-->
+<!--        project</a>-->
+<!--    {% endif %}-->
 
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Planning'] %}
-    <div class="nav-section-header">Operations team</div>
-    <a href="/erp/projects_with_operations_team"
-       class='nav-link {% if "/projects_with_operations_team" in request.path %} active {% endif %}'>Assigned
-        projects</a>
-    <a href="/erp/projects_with_no_operations_team"
-       class='nav-link {% if "/projects_with_no_operations_team" in request.path %} active {% endif %}'>Unassigned
-        project</a>
-    {% endif %}
+<!--    {% if session['role'] in ['Super Admin','COO','Planning'] %}-->
+<!--    <div class="nav-section-header">Operations team</div>-->
+<!--    <a href="/erp/projects_with_operations_team"-->
+<!--       class='nav-link {% if "/projects_with_operations_team" in request.path %} active {% endif %}'>Assigned-->
+<!--        projects</a>-->
+<!--    <a href="/erp/projects_with_no_operations_team"-->
+<!--       class='nav-link {% if "/projects_with_no_operations_team" in request.path %} active {% endif %}'>Unassigned-->
+<!--        project</a>-->
+<!--    {% endif %}-->
 
 </div>
 
