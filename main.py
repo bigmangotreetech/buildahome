@@ -2218,8 +2218,7 @@ def edit_team():
 
         update_string = ""
         for i in column_names[:5]:
-            if request.form[i].strip() != '':
-                update_string += i + '="' + request.form[i] + '", '
+            update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
         update_string = update_string[:-2]
         update_project_query = 'UPDATE project_design_team SET ' + update_string + ' WHERE project_id=' + str(
@@ -2229,14 +2228,12 @@ def edit_team():
 
         update_string = ""
         for i in column_names[5:-1]:
-            if request.form[i].strip() != '':
-                update_string += i + '="' + request.form[i] + '", '
+            update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
         update_string = update_string[:-2]
         update_project_query = 'UPDATE project_operations_team SET ' + update_string + ' WHERE project_id=' + str(
             request.form['project_id'])
 
-        return str(column_names[5:-1])
 
         cur.execute(update_project_query)
         mysql.connection.commit()
