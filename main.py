@@ -2236,7 +2236,7 @@ def edit_team():
         update_project_query = 'UPDATE project_operations_team SET ' + update_string + ' WHERE project_id=' + str(
             request.form['project_id'])
 
-        return update_project_query
+        return str(column_names[5:-1])
 
         cur.execute(update_project_query)
         mysql.connection.commit()
