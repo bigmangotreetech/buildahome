@@ -1,6 +1,10 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
+    if ($('.edit_vendor_material_type').length > 0) {
+        $('.edit_vendor_material_type_select').val($('.edit_vendor_material_type').text())
+    }
+
     if($('.approved_amount').length && $('.total_paid').length) {
         total_paid = 0;
         $('.approved_amount').each(function(index, element) {
