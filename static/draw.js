@@ -171,6 +171,19 @@ async function getAndPutAnnexure() {
     timeout: 60000,
     success: function (data) {
       console.log(data)
+      
+      var canvas = document.getElementById("annexure_canvas");
+      var context = canvas.getContext("2d");
+      context.font = "30px Arial";
+
+      x = 20;
+      y = 20;
+      for (const stage of data) {
+        context.fillText(stage[0], x, y);
+        x = 450;
+        context.fillText(stage[1], x, y);
+        y += 20;
+      }
     },
     error: function (error) {
       console.log(error)
