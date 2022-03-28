@@ -175,13 +175,15 @@ async function getAndPutAnnexure() {
       var canvas = document.getElementById("annexure_canvas");
       var context = canvas.getContext("2d");
       context.font = "14px Arial";
+      lines = (data.length * 20) + 100
+      $(canvas).attr('height', lines.toString+'px')
 
       x = 20;
       y = 20;
       for (const stage of data) {
         context.fillText(stage[0], x, y);
-        x = 450;
-        context.fillText(stage[1], x, y);
+        x = 500;
+        context.fillText(stage[1].toString()+'%', x, y);
         y += 20;
         x = 20;
       }
