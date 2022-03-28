@@ -353,17 +353,68 @@ def shifting_entry():
             return redirect('/erp/login')
         projects = get_projects()
         material_quantity_data = {
-            'Cement': '',
-            'Concrete': '',
-            'Steel': '',
-            'M Sand': '',
-            'P Sand': '',
-            'Aggregates': '',
-            'Wall Material': '',
-            'Door Window': '',
-            'Flooring': '',
+            'PCC M 7.5': '',
+            'PCC M 15': '',
+            'M 20': '',
+            'M 25': '',
+            'Red Bricks': '',
+            'Exposed Bricks': '',
+            'Wirecut bricks': '',
+            'Earth Blocks': '',
+            'Interlocking Blocks': '',
+            'Solid blocks 4"': '',
+            'Solid blocks 6"': '',
+            'Solid blocks 8"': '',
+            'Porotherm Full blocks 8"': '',
+            'Porotherm Full blocks 6"': '',
+            'Porotherm Full blocks 4"': '',
+            'Porotherm End blocks 8"': '',
+            'Porotherm End blocks 6"': '',
+            'Porotherm End blocks 4"': '',
+            'AAC Blocks 8"': '',
+            'AAC Blocks 6"': '',
+            'AAC Blocks 4"': '',
+            'Glass blocks': '',
+            'Jaali blocks': '',
+            'Door frames': '',
+            'Door Beading': '',
+            'Door Shutters': '',
+            'Windows frames': '',
+            'Windows shutters': '',
+            'UPVC windows': '',
+            'Aluminum windows': '',
+            'Window glass': '',
+            'Hexagonl Rod': '',
+            'Granite': '',
+            'Tiles': '',
+            'Marble': '',
+            'Kota stone': '',
+            'HPL Cladding': '',
+            'Shera Cladding': '',
+            'Floor mat': '',
+            'Plumbing': '',
             'Sanitary': '',
-            'Hardware': ''
+            'Aggregates 12mm': '',
+            'Aggregates 20mm': '',
+            'Aggregates 40mm': '',
+            'Cinder': '',
+            'Size stone': '',
+            'Boulders': '',
+            'River sand': '',
+            'POP': '',
+            'white cement': '',
+            'tile adhesive': '',
+            'tile grout': '',
+            'lime paste': '',
+            'Sponge': '',
+            'chicken mesh': '',
+            'Motor': '',
+            'Curing Pipe': '',
+            'Helmet': '',
+            'Jackets': '',
+            'GI sheets': '',
+            'Tarpaulin': '',
+            'Nails': ''
         }
 
         return render_template('shifting_entry.html', projects=projects, material_quantity_data=material_quantity_data)
@@ -375,9 +426,34 @@ def shifting_entry():
             return redirect(request.referrer)
 
         cur = mysql.connection.cursor()
+
+        from_project_name = ''
+        from_project_name_query = 'SELECT project_name FROM projects WHERE project_id='+str(from_project)
+        cur.execute(from_project_name_query)
+        result = cur.fetchone()
+        if result is not None:
+            from_project_name = result[0]
+
+        
+        to_project_name = ''
+        to_project_name_query = 'SELECT project_name FROM projects WHERE project_id='+str(to_project)
+        cur.execute(to_project_name_query)
+        result = cur.fetchone()
+        if result is not None:
+            to_project_name = result[0]
+
+
+
         material = request.form['material']
         quantity = request.form['quantity']
+        unit = request.form['unit']
+        difference_cost = request.form['difference_cost']
         description = 'Shifting entry'
+        negative_diff = ''
+        positive_diff = ''
+        if difference_cost != '':
+            negative_diff = '-'+str(difference_cost)
+            positive_diff = str(difference_cost)
 
         material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id=' + str(
             to_project) + ' AND material="' + str(material) + '"'
@@ -398,13 +474,13 @@ def shifting_entry():
             flash('Shifting entry failed. Insufficient quantity in source project', 'danger')
             return redirect(request.referrer)
         deduction_query = "INSERT into procurement (material, description, project_id," \
-                          "quantity) values (%s, %s, %s, %s)"
-        values = (material, description, from_project, int(quantity) * -1)
+                          "quantity, unit, difference_cost) values (%s, %s, %s, %s, %s, %s)"
+        values = (material, description+' to '+to_project_name, from_project, int(quantity) * -1, unit, negative_diff)
         cur.execute(deduction_query, values)
 
         addition_query = "INSERT into procurement (material, description, project_id," \
-                         "quantity) values (%s, %s,  %s, %s)"
-        values = (material, description, to_project, quantity)
+                         "quantity, unit, difference_cost) values (%s, %s,  %s, %s, %s, %s)"
+        values = (material, description+" from "+from_project_name, to_project, quantity, unit, positive_diff)
         cur.execute(addition_query, values)
 
         mysql.connection.commit()
