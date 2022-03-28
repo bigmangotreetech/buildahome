@@ -219,14 +219,14 @@ async function saveSign() {
 
   const date = new Date()
   pages[0].drawText(date.getDate() + '/' + (parseInt(date.getMonth()) + 1).toString() + '/' + date.getFullYear(), {
-    x: 418,
+    x: 448,
     y: 678,
     size: 11,
   })
 
   const wo_number = $('.wo_number').text().trim()
   pages[0].drawText(wo_number, {
-    x: 418,
+    x: 448,
     y: 656,
     size: 11,
   })
@@ -309,26 +309,26 @@ async function saveSign() {
   formData.append("wo_id", $('#wo_id').val())
   formData.append("file", file, 'test.pdf');
 
-  $.ajax({
-    type: "POST",
-    url: "/erp/upload_signed_wo",
-    success: function (data) {
-      window.location.href = '/erp/view_unsigned_work_order'
-    },
-    error: function (error) {
-      console.log(error)
-      // handle error
-    },
-    async: true,
-    data: formData,
-    cache: false,
-    contentType: false,
-    processData: false,
-    timeout: 60000
-  });
+  // $.ajax({
+  //   type: "POST",
+  //   url: "/erp/upload_signed_wo",
+  //   success: function (data) {
+  //     window.location.href = '/erp/view_unsigned_work_order'
+  //   },
+  //   error: function (error) {
+  //     console.log(error)
+  //     // handle error
+  //   },
+  //   async: true,
+  //   data: formData,
+  //   cache: false,
+  //   contentType: false,
+  //   processData: false,
+  //   timeout: 60000
+  // });
 
   // Trigger the browser to download the PDF document
-  // download(pdfBytes, "signed_wo.pdf", "application/pdf");
+  download(pdfBytes, "signed_wo.pdf", "application/pdf");
 
 
 
