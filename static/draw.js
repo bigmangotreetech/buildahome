@@ -161,19 +161,13 @@ async function getAndPutAnnexure() {
   $.ajax({
     type: "POST",
     url: "/erp/get_milsetones",
-    data: {'id': work_order_id},
+    data: {'work_order_id': work_order_id},
     success: function (data) {
       console.log(data)
     },
     error: function (error) {
       console.log(error)
-      // handle error
     },
-    async: true,
-    cache: false,
-    contentType: false,
-    processData: false,
-    timeout: 60000
   });
 
 }
