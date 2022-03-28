@@ -470,23 +470,27 @@ def shifting_entry():
         check_if_shifting_is_possible = 'SELECT SUM(quantity) from procurement WHERE project_id=%s AND material=%s'
         cur.execute(check_if_shifting_is_possible, (from_project, material))
         result = cur.fetchone()
-        if result is None or int(result[0]) < int(quantity):
+
+        if result is not None and int(quantity) < int(result[0]):
+            deduction_query = "INSERT into procurement (material, description, project_id," \
+                          "quantity, unit, difference_cost) values (%s, %s, %s, %s, %s, %s)"
+            values = (material, description+' to '+to_project_name, from_project, int(quantity) * -1, unit, negative_diff)
+            cur.execute(deduction_query, values)
+
+            addition_query = "INSERT into procurement (material, description, project_id," \
+                            "quantity, unit, difference_cost) values (%s, %s,  %s, %s, %s, %s)"
+            values = (material, description+" from "+from_project_name, to_project, quantity, unit, positive_diff)
+            cur.execute(addition_query, values)
+
+            mysql.connection.commit()
+            flash('Shifting entry successful. Material Shifted!', 'success')
+            return redirect(request.referrer)
+
+
+        else:
             flash('Shifting entry failed. Insufficient quantity in source project', 'danger')
             return redirect(request.referrer)
-        deduction_query = "INSERT into procurement (material, description, project_id," \
-                          "quantity, unit, difference_cost) values (%s, %s, %s, %s, %s, %s)"
-        values = (material, description+' to '+to_project_name, from_project, int(quantity) * -1, unit, negative_diff)
-        cur.execute(deduction_query, values)
-
-        addition_query = "INSERT into procurement (material, description, project_id," \
-                         "quantity, unit, difference_cost) values (%s, %s,  %s, %s, %s, %s)"
-        values = (material, description+" from "+from_project_name, to_project, quantity, unit, positive_diff)
-        cur.execute(addition_query, values)
-
-        mysql.connection.commit()
-        flash('Shifting entry successful. Material Shifted!', 'success')
-        return redirect(request.referrer)
-
+        
 
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
