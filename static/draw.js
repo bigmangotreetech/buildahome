@@ -293,7 +293,7 @@ async function saveSign() {
   console.log(pages[4].getSize())
   pages[4].drawImage(pngImage1, {
     x: 40,
-    y: 700 - lineHeight,
+    y: lineHeight,
     width: 550,
     height: lineHeight,
   })
