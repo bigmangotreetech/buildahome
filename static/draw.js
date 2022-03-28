@@ -201,7 +201,7 @@ async function saveSign() {
   let pngImageBytes = canvas.toDataURL("image/png");
 
 
-  const url = 'https://app.buildahome.in/files/Standard_WO.pdf'
+  const url = 'https://app.buildahome.in/erp/static/Standard_WO.pdf'
   const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
   const pdfDoc = await PDFDocument.load(arrayBuffer)
 
