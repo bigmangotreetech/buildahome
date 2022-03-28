@@ -282,6 +282,12 @@ def enter_material():
         photo_date = request.form['photo_date']
         cur = mysql.connection.cursor()
 
+        vendor_query = 'SELECT name from vendors WHERE id='+str(vendor)
+        cur.execute(vendor_query)
+        result = cur.fetchone()
+        if result is not None:
+            vendor = result[0]
+
         material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id=' + str(
             project) + ' AND material="' + str(material) + '"'
         cur.execute(material_quantity_query)

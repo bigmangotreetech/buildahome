@@ -23,17 +23,68 @@
             <select name="material" id="material" class="form-control select2">
                 <option value=""></option>
                 <option value="All">All</option>
-                <option value="Cement" >Cement</option>
-                <option value="Concrete">Concrete</option>
-                <option value="Steel">Steel</option>
-                <option value="M Sand">M Sand</option>
-                <option value="P Sand">P Sand</option>
-                <option value="Aggregates">Aggregates</option>
-                <option value="Wall Material">Wall Material</option>
-                <option value="Door Window">Door Window</option>
-                <option value="Flooring">Flooring</option>
+                <option value="PCC M 7.5">PCC M 7.5</option>
+                <option value="PCC M 15">PCC M 15</option>
+                <option value="M 20">M 20</option>
+                <option value="M 25">M 25</option>
+                <option value="Red Bricks">Red Bricks</option>
+                <option value="Exposed Bricks">Exposed Bricks</option>
+                <option value="Wirecut bricks">Wirecut bricks</option>
+                <option value="Earth Blocks">Earth Blocks</option>
+                <option value="Interlocking Blocks">Interlocking Blocks</option>
+                <option value="Solid blocks 4" ">Solid blocks 4" </option>
+                <option value="Solid blocks 6" ">Solid blocks 6" </option>
+                <option value="Solid blocks 8" ">Solid blocks 8" </option>
+                <option value="Porotherm Full blocks 8" ">Porotherm Full blocks 8" </option>
+                <option value="Porotherm Full blocks 6" ">Porotherm Full blocks 6" </option>
+                <option value="Porotherm Full blocks 4" ">Porotherm Full blocks 4" </option>
+                <option value="Porotherm End blocks 8" ">Porotherm End blocks 8" </option>
+                <option value="Porotherm End blocks 6" ">Porotherm End blocks 6" </option>
+                <option value="Porotherm End blocks 4" ">Porotherm End blocks 4" </option>
+                <option value="AAC Blocks 8" ">AAC Blocks 8" </option>
+                <option value="AAC Blocks 6" ">AAC Blocks 6" </option>
+                <option value="AAC Blocks 4" ">AAC Blocks 4" </option>
+                <option value="Glass blocks">Glass blocks</option>
+                <option value="Jaali blocks">Jaali blocks</option>
+                <option value="Door frames">Door frames</option>
+                <option value="Door Beading">Door Beading</option>
+                <option value="Door Shutters">Door Shutters</option>
+                <option value="Windows frames">Windows frames</option>
+                <option value="Windows shutters">Windows shutters</option>
+                <option value="UPVC windows">UPVC windows</option>
+                <option value="Aluminum windows">Aluminum windows</option>
+                <option value="Window glass">Window glass</option>
+                <option value="Hexagonl Rod">Hexagonl Rod</option>
+                <option value="Granite">Granite</option>
+                <option value="Tiles">Tiles</option>
+                <option value="Marble">Marble</option>
+                <option value="Kota stone">Kota stone</option>
+                <option value="HPL Cladding">HPL Cladding</option>
+                <option value="Shera Cladding">Shera Cladding</option>
+                <option value="Floor mat">Floor mat</option>
+                <option value="Plumbing">Plumbing</option>
                 <option value="Sanitary">Sanitary</option>
-                <option value="Hardware">Hardware</option>
+                <option value="Aggregates 12mm">Aggregates 12mm</option>
+                <option value="Aggregates 20mm">Aggregates 20mm</option>
+                <option value="Aggregates 40mm">Aggregates 40mm</option>
+                <option value="Cinder">Cinder</option>
+                <option value="Size stone">Size stone</option>
+                <option value="Boulders">Boulders</option>
+                <option value="River sand">River sand</option>
+                <option value="POP">POP</option>
+                <option value="white cement">white cement</option>
+                <option value="tile adhesive">tile adhesive</option>
+                <option value="tile grout">tile grout</option>
+                <option value="lime paste">lime paste</option>
+                <option value="Sponge">Sponge</option>
+                <option value="chicken mesh">chicken mesh</option>
+                <option value="Motor">Motor</option>
+                <option value="Curing Pipe">Curing Pipe</option>
+                <option value="Helmet">Helmet</option>
+                <option value="Jackets">Jackets</option>
+                <option value="GI sheets">GI sheets</option>
+                <option value="Tarpaulin">Tarpaulin</option>
+                <option value="Nails">Nails</option>
             </select>
         </div>
         <button id="get_procurement" class="btn text-white bg-indigo  mb-2">Get procurement</button>
@@ -47,7 +98,8 @@
         </div>
         {% if material_total_quantity is not none %}
         <div class="mb-3">
-            <div>Total project quantity of {{material}} for project: <span id="total_item_quantity"> {{material_total_quantity}} </span></div>
+            <div>Total project quantity of {{material}} for project: <span id="total_item_quantity">
+                    {{material_total_quantity}} </span></div>
             <div id="total_current_quantity"></div>
             <div id="total_balance_quantity"></div>
         </div>
@@ -55,56 +107,56 @@
         {% endif %}
         <table class="table table-hover">
             <thead>
-            <tr>
-                <th scope="col">Material</th>
-                <th scope="col">Description</th>
-                <th scope="col">Vendor</th>
-                <th scope="col">PO number</th>
-                <th scope="col">Invoice number</th>
-                <th scope="col" style="min-width: 100px">Invoice date</th>
-                <th scope="col">Invoice value</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Rate</th>
-                <th scope="col">GST</th>
-                <th scope="col">Total Amount</th>
-                <th scope="col">Difference cost</th>
+                <tr>
+                    <th scope="col">Material</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">PO number</th>
+                    <th scope="col">Invoice number</th>
+                    <th scope="col" style="min-width: 100px">Invoice date</th>
+                    <th scope="col">Invoice value</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">GST</th>
+                    <th scope="col">Total Amount</th>
+                    <th scope="col">Difference cost</th>
 
-            </tr>
+                </tr>
             </thead>
             <tbody>
-            {% for i in procurements %}
-            <tr>
-                <td>{{i[1]}}</td>
-                <td>{{i[2]}}</td>
-                <td>{{i[3]}}</td>
-                <td>{{i[5]}}</td>
-                <td>{{i[6]}}</td>
-                <td>{{i[7]}}</td>
-                <td>{{i[8]}}</td>
-                <td class="item_quantity">{{i[9]}}</td>
-                <td>{{i[10]}}</td>
-                <td>{{i[11]}}</td>
-                <td>{{i[12]}}</td>
-                <td>{{i[13]}}</td>
-                <td class="item_difference_cost">{{i[14]}}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><span class="font-weight-bold" id="total_difference_cost"></span></td>
-            </tr>
+                {% for i in procurements %}
+                <tr>
+                    <td>{{i[1]}}</td>
+                    <td>{{i[2]}}</td>
+                    <td>{{i[3]}}</td>
+                    <td>{{i[5]}}</td>
+                    <td>{{i[6]}}</td>
+                    <td>{{i[7]}}</td>
+                    <td>{{i[8]}}</td>
+                    <td class="item_quantity">{{i[9]}}</td>
+                    <td>{{i[10]}}</td>
+                    <td>{{i[11]}}</td>
+                    <td>{{i[12]}}</td>
+                    <td>{{i[13]}}</td>
+                    <td class="item_difference_cost">{{i[14]}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="font-weight-bold" id="total_difference_cost"></span></td>
+                </tr>
             </tbody>
         </table>
         {% endif %}
