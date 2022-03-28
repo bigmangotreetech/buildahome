@@ -174,7 +174,7 @@ async function getAndPutAnnexure() {
       
       var canvas = document.getElementById("annexure_canvas");
       var context = canvas.getContext("2d");
-      context.font = "30px Arial";
+      context.font = "14px Arial";
 
       x = 20;
       y = 20;
@@ -183,6 +183,7 @@ async function getAndPutAnnexure() {
         x = 450;
         context.fillText(stage[1], x, y);
         y += 20;
+        x = 0;
       }
     },
     error: function (error) {
