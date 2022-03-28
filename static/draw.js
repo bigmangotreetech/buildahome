@@ -170,7 +170,6 @@ async function getAndPutAnnexure() {
       // handle error
     },
     async: true,
-    data: formData,
     cache: false,
     contentType: false,
     processData: false,
