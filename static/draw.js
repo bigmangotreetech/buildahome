@@ -163,7 +163,12 @@ async function getAndPutAnnexure() {
   $.ajax({
     type: "POST",
     url: "/erp/get_milsetones",
+    async: true,
     data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    timeout: 60000
     success: function (data) {
       console.log(data)
     },
