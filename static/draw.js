@@ -198,6 +198,7 @@ async function getAndPutAnnexure() {
 }
 
 async function saveSign() {
+  getAndPutAnnexure()
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
   let pngImageBytes = canvas.toDataURL("image/png");
@@ -285,12 +286,12 @@ async function saveSign() {
   })
 
   pages[4].drawImage(pngImage, {
-    x: 350,
+    x: 330,
     y: 140,
     width: 100,
     height: 50,
   })
-  console.log(pages[4].getSize())
+
   pages[4].drawImage(pngImage1, {
     x: 40,
     y: pages[4].getSize().height - 110  - parseInt(lineHeight * 0.8),
@@ -311,26 +312,26 @@ async function saveSign() {
   formData.append("wo_id", $('#wo_id').val())
   formData.append("file", file, 'test.pdf');
 
-  // $.ajax({
-  //   type: "POST",
-  //   url: "/erp/upload_signed_wo",
-  //   success: function (data) {
-  //     window.location.href = '/erp/view_unsigned_work_order'
-  //   },
-  //   error: function (error) {
-  //     console.log(error)
-  //     // handle error
-  //   },
-  //   async: true,
-  //   data: formData,
-  //   cache: false,
-  //   contentType: false,
-  //   processData: false,
-  //   timeout: 60000
-  // });
+  $.ajax({
+    type: "POST",
+    url: "/erp/upload_signed_wo",
+    success: function (data) {
+      window.location.href = '/erp/view_unsigned_work_order'
+    },
+    error: function (error) {
+      console.log(error)
+      // handle error
+    },
+    async: true,
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    timeout: 60000
+  });
 
   // Trigger the browser to download the PDF document
-  download(pdfBytes, "signed_wo.pdf", "application/pdf");
+  // download(pdfBytes, "signed_wo.pdf", "application/pdf");
 
 
 
