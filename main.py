@@ -456,7 +456,7 @@ def shifting_entry():
             positive_diff = str(difference_cost)
 
         material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id=' + str(
-            to_project) + ' AND material="' + str(material) + '"'
+            from_project) + ' AND material="' + str(material) + '"'
         cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is None:
