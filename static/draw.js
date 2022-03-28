@@ -303,7 +303,7 @@ async function saveSign() {
   const sealUrl = 'https://app.buildahome.in/erp/static/seal.png'
   const sealImgBytes = await fetch(sealUrl).then((res) => res.arrayBuffer())
 
-  const sealImg = await pdfDoc.embedJpg(sealImgBytes)
+  const sealImg = await pdfDoc.embedPng(sealImgBytes)
 
   pages[4].drawImage(sealImg, {
     x: 40,
