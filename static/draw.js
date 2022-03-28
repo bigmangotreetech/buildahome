@@ -156,6 +156,7 @@ function clearCanvas() {
   context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+var lineHeight;
 async function getAndPutAnnexure() {
   var formData = new FormData();
   formData.append("work_order_id", $('#wo_id').val())
@@ -176,6 +177,7 @@ async function getAndPutAnnexure() {
       var context = canvas.getContext("2d");
       context.font = "14px Arial";
       lines = (data.length * 20) + 100
+      lineHeight = lines
       $(canvas).attr('height', lines.toString() +'px')
 
       x = 20;
@@ -233,14 +235,14 @@ async function saveSign() {
 
   const contractor_name = $('.contractor_name').text().trim()
   pages[0].drawText(contractor_name, {
-    x: 418,
+    x: 448,
     y: 635,
     size: 11,
   })
 
   const contractor_address = $('.contractor_address').text().trim()
   pages[0].drawText(contractor_address, {
-    x: 418,
+    x: 448,
     y: 609,
     size: 10,
     lineHeight: 13,
@@ -249,21 +251,21 @@ async function saveSign() {
 
   const contractor_pan = $('.contractor_pan').text().trim()
   pages[0].drawText(contractor_pan, {
-    x: 418,
+    x: 448,
     y: 553,
     size: 11,
   })
 
   const cheque_number = $('.cheque_number').text().trim()
   pages[0].drawText(cheque_number, {
-    x: 418,
+    x: 448,
     y: 534,
     size: 11,
   })
 
   const contractor_code = $('.contractor_code').text().trim()
   pages[0].drawText(contractor_code, {
-    x: 418,
+    x: 448,
     y: 514,
     size: 11,
   })
@@ -271,14 +273,14 @@ async function saveSign() {
   const description = $('.trade').text().trim() + ' work order for ' + $('.project_name').text().trim()
   pages[0].drawText(description, {
     x: 100,
-    y: 430,
+    y: 410,
     size: 11,
   })
 
   const value = $('.value').text().trim()
   pages[0].drawText(value, {
-    x: 418,
-    y: 430,
+    x: 448,
+    y: 410,
     size: 11,
   })
 
@@ -290,10 +292,10 @@ async function saveSign() {
   })
 
   pages[4].drawImage(pngImage1, {
-    x: 100,
-    y: 100,
-    width: 600,
-    height: 500,
+    x: 40,
+    y: 40,
+    width: 550,
+    height: lineHeight,
   })
 
 
