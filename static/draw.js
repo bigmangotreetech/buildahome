@@ -289,11 +289,11 @@ async function saveSign() {
     height: 50,
   })
 
-  pages[4].drawImage(pngImage, {
+  pages[4].drawImage(pngImage1, {
     x: 100,
     y: 100,
-    width: 100,
-    height: 50,
+    width: 600,
+    height: 500,
   })
 
 
