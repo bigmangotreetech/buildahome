@@ -300,6 +300,18 @@ async function saveSign() {
     height: 50,
   })
 
+  const sealUrl = 'https://app.buildahome.in/erp/static/seal.png'
+  const sealImgBytes = await fetch(sealUrl).then((res) => res.arrayBuffer())
+
+  const sealImg = await pdfDoc.embedJpg(sealImgBytes)
+
+  pages[4].drawImage(sealImg, {
+    x: 40,
+    y: 140,
+    width: 100,
+    height: 100,
+  })
+  
   pages[4].drawImage(pngImage1, {
     x: 40,
     y: pages[4].getSize().height - 110  - parseInt(lineHeight * 0.8),
