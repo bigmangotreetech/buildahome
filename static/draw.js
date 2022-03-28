@@ -285,6 +285,13 @@ async function saveSign() {
     size: 11,
   })
 
+  const notes = $(".contractor_notes").text().trim()
+  pages[3].drawText(notes, {
+    x: 40,
+    y: pages[3].getSize().height - 110,
+    size: 11,
+  })
+
   pages[4].drawImage(pngImage, {
     x: 330,
     y: 140,

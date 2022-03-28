@@ -1038,6 +1038,7 @@ def create_work_order():
         wo_value = request.form['wo_value']
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
+        comments = request.form['comments']
 
         milestones = request.form.getlist('milestone[]')
         percentages = request.form.getlist('percentage[]')
@@ -1070,9 +1071,9 @@ def create_work_order():
             flash("Work order already exists. Operation failed", 'danger')
             return redirect('/erp/create_work_order')
         else:
-            insert_query = 'INSERT into work_orders (project_id, value, trade, wo_number, cheque_no, contractor_id) ' \
-                           'values (%s, %s, %s, %s, %s, %s)'
-            values = (project_id, wo_value, trade, wo_number, cheque_no, contractor_id)
+            insert_query = 'INSERT into work_orders (project_id, value, trade, wo_number, cheque_no, contractor_id, comments) ' \
+                           'values (%s, %s, %s, %s, %s, %s, %s)'
+            values = (project_id, wo_value, trade, wo_number, cheque_no, contractor_id, comments)
             cur.execute(insert_query, values)
 
             work_order_id = cur.lastrowid
@@ -1836,7 +1837,7 @@ def sign_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
-                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments' \
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' INNER JOIN contractors c on c.id=wo.contractor_id'
@@ -1872,7 +1873,7 @@ def approve_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
-                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments' \
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' ' \
