@@ -176,7 +176,7 @@ async function getAndPutAnnexure() {
       var context = canvas.getContext("2d");
       context.font = "14px Arial";
       lines = (data.length * 20) + 100
-      $(canvas).attr('height', lines.toString()+'px')
+      $(canvas).attr('height', lines.toString() +'px')
 
       x = 20;
       y = 20;
@@ -201,12 +201,19 @@ async function saveSign() {
   let pngImageBytes = canvas.toDataURL("image/png");
 
 
-  const url = 'https://app.buildahome.in/files/Standard_WO.pdf'
+  const url = 'https://erpbuildahome.s3.ap-south-1.amazonaws.com/Standard+WO.pdf'
   const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
   const pdfDoc = await PDFDocument.load(arrayBuffer)
 
   const pngImage = await pdfDoc.embedPng(pngImageBytes)
   const pngDims = pngImage.scale(0.5)
+
+  var annexure_canvas = document.getElementById("annexure_canvas");
+  var ctx1 = annexure_canvas.getContext("2d");
+  let pngImageBytes1 = annexure_canvas.toDataURL("image/png");
+
+  const pngImage1 = await pdfDoc.embedPng(pngImageBytes1)
+  const pngDims1 = pngImage.scale(0.5)
 
   const pages = pdfDoc.getPages()
 
@@ -275,9 +282,16 @@ async function saveSign() {
     size: 11,
   })
 
-  pages[3].drawImage(pngImage, {
-    x: 280,
+  pages[4].drawImage(pngImage, {
+    x: 700,
     y: 700,
+    width: 100,
+    height: 50,
+  })
+
+  pages[4].drawImage(pngImage, {
+    x: 100,
+    y: 100,
     width: 100,
     height: 50,
   })
@@ -290,8 +304,6 @@ async function saveSign() {
 
   const blob = new Blob([pdfBytes])
   var file = new File([blob], 'test.pdf');
-  console.log(pdfBytes)
-  console.log(file)
 
   var formData = new FormData();
   formData.append("wo_id", $('#wo_id').val())
