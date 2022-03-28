@@ -308,7 +308,7 @@ async function saveSign() {
   pages[4].drawImage(sealImg, {
     x: 40,
     y: 140,
-    width: 100,
+    width: 70,
     height: 100,
   })
   
