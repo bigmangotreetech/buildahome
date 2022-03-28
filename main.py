@@ -1086,6 +1086,15 @@ def create_work_order():
 
             return redirect('/erp/create_work_order')
 
+@app.route('/get_milsetones', methods=['POST'])
+def get_milsetones():
+    id = request.form['id']
+    cur = mysql.connection.cursor()
+    milestones_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id='+str(id)
+    cur.execute(milestones_query)
+    result = cur.fetchall()
+    return jsonify(list(result))
+
 
 @app.route('/create_bill', methods=['GET', 'POST'])
 def create_bill():

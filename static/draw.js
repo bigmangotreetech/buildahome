@@ -1,18 +1,18 @@
 const { PDFDocument, StandardFonts, rgb } = PDFLib
 
-$(document).ready(function() {
-    if ($('#canvas').length)
-      initialize();
+$(document).ready(function () {
+  if ($('#canvas').length)
+    initialize();
 });
 
 // works out the X, Y position of the click inside the canvas from the X, Y position on the page
 
 function getPosition(mouseEvent, sigCanvas) {
-    var rect = sigCanvas.getBoundingClientRect();
-    return {
-      X: mouseEvent.clientX - rect.left,
-      Y: mouseEvent.clientY - rect.top
-    };
+  var rect = sigCanvas.getBoundingClientRect();
+  return {
+    X: mouseEvent.clientX - rect.left,
+    Y: mouseEvent.clientY - rect.top
+  };
 }
 
 /*function getPosition(mouseEvent, sigCanvas) {
@@ -47,18 +47,18 @@ function initialize() {
     // create a drawer which tracks touch movements
     var drawer = {
       isDrawing: false,
-      touchstart: function(coors) {
+      touchstart: function (coors) {
         context.beginPath();
         context.moveTo(coors.x, coors.y);
         this.isDrawing = true;
       },
-      touchmove: function(coors) {
+      touchmove: function (coors) {
         if (this.isDrawing) {
           context.lineTo(coors.x, coors.y);
           context.stroke();
         }
       },
-      touchend: function(coors) {
+      touchend: function (coors) {
         if (this.isDrawing) {
           this.touchmove(coors);
           this.isDrawing = false;
@@ -99,24 +99,24 @@ function initialize() {
     sigCanvas.addEventListener('touchend', draw, false);
 
     // prevent elastic scrolling
-    sigCanvas.addEventListener('touchmove', function(event) {
+    sigCanvas.addEventListener('touchmove', function (event) {
       event.preventDefault();
     }, false);
   } else {
 
     // start drawing when the mousedown event fires, and attach handlers to
     // draw a line to wherever the mouse moves to
-    $("#canvas").mousedown(function(mouseEvent) {
+    $("#canvas").mousedown(function (mouseEvent) {
       var position = getPosition(mouseEvent, sigCanvas);
       context.moveTo(position.X, position.Y);
       context.beginPath();
 
       // attach event handlers
-      $(this).mousemove(function(mouseEvent) {
+      $(this).mousemove(function (mouseEvent) {
         drawLine(mouseEvent, sigCanvas, context);
-      }).mouseup(function(mouseEvent) {
+      }).mouseup(function (mouseEvent) {
         finishDrawing(mouseEvent, sigCanvas, context);
-      }).mouseout(function(mouseEvent) {
+      }).mouseout(function (mouseEvent) {
         finishDrawing(mouseEvent, sigCanvas, context);
       });
     });
@@ -156,128 +156,151 @@ function clearCanvas() {
   context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+async function getAndPutAnnexure() {
+  work_order_id = $('#wo_id').val()
+  $.ajax({
+    type: "POST",
+    url: "/erp/get_milsetones",
+    data: {'id': work_order_id},
+    success: function (data) {
+      console.log(data)
+    },
+    error: function (error) {
+      console.log(error)
+      // handle error
+    },
+    async: true,
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    timeout: 60000
+  });
+
+}
+
 async function saveSign() {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    let pngImageBytes = canvas.toDataURL("image/png");
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  let pngImageBytes = canvas.toDataURL("image/png");
 
 
-    const url = 'https://app.buildahome.in/files/Standard_WO.pdf'
-    const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
-    const pdfDoc = await PDFDocument.load(arrayBuffer)
+  const url = 'https://app.buildahome.in/files/Standard_WO.pdf'
+  const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+  const pdfDoc = await PDFDocument.load(arrayBuffer)
 
-    const pngImage = await pdfDoc.embedPng(pngImageBytes)
-    const pngDims = pngImage.scale(0.5)
+  const pngImage = await pdfDoc.embedPng(pngImageBytes)
+  const pngDims = pngImage.scale(0.5)
 
-    const pages = pdfDoc.getPages()
+  const pages = pdfDoc.getPages()
 
-    const date = new Date()
-    pages[0].drawText(date.getDate() +'/'+(parseInt(date.getMonth())+ 1).toString()+'/'+date.getFullYear(), {
-        x: 418,
-        y: 678,
-        size: 11,
-      })
+  const date = new Date()
+  pages[0].drawText(date.getDate() + '/' + (parseInt(date.getMonth()) + 1).toString() + '/' + date.getFullYear(), {
+    x: 418,
+    y: 678,
+    size: 11,
+  })
 
-    const wo_number = $('.wo_number').text().trim()
-    pages[0].drawText(wo_number, {
-        x: 418,
-        y: 656,
-        size: 11,
-      })
+  const wo_number = $('.wo_number').text().trim()
+  pages[0].drawText(wo_number, {
+    x: 418,
+    y: 656,
+    size: 11,
+  })
 
-    const contractor_name = $('.contractor_name').text().trim()
-    pages[0].drawText(contractor_name, {
-        x: 418,
-        y: 635,
-        size: 11,
-      })
+  const contractor_name = $('.contractor_name').text().trim()
+  pages[0].drawText(contractor_name, {
+    x: 418,
+    y: 635,
+    size: 11,
+  })
 
-    const contractor_address = $('.contractor_address').text().trim()
-    pages[0].drawText(contractor_address, {
-        x: 418,
-        y: 609,
-        size: 10,
-        lineHeight: 13,
-        maxWidth: 150,
-      })
+  const contractor_address = $('.contractor_address').text().trim()
+  pages[0].drawText(contractor_address, {
+    x: 418,
+    y: 609,
+    size: 10,
+    lineHeight: 13,
+    maxWidth: 150,
+  })
 
-    const contractor_pan = $('.contractor_pan').text().trim()
-    pages[0].drawText(contractor_pan, {
-        x: 418,
-        y: 553,
-        size: 11,
-      })
+  const contractor_pan = $('.contractor_pan').text().trim()
+  pages[0].drawText(contractor_pan, {
+    x: 418,
+    y: 553,
+    size: 11,
+  })
 
-    const cheque_number = $('.cheque_number').text().trim()
-    pages[0].drawText(cheque_number, {
-        x: 418,
-        y: 534,
-        size: 11,
-      })
+  const cheque_number = $('.cheque_number').text().trim()
+  pages[0].drawText(cheque_number, {
+    x: 418,
+    y: 534,
+    size: 11,
+  })
 
-    const contractor_code = $('.contractor_code').text().trim()
-    pages[0].drawText(contractor_code, {
-        x: 418,
-        y: 514,
-        size: 11,
-      })
+  const contractor_code = $('.contractor_code').text().trim()
+  pages[0].drawText(contractor_code, {
+    x: 418,
+    y: 514,
+    size: 11,
+  })
 
-    const description = $('.trade').text().trim() +' work order for '+ $('.project_name').text().trim()
-    pages[0].drawText(description, {
-        x: 100,
-        y: 430,
-        size: 11,
-      })
+  const description = $('.trade').text().trim() + ' work order for ' + $('.project_name').text().trim()
+  pages[0].drawText(description, {
+    x: 100,
+    y: 430,
+    size: 11,
+  })
 
-    const value = $('.value').text().trim()
-    pages[0].drawText(value, {
-        x: 418,
-        y: 430,
-        size: 11,
-      })
+  const value = $('.value').text().trim()
+  pages[0].drawText(value, {
+    x: 418,
+    y: 430,
+    size: 11,
+  })
 
-    pages[3].drawImage(pngImage, {
-        x:  280,
-        y: 700,
-        width: 100,
-        height: 50,
-      })
-
-
+  pages[3].drawImage(pngImage, {
+    x: 280,
+    y: 700,
+    width: 100,
+    height: 50,
+  })
 
 
-    const pdfBytes = await pdfDoc.save()
 
 
-    const blob = new Blob([pdfBytes])
-    var file = new File([blob], 'test.pdf');
-    console.log(pdfBytes)
-    console.log(file)
+  const pdfBytes = await pdfDoc.save()
 
-    var formData = new FormData();
-    formData.append("wo_id", $('#wo_id').val())
-    formData.append("file", file, 'test.pdf');
 
-    $.ajax({
-        type: "POST",
-        url: "/erp/upload_signed_wo",
-        success: function (data) {
-            window.location.href = '/erp/view_unsigned_work_order'
-        },
-        error: function (error) {
-            console.log(error)
-            // handle error
-        },
-        async: true,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        timeout: 60000
-    });
+  const blob = new Blob([pdfBytes])
+  var file = new File([blob], 'test.pdf');
+  console.log(pdfBytes)
+  console.log(file)
 
-    // Trigger the browser to download the PDF document
-    // download(pdfBytes, "signed_wo.pdf", "application/pdf");
+  var formData = new FormData();
+  formData.append("wo_id", $('#wo_id').val())
+  formData.append("file", file, 'test.pdf');
+
+  $.ajax({
+    type: "POST",
+    url: "/erp/upload_signed_wo",
+    success: function (data) {
+      window.location.href = '/erp/view_unsigned_work_order'
+    },
+    error: function (error) {
+      console.log(error)
+      // handle error
+    },
+    async: true,
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    timeout: 60000
+  });
+
+  // Trigger the browser to download the PDF document
+  // download(pdfBytes, "signed_wo.pdf", "application/pdf");
 
 
 
