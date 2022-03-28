@@ -471,7 +471,7 @@ def shifting_entry():
         cur.execute(check_if_shifting_is_possible, (from_project, material))
         result = cur.fetchone()
 
-        if result is not None and int(quantity) < int(result[0]):
+        if result is not None and result[0] is not None and int(quantity) < int(result[0]):
             deduction_query = "INSERT into procurement (material, description, project_id," \
                           "quantity, unit, difference_cost) values (%s, %s, %s, %s, %s, %s)"
             values = (material, description+' to '+to_project_name, from_project, int(quantity) * -1, unit, negative_diff)
