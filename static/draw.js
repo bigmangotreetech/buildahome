@@ -290,10 +290,10 @@ async function saveSign() {
     width: 100,
     height: 50,
   })
-
+  console.log(pages[4])
   pages[4].drawImage(pngImage1, {
     x: 40,
-    y: 40,
+    y: 700,
     width: 550,
     height: lineHeight,
   })
