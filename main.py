@@ -1086,7 +1086,7 @@ def create_work_order():
 
             return redirect('/erp/create_work_order')
 
-@app.route('/get_milsetones', methods=['POST'])
+@app.route('/get_milsetones', methods=['GET', 'POST'])
 def get_milsetones():
     work_order_id = request.form['work_order_id']
     cur = mysql.connection.cursor()

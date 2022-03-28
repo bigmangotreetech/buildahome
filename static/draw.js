@@ -157,11 +157,13 @@ function clearCanvas() {
 }
 
 async function getAndPutAnnexure() {
-  work_order_id = $('#wo_id').val()
+  var formData = new FormData();
+  formData.append("work_order_id", $('#wo_id').val())
+
   $.ajax({
     type: "POST",
     url: "/erp/get_milsetones",
-    data: {'work_order_id': work_order_id},
+    data: formData,
     success: function (data) {
       console.log(data)
     },
