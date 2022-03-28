@@ -168,7 +168,7 @@ async function getAndPutAnnexure() {
     cache: false,
     contentType: false,
     processData: false,
-    timeout: 60000
+    timeout: 60000,
     success: function (data) {
       console.log(data)
     },
