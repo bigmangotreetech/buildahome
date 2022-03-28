@@ -223,21 +223,21 @@ async function saveSign() {
   const date = new Date()
   pages[0].drawText(date.getDate() + '/' + (parseInt(date.getMonth()) + 1).toString() + '/' + date.getFullYear(), {
     x: 448,
-    y: 678,
+    y: 698,
     size: 11,
   })
 
   const wo_number = $('.wo_number').text().trim()
   pages[0].drawText(wo_number, {
     x: 448,
-    y: 656,
+    y: 676,
     size: 11,
   })
 
   const contractor_name = $('.contractor_name').text().trim()
   pages[0].drawText(contractor_name, {
     x: 448,
-    y: 635,
+    y: 655,
     size: 11,
   })
 
