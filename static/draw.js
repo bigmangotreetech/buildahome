@@ -176,7 +176,7 @@ async function getAndPutAnnexure() {
       var context = canvas.getContext("2d");
       context.font = "14px Arial";
       lines = (data.length * 20) + 100
-      $(canvas).attr('height', lines.toString+'px')
+      $(canvas).attr('height', lines.toString()+'px')
 
       x = 20;
       y = 20;
