@@ -183,7 +183,7 @@ async function getAndPutAnnexure() {
         x = 450;
         context.fillText(stage[1], x, y);
         y += 20;
-        x = 0;
+        x = 20;
       }
     },
     error: function (error) {
