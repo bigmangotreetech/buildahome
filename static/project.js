@@ -12,7 +12,7 @@ $(document).ready(function () {
             vendor_locations =vendor_locations.replaceAll("'","")
             vendor_locations = vendor_locations.split(',')
             stripped_vendor_locations = []
-            for(const location in vendor_locations) 
+            for(const location of vendor_locations) 
                 stripped_vendor_locations.push(location.trim())
             $("#location").val(stripped_vendor_locations)
             $("#location").trigger('change')
