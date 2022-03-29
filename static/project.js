@@ -11,7 +11,10 @@ $(document).ready(function () {
             let vendor_locations = $('.vendor-location').text()
             vendor_locations =vendor_locations.replaceAll("'","")
             vendor_locations = vendor_locations.split(',')
-            $("#location").val(vendor_locations)
+            stripped_vendor_locations = []
+            for(const location in vendor_locations) 
+                stripped_vendor_locations.push(location.trim())
+            $("#location").val(stripped_vendor_locations)
             $("#location").trigger('change')
         }
     }, 1000)
