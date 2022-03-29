@@ -2378,7 +2378,7 @@ def edit_team():
 
 
         check_if_design_team_exists_query = 'SELECT id from project_design_team WHERE project_id='+str(request.form['project_id'])
-        cur.execute(check_if_drawing_exists_query)
+        cur.execute(check_if_design_team_exists_query)
         result = cur.fetchone()
         if res is not None:
 
@@ -2402,8 +2402,8 @@ def edit_team():
 
 
 
-        check_if_design_team_exists_query = 'SELECT id from project_operations_team WHERE project_id='+str(request.form['project_id'])
-        cur.execute(check_if_drawing_exists_query)
+        check_if_operations_team_exists_query = 'SELECT id from project_operations_team WHERE project_id='+str(request.form['project_id'])
+        cur.execute(check_if_operations_team_exists_query)
         result = cur.fetchone()
         if res is not None:
 
