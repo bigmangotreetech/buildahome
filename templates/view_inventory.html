@@ -108,6 +108,7 @@
         <table class="table table-hover">
             <thead>
                 <tr>
+                    <th scope="col">Material ID</th>
                     <th scope="col">Material</th>
                     <th scope="col">Description</th>
                     <th scope="col">Vendor</th>
@@ -127,6 +128,7 @@
             <tbody>
                 {% for i in procurements %}
                 <tr>
+                    <td>{{request.args['project_id']}}/{{i[0]}}</td>
                     <td>{{i[1]}}</td>
                     <td>{{i[2]}}</td>
                     <td>{{i[3]}}</td>
