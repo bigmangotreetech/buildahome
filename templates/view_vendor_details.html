@@ -92,7 +92,7 @@
 
                 <div class="ml-auto">
                     <a href="/erp/edit_vendor?vendor_id={{request.args['vendor_id']}}" class="btn btn-info mr-2">Edit</a>
-                    <a href="/erp/delete_vendor?vendor_id={{request.args['vendor_id']}}" class="btn btn-danger">Delete</a>
+                    <a onclick='return confirm("Are you sure you want to delete this vendor")' href="/erp/delete_vendor?vendor_id={{request.args['vendor_id']}}" class="btn btn-danger">Delete</a>
                 </div>
             </div>
 
