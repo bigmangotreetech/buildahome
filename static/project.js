@@ -9,7 +9,7 @@ $(document).ready(function () {
 
         if($('.vendor-location').length > 0) {
             let vendor_locations = $('.vendor-location').text()
-            vendor_locations.replaceAll("'","")
+            vendor_locations =vendor_locations.replaceAll("'","")
             vendor_locations = vendor_locations.split(',')
             $("#location").val(vendor_locations)
             $("#location").trigger('change')
