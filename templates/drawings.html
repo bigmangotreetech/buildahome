@@ -6,25 +6,25 @@
 
 <div class="my-4 d-flex">
     {% if 'category' not in request.args or request.args['category'] == 'architect_drawings' %}
-        <a href="#" class="btn bg-indigo text-white mr-3">Architect</a>
+        <a href="#" class="btn btn-dark bg-indigo text-white mr-3">Architect</a>
         <a href="/erp/drawings?category=structural_drawings" class="btn border-dark mr-3 text-dark">Structural</a>
         <a href="/erp/drawings?category=electrical_drawings" class="btn border-dark mr-3 text-dark">Electrical</a>
         <a href="/erp/drawings?category=plumbing_drawings" class="btn border-dark mr-3 text-dark">Plumbing</a>
     {% elif request.args['category'] == 'structural_drawings' %}
         <a href="/erp/drawings?category=architect_drawings" class="btn border-dark mr-3 text-dark">Architect</a>
-        <a href="#" class="btn bg-indigo text-white mr-3">Structural</a>
+        <a href="#" class="btn btn-dark bg-indigo text-white mr-3">Structural</a>
         <a href="/erp/drawings?category=electrical_drawings" class="btn border-dark mr-3 text-dark">Electrical</a>
         <a href="/erp/drawings?category=plumbing_drawings" class="btn border-dark mr-3 text-dark">Plumbing</a>
     {% elif request.args['category'] == 'electrical_drawings' %}
         <a href="/erp/drawings?category=architect_drawings" class="btn border-dark mr-3 text-dark">Architect</a>
         <a href="/erp/drawings?category=structural_drawings" class="btn border-dark mr-3 text-dark">Structural</a>
-        <a href="#" class="btn bg-indigo text-white mr-3">Electrical</a>
+        <a href="#" class="btn btn-dark bg-indigo text-white mr-3">Electrical</a>
         <a href="/erp/drawings?category=plumbing_drawings" class="btn border-dark mr-3 text-dark">Plumbing</a>
     {% elif request.args['category'] == 'plumbing_drawings' %}
         <a href="/erp/drawings?category=architect_drawings" class="btn border-dark mr-3 text-dark">Architect</a>
         <a href="/erp/drawings?category=structural_drawings" class="btn border-dark mr-3 text-dark">Structural</a>
         <a href="/erp/drawings?category=electrical_drawings" class="btn border-dark mr-3 text-dark">Electrical</a>
-        <a href="#" class="btn bg-indigo text-white mr-3">Plumbing</a>
+        <a href="#" class="btn btn-dark bg-indigo text-white mr-3">Plumbing</a>
     {% endif %}
 </div>
 
@@ -142,7 +142,7 @@
             <div class="modal-footer">
                 <div class="d-flex w-100 justify-content-between">
                     <button type="button" class="btn text-danger" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn bg-indigo text-white approve_drawing_btn">Confirm</button>
+                    <button type="button" class="btn btn-dark bg-indigo text-white approve_drawing_btn">Confirm</button>
                 </div>
             </div>
         </div>

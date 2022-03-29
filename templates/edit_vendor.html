@@ -159,10 +159,36 @@
                         <input name="contact_no" class="form-control" value="{{vendor_details[8]}}">
                     </div>
                 </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Location</label>
+                    </div>
+                    <div class="col-6">
+                        <span class="vendor-location d-none">{{vendor_details[9]}}</span>
+                        <select name="location" id="location" multiple class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="Bengaluru South">Bengaluru South</option>
+                            <option value="Bengaluru North">Bengaluru North</option>
+                            <option value="Bengaluru East">Bengaluru East</option>
+                            <option value="Bengaluru West">Bengaluru West</option>
+                            <option value="Bengaluru Central">Bengaluru Central</option>
+                            <option value="KIAL and beyond">KIAL and beyond</option>
+                            <option value="Hoskote & Beyond">Hoskote & Beyond</option>
+                            <option value="Mandya">Mandya</option>
+                            <option value="Mysore">Mysore</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Davangere">Davangere</option>
+                            <option value="Chitradurga">Chitradurga</option>
+                            <option value="Shimoga">Shimoga</option>
+                            <option value="Hubli/Dharwad">Hubli/Dharwad</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
                 <input type="hidden" name="vendor_id" value="{{vendor_id}}">
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
-                        <button class="btn btn-block bg-indigo text-white">Submit</button>
+                        <button class="btn btn-dark btn-block bg-indigo text-white">Submit</button>
                     </div>
                 </div>
             </form>
