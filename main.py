@@ -774,6 +774,7 @@ def vendor_registration():
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())
+        values[2] = request.form.getlist('location')
 
         cur = mysql.connection.cursor()
         new_vendor_query = 'INSERT into vendors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
@@ -844,7 +845,10 @@ def edit_vendor():
 
         update_string = ""
         for i in column_names[:-1]:
-            update_string += i + '="' + request.form[i] + '", '
+            if i=='location':
+                update_string += i + '="' + str(request.form.getlist('location')) + '", '
+            else:
+                update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
         update_string = update_string[:-2]
         update_vendor_query = 'UPDATE vendors SET ' + update_string + ' WHERE id=' + str(
