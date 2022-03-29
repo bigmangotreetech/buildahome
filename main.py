@@ -2376,26 +2376,54 @@ def edit_team():
         cur = mysql.connection.cursor()
         column_names = list(request.form.keys())
 
-        update_string = ""
-        for i in column_names[:5]:
-            update_string += i + '="' + request.form[i] + '", '
-        # Remove the last comma
-        update_string = update_string[:-2]
-        update_project_query = 'UPDATE project_design_team SET ' + update_string + ' WHERE project_id=' + str(
-            request.form['project_id'])
-        cur.execute(update_project_query)
+
+        check_if_design_team_exists_query = 'SELECT id from project_design_team WHERE project_id='+str(request.form['project_id'])
+        cur.execute(check_if_drawing_exists_query)
+        result = cur.fetchone()
+        if res is not None:
+
+            update_string = ""
+            for i in column_names[:5]:
+                update_string += i + '="' + request.form[i] + '", '
+            # Remove the last comma
+            update_string = update_string[:-2]
+            update_project_query = 'UPDATE project_design_team SET ' + update_string + ' WHERE project_id=' + str(
+                request.form['project_id'])
+            cur.execute(update_project_query)
+        
+        else :
+
+            design_team_columns = column_names[:5] + [column_names[-1]]
+            design_team_values = values[:5] + [values[-1]]
+
+            cur = mysql.connection.cursor()
+            assign_design_team_query = 'INSERT into project_design_team' + str(tuple(design_team_columns)).replace("'","") + 'values ' + str(tuple(design_team_values))
+            cur.execute(assign_design_team_query)
 
 
-        update_string = ""
-        for i in column_names[5:-1]:
-            update_string += i + '="' + request.form[i] + '", '
-        # Remove the last comma
-        update_string = update_string[:-2]
-        update_project_query = 'UPDATE project_operations_team SET ' + update_string + ' WHERE project_id=' + str(
-            request.form['project_id'])
+
+        check_if_design_team_exists_query = 'SELECT id from project_operations_team WHERE project_id='+str(request.form['project_id'])
+        cur.execute(check_if_drawing_exists_query)
+        result = cur.fetchone()
+        if res is not None:
+
+            update_string = ""
+            for i in column_names[5:-1]:
+                update_string += i + '="' + request.form[i] + '", '
+            # Remove the last comma
+            update_string = update_string[:-2]
+            update_project_query = 'UPDATE project_operations_team SET ' + update_string + ' WHERE project_id=' + str(
+                request.form['project_id'])
+            cur.execute(update_project_query)
+        else : 
+
+            operations_team_columns = column_names[5:]
+            operations_team_values = values[5:]
+
+            assign_operations_team_query = 'INSERT into project_operations_team' + str(tuple(operations_team_columns)).replace("'","") + 'values ' + str(tuple(operations_team_values))
+            cur.execute(assign_operations_team_query)
 
 
-        cur.execute(update_project_query)
         mysql.connection.commit()
         flash('Team updated successfully', 'success')
         return redirect('/erp/projects')
