@@ -2098,7 +2098,7 @@ def approved_projects():
         cur = mysql.connection.cursor()
         result = []
         if len(session['projects']) > 0:
-            if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head',
+            if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Site Engineer', 'Purchase Head',
                                        'Sales Executive', 'Billing']:
                 approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN ' + str(session['projects']) + ' ORDER BY project_number'
@@ -2694,7 +2694,7 @@ def drawings():
     query_string = query_string[:-2]
     drawings = []
     if len(session['projects']) > 0:
-        if session['role'] not in ['Super Admin', 'Purchase Head', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer',
+        if session['role'] not in ['Super Admin', 'Purchase Head', 'COO', 'QS Head','QS Engineer', 'Purchase Head', 'Site Engineer',
                                    'Design Head']:
             drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
                                                                                                           "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0" \
