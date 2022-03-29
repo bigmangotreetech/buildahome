@@ -6,6 +6,14 @@ $(document).ready(function () {
             $('#edit_vendor_material_type_select').val($('.edit_vendor_material_type').text())
             $('#edit_vendor_material_type_select').trigger('change')
         }
+
+        if($('.vendor-location').length > 0) {
+            let vendor_locations = $('.vendor-location').text()
+            vendor_locations.replaceAll("'","")
+            vendor_locations = vendor_locations.split(',')
+            $("#location").val(vendor_locations)
+            $("#location").trigger('change')
+        }
     }, 1000)
 
     if($('.approved_amount').length && $('.total_paid').length) {
