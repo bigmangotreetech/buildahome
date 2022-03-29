@@ -2375,6 +2375,7 @@ def edit_team():
     else:
         cur = mysql.connection.cursor()
         column_names = list(request.form.keys())
+        values = list(request.form.values())
 
 
         check_if_design_team_exists_query = 'SELECT id from project_design_team WHERE project_id='+str(request.form['project_id'])
