@@ -75,7 +75,7 @@
             </div>
             {% endif %}
             
-            {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head'] and result[9]=='approved' %}
+            {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head'] and result[10]=='approved' %}
             <div class="row mx-0 mt-3 form-group">
                 <div class="col-6">
                     QS Approval
@@ -85,7 +85,7 @@
              href="/erp/approve_indent_by_qs?id={{result[0]}}" class="ml-3 btn btn-dark bg-indigo text-white">Approve</a>
             {% endif %}
 
-            {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head'] and result[9]=='po_uploaded' %}
+            {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head'] and result[10]=='po_uploaded' %}
             <div class="row mx-0 mt-3 form-group">
                 <div class="col-6">
                     Purchase Head Approval
