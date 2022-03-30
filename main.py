@@ -1892,6 +1892,7 @@ def approve_indent_by_qs():
         cur = mysql.connection.cursor()
         query = 'UPDATE indents set status=%s WHERE id=%s'
         cur.execute(query, ('approved_by_qs',id))
+        mysql.connection.commit()
         flash('Indent approved','success')
         return redirect('/erp/view_qs_approval_indents')
 
@@ -1906,6 +1907,7 @@ def approve_indent_by_ph():
         cur = mysql.connection.cursor()
         query = 'UPDATE indents set status=%s WHERE id=%s'
         cur.execute(query, ('approved_by_ph',id))
+        mysql.connection.commit()
         get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                                    ', indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
                                    ' AND indents.id=' + str(indent_id)
