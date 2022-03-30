@@ -1615,6 +1615,46 @@ def check_if_floors_updated():
         return jsonify({'floors_updated': True, 'floors': result[1]})
     return jsonify({'floors_updated': False})
 
+@app.route('/view_ph_approval_indents', methods=['GET'])
+def view_ph_approval_indents():
+    cur = mysql.connection.cursor()
+    indents_query = 'SELECT indents.id, ' \
+                    'projects.project_id, ' \
+                    'projects.project_name, ' \
+                    'indents.material, ' \
+                    'indents.quantity, ' \
+                    'indents.unit, ' \
+                    'indents.purpose, ' \
+                    'App_users.name, ' \
+                    'indents.timestamp FROM indents ' \
+                    'INNER JOIN projects on ' \
+                    'indents.status="po_uploaded" AND ' \
+                    'indents.project_id=projects.project_id ' \
+                    'LEFT OUTER JOIN App_users on ' \
+                    'indents.created_by_user=App_users.user_id'
+    cur.execute(indents_query)
+    data = []
+    result = cur.fetchall()
+    for i in result:
+        i = list(i)
+        if len(str(i[8]).strip()) > 0:
+            i[8] = str(i[8]).strip()
+            timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+            IST = pytz.timezone('Asia/Kolkata')
+            current_time = datetime.now(IST)
+            time_since_creation = current_time - timestamp
+            difference_in_seconds = time_since_creation.total_seconds()
+            difference_in_hours = difference_in_seconds // 3600
+            if difference_in_hours >= 24:
+                difference_in_days = difference_in_hours // 24
+                hours_remaining = difference_in_hours % 24
+                i[8] = str(int(difference_in_days)) + ' days, ' + str(
+                    int(hours_remaining)) + 'hours'
+            else:
+                i[8] = str(int(difference_in_hours)) + ' hours'
+        data.append(i)
+    return render_template('qs_approval_indents.html', result=data)
+
 @app.route('/view_qs_approval_indents', methods=['GET'])
 def view_qs_approval_indents():
     if 'email' not in session:
@@ -1852,6 +1892,36 @@ def approve_indent_by_qs():
         cur = mysql.connection.cursor()
         query = 'UPDATE indents set status=%s WHERE id=%s'
         cur.execute(query, ('approved_by_qs',id))
+        flash('Indent approved','success')
+        return redirect('/erp/view_qs_approval_indents')
+
+@app.route('/approve_indent_by_ph', methods=['GET'])
+def approve_indent_by_ph():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/approve_indent_by_ph'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        indent_id = request.args['id']
+        cur = mysql.connection.cursor()
+        query = 'UPDATE indents set status=%s WHERE id=%s'
+        cur.execute(query, ('approved_by_ph',id))
+        get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                                   ', indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
+                                   ' AND indents.id=' + str(indent_id)
+        cur.execute(get_indent_query)
+        result = cur.fetchone()
+        if result is not None:
+            notification_body = 'PO uploaded for indent with id ' + str(indent_id) + '. Details: ' + str(
+                result[4]) + ' ' + str(result[5]) + ' ' + str(result[3]) + ' For project ' + str(result[2])
+            IST = pytz.timezone('Asia/Kolkata')
+            datetime_ist = datetime.now(IST)
+            timestamp = datetime_ist.strftime('%A %d %B %H:%M')
+            send_app_notification('PO Uploaded', notification_body, str(result[8]), str(result[8]),
+                                    'PO uploads', timestamp)
+            send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]),
+                                    'PO uploads', timestamp)
+        flash('PO Uploaded successfully', 'success')
         flash('Indent approved','success')
         return redirect('/erp/view_qs_approval_indents')
 

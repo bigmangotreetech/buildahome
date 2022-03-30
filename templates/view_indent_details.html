@@ -76,7 +76,23 @@
             {% endif %}
             
             {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head'] %}
-            <a onclick="return confirm('Are you sure you want to approve this indent?')" href="/erp/approve_indent_by_qs?id={{result[0]}}" class="btn tbn-dark bg-indigo text-white">Approve</a>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    QS Approval
+                </div>
+            </div>
+            <a onclick="return confirm('Are you sure you want to approve this indent?')"
+             href="/erp/approve_indent_by_qs?id={{result[0]}}" class="ml-3 btn btn-dark bg-indigo text-white">Approve</a>
+            {% endif %}
+
+            {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head'] %}
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Purchase Head Approval
+                </div>
+            </div>
+            <a onclick="return confirm('Are you sure you want to approve this indent?')"
+             href="/erp/approve_indent_by_ph?id={{result[0]}}" class="ml-3 btn btn-dark bg-indigo text-white">Approve</a>
             {% endif %}
 
 
