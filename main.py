@@ -1974,9 +1974,8 @@ def approve_indent_by_ph():
                                     'PO uploads', timestamp)
             send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]),
                                     'PO uploads', timestamp)
-        flash('PO Uploaded successfully', 'success')
         flash('Indent approved','success')
-        return redirect('/erp/view_qs_approval_indents')
+        return redirect('/erp/view_ph_approval_indents')
 
 @app.route('/view_indent_details', methods=['GET'])
 def view_indent_details():
