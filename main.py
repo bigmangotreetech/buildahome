@@ -1615,6 +1615,74 @@ def check_if_floors_updated():
         return jsonify({'floors_updated': True, 'floors': result[1]})
     return jsonify({'floors_updated': False})
 
+@app.route('/view_qs_approval_indents', methods=['GET'])
+def view_qs_approval_indents():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_approved_indents'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        current_user_role = session['role']
+        indents_query = ''
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head']:
+            indents_query = 'SELECT indents.id, ' \
+                            'projects.project_id, ' \
+                            'projects.project_name, ' \
+                            'indents.material, ' \
+                            'indents.quantity, ' \
+                            'indents.unit, ' \
+                            'indents.purpose, ' \
+                            'App_users.name, ' \
+                            'indents.timestamp FROM indents ' \
+                            'INNER JOIN projects on ' \
+                            'indents.status="approved" AND ' \
+                            'indents.project_id=projects.project_id ' \
+                            'LEFT OUTER JOIN App_users on ' \
+                            'indents.created_by_user=App_users.user_id'
+
+        elif current_user_role in ['QS Engineer']:
+            indents_query = 'SELECT indents.id, ' \
+                            'projects.project_id, ' \
+                            'projects.project_name, ' \
+                            'indents.material, ' \
+                            'indents.quantity, ' \
+                            'indents.unit, ' \
+                            'indents.purpose, ' \
+                            'App_users.name, ' \
+                            'indents.timestamp FROM indents ' \
+                            'INNER JOIN projects on ' \
+                            'indents.status="approved" AND ' \
+                            'indents.project_id=projects.project_id AND ' \
+                            'indents.project_id IN ' + str(session['projects']) +' '\
+                            'LEFT OUTER JOIN App_users on ' \
+                            'indents.created_by_user=App_users.user_id'
+        cur.execute(indents_query)
+        data = []
+        result = cur.fetchall()
+        for i in result:
+            i = list(i)
+            if len(str(i[8]).strip()) > 0:
+                i[8] = str(i[8]).strip()
+                timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                IST = pytz.timezone('Asia/Kolkata')
+                current_time = datetime.now(IST)
+                time_since_creation = current_time - timestamp
+                difference_in_seconds = time_since_creation.total_seconds()
+                difference_in_hours = difference_in_seconds // 3600
+                if difference_in_hours >= 24:
+                    difference_in_days = difference_in_hours // 24
+                    hours_remaining = difference_in_hours % 24
+                    i[8] = str(int(difference_in_days)) + ' days, ' + str(
+                        int(hours_remaining)) + 'hours'
+                else:
+                    i[8] = str(int(difference_in_hours)) + ' hours'
+            data.append(i)
+        return render_template('qs_approval_indents.html', result=data)
+
 
 @app.route('/view_approved_indents', methods=['GET'])
 def view_approved_indents():
@@ -1630,7 +1698,7 @@ def view_approved_indents():
         current_user_role = session['role']
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved" AND indents.project_id=projects.project_id ' \
+                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved_by_qs" AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
 
             cur.execute(indents_query)
@@ -1666,7 +1734,7 @@ def view_approved_indents():
                 access_as_int = [int(i) for i in access]
                 access_tuple = tuple(access_as_int)
                 indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                                ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
+                                ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved_by_qs" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
                     access_tuple) + '' \
                                     ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
                 cur.execute(indents_query)
@@ -1773,6 +1841,19 @@ def view_approved_POs():
         else:
             return 'You do not have access to view this page'
 
+@app.route('/approve_indent_by_qs', methods=['GET'])
+def approve_indent_by_qs():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_indent_details'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        indent_id = request.args['id']
+        cur = mysql.connection.cursor()
+        query = 'UPDATE indents set status=%s WHERE id=%s'
+        cur.execute(query, ('approved_by_qs',id))
+        flash('Indent approved','success')
+        return redirect('/erp/view_qs_approval_indents')
 
 @app.route('/view_indent_details', methods=['GET'])
 def view_indent_details():

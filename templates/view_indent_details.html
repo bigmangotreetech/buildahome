@@ -74,6 +74,13 @@
                 </div>
             </div>
             {% endif %}
+            
+            {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head'] %}
+            <a onclick="return confirm('Are you sure you want to approve this indent?')" href="/erp/approve_indent_by_qs?id={{result[0]}}" class="btn tbn-dark bg-indigo text-white">Approve</a>
+            {% endif %}
+
+
+            {% if session['role'] in ['Super Admin','COO','Purchase Executive','Purchase Head'] %}
             <form class="mt-3 mx-4" action="/erp/upload_po_for_indent" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="indent_id" value="{{result[0]}}">
                 <div class="mb-2">Upload purchase order</div>
@@ -84,6 +91,7 @@
                     </div>
                 </div>
             </form>
+            {% endif %}
 
         </div>
     </div>
