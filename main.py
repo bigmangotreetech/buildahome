@@ -1596,7 +1596,7 @@ def view_unapproved_work_order():
                 'project_number': i[1],
                 'id': i[2],
                 'trade': i[3],
-                'value': str(int(i[4].strip().replace(',',''))),
+                'value': str(int(float(i[4].strip().replace(',','')))),
                 'contractor_name': i[5],
 
             })
