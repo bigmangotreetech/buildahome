@@ -190,7 +190,9 @@ def uploadFiles(rangeStart, rangeEnd):
 
 @app.route('/migrate', methods=['GET'])
 def migrate():
-    uploadFileRes = uploadFiles.delay(0, 10)
+    # uploadFileRes = uploadFiles.delay(0, 10)
+    redis_host = os.environ.get('REDIS_HOST', 'localhost')
+    return str(redis_host)
     return uploadFileRes
 
 @app.route('/files/<filename>', methods=['GET'])
