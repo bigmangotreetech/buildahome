@@ -34,8 +34,8 @@ app.config['S3_SECRET'] = os.environ.get('S3_SECRET')
 app.config['S3_KEY'] = os.environ.get('S3_KEY')
 app.config['S3_BUCKET'] = os.environ.get('S3_BUCKET')
 app.config['S3_LOCATION'] = os.environ.get('S3_LOCATION')
-app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379'
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
@@ -190,9 +190,7 @@ def uploadFiles(rangeStart, rangeEnd):
 
 @app.route('/migrate', methods=['GET'])
 def migrate():
-    # uploadFileRes = uploadFiles.delay(0, 10)
-    redis_host = os.environ.get('REDIS_HOST', 'localhost')
-    return str(redis_host)
+    uploadFileRes = uploadFiles.delay(0, 10)
     return uploadFileRes
 
 @app.route('/files/<filename>', methods=['GET'])
