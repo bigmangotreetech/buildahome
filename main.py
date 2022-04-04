@@ -165,8 +165,9 @@ def get_projects_for_current_user():
 
 @app.route('/migrate', methods=['GET'])
 def migrate():
-    return str(os.getcwd())
-    files = os.listdir('public_html/api')
+    BASE_DIR = '/home/buildahome2016/public_html'
+    abs_path = os.path.join(BASE_DIR, '/app.buildahome.in/images')
+    files = os.listdir(abs_path)
     return str(files)
 
 @app.route('/files/<filename>', methods=['GET'])
