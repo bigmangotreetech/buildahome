@@ -34,9 +34,9 @@ app.config['S3_SECRET'] = os.environ.get('S3_SECRET')
 app.config['S3_KEY'] = os.environ.get('S3_KEY')
 app.config['S3_BUCKET'] = os.environ.get('S3_BUCKET')
 app.config['S3_LOCATION'] = os.environ.get('S3_LOCATION')
-app.config['CELERY_BROKER_URL'] = 'redis://localhost'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost'
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
+celery = Celery(app.name, broker_url=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
 mysql = MySQL(app)
