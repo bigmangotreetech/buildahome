@@ -165,6 +165,7 @@ def get_projects_for_current_user():
 
 @app.route('/migrate', methods=['GET'])
 def migrate():
+    return str(os.getcwd())
     files = os.listdir('public_html/api')
     return str(files)
 
