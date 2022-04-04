@@ -163,6 +163,11 @@ def get_projects_for_current_user():
         else:
             return []
 
+@app.route('/migrate', methods=['GET'])
+def migrate():
+    BASE_DIR = '/images'
+    abs_path = os.path.join(BASE_DIR, req_path)
+    return str(abs_path)
 
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
