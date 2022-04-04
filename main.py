@@ -1,4 +1,6 @@
-from flask import Flask, render_template, redirect, request, session, flash, jsonify, url_for, send_file
+from flask import Flask, render_template, redirect, request, session, flash, jsonify, url_for
+from werkzeug.datastructures import FileStorage
+
 from flask_mysqldb import MySQL
 import hashlib
 import boto3, botocore
