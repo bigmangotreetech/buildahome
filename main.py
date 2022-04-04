@@ -173,7 +173,7 @@ def migrate():
     file = None
     res = ''
     with open('/home/buildahome2016/public_html/app.buildahome.in/api/images/scaled_image_picker4712871127502859675.jpg', 'rb') as fp:
-        file = FileStorage(fp)
+        file = FileStorage(fp, content_type='image/jpg')
         res = send_to_s3(file, app.config["S3_BUCKET"], 'test.jpg')
     return res
 
