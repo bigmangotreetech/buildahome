@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, flash, jsonify, url_for
+from flask import Flask, render_template, redirect, request, session, flash, jsonify, url_for, send_file
 from flask_mysqldb import MySQL
 import hashlib
 import boto3, botocore
@@ -168,7 +168,8 @@ def migrate():
     BASE_DIR = '/home/buildahome2016/public_html'
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
-    file = send_file('/home/buildahome2016/public_html/app.buildahome.in/api/images/scaled_image_picker4712871127502859675.jpg' )
+    file = open('/home/buildahome2016/public_html/app.buildahome.in/api/images/scaled_image_picker4712871127502859675.jpg','r' )
+    send_to_s3(file, app.config["S3_BUCKET"], 'test.jpg')
     return file
 
 @app.route('/files/<filename>', methods=['GET'])
