@@ -171,9 +171,11 @@ def migrate():
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
     file = None
+    res = ''
     with open('/home/buildahome2016/public_html/app.buildahome.in/api/images/scaled_image_picker4712871127502859675.jpg', 'rb') as fp:
         file = FileStorage(fp)
-    return send_to_s3(file, app.config["S3_BUCKET"], 'test.jpg')
+        res = send_to_s3(file, app.config["S3_BUCKET"], 'test.jpg')
+    return res
 
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
