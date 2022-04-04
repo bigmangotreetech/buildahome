@@ -19,7 +19,6 @@ from werkzeug.utils import secure_filename
 
 from models.projects import projects
 from constants.constants import project_fields, roles
-from celery import Celery
 
 
 app = Flask(__name__)
@@ -36,8 +35,6 @@ app.config['S3_BUCKET'] = os.environ.get('S3_BUCKET')
 app.config['S3_LOCATION'] = os.environ.get('S3_LOCATION')
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
-celery = Celery(app.name, broker_url=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
 
 mysql = MySQL(app)
 
@@ -171,15 +168,15 @@ def get_projects_for_current_user():
         else:
             return []
 
-@celery.task
-def uploadFiles(rangeStart, rangeEnd):
+@app.route('/migrate', methods=['GET'])
+def migrate():
     BASE_DIR = '/home/buildahome2016/public_html'
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
     try:
-        for i in files[rangeStart: rangeEnd]:
+        for i in files[0: 10]:
             with open(
-                    '/home/buildahome2016/public_html/app.buildahome.in/api/images/'+i,
+                    '/home/buildahome2016/public_html/app.buildahome.in/api/images/' + i,
                     'rb') as fp:
                 file = FileStorage(fp, content_type='image/' + i.split('.')[-1])
                 send_to_s3(file, app.config["S3_BUCKET"], i)
@@ -187,11 +184,6 @@ def uploadFiles(rangeStart, rangeEnd):
     except Exception as e:
         print("Something Happened: ", e)
         return str(e)
-
-@app.route('/migrate', methods=['GET'])
-def migrate():
-    uploadFileRes = uploadFiles.delay(0, 10)
-    return uploadFileRes
 
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
