@@ -1009,6 +1009,23 @@ def kyp_material():
         return redirect('/erp/kyp_material?project_id=' + str(project_id))
 
 
+@app.route('/delete_wo', methods=['GET'])
+def delete_wo():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_work_order'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin']:
+        flash('You do not have permission delete', 'danger')
+        return redirect(request.referrer)
+    wo_id = request.args['id']
+    cur = mysql.connection.cursor()
+    query = 'DELETE FROM work_orders WHERE id='+wo_id
+    cur.execute(query)
+    mysql.connection.commit(0)
+    flash('Work order has been delete', 'danger')
+    return redirect(request.referrer)
+
 @app.route('/create_work_order', methods=['GET', 'POST'])
 def create_work_order():
     if 'email' not in session:

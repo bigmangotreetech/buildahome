@@ -35,6 +35,9 @@
                 <th scope="col">Value</th>
                 <th scope="col">Balance</th>
                 <th scope="col"></th>
+                {% if session['role'] == 'Super Admin' %}
+                <th scope="col"></th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -53,6 +56,13 @@
                         View
                     </a>
                 </td>
+                {% if session['role'] == 'Super Admin' %}
+                <td>
+                    <a class='text-danger' href="/erp/delete_wo?id={{i[0]}}">
+                        Delete
+                    </a>
+                </td>
+                {% endif %}
             </tr>
 
             {% endfor %}
