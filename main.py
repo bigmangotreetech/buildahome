@@ -56,7 +56,7 @@ def send_to_s3(file, bucket_name, filename, acl="public-read"):
         )
     except Exception as e:
         print("Something Happened: ", e)
-        return e
+        return str(e)
     return 'success'
 
 
