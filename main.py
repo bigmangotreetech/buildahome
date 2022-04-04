@@ -19,6 +19,8 @@ from werkzeug.utils import secure_filename
 
 from models.projects import projects
 from constants.constants import project_fields, roles
+from celery import Celery
+
 
 app = Flask(__name__)
 # Sql setup
@@ -32,6 +34,10 @@ app.config['S3_SECRET'] = os.environ.get('S3_SECRET')
 app.config['S3_KEY'] = os.environ.get('S3_KEY')
 app.config['S3_BUCKET'] = os.environ.get('S3_BUCKET')
 app.config['S3_LOCATION'] = os.environ.get('S3_LOCATION')
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
 
 mysql = MySQL(app)
 
@@ -165,19 +171,27 @@ def get_projects_for_current_user():
         else:
             return []
 
-@app.route('/migrate', methods=['GET'])
-def migrate():
+@celery.task
+def uploadFiles(rangeStart, rangeEnd):
     BASE_DIR = '/home/buildahome2016/public_html'
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
-    return str(files)
-    for i in files:
-        file = None
-        res = ''
-        with open('/home/buildahome2016/public_html/app.buildahome.in/api/images/scaled_image_picker4712871127502859675.jpg', 'rb') as fp:
-            file = FileStorage(fp, content_type='image/'+i.split('.')[-1])
-            res = send_to_s3(file, app.config["S3_BUCKET"], i)
-    return res
+    try:
+        for i in files[rangeStart: rangeEnd]:
+            with open(
+                    '/home/buildahome2016/public_html/app.buildahome.in/api/images/'+i,
+                    'rb') as fp:
+                file = FileStorage(fp, content_type='image/' + i.split('.')[-1])
+                send_to_s3(file, app.config["S3_BUCKET"], i)
+        return 'success'
+    except Exception as e:
+        print("Something Happened: ", e)
+        return str(e)
+
+@app.route('/migrate', methods=['GET'])
+def migrate():
+    uploadFileRes = uploadFiles.delay(0, 10)
+    return uploadFileRes
 
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
