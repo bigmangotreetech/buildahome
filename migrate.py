@@ -28,7 +28,7 @@ BASE_DIR = '/home/buildahome2016/public_html'
 abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
 files = os.listdir(abs_path)
 try:
-    for x in range(0, 10):
+    for x in range(10, 100):
         i = files[x]
         print('Uploading file '+str(x))
         with open(
