@@ -170,7 +170,7 @@ def migrate():
     BASE_DIR = '/home/buildahome2016/public_html'
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
-    return str(len(files))
+    return str(files)
     for i in files:
         file = None
         res = ''
