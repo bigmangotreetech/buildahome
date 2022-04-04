@@ -166,7 +166,7 @@ def get_projects_for_current_user():
 @app.route('/migrate', methods=['GET'])
 def migrate():
     BASE_DIR = '/home/buildahome2016/public_html'
-    abs_path = os.path.join(BASE_DIR, '/')
+    abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html')
     files = os.listdir(abs_path)
     return str(files)
 
