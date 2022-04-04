@@ -168,7 +168,8 @@ def migrate():
     BASE_DIR = '/home/buildahome2016/public_html'
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
-    return str(files)
+    file = send_file('/home/buildahome2016/public_html/app.buildahome.in/api/images/scaled_image_picker4712871127502859675.jpg' )
+    return file
 
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
