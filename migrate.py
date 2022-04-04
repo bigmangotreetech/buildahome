@@ -28,12 +28,15 @@ BASE_DIR = '/home/buildahome2016/public_html'
 abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
 files = os.listdir(abs_path)
 try:
-    for i in files[0: 10]:
+    for x in range(0, 10):
+        i = files[x]
+        print('Uploading file '+str(x))
         with open(
                 '/home/buildahome2016/public_html/app.buildahome.in/api/images/' + i,
                 'rb') as fp:
             file = FileStorage(fp, content_type='image/' + i.split('.')[-1])
             send_to_s3(file, os.environ.get('S3_BUCKET'), i)
-    print('Uploaded '+i)
+        print('Uploaded '+i)
+        print()
 except Exception as e:
     print("Something Happened: ", e)
