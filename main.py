@@ -166,7 +166,7 @@ def get_projects_for_current_user():
 @app.route('/migrate', methods=['GET'])
 def migrate():
     BASE_DIR = '/'
-    abs_path = os.path.join(BASE_DIR, 'public_html/api/images')
+    abs_path = os.path.join(BASE_DIR, '/api/images')
     files = os.listdir(abs_path)
     return str(files)
 
