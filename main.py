@@ -202,7 +202,7 @@ def upload_migrated_image():
             output = send_to_s3(file, app.config["S3_BUCKET"], filename)
             if output != 'success':
                 return 'failed'
-        return 'success'
+        return filename
     return 'No image'
 
 @app.route('/', methods=['GET'])
