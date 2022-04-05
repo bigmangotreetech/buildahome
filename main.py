@@ -205,6 +205,19 @@ def upload_migrated_image():
         return 'success'
     return 'No image'
 
+@app.route('/transfer_image_to_s3', methods=['GET'])
+def transfer_image_to_s3():
+    BASE_DIR = '/home/buildahome2016/public_html'
+    abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
+    files = os.listdir(abs_path)
+    last_file = files[-1]
+    with open(
+            '/home/buildahome2016/public_html/app.buildahome.in/api/images/' + last_file,
+            'rb') as fp:
+        file = FileStorage(fp, content_type='image/' + last_file.split('.')[-1])
+        send_to_s3(file, os.environ.get('S3_BUCKET'), 'migrated/' + last_file)
+    return ''
+
 @app.route('/', methods=['GET'])
 def index():
     if 'email' not in session:
