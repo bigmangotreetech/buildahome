@@ -192,7 +192,6 @@ def files(filename):
 
 @app.route('/upload_migrated_image', methods=['GET','POST'])
 def upload_migrated_image():
-    return 'success'
     if 'image' in request.files:
         file = request.files['image']
         if file.filename == '':
