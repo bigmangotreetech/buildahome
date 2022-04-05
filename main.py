@@ -190,6 +190,21 @@ def files(filename):
     response = redirect(app.config['S3_LOCATION'] + filename)
     return response
 
+@app.route('/upload_migrated_image', methods=['GET','POST'])
+def upload_migrated_image():
+    if 'image' in request.files:
+        file = request.files['image']
+        if file.filename == '':
+            flash('No selected file', 'danger ')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            output = send_to_s3(file, app.config["S3_BUCKET"], filename)
+            if output != 'success':
+                flash('File upload failed', 'danger')
+                return 'failed'
+    return 'success'
+
 
 @app.route('/', methods=['GET'])
 def index():
