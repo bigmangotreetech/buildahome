@@ -216,7 +216,7 @@ def transfer_image_to_s3():
             'rb') as fp:
         file = FileStorage(fp, content_type='image/' + last_file.split('.')[-1])
         send_to_s3(file, os.environ.get('S3_BUCKET'), 'migrated/' + last_file)
-    return last_file
+    return ''
 
 @app.route('/', methods=['GET'])
 def index():
