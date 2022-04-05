@@ -210,7 +210,7 @@ def transfer_image_to_s3():
     BASE_DIR = '/home/buildahome2016/public_html'
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
-    last_file_query = 'SELECT image from Daily_images LIMIT 1 ORDER BY updated_at DESC'
+    last_file_query = 'SELECT image from Daily_images ORDER BY updated_at DESC LIMIT 1'
     cur = mysql.connection.cursor()
     cur.execute(last_file_query)
     res = cur.fetchone()
