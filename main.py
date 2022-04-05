@@ -201,10 +201,9 @@ def upload_migrated_image():
             filename = secure_filename(file.filename)
             output = send_to_s3(file, app.config["S3_BUCKET"], filename)
             if output != 'success':
-                flash('File upload failed', 'danger')
                 return 'failed'
-    return 'success'
-
+        return 'success'
+    return 'No image'
 
 @app.route('/', methods=['GET'])
 def index():
