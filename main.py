@@ -832,6 +832,19 @@ def vendor_registration():
             tuple(values))
         cur.execute(new_vendor_query)
         mysql.connection.commit()
+
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                picture_filename = 'vendor_dp_' + str(cur.lastrowid)
+                output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
+                if output != 'success':
+                    flash('File upload failed', 'danger')
+                    return redirect(request.referrer)
         flash('Vendor registered', 'success')
         return redirect('/erp/view_vendors')
 
@@ -907,6 +920,18 @@ def edit_vendor():
         cur = mysql.connection.cursor()
         cur.execute(update_vendor_query)
         mysql.connection.commit()
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                picture_filename = 'vendor_dp_' + str(request.form['contractor_id'])
+                output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
+                if output != 'success':
+                    flash('File upload failed', 'danger')
+                    return redirect(request.referrer)
         flash('Vendor updated successfully', 'success')
         return redirect('/erp/view_vendor_details?vendor_id=' + request.form['vendor_id'])
 
