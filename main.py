@@ -1559,6 +1559,8 @@ def project_contractor_info():
     contractor_name = request.args['name']
     contractor_code = request.args['code']
     trade = request.args['trade']
+
+    return contractor_name
     cur = mysql.connection.cursor()
     data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
     
