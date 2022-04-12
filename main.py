@@ -1564,7 +1564,7 @@ def project_contractor_info():
     
 
     get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE name=%s AND code=%s'
-    cur.execute(get_contractor_query)
+    cur.execute(get_contractor_query, (contractor_name, contractor_code))
     res = cur.fetchone()
     if res is not None:
         data['name'] = res[0]
