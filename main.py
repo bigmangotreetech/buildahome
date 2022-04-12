@@ -1248,7 +1248,7 @@ def create_bill():
 @app.route('/update_trades_for_project', methods=['POST'])
 def update_trades_for_project():
     project_id = request.form['project_id']
-    trades_query = 'SELECT id, trade from work_orders WHERE project_id=' + str(project_id)
+    trades_query = 'SELECT id, trade from work_orders WHERE signed=1 AND approved=1 AND project_id=' + str(project_id)
     cur = mysql.connection.cursor()
     cur.execute(trades_query)
     result = cur.fetchall()
