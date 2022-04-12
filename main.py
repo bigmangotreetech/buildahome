@@ -1564,7 +1564,7 @@ def project_contractor_info():
     data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
 
     get_contractor_query = 'SELECT id, name, code, pan from contractors code=%s'
-    cur.execute(get_contractor_query, (contractor_name, contractor_code))
+    cur.execute(get_contractor_query, (contractor_code))
     res = cur.fetchone()
     if res is not None:
         data['name'] = res[0]
