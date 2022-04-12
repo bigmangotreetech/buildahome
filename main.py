@@ -1560,10 +1560,8 @@ def project_contractor_info():
     contractor_code = request.args['code']
     trade = request.args['trade']
 
-    return contractor_name
     cur = mysql.connection.cursor()
     data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
-    
 
     get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE name=%s AND code=%s'
     cur.execute(get_contractor_query, (contractor_name, contractor_code))
@@ -1581,6 +1579,8 @@ def project_contractor_info():
         data['balance'] = res[2]
         data['trade'] = trade
         data['work_order_id'] = res[0]
+
+    return jsonify(data)
 
 
     get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
