@@ -1563,8 +1563,8 @@ def project_contractor_info():
     cur = mysql.connection.cursor()
     data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
 
-    get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code=%s'
-    cur.execute(get_contractor_query, (contractor_code))
+    get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code='+contractor_code
+    cur.execute(get_contractor_query)
     res = cur.fetchone()
     if res is not None:
         data['name'] = res[0]
@@ -1581,7 +1581,7 @@ def project_contractor_info():
         data['work_order_id'] = res[0]
 
     get_bills_query = 'SELECT stage, payment_percentage,  amount, approval_2_amount, trade FROM wo_bills WHERE work_order_id=%s'
-    cur.execute(get_wo_query, (project_id))
+    cur.execute(get_wo_query, (data['work_order_id']))
     bills = cur.fetchall()
 
 
