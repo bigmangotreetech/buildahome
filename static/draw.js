@@ -198,6 +198,8 @@ async function getAndPutAnnexure() {
 }
 
 async function saveSign() {
+  $('.create-wo-btn').attr('disabled','true')
+  $('.create-wo-btn').text('Submitting..')
   getAndPutAnnexure()
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
