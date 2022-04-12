@@ -1571,6 +1571,15 @@ def project_contractor_info():
         data['code'] = res[1]
         data['pan'] = res[2]
 
+    get_wo_query = 'SELECT id, value, balance from work_orders WHERE trade=%s AND project_id=%s'
+    cur.execute(get_wo_query, (trade, project_id))
+    res = cur.fetchone()
+    if res is not None:
+        data['value'] = res[1]
+        data['balance'] = res[2]
+        data['trade'] = trade
+        data['work_order_id'] = res[0]
+
 
     get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
                    'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount, w.id ' \
@@ -1592,16 +1601,6 @@ def project_contractor_info():
     get_project_query = 'SELECT project_name, project_number from projects WHERE project_id=' + str(project_id)
     cur.execute(get_project_query)
     project = cur.fetchone()
-
-    data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
-    if len(bills) > 0:
-        data['name'] = bills[0][0]
-        data['code'] = bills[0][1]
-        data['pan'] = bills[0][2]
-        data['value'] = bills[0][3]
-        data['balance'] = int(float(bills[0][4]))
-        data['trade'] = bills[0][5]
-        data['work_order_id'] = bills[0][10]
 
     return render_template('project_contractor_info.html', bills=bills, project=project, data=data)
 
