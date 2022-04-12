@@ -1563,7 +1563,7 @@ def project_contractor_info():
     cur = mysql.connection.cursor()
     data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
 
-    get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code='+contractor_code
+    get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code="'+contractor_code+'"'
     cur.execute(get_contractor_query)
     res = cur.fetchone()
     if res is not None:
