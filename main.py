@@ -1560,9 +1560,21 @@ def project_contractor_info():
     contractor_code = request.args['code']
     trade = request.args['trade']
     cur = mysql.connection.cursor()
+    data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
+    
+
+    get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE name=%s AND code=%s'
+    cur.execute(get_contractor_query)
+    res = cur.fetchone()
+    if res is not None:
+        data['name'] = res[0]
+        data['code'] = res[1]
+        data['pan'] = res[2]
+
+
     get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
                    'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount, w.id ' \
-                   ' FROM wo_bills b OUTER JOIN work_orders w on b.project_id=w.project_id AND b.trade=w.trade' \
+                   ' FROM wo_bills b JOIN work_orders w on b.project_id=w.project_id AND b.trade=w.trade' \
                    ' LEFT OUTER JOIN contractors c on' \
                    ' c.name=b.contractor_name AND c.code = b.contractor_code AND c.pan = b.contractor_pan' \
                    ' WHERE b.trade=%s AND w.project_id=%s AND c.name=%s AND c.code=%s AND ' \
