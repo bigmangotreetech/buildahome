@@ -1582,7 +1582,7 @@ def project_contractor_info():
 
     get_bills_query = 'SELECT stage, payment_percentage,  amount, approval_2_amount, trade' \
                         ' FROM wo_bills WHERE contractor_code-%s AND project_id=%s'
-    cur.execute(get_bills_query)
+    cur.execute(get_bills_query, (code, project_id))
     bills = cur.fetchall()
 
 
