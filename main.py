@@ -1098,7 +1098,7 @@ def delete_wo():
     cur = mysql.connection.cursor()
     query = 'DELETE FROM work_orders WHERE id='+wo_id
     cur.execute(query)
-    mysql.connection.commit(0)
+    mysql.connection.commit()
     flash('Work order has been delete', 'danger')
     return redirect(request.referrer)
 
