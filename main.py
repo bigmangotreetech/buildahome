@@ -1046,7 +1046,17 @@ def kyp_material():
         'Jackets': '',
         'GI sheets': '',
         'Tarpaulin': '',
-        'Nails': ''
+        'Nails': '',
+        'Cement': '',
+        'Steel': '',
+        'M Sand': '',
+        'P Sand': '',
+        'Teak wood frame': '',
+        'Sal wood frame': '',
+        'Honne wood frame': '',
+        'Teak wood door': '',
+        'Sal wood door': '',
+        'Flush door': ''     
     }
     if request.method == 'GET':
         cur = mysql.connection.cursor()
