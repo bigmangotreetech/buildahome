@@ -1588,7 +1588,7 @@ def project_contractor_info():
         data['work_order_id'] = res[0]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade' \
-                        ' FROM wo_milestones w JOIN wo_bills b ON b.contractor_code=%s AND b.project_id=%s WHERE w.work_order_id=%s'
+                        ' FROM  wo_bills b JOIN wo_milestones w ON b.contractor_code=%s AND b.project_id=%s WHERE w.work_order_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id, str(data['work_order_id'])))
     bills = cur.fetchall()
 
