@@ -709,8 +709,15 @@ def contractor_registration():
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())
-
         cur = mysql.connection.cursor()
+
+        check_if_code_exists = 'SELECT id FROM contractors WHERE code='+request.form['contractor_code']
+        cur.execute(check_if_code_exists)
+        res = cur.fetchone()
+        if res is not None:
+            flash('Contractor with that code already exists. Operation failed', 'danger')
+            return redirect(request.referrer)
+
         new_vendor_query = 'INSERT into contractors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
         cur.execute(new_vendor_query)
@@ -1580,29 +1587,10 @@ def project_contractor_info():
         data['trade'] = trade
         data['work_order_id'] = res[0]
 
-    get_bills_query = 'SELECT stage, payment_percentage,  amount, approval_2_amount, trade' \
-                        ' FROM wo_bills WHERE contractor_code=%s AND project_id=%s'
+    get_bills_query = 'SELECT w.stage, w.payment_percentage, b.amount, b.approval_2_amount, b.trade' \
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON contractor_code=%s AND project_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id))
     bills = cur.fetchall()
-
-
-
-    # get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
-    #                'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount, w.id ' \
-    #                ' FROM wo_bills b JOIN work_orders w on b.project_id=w.project_id AND b.trade=w.trade' \
-    #                ' LEFT OUTER JOIN contractors c on' \
-    #                ' c.name=b.contractor_name AND c.code = b.contractor_code AND c.pan = b.contractor_pan' \
-    #                ' WHERE b.trade=%s AND w.project_id=%s AND c.name=%s AND c.code=%s AND ' \
-    #                ' w.contractor_id=c.id ORDER BY w.trade'
-
-    # # get_wo_query = 'SELECT c.name, c.code, c.pan, ' \
-    # #                'w.value, w.balance, b.trade,  b.stage, b.payment_percentage, b.amount, b.approval_2_amount' \
-    # #                ' FROM work_orders w INNER JOIN wo_bills b INNER JOIN contractors c on ' \
-    # #                ' b.trade=%s AND c.name=b.contractor_name AND c.code = b.contractor_code AND ' \
-    # #                'w.project_id=%s AND c.name=%s AND c.code=%s ' \
-    # #                'WHERE b.approval_2_amount IS NOT NULL AND w.contractor_id=c.id ORDER BY w.trade'
-    # cur.execute(get_wo_query, (trade, project_id, contractor_name, contractor_code))
-    # bills = cur.fetchall()
 
     get_project_query = 'SELECT project_name, project_number from projects WHERE project_id=' + str(project_id)
     cur.execute(get_project_query)
