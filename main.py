@@ -1588,8 +1588,8 @@ def project_contractor_info():
         data['work_order_id'] = res[0]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.contractor_code=%s AND b.project_id=%s WHERE w.work_order_id=%s'
-    cur.execute(get_bills_query, (contractor_code, project_id, str(data['work_order_id'])))
+                        ' FROM wo_milestones w WHERE w.work_order_id=%s LEFT OUTER JOIN wo_bills b ON b.contractor_code=%s AND b.project_id=%s'
+    cur.execute(get_bills_query, (str(data['work_order_id']), contractor_code, project_id))
     bills = cur.fetchall()
 
     get_project_query = 'SELECT project_name, project_number from projects WHERE project_id=' + str(project_id)
