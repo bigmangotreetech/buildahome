@@ -3080,7 +3080,7 @@ def upload_drawing():
             cur.execute(update_drawing_query)
             drawing_name = drawing_name.replace('_', ' ').capitalize()
             if str(result[1]).strip() != '':
-                revised_drawing_query = 'INSERT into revised_drawings (name, type, project_id, file) values (%s, %s, %s)'
+                revised_drawing_query = 'INSERT into revised_drawings (name, type, project_id, file) values (%s, %s, %s, %s)'
                 cur.execute(revised_drawing_query, (drawing_name, table_name, str(project_id)), result[1])
 
             mysql.connection.commit()
