@@ -2984,6 +2984,7 @@ def upload_revised_drawing():
 
 @app.route('/view_drawings', methods=['GET'])
 def  view_drawings():
+    return ''
 
 
 @app.route('/drawings', methods=['GET'])
