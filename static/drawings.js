@@ -15,6 +15,7 @@ $('.status-action').on('click', function () {
     actionBtn = $(this).find('div')
     $('.upload-drawing-form').addClass('d-none')
     $('.drawing-links').html()
+    $('.drawing-complete').text('Complete')
 
     drawing_link = $(this).attr('data-link').toString()
 
@@ -30,9 +31,10 @@ $('.status-action').on('click', function () {
             $(drawingLink).text('View drawing '+index.toString())
             $(drawingLink).addClass('drawing-link')
             $(drawingLink).attr('href', '/erp/files/' + drawing)
-            $(drawingLink).attr('targer', '_blank')
+            $(drawingLink).attr('target', '_blank')
             $('.drawing-links').append(drawingLink)
             index++;
+            $('.drawing-complete').text('Revise')
         }        
     }
 

@@ -3071,15 +3071,20 @@ def upload_drawing():
             table_name = session['category']
         else:
             table_name = get_drwaings_table_name()
-        check_if_drawing_exists_query = 'SELECT id FROM ' + table_name + ' WHERE project_id=' + str(project_id)
+        check_if_drawing_exists_query = 'SELECT id, '+ drawing_name +' FROM ' + table_name + ' WHERE project_id=' + str(project_id)
         cur.execute(check_if_drawing_exists_query)
         result = cur.fetchone()
         if result is not None:
             update_drawing_query = 'UPDATE ' + table_name + ' set ' + drawing_name + '="' + '||'.join(drawing_filenames) + '" WHERE id=' + str(
                 result[0])
             cur.execute(update_drawing_query)
-            mysql.connection.commit()
             drawing_name = drawing_name.replace('_', ' ').capitalize()
+
+            revised_drawing_query = 'INSERT into revised_drawings (name, type, project_id) values (%s, %s, %s)'
+            cur.execute(new_drawing_query, (result[1], table_name, str(project_id)))
+
+            mysql.connection.commit()
+
             flash(drawing_name + ' Drawing uploaded to project ' + request.form['project_name'], 'success')
             return redirect('/erp/drawings')
         else:
