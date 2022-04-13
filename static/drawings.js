@@ -28,6 +28,7 @@ $('.status-action').on('click', function () {
             let drawingLink = document.createElement("A")
             $(drawingLink).text('View drawing '+index.toString())
             $(drawingLink).attr('href', '/erp/files/' + drawing)
+            $(drawingLink).attr('targer', '_blank')
             $('.drawing-links').append(drawingLink)
             index++;
         }        
