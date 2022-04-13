@@ -17,12 +17,20 @@ $('.status-action').on('click', function () {
 
     drawing_link = $(this).attr('data-link').toString()
 
-    if (drawing_link == 'None' || drawing_link == '0' || drawing_link == '') {
+    if (drawing_link == 'None' || drawing_link == '0' || drawing_link == '-1' || drawing_link == '') {
         $('.drawing-link-section').addClass('d-none')
     }
     else {
         $('.drawing-link-section').removeClass('d-none')
-        $('.drawing-link').attr('href', '/files/' + $(this).attr('data-link').toString())
+        drawings = $(this).attr('data-link').toString().split('||')
+        index = 1;
+        for (const drawing of drawings) {
+            let drawingLink = document.createElement("A")
+            $(drawingLink).text('View drawing '+index.toString())
+            $(drawingLink).attr('href', '/erp/files/' + drawing)
+            $('.drawing-link').append(drawing_link)
+            index++;
+        }        
     }
 
     project_name = $($(this).parents('tr').find('td').get(0)).text()
