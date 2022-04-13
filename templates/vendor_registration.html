@@ -3,7 +3,7 @@
 <div class="my-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form action="/erp/vendor_registration" method="post">
+            <form action="/erp/vendor_registration" method="post" enctype="multipart/form-data">
                 <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
                     <div class="col-12">
                         <h4>Vendor registration</h4>
@@ -29,14 +29,6 @@
                     </div>
                 </div>
 
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
-                        <label for="profile_picture">Vendor logo</label>
-                    </div>
-                    <div class="col-6">
-                        <input type="file" name="profile_picture" id="profile_picture" class="form-control">
-                    </div>
-                </div>
 
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
@@ -204,6 +196,15 @@
                     </div>
                     <div class="col-6">
                         <input type="number" name="contact_no" id="contact_no" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="profile_picture">Vendor logo</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="file" name="profile_picture" id="profile_picture" class="form-control">
                     </div>
                 </div>
 
