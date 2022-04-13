@@ -3078,14 +3078,14 @@ def upload_drawing():
                 result[0])
             cur.execute(update_drawing_query)
             mysql.connection.commit()
-            drawing_name = drawing_name.split('_').capitalize()
+            drawing_name = drawing_name.replace('_', ' ').capitalize()
             flash(drawing_name + ' Drawing uploaded to project ' + request.form['project_name'], 'success')
             return redirect('/erp/drawings')
         else:
             insert_drawing_query = 'INSERT into ' + table_name + ' (project_id, ' + drawing_name + ') values (%s, %s)'
             cur.execute(insert_drawing_query, (str(project_id), '||'.join(drawing_filenames)))
             mysql.connection.commit()
-            drawing_name = drawing_name.split('_').capitalize()
+            drawing_name = drawing_name.replace('_', ' ').capitalize()
             flash(drawing_name + ' Drawing uploaded to project ' + request.form['project_name'], 'success')
             return redirect('/erp/drawings')
 
