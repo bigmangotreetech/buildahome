@@ -32,10 +32,12 @@
             <tbody>
             {% for i in drawings %}
             <tr>
-                <td>{{i[1]}}</td>
+                <td>{{i[1].split('_').capitalize}}</td>
                 <td>{{i[2]}}</td>
                 <td>
-                    <a target="_blank" href="/erp/files/rd_{{i[0]}}.pdf">View</a>
+                    {% for x in i[3].split('||') %}
+                    <a class="d-block" target="_blank" href="/erp/files/{{x}}">View</a>
+                    {% endfor %}
                 </td>
 
             </tr>
