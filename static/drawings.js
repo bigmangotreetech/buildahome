@@ -5,12 +5,12 @@ var project_id;
 var drawing_name;
 var drawing_link;
 
-$('th').each(function(index, element) {
-    if (index!=0)
+$('th').each(function (index, element) {
+    if (index != 0)
         drawings_list.push(element.innerHTML)
 })
 
-$('.status-action').on('click', function() {
+$('.status-action').on('click', function () {
     $('.current-status').text('')
     actionBtn = $(this).find('div')
     $('.upload-drawing-form').addClass('d-none')
@@ -22,7 +22,7 @@ $('.status-action').on('click', function() {
     }
     else {
         $('.drawing-link-section').removeClass('d-none')
-        $('.drawing-link').attr('href', '/files/'+$(this).attr('data-link').toString())
+        $('.drawing-link').attr('href', '/files/' + $(this).attr('data-link').toString())
     }
 
     project_name = $($(this).parents('tr').find('td').get(0)).text()
@@ -37,32 +37,32 @@ $('.status-action').on('click', function() {
     $('#drawing_name').val(drawing_name)
 })
 
-$('.drawing-complete').on('click', function(){
+$('.drawing-complete').on('click', function () {
     action = 'Complete';
-    $('.current-status').text('Changing status to '+action)
+    $('.current-status').text('Changing status to ' + action)
     $('.upload-drawing-form').removeClass('d-none')
 })
 
-$('.drawing-in-progress').on('click', function(){
+$('.drawing-in-progress').on('click', function () {
     action = 'In progress';
-    $('.current-status').text('Changing status to '+action)
+    $('.current-status').text('Changing status to ' + action)
     $('.upload-drawing-form').addClass('d-none')
 })
 
-$('.drawing-pending').on('click', function(){
+$('.drawing-pending').on('click', function () {
     action = 'Pending';
-    $('.current-status').text('Changing status to '+action)
+    $('.current-status').text('Changing status to ' + action)
     $('.upload-drawing-form').addClass('d-none')
 })
 
-$('.drawing-not-applicable').on('click', function(){
+$('.drawing-not-applicable').on('click', function () {
     action = 'Not applicable';
-    $('.current-status').text('Changing status to '+action)
+    $('.current-status').text('Changing status to ' + action)
     $('.upload-drawing-form').addClass('d-none')
 })
 
 
-$('.approve_drawing_btn').on('click', function(){
+$('.approve_drawing_btn').on('click', function () {
 
     if (action == "Complete") {
         actionBtn.find('.status').addClass('d-none')
@@ -77,23 +77,51 @@ $('.approve_drawing_btn').on('click', function(){
         actionBtn.find('.bg-warning').removeClass('d-none')
 
         $.ajax({
-        type: "POST",
-        url: "/erp/mark_drawing_in_progress",
-        success: function (data) {
-            window.location.href = '/erp/drawings'
-        },
-        error: function (error) {
-            console.log(error)
-            // handle error
-        },
-        async: true,
-        data: {'project_id': project_id, 'drawing_name': drawing_name},
-    });
+            type: "POST",
+            url: "/erp/mark_drawing_in_progress",
+            success: function (data) {
+                window.location.href = '/erp/drawings'
+            },
+            error: function (error) {
+                console.log(error)
+                // handle error
+            },
+            async: true,
+            data: { 'project_id': project_id, 'drawing_name': drawing_name },
+        });
     } else if (action == "Pending") {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-danger').removeClass('d-none')
+
+        $.ajax({
+            type: "POST",
+            url: "/erp/change_drawing_status",
+            success: function (data) {
+                window.location.href = '/erp/drawings'
+            },
+            error: function (error) {
+                console.log(error)
+                // handle error
+            },
+            async: true,
+            data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'pending' },
+        });
     } else if (action == "Not applicable") {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-primarys').removeClass('d-none')
+        
+        $.ajax({
+            type: "POST",
+            url: "/erp/change_drawing_status",
+            success: function (data) {
+                window.location.href = '/erp/drawings'
+            },
+            error: function (error) {
+                console.log(error)
+                // handle error
+            },
+            async: true,
+            data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'not_applicable' },
+        });
     }
 })

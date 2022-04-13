@@ -3085,6 +3085,47 @@ def upload_drawing():
             flash(drawing_name + ' Drawing uploaded to project ' + request.form['project_name'], 'success')
             return redirect('/erp/drawings')
 
+@app.route('/change_drawing_status', methods=['POST'])
+def change_drawing_status():
+    project_id = request.form['project_id']
+    drawing_name = request.form['drawing_name']
+    action = request.form['action']
+    drawing_name = drawing_name.lower().replace(' ', '_')
+    
+    cur = mysql.connection.cursor()
+    table_name = ''
+    if 'category' in session:
+        table_name = session['category']
+    else:
+        table_name = get_drwaings_table_name()
+
+    cur = mysql.connection.cursor()
+    check_if_drawing_exists_query = 'SELECT id FROM ' + table_name + '  WHERE project_id=' + str(project_id)
+    cur.execute(check_if_drawing_exists_query)
+    result = cur.fetchone()
+    if result is not None:
+        if action == 'pending':
+            update_drawing_query = 'UPDATE ' + table_name + ' set ' + drawing_name + '="" WHERE id=' + str(
+                result[0])
+            cur.execute(update_drawing_query)
+        elif action == 'not_applicable':
+            update_drawing_query = 'UPDATE ' + table_name + ' set ' + drawing_name + '="-1" WHERE id=' + str(
+                result[0])
+            cur.execute(update_drawing_query)
+        mysql.connection.commit()
+        flash('Drawing marked as in progress!', 'success')
+        return redirect('/erp/drawings')
+    else:
+        insert_drawing_query = 'INSERT into ' + table_name + ' (project_id, ' + drawing_name + ') values (%s, %s)'
+        if action == 'pending':
+            cur.execute(insert_drawing_query, (str(project_id), ''))
+        if action == 'not_applicable':    
+            cur.execute(insert_drawing_query, (str(project_id), '-1'))
+        mysql.connection.commit()
+        flash('Drawing marked as in progress!', 'success')
+        return redirect('/erp/drawings')
+
+
 
 @app.route('/mark_drawing_in_progress', methods=['POST'])
 def mark_drawing_in_progress():
