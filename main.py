@@ -912,7 +912,7 @@ def edit_vendor():
             return render_template('edit_vendor.html', vendor_details=vendor_details[1:],
                                    vendor_id=request.args['vendor_id'])
     else:
-        column_names = list(request.form.keys())
+        column_names = list(request.form.keys())[:-1]
 
         update_string = ""
         for i in column_names[:-1]:

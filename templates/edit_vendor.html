@@ -197,6 +197,10 @@
                     </div>
                 </div>
 
+                
+
+                <input type="hidden" name="vendor_id" value="{{vendor_id}}">
+
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="profile_picture">Vendor logo</label>
@@ -204,15 +208,14 @@
                     <div class="col-6">
                         <div class="mb-2">
                             <img alt="" height="150" width="150"
-                                 src="/erp/files/vendor_dp_{{request.args['contractor_id']}}" alt=""
+                                 src="/erp/files/vendor_dp_{{request.args['vendor_id']}}" alt=""
                                  onerror="this.src='./static/profile_picture.PNG'"
                                  style="border-radius: 50%">
+                            
                         </div>
                         <input type="file" name="profile_picture" id="profile_picture" class="form-control">
                     </div>
                 </div>
-
-                <input type="hidden" name="vendor_id" value="{{vendor_id}}">
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
                         <button class="btn btn-dark btn-block bg-indigo text-white">Submit</button>
