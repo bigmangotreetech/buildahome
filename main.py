@@ -2982,6 +2982,10 @@ def upload_revised_drawing():
             return redirect('/erp/revised_drawings')
 
 
+@app.route('/view_drawings', methods=['GET'])
+def  view_drawings():
+
+
 @app.route('/drawings', methods=['GET'])
 def drawings():
     table_name = ''
@@ -3008,16 +3012,15 @@ def drawings():
         if session['role'] not in ['Super Admin', 'Purchase Head', 'COO', 'QS Head','QS Engineer', 'Purchase Head', 'Site Engineer',
                                    'Design Head']:
             drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
-                                                                                                          "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0" \
-                                                                                                          ' WHERE p.project_id IN ' + str(
-                session['projects'])
+                            "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0" \
+                            ' WHERE p.project_id IN ' + str(session['projects'])
 
             cur.execute(drawings_info)
             drawings = cur.fetchall()
 
         else:
             drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
-                                                                                                          "p.project_id=d.project_id WHERE p.is_approved=1 AND p.archived=0"
+                            "p.project_id=d.project_id WHERE p.is_approved=1 AND p.archived=0"
             cur.execute(drawings_info)
             drawings = cur.fetchall()
 

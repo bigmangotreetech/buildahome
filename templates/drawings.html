@@ -30,7 +30,7 @@
 
 {% endif %}
 {% endif %}
-<div class="mt-4  w-100 table-responsive">
+<div class="mt-4  w-100 ">
     <table class="table table-striped mb-3">
         <thead>
         <tr>
@@ -44,7 +44,7 @@
         <tbody>
         {% for i in drawings %}
         <tr>
-            <td style="min-width: 200px;" data-project-id="{{i[0]}}">{{i[1]}}</td>
+            <td style="min-width: 200px;" class="project" data-project-id="{{i[0]}}">{{i[1]}}</td>
             {% for x in range(3, (i|length)) %}
             <td class="text-center status-action" data-link="{{i[x]}}" data-index="{{x - 3}}" data-toggle="modal" data-target="#drawing-modal">
                 <div class="w-100 d-flex justify-content-center">
@@ -169,10 +169,19 @@
     }
     .status-action {
         cursor: pointer;
+        z-index: 1;
     }
 
-    .table-responsive {
+    .table-parent {
         height: 95%;
+    }
+
+    .table-parent thead th {
+        position: sticky;
+        top: 0;
+        background: white;
+        background-color: white;
+        z-index: 2;
     }
 
 
