@@ -2983,7 +2983,7 @@ def upload_revised_drawing():
 
 
 @app.route('/view_drawings', methods=['GET'])
-def  view_drawings():
+def  view_drawings():            
     return ''
 
 
@@ -3043,16 +3043,20 @@ def get_drwaings_table_name():
 @app.route('/upload_drawing', methods=['POST'])
 def upload_drawing():
     if request.method == 'POST':
+        drawing_filenames = []
         drawing_filename = ''
-        if 'drawing' in request.files:
-            file = request.files['drawing']
+        files = request.files.getlist("drawings[]")
+        index = 1
+        for file in files:
             if file.filename == '':
                 flash('No selected file', 'danger ')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                drawing_filename = 'drawing_' + str(int(time.time())) + '.pdf'
+                drawing_filename = 'drawing_' + str(index) + str(int(time.time())) + '.pdf'
                 output = send_to_s3(file, app.config["S3_BUCKET"], drawing_filename)
+                drawing_filenames.append(drawing_filename)
+                index = index + 1
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
@@ -3070,7 +3074,7 @@ def upload_drawing():
         cur.execute(check_if_drawing_exists_query)
         result = cur.fetchone()
         if result is not None:
-            update_drawing_query = 'UPDATE ' + table_name + ' set ' + drawing_name + '="' + drawing_filename + '" WHERE id=' + str(
+            update_drawing_query = 'UPDATE ' + table_name + ' set ' + drawing_name + '="' + '||'.join(drawing_filenames) + '" WHERE id=' + str(
                 result[0])
             cur.execute(update_drawing_query)
             mysql.connection.commit()
@@ -3079,7 +3083,7 @@ def upload_drawing():
             return redirect('/erp/drawings')
         else:
             insert_drawing_query = 'INSERT into ' + table_name + ' (project_id, ' + drawing_name + ') values (%s, %s)'
-            cur.execute(insert_drawing_query, (str(project_id), drawing_filename))
+            cur.execute(insert_drawing_query, (str(project_id), '||'.join(drawing_filenames)))
             mysql.connection.commit()
             drawing_name = drawing_name.split('_').capitalize()
             flash(drawing_name + ' Drawing uploaded to project ' + request.form['project_name'], 'success')
