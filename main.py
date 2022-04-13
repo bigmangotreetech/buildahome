@@ -833,6 +833,7 @@ def vendor_registration():
         column_names = list(request.form.keys())
         values = list(request.form.values())
         values[2] = str(request.form.getlist('location')).replace("'","")
+        values[7] = str(request.form.getlist('material_type')).replace("'","")
 
         cur = mysql.connection.cursor()
         new_vendor_query = 'INSERT into vendors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
