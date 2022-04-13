@@ -3042,6 +3042,9 @@ def get_drwaings_table_name():
 
 @app.route('/upload_drawing', methods=['POST'])
 def upload_drawing():
+    project_id = request.form['project_id']
+    drawing_name = request.form['drawing_name']
+    drawing_name = drawing_name.lower().replace(' ', '_')
     if request.method == 'POST':
         drawing_filenames = []
         drawing_filename = ''
@@ -3053,16 +3056,14 @@ def upload_drawing():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                drawing_filename = 'drawing_' + str(index) + str(int(time.time())) + '.pdf'
+                drawing_filename = 'd_'+str(project_id) + '_' + str(drawing_name) + '_' + str(index) + '_' + str(int(time.time())) + '.pdf'
                 output = send_to_s3(file, app.config["S3_BUCKET"], drawing_filename)
                 drawing_filenames.append(drawing_filename)
                 index = index + 1
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
-        project_id = request.form['project_id']
-        drawing_name = request.form['drawing_name']
-        drawing_name = drawing_name.lower().replace(' ', '_')
+        
 
         cur = mysql.connection.cursor()
         table_name = ''
