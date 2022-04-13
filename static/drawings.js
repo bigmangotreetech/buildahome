@@ -14,6 +14,7 @@ $('.status-action').on('click', function () {
     $('.current-status').text('')
     actionBtn = $(this).find('div')
     $('.upload-drawing-form').addClass('d-none')
+    $('.drawing-links').html()
 
     drawing_link = $(this).attr('data-link').toString()
 
@@ -27,6 +28,7 @@ $('.status-action').on('click', function () {
         for (const drawing of drawings) {
             let drawingLink = document.createElement("A")
             $(drawingLink).text('View drawing '+index.toString())
+            $(drawingLink).addClass('drawing-link')
             $(drawingLink).attr('href', '/erp/files/' + drawing)
             $(drawingLink).attr('targer', '_blank')
             $('.drawing-links').append(drawingLink)
@@ -102,35 +104,47 @@ $('.approve_drawing_btn').on('click', function () {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-danger').removeClass('d-none')
 
-        $.ajax({
-            type: "POST",
-            url: "/erp/change_drawing_status",
-            success: function (data) {
-                window.location.href = '/erp/drawings'
-            },
-            error: function (error) {
-                console.log(error)
-                // handle error
-            },
-            async: true,
-            data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'pending' },
-        });
+        if ($('.drawing-link').length) {
+            if (confirm('Are you sure you want to change the status of this to pending. Older drawings will be removed')) {
+                $.ajax({
+                    type: "POST",
+                    url: "/erp/change_drawing_status",
+                    success: function (data) {
+                        window.location.href = '/erp/drawings'
+                    },
+                    error: function (error) {
+                        console.log(error)
+                        // handle error
+                    },
+                    async: true,
+                    data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'pending' },
+                });
+            }
+        }
+
+        
     } else if (action == "Not applicable") {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-primarys').removeClass('d-none')
+
+        if ($('.drawing-link').length) {
+            if (confirm('Are you sure you want to change the status of this to not applicable. Older drawings will be removed')) {
+                $.ajax({
+                    type: "POST",
+                    url: "/erp/change_drawing_status",
+                    success: function (data) {
+                        window.location.href = '/erp/drawings'
+                    },
+                    error: function (error) {
+                        console.log(error)
+                        // handle error
+                    },
+                    async: true,
+                    data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'not_applicable' },
+                });
+            }
+        }
         
-        $.ajax({
-            type: "POST",
-            url: "/erp/change_drawing_status",
-            success: function (data) {
-                window.location.href = '/erp/drawings'
-            },
-            error: function (error) {
-                console.log(error)
-                // handle error
-            },
-            async: true,
-            data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'not_applicable' },
-        });
+        
     }
 })
