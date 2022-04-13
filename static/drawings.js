@@ -55,6 +55,12 @@ $('.drawing-pending').on('click', function(){
     $('.upload-drawing-form').addClass('d-none')
 })
 
+$('.drawing-not-applicable').on('click', function(){
+    action = 'Not applicable';
+    $('.current-status').text('Changing status to '+action)
+    $('.upload-drawing-form').addClass('d-none')
+})
+
 
 $('.approve_drawing_btn').on('click', function(){
 
@@ -86,5 +92,8 @@ $('.approve_drawing_btn').on('click', function(){
     } else if (action == "Pending") {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-danger').removeClass('d-none')
+    } else if (action == "Not applicable") {
+        actionBtn.find('.status').addClass('d-none')
+        actionBtn.find('.bg-primarys').removeClass('d-none')
     }
 })
