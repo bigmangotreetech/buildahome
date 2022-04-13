@@ -87,19 +87,25 @@ $('.approve_drawing_btn').on('click', function () {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-warning').removeClass('d-none')
 
-        $.ajax({
-            type: "POST",
-            url: "/erp/mark_drawing_in_progress",
-            success: function (data) {
-                window.location.href = '/erp/drawings'
-            },
-            error: function (error) {
-                console.log(error)
-                // handle error
-            },
-            async: true,
-            data: { 'project_id': project_id, 'drawing_name': drawing_name },
-        });
+        if ($('.drawing-link').length) {
+            if (confirm('Are you sure you want to change the status of this to in progress. Older drawings will be removed')) {
+                $.ajax({
+                    type: "POST",
+                    url: "/erp/mark_drawing_in_progress",
+                    success: function (data) {
+                        window.location.href = '/erp/drawings'
+                    },
+                    error: function (error) {
+                        console.log(error)
+                        // handle error
+                    },
+                    async: true,
+                    data: { 'project_id': project_id, 'drawing_name': drawing_name },
+                });
+            }
+        }
+
+       
     } else if (action == "Pending") {
         actionBtn.find('.status').addClass('d-none')
         actionBtn.find('.bg-danger').removeClass('d-none')
