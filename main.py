@@ -830,8 +830,8 @@ def vendor_registration():
     if request.method == 'GET':
         return render_template('vendor_registration.html')
     else:
-        column_names = list(request.form.keys())[:-1]
-        values = list(request.form.values())[:-1]
+        column_names = list(request.form.keys())
+        values = list(request.form.values())
         values[2] = str(request.form.getlist('location')).replace("'","")
 
         cur = mysql.connection.cursor()
