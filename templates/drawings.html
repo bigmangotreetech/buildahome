@@ -34,7 +34,7 @@
     <table class="table table-striped mb-3">
         <thead>
         <tr>
-            <th scope="col" style="min-width: 200px;">Project</th>
+            <th scope="col project-header" style="min-width: 200px;">Project</th>
             {% for i in drawing_names %}
             <th scope="col">{{i}}</th>
             {% endfor %}
@@ -190,6 +190,11 @@
         background: white;
         background-color: white;
         z-index: 2;
+    }
+
+    .project-header {
+        z-index: 4;
+        left: 0;
     }
 
 
