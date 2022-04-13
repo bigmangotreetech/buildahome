@@ -5,6 +5,15 @@ $(document).ready(function () {
         if ($('.edit_vendor_material_type').length > 0) {
             $('#edit_vendor_material_type_select').val($('.edit_vendor_material_type').text())
             $('#edit_vendor_material_type_select').trigger('change')
+
+            let materials = $('.edit_vendor_material_type').text()
+            materials = materials.replaceAll("'","")
+            materials = materials.split(',')
+            stripped_materials = []
+            for(const material of materials) 
+                stripped_materials.push(material.trim())
+            $("#edit_vendor_material_type_select").val(stripped_materials)
+            $("#edit_vendor_material_type_select").trigger('change')
         }
 
         if($('.vendor-location').length > 0) {
