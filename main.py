@@ -481,7 +481,8 @@ def shifting_entry():
             'Honne wood frame': '',
             'Teak wood door': '',
             'Sal wood door': '',
-            'Flush door': ''     
+            'Flush door': '',
+            'Binding wire': ''   
         }
 
         return render_template('shifting_entry.html', projects=projects, material_quantity_data=material_quantity_data)
@@ -1102,7 +1103,8 @@ def kyp_material():
         'Honne wood frame': '',
         'Teak wood door': '',
         'Sal wood door': '',
-        'Flush door': ''     
+        'Flush door': '' ,
+        'Binding wire': ''      
     }
     if request.method == 'GET':
         cur = mysql.connection.cursor()
