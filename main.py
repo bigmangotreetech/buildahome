@@ -471,7 +471,7 @@ def shifting_entry():
             'Jackets': '',
             'GI sheets': '',
             'Tarpaulin': '',
-            'Nails': ''
+            'Nails': '',
             'Cement': '',
             'Steel': '',
             'M Sand': '',
