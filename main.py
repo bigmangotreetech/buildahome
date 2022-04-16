@@ -856,7 +856,7 @@ def vendor_registration():
 
         cur = mysql.connection.cursor()
 
-        check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+"'"
+        check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+'"'
         cur.execute(check_query)
         result = cur.fetchone()
         if result is not None:
@@ -941,7 +941,7 @@ def edit_vendor():
                                    vendor_id=request.args['vendor_id'])
     else:
         cur = mysql.connection.cursor()
-        check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+"'"
+        check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+'"'
         cur.execute(check_query)
         result = cur.fetchone()
         if result is not None:
