@@ -342,6 +342,7 @@ def enter_material():
         material = material.replace('"','')
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
             project) + " AND material LIKE'%" + str(material) + "%'"
+        return material_quantity_query
         cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is None:
