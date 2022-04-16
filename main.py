@@ -339,10 +339,10 @@ def enter_material():
         if result is not None:
             vendor = result[0]
 
+        material = material.replace('"','')
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            project) + " AND material='" + str(material) + "'"
+            project) + " AND material LIKE'%" + str(material) + "%'"
         cur.execute(material_quantity_query)
-        return material_quantity_query
         result = cur.fetchone()
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
