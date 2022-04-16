@@ -722,7 +722,7 @@ def contractor_registration():
         values = list(request.form.values())
         cur = mysql.connection.cursor()
 
-        check_if_code_exists = 'SELECT id FROM contractors WHERE code='+request.form['contractor_code']
+        check_if_code_exists = 'SELECT id FROM contractors WHERE code='+request.form['code']
         cur.execute(check_if_code_exists)
         res = cur.fetchone()
         if res is not None:
@@ -784,6 +784,15 @@ def edit_contractor():
             return render_template('edit_contractor.html', trades=trades, contractor_details=contractor_details[1:],
                                    contractor_id=request.args['contractor_id'])
     else:
+        cur = mysql.connection.cursor()
+
+        check_if_code_exists = 'SELECT id FROM contractors WHERE code='+request.form['code']
+        cur.execute(check_if_code_exists)
+        res = cur.fetchone()
+        if res is not None:
+            flash('Contractor with that code already exists. Operation failed', 'danger')
+            return redirect(request.referrer)
+
         column_names = list(request.form.keys())
 
         update_string = ""
@@ -793,7 +802,6 @@ def edit_contractor():
         update_string = update_string[:-2]
         update_vendor_query = 'UPDATE contractors SET ' + update_string + ' WHERE id=' + str(
             request.form['contractor_id'])
-        cur = mysql.connection.cursor()
         cur.execute(update_vendor_query)
         mysql.connection.commit()
 
@@ -847,6 +855,14 @@ def vendor_registration():
         values[7] = str(request.form.getlist('material_type')).replace("'","")
 
         cur = mysql.connection.cursor()
+
+        check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+"'"
+        cur.execute(check_query)
+        result = cur.fetchone()
+        if result is not None:
+            flash('Vendor with code '+request.form['code']+' already exists', 'danger')
+            return redirect(request.referrer)
+
         new_vendor_query = 'INSERT into vendors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
         cur.execute(new_vendor_query)
@@ -880,7 +896,7 @@ def view_vendors():
         return redirect(request.referrer)
 
     cur = mysql.connection.cursor()
-    vendors_query = 'SELECT id, name, code, contact_no FROM vendors'
+    vendors_query = 'SELECT id, name, code, contact_no FROM vendors ORDER by name'
     cur.execute(vendors_query)
     result = cur.fetchall()
     return render_template('view_vendors.html', vendors=result)
@@ -924,6 +940,14 @@ def edit_vendor():
             return render_template('edit_vendor.html', vendor_details=vendor_details[1:],
                                    vendor_id=request.args['vendor_id'])
     else:
+        cur = mysql.connection.cursor()
+        check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+"'"
+        cur.execute(check_query)
+        result = cur.fetchone()
+        if result is not None:
+            flash('Vendor with code '+request.form['code']+' already exists', 'danger')
+            return redirect(request.referrer)
+
         column_names = list(request.form.keys())[:-1]
 
         update_string = ""
@@ -938,7 +962,7 @@ def edit_vendor():
         update_string = update_string[:-2]
         update_vendor_query = 'UPDATE vendors SET ' + update_string + ' WHERE id=' + str(
             request.form['vendor_id'])
-        cur = mysql.connection.cursor()
+        
         cur.execute(update_vendor_query)
         mysql.connection.commit()
         if 'profile_picture' in request.files:
