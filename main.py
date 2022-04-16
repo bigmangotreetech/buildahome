@@ -341,10 +341,9 @@ def enter_material():
 
         material = material.replace('"','')
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            project) + " AND material LIKE '%" + str(material) + "%'"
+            project) + " AND material LIKE '%" + str(material).strip() + "%'"
         cur.execute(material_quantity_query)
         result = cur.fetchone()
-        return material_quantity_query+ ' '+str(result)
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
             return redirect('/erp/enter_material')
