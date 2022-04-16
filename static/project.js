@@ -84,7 +84,7 @@ $(document).ready(function () {
     $(".material-select").on('change', function() {
         $(".vendor-select").empty()
         $(".vendor-select").append($("<option></option>"))
-        const material_selected = $(this).val()
+        const material_selected = $(this).val().trim()
         $.ajax({
                 url: '/erp/get_vendors_for_material',
                 type: "POST",
