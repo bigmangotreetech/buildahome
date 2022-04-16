@@ -339,9 +339,8 @@ def enter_material():
         if result is not None:
             vendor = result[0]
 
-        material = material.replace('"','')
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            project) + " AND material LIKE '%" + str(material).strip() + "%'"
+            project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is None:
@@ -392,8 +391,8 @@ def view_inventory():
             if str(i[0]) == str(project_id):
                 project = i[1]
 
-        material_quantity_query = 'SELECT total_quantity from kyp_material WHERE project_id=' + str(
-            project_id) + ' AND material="' + str(material) + '"'
+        material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+            project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is not None:
@@ -524,7 +523,7 @@ def shifting_entry():
             positive_diff = str(difference_cost)
 
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            from_project) + " AND material='" + str(material) + "'"
+            project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         
         cur.execute(material_quantity_query)
         result = cur.fetchone()
