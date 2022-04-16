@@ -472,6 +472,16 @@ def shifting_entry():
             'GI sheets': '',
             'Tarpaulin': '',
             'Nails': ''
+            'Cement': '',
+            'Steel': '',
+            'M Sand': '',
+            'P Sand': '',
+            'Teak wood frame': '',
+            'Sal wood frame': '',
+            'Honne wood frame': '',
+            'Teak wood door': '',
+            'Sal wood door': '',
+            'Flush door': ''     
         }
 
         return render_template('shifting_entry.html', projects=projects, material_quantity_data=material_quantity_data)
@@ -512,6 +522,7 @@ def shifting_entry():
             negative_diff = '-'+str(difference_cost)
             positive_diff = str(difference_cost)
 
+        material = str(material).replace('"','\"')
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
             from_project) + " AND material='" + str(material) + "'"
         cur.execute(material_quantity_query)
