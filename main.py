@@ -991,7 +991,7 @@ def get_vendors():
 def get_vendors_for_material():
     material_selected = request.form['material_selected']
     cur = mysql.connection.cursor() 
-    query = 'SELECT id, name from vendors WHERE material_type LIKE "%'+material_selected+'%"'
+    query = "SELECT id, name from vendors WHERE material_type LIKE '%"+material_selected+"%'"
     cur.execute(query)
     res = cur.fetchall()
     return jsonify(res)
