@@ -2,11 +2,7 @@
 $(document).ready(function () {
 
 
-    $('.select2.select2-container').on('click', function(){
-        setTimeout(() => {
-            $(this).parents().find('.select2-search__field').get(0).focus()
-        }, 500)
-    })
+    
 
     setTimeout(() => {
         if ($('.edit_vendor_material_type').length > 0) {
@@ -33,6 +29,12 @@ $(document).ready(function () {
             $("#location").val(stripped_vendor_locations)
             $("#location").trigger('change')
         }
+
+        $('.select2.select2-container').on('click', function(){
+            setTimeout(() => {
+                $(this).parents().find('.select2-search__field').get(0).focus()
+            }, 500)
+        })
     }, 1000)
 
     if($('.approved_amount').length && $('.total_paid').length) {
@@ -147,6 +149,7 @@ $(document).ready(function () {
                 dataType: 'json',
                 data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
                 success: function (data) {
+                    $('#create_bill_form').removeClass('d-none')
                     $('.total_wo_value').text(data['work_order_value'])
                     $('.contractor_name').text(data['contractor_name'])
                     $('.contractor_code').text(data['contractor_code'])

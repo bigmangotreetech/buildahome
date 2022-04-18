@@ -96,7 +96,7 @@
                     
                 </div>
 
-                <form action="/erp/create_bill" method="POST" id="create_bill_form">
+                <form action="/erp/create_bill" method="POST" id="create_bill_form" class="d-none">
                     <input type="hidden" name="project_id">
                     <input type="hidden" name="trade">
                     <input type="hidden" name="stage">
@@ -110,7 +110,7 @@
                             <label>Transportation cost</label>
                         </div>
                         <div class="col-6">
-                            <input name='transportation' class="form-control w-50"></input>
+                            <input name='transportation' value="0" class="form-control w-50"></input>
                         </div>
                     </div>
                     <div class="row mx-0 mb-3 form-group">
@@ -118,7 +118,7 @@
                             <label>Loading Unloading cost</label>
                         </div>
                         <div class="col-6">
-                            <input name='loading_unloading' class="form-control w-50"></input>
+                            <input name='loading_unloading' value="0" class="form-control w-50"></input>
                         </div>
                     </div>
                 </form>
