@@ -119,6 +119,7 @@ $(document).ready(function () {
         $('#create_bill_form').addClass('d-none')
 
         if (project_id) {
+            $('.select_trade_for_bill').removeClass('d-none')
             $(".select_trade_for_bill select").empty()
             $(".select_trade_for_bill select").append($("<option></option>"))
             $.ajax({
@@ -128,7 +129,6 @@ $(document).ready(function () {
                 data: { 'project_id': project_id },
                 success: function (data) {
                     for (const trade of data) {
-                        $('.select_trade_for_bill').removeClass('d-none')
                         $(".select_trade_for_bill select").append($("<option></option>")
                             .attr("value", trade[0])
                             .text(trade[1]))
@@ -145,6 +145,8 @@ $(document).ready(function () {
         const work_order_id_for_trade = $(this).val()
         if (work_order_id_for_trade) {
             $(".select_payment_stage select").empty()
+            $('.select_payment_stage').removeClass('d-none')
+
             $(".select_payment_stage select").append($("<option></option>"))
             project_id = $("#project").val()
             $.ajax({
@@ -153,7 +155,6 @@ $(document).ready(function () {
                 dataType: 'json',
                 data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
                 success: function (data) {
-                    $('.select_payment_stage').removeClass('d-none')
                     $('.total_wo_value').text(data['work_order_value'])
                     $('.contractor_name').text(data['contractor_name'])
                     $('.contractor_code').text(data['contractor_code'])
