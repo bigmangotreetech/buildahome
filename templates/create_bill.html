@@ -93,6 +93,7 @@
                             <label class="font-weight-bold ">₹ <span class="bill_amount"></span></label>
                         </div>
                     </div>
+                    
                 </div>
 
                 <form action="/erp/create_bill" method="POST" id="create_bill_form">
@@ -104,6 +105,22 @@
                     <input type="hidden" name="contractor_name">
                     <input type="hidden" name="contractor_code">
                     <input type="hidden" name="contractor_pan">
+                    <div class="row mx-0 mb-3 form-group">
+                        <div class="col-6">
+                            <label>Transportation cost</label>
+                        </div>
+                        <div class="col-6">
+                            <input name='transportation' class="form-control w-50"></input>
+                        </div>
+                    </div>
+                    <div class="row mx-0 mb-3 form-group">
+                        <div class="col-6">
+                            <label>Loading Unloading cost</label>
+                        </div>
+                        <div class="col-6">
+                            <input name='loading_unloading' class="form-control w-50"></input>
+                        </div>
+                    </div>
                 </form>
 
                 <div class="row justify-content-center mx-0 my-5">

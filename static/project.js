@@ -1,6 +1,13 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
+
+    $('.select2.select2-container').on('click', function(){
+        setTimeout(() => {
+            $(this).parents().find('.select2-search__field').get(0).focus()
+        }, 500)
+    })
+
     setTimeout(() => {
         if ($('.edit_vendor_material_type').length > 0) {
             $('#edit_vendor_material_type_select').val($('.edit_vendor_material_type').text())
