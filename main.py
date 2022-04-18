@@ -311,7 +311,7 @@ def enter_material():
         return render_template('enter_material.html', projects=projects, vendors=vendors)
     else:
         required_fields = ['material', 'description', 'vendor', 'project', 'po_no', 'invoice_no', 'invoice_date',
-                           'quantity', 'unit', 'rate', 'gst', 'total_amount', 'difference_cost', 'photo_date']
+                           'quantity', 'unit', 'rate', 'gst', 'total_amount', 'difference_cost', 'photo_date','transportation','loading_unloading']
         for field in required_fields:
             if field not in list(request.form.keys()):
                 flash('Missing fields. Operation failed', 'danger')
@@ -331,6 +331,11 @@ def enter_material():
         total_amount = request.form['total_amount']
         difference_cost = request.form['difference_cost']
         photo_date = request.form['photo_date']
+        
+        transportation = request.form['transportation']
+        loading_unloading = request.form['loading_unloading']
+
+
         cur = mysql.connection.cursor()
 
         vendor_query = 'SELECT name from vendors WHERE id='+str(vendor)
@@ -352,9 +357,9 @@ def enter_material():
             return redirect('/erp/enter_material')
 
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
-                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst,
-                  total_amount, difference_cost, photo_date)
+                  total_amount, difference_cost, photo_date, transportation, loading_unloading)
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
@@ -1273,6 +1278,7 @@ def create_bill():
         contractor_name = request.form['contractor_name']
         contractor_code = request.form['contractor_code']
         contractor_pan = request.form['contractor_pan']
+
         total_payable = float(amount)
         check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
             trade) + '" AND stage="' + str(stage) + '"'

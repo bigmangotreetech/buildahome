@@ -113,10 +113,14 @@ $(document).ready(function () {
     $(".update_trades_for_project").on('change', function () {
         const project_id = $(this).val()
 
+        $('select_trade_for_bill select').addClass('d-none')
+        $('.select_payment_stage').addClass('d-none')
+        $(".final_details").addClass('d-none')
+        $('#create_bill_form').addClass('d-none')
+
         if (project_id) {
             $(".select_trade_for_bill select").empty()
             $(".select_trade_for_bill select").append($("<option></option>"))
-            $('.select_trade_for_bill').removeClass('d-none')
             $.ajax({
                 url: '/erp/update_trades_for_project',
                 type: "POST",
@@ -124,6 +128,7 @@ $(document).ready(function () {
                 data: { 'project_id': project_id },
                 success: function (data) {
                     for (const trade of data) {
+                        $('.select_trade_for_bill').removeClass('d-none')
                         $(".select_trade_for_bill select").append($("<option></option>")
                             .attr("value", trade[0])
                             .text(trade[1]))
@@ -142,14 +147,13 @@ $(document).ready(function () {
             $(".select_payment_stage select").empty()
             $(".select_payment_stage select").append($("<option></option>"))
             project_id = $("#project").val()
-            $('.select_payment_stage').removeClass('d-none')
             $.ajax({
                 url: '/erp/update_payment_stages',
                 type: "POST",
                 dataType: 'json',
                 data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
                 success: function (data) {
-                    $('#create_bill_form').removeClass('d-none')
+                    $('.select_payment_stage').removeClass('d-none')
                     $('.total_wo_value').text(data['work_order_value'])
                     $('.contractor_name').text(data['contractor_name'])
                     $('.contractor_code').text(data['contractor_code'])
@@ -172,6 +176,8 @@ $(document).ready(function () {
         if (payment_percentage) {
 
             $(".final_details").removeClass('d-none')
+            $('#create_bill_form').removeClass('d-none')
+
             $(".payment_percentage").text(payment_percentage.toString() + "%")
             let work_order_value = parseFloat($('.total_wo_value').text())
             payment_percentage = parseFloat(payment_percentage)
@@ -207,7 +213,8 @@ $(document).ready(function () {
 
         const contractor_pan = $('.contractor_pan').text()
         $('input[name="contractor_pan"]').val(contractor_pan)
-
+        if ($('#create_bill_form').hasClass('d-none')) return;
+        
         $("#create_bill_form").submit()
     })
 
