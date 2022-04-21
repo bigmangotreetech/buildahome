@@ -3009,6 +3009,7 @@ def view_drawings_requests():
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
                             ' WHERE p.project_id IN ' + str(session['projects'])
+            return get_requests
             cur.execute(get_requests) 
                        
         else: 
