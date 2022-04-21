@@ -2252,6 +2252,21 @@ def edit_indent():
         return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
 
 
+@app.route('/delete_indent', methods=['GET'])
+def delete_indent():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_indent_details'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        indent_id = request.args['indent_id'] 
+        cur = mysql.connection.cursor()
+        query = 'DELETE from indents WHERE id='+str(indent_id)
+        cur.excecute(query)
+        mysql.connection.commit()
+        flash('Indent deleted','danger')
+        return redirect('/erp/view_qs_approval_indents')
+
 @app.route('/upload_po_for_indent', methods=['POST'])
 def upload_po_for_indent():
     if 'email' not in session:
