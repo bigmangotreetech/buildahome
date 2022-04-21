@@ -3062,7 +3062,7 @@ def revised_drawings():
         drawings = []
         if 'project_id' in request.args:
             cur = mysql.connection.cursor()
-            reviewed_drawings_query = 'SELECT id, type, name, file from revised_drawings WHERE project_id=' + str(
+            reviewed_drawings_query = 'SELECT id, type, name, file, revision from revised_drawings WHERE project_id=' + str(
                 request.args['project_id'])
             cur.execute(reviewed_drawings_query)
             drawings = cur.fetchall()
