@@ -3222,8 +3222,15 @@ def upload_drawing():
             cur.execute(update_drawing_query)
             drawing_name = drawing_name.replace('_', ' ').capitalize()
             if str(result[1]).strip() != '':
-                revised_drawing_query = 'INSERT into revised_drawings (name, type, project_id, file) values (%s, %s, %s, %s)'
-                cur.execute(revised_drawing_query, (drawing_name, table_name, str(project_id), result[1]))
+                revision = 1
+                revised_drawing_no_query = 'SELECT id from revised_drawings WHERE name="'+drawing_name+'" AND ' \
+                                            'type="'+table_name+'" AND project_id='+str(project_id)
+                cur.execute(revised_drawing_no_query)
+                res = cur.fetchall()
+                if res is not None: 
+                    revision = len(res) + 1
+                revised_drawing_query = 'INSERT into revised_drawings (name, type, project_id, file, revision) values (%s, %s, %s, %s, %s)'
+                cur.execute(revised_drawing_query, (drawing_name, table_name, str(project_id), result[1], revision))
 
             mysql.connection.commit()
 
