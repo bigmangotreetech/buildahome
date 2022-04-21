@@ -325,6 +325,7 @@ def project_notes():
             projects = get_projects()
             return render_template('notes_and_comments.html', projects=projects)
         else:
+            projects = get_projects()
             project_id = request.args['project_id']
             cur = mysql.connection.cursor()
             get_notes = 'SELECT n.note, n.timestamp, u.name FROM ' \
