@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="col-12">
+        <h4>Inventory</h4>
+    </div>
+</div>
+<div class="my-5 w-100">
+    <div class="row mx-3 pb-4">
+        <div class="col-sm-12 col-md-4 pl-0 pr-2 mb-2">
+            <select name="project" id="project" class="form-control select2">
+                <option value=""></option>
+                {% for i in projects %}
+                {% if i[0]|string() == request.args['project_id']|string() %}
+                <option value="{{i[0]}}" selected>{{i[1]}}</option>
+                {% else %}
+                <option value="{{i[0]}}">{{i[1]}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <button id="get_notes" class="btn text-white bg-indigo  mb-2">Get notes and comments</button>
+    </div>
+    <div class="w-100 p-3 overflow-x-auto">
+        {% if notes is not none %}
+        <form action="/erp/project_notes" method="post">
+            <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="col-12">
+                    <h4>New note</h4>
+                </div>
+            </div>
+
+            <input type="text" name="project_id" value="{{request.args['project_id']}}">
+
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label for="note">Note</label>
+                </div>
+                <div class="col-6">
+                    <textarea type="number" name="note" id="note" class="form-control" required></textarea>
+                </div>
+            </div>  
+
+
+            <div class="row justify-content-center mx-0 my-5">
+                <div class="col-6">
+                    <button class="btn btn-dark btn-block bg-indigo text-white">Submit</button>
+                </div>
+            </div>
+        </form>
+        {% for i in notes %}
+        <div class="bg-light my-2 border-left border-dark p-2">
+            <p>{{i[2]}} at {{i[1]}} : {{i[0]}}</p>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    p {
+        font-size: 12px;
+    }
+</style>
+
+{% endblock %}

@@ -314,6 +314,40 @@ def mobile_app_banner():
             flash('Missing file. Operation failed', 'failed')
             return redirect(request.referrer)
 
+@app.route('/project_notes', methods=['GET'])
+def project_notes():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/enter_material'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        if 'project_id' not in request.args:
+            projects = get_projects()
+            return render_template('notes_and_comments.html', projects=projects)
+        else:
+            project_id = request.args['project_id']
+            cur = mysql.connection.cursor()
+            get_notes = 'SELECT n.note, n.timestamp, u.name FROM ' \
+                            'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
+                            ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
+                            ' WHERE p.project_id =' + str(project_id)
+            cur.execute(get_notes)
+            res = cur.fetchall()
+            return render_template('notes_and_comments.html', projects=projects, notes=res)
+    else:
+        note = request.form['note']
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
+        user_id = session['user_id']
+        project_id = request.form['project_id']
+
+        cur = mysql.connection.cursor()
+        query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id) values(%s, %s, %s, %s)'
+        cur.execure(query, (note, timestamp, user_id, project_id))
+        mysql.connection.commit()
+        flash('Note Added', 'success')
+        return redirect('/erp/project_notes?project_id='+str(project_id))
 
 @app.route('/enter_material', methods=['GET', 'POST'])
 def enter_material():

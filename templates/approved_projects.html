@@ -25,6 +25,9 @@
             <td>
                 <a href="/erp/view_project_details?project_id={{project[0]}}">View details</a>
             </td>
+            <td>
+                <a href="/erp/project_notes?project_id={{project[0]}}">Comments and notes</a>
+            </td>
             {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] %}
             <td>
                 <a href="/erp/edit_team?project_id={{project[0]}}">View team</a>
