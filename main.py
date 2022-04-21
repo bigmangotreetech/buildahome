@@ -345,7 +345,7 @@ def project_notes():
 
         cur = mysql.connection.cursor()
         query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id) values(%s, %s, %s, %s)'
-        cur.execure(query, (note, timestamp, user_id, project_id))
+        cur.execute(query, (note, timestamp, user_id, project_id))
         mysql.connection.commit()
         flash('Note Added', 'success')
         return redirect('/erp/project_notes?project_id='+str(project_id))
