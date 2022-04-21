@@ -16,6 +16,16 @@ $(document).ready(function () {
             $("#edit_vendor_material_type_select").trigger('change')
         }
 
+        if ($('.indent_material').length > 0) {
+            $('#material').val($('#indent_material').text())
+            $('#material').trigger('change')
+        }
+
+        if ($('.indent_unit').length > 0) {
+            $('#unit').val($('#indent_unit').text())
+            $('#unit').trigger('change')
+        }
+
         if($('.vendor-location').length > 0) {
             let vendor_locations = $('.vendor-location').text()
             vendor_locations =vendor_locations.replaceAll("'","")
