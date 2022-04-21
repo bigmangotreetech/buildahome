@@ -2262,7 +2262,7 @@ def delete_indent():
         indent_id = request.args['indent_id'] 
         cur = mysql.connection.cursor()
         query = 'DELETE from indents WHERE id='+str(indent_id)
-        cur.exceute(query)
+        cur.execute(query)
         mysql.connection.commit()
         flash('Indent deleted','danger')
         return redirect('/erp/view_qs_approval_indents')
