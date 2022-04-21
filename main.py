@@ -2997,6 +2997,29 @@ def revised_drawings():
 
         return render_template('revised_drawings.html', drawings=drawings, projects=projects)
 
+@app.route('/view_drawings_requests', methods=['GET', "POST"])
+def view_drawings_requests():
+    if request.method == 'GET':
+        projects = get_projects()
+        cur = mysql.connection.cursor()
+
+        
+        if session['role'] not in ['Super Admin','COO']:
+            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose FROM ' \
+                            'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
+                            ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
+                            ' WHERE p.project_id IN ' + str(session['projects'])
+            cur.execute(get_requests) 
+                       
+        else: 
+            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose FROM ' \
+                            'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
+                            ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' 
+            cur.execute(get_requests) 
+        res = cur.fetchall()
+            
+        return render_template('drawing_requests.html', requests=res)
+
 
 @app.route('/upload_revised_drawing', methods=['GET', "POST"])
 def upload_revised_drawing():
