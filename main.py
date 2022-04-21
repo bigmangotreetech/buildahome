@@ -3243,6 +3243,22 @@ def create_indent():
         mysql.connection.commit()
         return jsonify({'message': 'success'})
 
+@app.route('/API/create_drawing_request', methods=['POST'])
+def create_drawing_request():
+    if request.method == 'POST':
+        project_id = request.form['project_id']
+        category = request.form['category']
+        drawing = request.form['drawing']
+        purpose = request.form['purpose']
+        timestamp = request.form['timestamp']
+        user_id = request.form['user_id']
+
+        cur = mysql.connection.cursor()
+        query = 'INSERT into drawing_requests(project_id, category, drawing, purpose, created_by_user, timestamp) values (%s, %s, %s, %s, %s, %s)'
+        values = (project_id, category, drawing, purpose, user_id, timestamp)
+        cur.execute(query, values)
+        mysql.connection.commit()
+        return jsonify({'message': 'success'})
 
 def save_notification_to_db(title, body, user_id, role, category, timestamp):
     cur = mysql.connection.cursor()
