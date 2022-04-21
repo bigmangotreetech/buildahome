@@ -2249,7 +2249,7 @@ def edit_indent():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Indent updated','success')
-        return redirect('/erp/view_indent_details?indent_id='+str(indent_id)
+        return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
 
 
 @app.route('/upload_po_for_indent', methods=['POST'])
