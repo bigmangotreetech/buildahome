@@ -6,11 +6,6 @@ $('#get_procurement').on('click', function(){
 })
 
 
-$('#get_notes').on('click', function(){
-    const project = $("#project").val()
-    if(project.lengt)
-    window.location.href = '/erp/project_notes?project_id='+project.toString()
-})
 
 $("#update_kyp_material").on('click', function(){
     const project = $("#project").val()

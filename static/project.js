@@ -1,9 +1,6 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
-
-    
-
     setTimeout(() => {
         if ($('.edit_vendor_material_type').length > 0) {
             $('#edit_vendor_material_type_select').val($('.edit_vendor_material_type').text())
@@ -71,6 +68,12 @@ $(document).ready(function () {
             container.removeClass('active');
         }
     });
+
+    $('#get_notes').on('click', function(){
+        const project = $("#project").val()
+        if(project.lengt)
+        window.location.href = '/erp/project_notes?project_id='+project.toString()
+    })
 
     $('.mobile-menu-icon').on('click', function () {
         $('.sidebar').hasClass('active') ? $('.sidebar').removeClass('active') : $('.sidebar').addClass('active')
