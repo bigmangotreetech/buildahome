@@ -2239,26 +2239,17 @@ def edit_indent():
         return render_template('edit_indent.html', result=result)
     else: 
         indent_id = request.form['indent_id']
-        status = 'approved'
-        project_id = request.form['project_id']
         material = request.form['material']
         quantity = request.form['quantity']
-        user_id = request.form['acted_by_user']
         unit = request.form['unit']
         purpose = request.form['purpose']
         cur = mysql.connection.cursor()
-        query = 'UPDATE indents SET status=%s, project_id=%s, material=%s, quantity=%s, unit=%s, purpose=%s, acted_by_user=%s WHERE id=%s'
-        values = (status, project_id, material, quantity, unit, purpose, user_id, indent_id)
+        query = 'UPDATE indents SET material=%s, quantity=%s, unit=%s, purpose=%s WHERE id=%s'
+        values = (material, quantity, unit, purpose, indent_id)
         cur.execute(query, values)
         mysql.connection.commit()
-        send_app_notification(
-            'Indent Approved',
-            request.form['notification_body'],
-            request.form['user_id'],
-            request.form['user_id'],
-            'Indent Approval',
-            request.form['timestamp']
-        )
+        flash('Indent updated','success')
+        return redirect('/erp/view_indent_details?indent_id='+str(indent_id)
 
 
 @app.route('/upload_po_for_indent', methods=['POST'])
