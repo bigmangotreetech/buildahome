@@ -131,7 +131,7 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                if len(str(i[0])) > 0
+                if len(str(i[0])) > 0:
                     projects.append(i[0])
             return tuple(projects)
         elif role == 'Structural Designer':
