@@ -44,7 +44,8 @@
         </form>
         {% for i in notes %}
         <div class="bg-light my-2 border-left border-dark p-2">
-            <p>{{i[2]}} at {{i[1]}} : {{i[0]}}</p>
+            <p class="mb-0">{{i[2]}} at {{i[1]}} :</p>
+            <p style="white-space: break-spaces">{{i[0]}}</p>
             {% if session['role'] in ['Super Admin','COO'] %}
             <a href="/erp/delete_note?id={{i[3]}}" class="text-danger">Delete</a>
             {% endif %}
