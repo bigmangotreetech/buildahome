@@ -71,8 +71,8 @@ $(document).ready(function () {
 
     $('#get_notes').on('click', function(){
         const project = $("#project").val()
-        if(project.lengt)
-        window.location.href = '/erp/project_notes?project_id='+project.toString()
+        if(project.length)
+            window.location.href = '/erp/project_notes?project_id='+project.toString()
     })
 
     $('.mobile-menu-icon').on('click', function () {
