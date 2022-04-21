@@ -314,7 +314,7 @@ def mobile_app_banner():
             flash('Missing file. Operation failed', 'failed')
             return redirect(request.referrer)
 
-@app.route('/project_notes', methods=['GET'])
+@app.route('/project_notes', methods=['GET','POST'])
 def project_notes():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
