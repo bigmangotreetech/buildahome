@@ -131,7 +131,8 @@ def get_projects_for_current_user():
             result = cur.fetchall()
             projects = []
             for i in result:
-                projects.append(i[0])
+                if len(str(i[0])) > 0
+                    projects.append(i[0])
             return tuple(projects)
         elif role == 'Structural Designer':
             query = 'SELECT project_id from project_design_team WHERE structural_designer=' + str(user_id)
