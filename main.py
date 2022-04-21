@@ -314,6 +314,24 @@ def mobile_app_banner():
             flash('Missing file. Operation failed', 'failed')
             return redirect(request.referrer)
 
+@app.route('/delete_note', methods=['GET'])
+def delete_note():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/enter_material'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO']:
+        flash('You do not have permission to delete a note', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        note_id = request.args['id']
+        cur = mysql.connection.cursor()
+        delete_note_query = 'DELETE from notes_and_comments WHERE id=' + str(note_id)
+        cur.execute(delete_note_query)
+        mysql.connection.commit()
+        flash('Note deleted', 'danger')
+        return redirect(request.referrer)
+
 @app.route('/project_notes', methods=['GET','POST'])
 def project_notes():
     if 'email' not in session:
@@ -328,7 +346,7 @@ def project_notes():
             projects = get_projects()
             project_id = request.args['project_id']
             cur = mysql.connection.cursor()
-            get_notes = 'SELECT n.note, n.timestamp, u.name FROM ' \
+            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id FROM ' \
                             'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
                             ' WHERE p.project_id =' + str(project_id)

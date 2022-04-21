@@ -45,6 +45,9 @@
         {% for i in notes %}
         <div class="bg-light my-2 border-left border-dark p-2">
             <p>{{i[2]}} at {{i[1]}} : {{i[0]}}</p>
+            {% if session['role'] in ['Super Admin','COO'] %}
+            <a href="/erp/delete_note?id={{i[4]}}" class="text-danger"></a>
+            {% endif %}
         </div>
         {% endfor %}
         {% endif %}
