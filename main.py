@@ -403,6 +403,9 @@ def enter_material():
         total_amount = request.form['total_amount']
         difference_cost = request.form['difference_cost']
         photo_date = request.form['photo_date']
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
         
         transportation = request.form['transportation']
         loading_unloading = request.form['loading_unloading']
@@ -429,9 +432,9 @@ def enter_material():
             return redirect('/erp/enter_material')
 
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
-                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst,
-                  total_amount, difference_cost, photo_date, transportation, loading_unloading)
+                  total_amount, difference_cost, photo_date, transportation, loading_unloading, timestamp)
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
