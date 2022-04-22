@@ -14,7 +14,7 @@ $('.status-action').on('click', function () {
     $('.current-status').text('')
     actionBtn = $(this).find('div')
     $('.upload-drawing-form').addClass('d-none')
-    $('.drawing-links').html()
+    $('.drawing-links').html('')
     $('.drawing-complete').text('Complete')
 
     drawing_link = $(this).attr('data-link').toString()
