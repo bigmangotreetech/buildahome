@@ -3372,6 +3372,20 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/dpr_image_upload', methods=['POST'])
+def dpr_image_upload():
+    if request.method == 'POST':
+        file = request.files['image']
+        if file.filename == '':
+            flash('No selected file', 'danger ')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            output = send_to_s3(file, app.config["S3_BUCKET"], 'migrated/'+filename)
+            if output != 'success':
+                return 'failed'
+        return 'success'
+
 @app.route('/API/create_indent', methods=['POST'])
 def create_indent():
     if request.method == 'POST':
