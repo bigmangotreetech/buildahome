@@ -603,6 +603,10 @@ def shifting_entry():
             negative_diff = '-'+str(difference_cost)
             positive_diff = str(difference_cost)
 
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
+
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
             project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         
@@ -623,12 +627,12 @@ def shifting_entry():
         if result is not None and result[0] is not None and int(quantity) < int(result[0]):
             deduction_query = "INSERT into procurement (material, description, project_id," \
                           "quantity, unit, difference_cost) values (%s, %s, %s, %s, %s, %s)"
-            values = (material, description+' to '+to_project_name, from_project, int(quantity) * -1, unit, negative_diff)
+            values = (material, description+' to '+to_project_name+' on '+timestamp, from_project, int(quantity) * -1, unit, negative_diff)
             cur.execute(deduction_query, values)
 
             addition_query = "INSERT into procurement (material, description, project_id," \
                             "quantity, unit, difference_cost) values (%s, %s,  %s, %s, %s, %s)"
-            values = (material, description+" from "+from_project_name, to_project, quantity, unit, positive_diff)
+            values = (material, description+" from "+from_project_name+' on '+timestamp, to_project, quantity, unit, positive_diff)
             cur.execute(addition_query, values)
 
             mysql.connection.commit()
