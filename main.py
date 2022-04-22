@@ -2432,6 +2432,13 @@ def create_project():
 
         column_names = list(request.form.keys())
         values = list(request.form.values())
+
+        column_names.append('created_at')
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
+        values.append(timestamp)
+
         cur = mysql.connection.cursor()
         new_project_query = 'INSERT into projects' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
@@ -2616,7 +2623,7 @@ def view_project_details():
             'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'sf_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
             'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
@@ -3373,7 +3380,7 @@ def logout():
 
 # APIs for mobile app
 @app.route('/API/get_notes', methods=['GET','POST'])
-def api_get_notes():
+def get_notes():
     if request.method == 'GET':
         if 'project_id' not in request.args:
             return 'No project'
