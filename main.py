@@ -3373,7 +3373,7 @@ def logout():
 
 # APIs for mobile app
 @app.route('/API/get_notes', methods=['GET','POST'])
-def project_notes():
+def api_get_notes():
     if request.method == 'GET':
         if 'project_id' not in request.args:
             return 'No project'
