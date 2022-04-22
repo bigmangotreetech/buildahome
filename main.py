@@ -3372,6 +3372,22 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/get_notes', methods=['GET','POST'])
+def project_notes():
+    if request.method == 'GET':
+        if 'project_id' not in request.args:
+            return 'No project'
+        else:
+            project_id = request.args['project_id']
+            cur = mysql.connection.cursor()
+            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id FROM ' \
+                            'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
+                            ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
+                            ' WHERE p.project_id =' + str(project_id)
+            cur.execute(get_notes)
+            res = cur.fetchall()
+            return jsonify(res)
+
 @app.route('/API/dpr_image_upload', methods=['POST'])
 def dpr_image_upload():
     if request.method == 'POST':
