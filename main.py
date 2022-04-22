@@ -1360,6 +1360,9 @@ def create_bill():
         contractor_name = request.form['contractor_name']
         contractor_code = request.form['contractor_code']
         contractor_pan = request.form['contractor_pan']
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
 
         total_payable = float(amount)
         check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
@@ -1371,10 +1374,10 @@ def create_bill():
             flash("Older bill already exists. Operation failed", 'danger')
             return redirect('/erp/create_bill')
         else:
-            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
+            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
             values = (
             project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code,
-            contractor_pan)
+            contractor_pan, timestamp)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Bill created successfully', 'success')
@@ -1460,7 +1463,7 @@ def get_bills_as_json(bills_query):
             {'bill_id': i[16], 'contractor_name': i[7], 'contractor_pan': i[9], 'contractor_code': i[8], 'trade': i[17],
              'stage': i[3], 'amount': i[5], 'total_payable': i[6],
              'approval_1_amount': i[11], 'approval_1_notes': i[12], 'approval_2_amount': i[14],
-             'approval_2_notes': i[15]}
+             'approval_2_notes': i[15], 'created_at': i[17],}
         )
     return data
 
@@ -1478,7 +1481,7 @@ def view_bills():
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                       'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                       'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
+                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
                       ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) ' \
                       ' ORDER BY projects.project_id'
         data = get_bills_as_json(bills_query)
@@ -1492,7 +1495,7 @@ def export_bills():
     bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                   'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                   'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                  'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
+                  'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
                   ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
                   '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
 
@@ -1513,12 +1516,14 @@ def export_bills():
     font.bold = True
     style.font = font
 
+    
     ws.write(1, 0, 'Contractor Name', style=style)
     ws.write(1, 1, 'Contractor PAN', style=style)
     ws.write(1, 2, 'Contractor Code', style=style)
     ws.write(1, 3, 'Trade', style=style)
     ws.write(1, 4, 'Stage', style=style)
     ws.write(1, 5, 'Amount', style=style)
+    ws.write(1, 6, 'Created on', style=style)
     row = 2
     column = 0
     read_only = xlwt.easyxf("")
@@ -1568,6 +1573,12 @@ def export_bills():
             if (len(i['approval_2_amount']) * 367) > cwidth:
                 ws.col(column).width = (len(i['approval_2_amount']) * 367)
             column = column + 1
+
+            ws.write(row, column, i['created_at'])
+            cwidth = ws.col(column).width
+            if (len(i['created_at']) * 367) > cwidth:
+                ws.col(column).width = (len(i['created_at']) * 367)
+            column = column + 1
             row = row + 1
         row = row + 1
     mysql.connection.commit()
@@ -1609,7 +1620,7 @@ def view_approved_bills():
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                       'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                       'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
+                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
                       ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
                       '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
         data = get_bills_as_json(bills_query)
@@ -1635,7 +1646,7 @@ def view_archived_bills():
         bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                       'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                       'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.trade' \
+                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
                       ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=1 AND (wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
         data = get_bills_as_json(bills_query)
         first_bill_id = 0

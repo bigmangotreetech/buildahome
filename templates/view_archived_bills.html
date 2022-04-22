@@ -9,6 +9,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
+            <th scope="col">Created on</th>
             <th scope="col">Contractor Name</th>
             <th scope="col">Contractor PAN</th>
             <th scope="col">Contractor Code</th>
@@ -30,6 +31,7 @@
         {% for i in data[project]['bills'] %}
 
         <tr class="bill-{{i['bill_id']}}">
+            <td class="created_at border-right">{{i['created_at']}}</td>
             <td class="contractor_name border-right">{{i['contractor_name']}}</td>
             <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
             <td class="contractor_code border-right">{{i['contractor_code']}}</td>
