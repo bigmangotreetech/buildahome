@@ -1278,6 +1278,9 @@ def create_work_order():
         wo_number = request.form['wo_number']
         cheque_no = request.form['cheque_no']
         comments = request.form['comments']
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
 
         milestones = request.form.getlist('milestone[]')
         percentages = request.form.getlist('percentage[]')
@@ -1304,15 +1307,15 @@ def create_work_order():
 
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id=' + str(project_id) + ' AND trade="' + str(
             trade) + '"'
-        cur.execute(check_if_exist_query)
+        cur.execute(check_if_exist_query)   
         result = cur.fetchone()
         if result is not None:
             flash("Work order already exists. Operation failed", 'danger')
             return redirect('/erp/create_work_order')
         else:
-            insert_query = 'INSERT into work_orders (project_id, value, trade, wo_number, cheque_no, contractor_id, comments) ' \
-                           'values (%s, %s, %s, %s, %s, %s, %s)'
-            values = (project_id, wo_value, trade, wo_number, cheque_no, contractor_id, comments)
+            insert_query = 'INSERT into work_orders (project_id, value, trade, wo_number, cheque_no, contractor_id, comments, created_at) ' \
+                           'values (%s, %s, %s, %s, %s, %s, %s, %s)'
+            values = (project_id, wo_value, trade, wo_number, cheque_no, contractor_id, comments, timestamp)
             cur.execute(insert_query, values)
 
             work_order_id = cur.lastrowid
