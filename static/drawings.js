@@ -128,6 +128,20 @@ $('.approve_drawing_btn').on('click', function () {
                     data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'pending' },
                 });
             }
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "/erp/change_drawing_status",
+                success: function (data) {
+                    window.location.href = '/erp/drawings'
+                },
+                error: function (error) {
+                    console.log(error)
+                    // handle error
+                },
+                async: true,
+                data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'pending' },
+            });
         }
 
         
@@ -151,6 +165,20 @@ $('.approve_drawing_btn').on('click', function () {
                     data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'not_applicable' },
                 });
             }
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "/erp/change_drawing_status",
+                success: function (data) {
+                    window.location.href = '/erp/drawings'
+                },
+                error: function (error) {
+                    console.log(error)
+                    // handle error
+                },
+                async: true,
+                data: { 'project_id': project_id, 'drawing_name': drawing_name,'action': 'not_applicable' },
+            });
         }
         
         
