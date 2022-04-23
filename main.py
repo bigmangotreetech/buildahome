@@ -1695,7 +1695,7 @@ def save_approved_bill():
         current_time = datetime.now(IST)
         timestamp = current_time.strftime('%d %m %Y at %H %M')
 
-        update_bill_query = 'UPDATE wo_bills SET approved_on="'+ timestamp +'" approval_2_amount = "' + str(
+        update_bill_query = 'UPDATE wo_bills SET approved_on="'+ timestamp +'", approval_2_amount = "' + str(
             approved_amount) + '" , approval_2_notes = "' + str(notes) + '" WHERE id=' + str(bill_id)
     cur.execute(update_bill_query)
     if float(difference_amount) > 0 and approval_level == 'Level 2':
