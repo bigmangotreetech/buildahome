@@ -2307,6 +2307,9 @@ def upload_po_for_indent():
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
+                IST = pytz.timezone('Asia/Kolkata')
+                current_time = datetime.now(IST)
+                filename = str(current_time)+'_'+filename
                 output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id) + '_' + filename)
                 if output != 'success':
                     flash('File upload failed', 'danger')
@@ -3404,6 +3407,30 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/get_POs', methods=['GET','POST'])
+def get_POs():
+    if request.method == 'GET':
+        if 'project_id' not in request.args:
+            return 'No project'
+        else:
+            project_id = request.args['project_id']
+            cur = mysql.connection.cursor()
+            get_POs ='SELECT id, material, quantity, unit, purchase_order FROM indents' \
+                            ' WHERE status="approved_by_ph" AND project_id =' + str(project_id)
+            cur.execute(get_POs)
+            res = cur.fetchall()
+            return jsonify(res)
+
+@app.route('/API/get_work_orders', methods=['GET','POST'])
+def get_work_orders():
+    if request.method == 'GET':
+        if 'project_id' not in request.args:
+            return 'No project'
+        else:
+            project_id = request.args['project_id']
+            work_orders = get_work_orders_for_project(project_id)
+            return jsonify(work_orders)
+
 @app.route('/API/get_notes', methods=['GET','POST'])
 def get_notes():
     if request.method == 'GET':
