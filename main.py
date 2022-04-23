@@ -3407,6 +3407,24 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/post_comment', methods=['GET','POST'])
+def post_comment():
+    if request.method == 'POST':
+        user_id = request.form['user_id']
+        project_id = request.form['project_id']
+        note = request.form['note']
+
+
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
+
+        cur = mysql.connection.cursor()
+        query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id) values(%s, %s, %s, %s)'
+        cur.execute(query, (note, timestamp, user_id, project_id))
+        mysql.connection.commit()
+        return 'success'
+
 @app.route('/API/mark_notifications_as_read', methods=['GET','POST'])
 def mark_notifications_as_read():
     if request.method == 'GET':
