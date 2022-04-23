@@ -1691,7 +1691,11 @@ def save_approved_bill():
         update_bill_query = 'UPDATE wo_bills SET approval_1_amount = "' + str(
             approved_amount) + '" , approval_1_notes = "' + str(notes) + '" WHERE id=' + str(bill_id)
     elif approval_level == 'Level 2':
-        update_bill_query = 'UPDATE wo_bills SET approval_2_amount = "' + str(
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
+
+        update_bill_query = 'UPDATE wo_bills SET approved_on="'+ timestamp +'" approval_2_amount = "' + str(
             approved_amount) + '" , approval_2_notes = "' + str(notes) + '" WHERE id=' + str(bill_id)
     cur.execute(update_bill_query)
     if float(difference_amount) > 0 and approval_level == 'Level 2':
@@ -1727,7 +1731,7 @@ def project_contractor_info():
         data['trade'] = trade
         data['work_order_id'] = res[0]
 
-    get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade' \
+    get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on' \
                         ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s WHERE w.work_order_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id, str(data['work_order_id'])))
     bills = cur.fetchall()
