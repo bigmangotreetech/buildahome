@@ -3407,6 +3407,20 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/mark_notifications_as_read', methods=['GET','POST'])
+def mark_notifications_as_read():
+    if request.method == 'GET':
+        if 'user_id' not in request.args:
+            return 'No user'
+        else:
+            user_id = request.args['user_id']
+            cur = mysql.connection.cursor()
+            query = 'UPDATE app_notifications SET unread=0 WHERE user_id='+str(user_id)
+
+            cur.execute(query)
+            mysql.connection.commit()
+            return 'success'
+
 @app.route('/API/get_POs', methods=['GET','POST'])
 def get_POs():
     if request.method == 'GET':
@@ -3649,12 +3663,12 @@ def get_unapproved_indents():
 def get_notifications():
     recipient = request.args['recipient']
     cur = mysql.connection.cursor()
-    notifications_query = 'SELECT title, body, timestamp from app_notifications WHERE user_id=' + str(recipient)
+    notifications_query = 'SELECT title, body, timestamp, unread from app_notifications WHERE user_id=' + str(recipient)
     cur.execute(notifications_query)
     data = []
     result = cur.fetchall()
     for i in result:
-        data.append({'title': i[0], 'body': i[1], 'timestamp': i[2]})
+        data.append({'title': i[0], 'body': i[1], 'timestamp': i[2], 'unread': i[3]})
     return jsonify(data)
 
 
