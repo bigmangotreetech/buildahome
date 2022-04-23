@@ -1460,7 +1460,7 @@ def get_bills_as_json(bills_query):
         if project_id not in data:
             data[project_id] = {'project_name': i[1], 'bills': []}
         data[project_id]['bills'].append(
-            {'bill_id': i[16], 'contractor_name': i[7], 'contractor_pan': i[9], 'contractor_code': i[8], 'trade': i[17],
+            {'bill_id': i[16], 'contractor_name': i[7], 'contractor_pan': i[9], 'contractor_code': i[8], 'trade': i[2],
              'stage': i[3], 'amount': i[5], 'total_payable': i[6],
              'approval_1_amount': i[11], 'approval_1_notes': i[12], 'approval_2_amount': i[14],
              'approval_2_notes': i[15], 'created_at': i[17],}
