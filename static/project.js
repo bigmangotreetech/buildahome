@@ -168,7 +168,7 @@ $(document).ready(function () {
                 dataType: 'json',
                 data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
                 success: function (data) {
-                    $('.total_wo_value').text(data['work_order_value'])
+                    $('.total_wo_value').text(data['work_order_value'].replace(',',''))
                     $('.contractor_name').text(data['contractor_name'])
                     $('.contractor_code').text(data['contractor_code'])
                     $('.contractor_pan').text(data['contractor_pan'])
