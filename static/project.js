@@ -365,28 +365,23 @@ $(document).ready(function () {
 
 
 
-    function checkIfNumberOfFloorsUpdated(project_id) {
+    function updateSlabArea(project_id) {
         $.ajax({
-            url: '/erp/check_if_floors_updated',
+            url: '/erp/update_slab_area',
             type: "POST",
             dataType: 'json',
             data: {
                 'project_id': project_id,
             },
             success: function (data) {
-                if (data['floors_updated']) {
-                    $("#floors").val(data['floors'])
-                    $(".wo-floors-section").hide()
-                } else {
-                    $(".wo-floors-section").show()
-                }
+                console.log(data)
             }
         });
     }
 
     $(".work_order_project_select").on('change', function () {
         const project_id = $(this).val()
-        if (project_id) checkIfNumberOfFloorsUpdated(project_id)
+        if (project_id) updateSlabArea(project_id)
     })
 
     $('.add-elevation-detail').on('click', function () {
@@ -505,7 +500,7 @@ $(document).ready(function () {
     $('#cost_per_sqft').on('keyup', function() {
         total_bua = $('#total_bua').val()
         cost_per_sqft = $('#cost_per_sqft').val() 
-        $('#wo_value').val((parseFloat(cost_per_sqft) & parseFloat(total_bua)).toString())
+        $('#wo_value').val((parseFloat(cost_per_sqft) * parseFloat(total_bua)).toString())
     })
 
     function showStandardMilestones() {

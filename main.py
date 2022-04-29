@@ -1872,6 +1872,16 @@ def view_unapproved_work_order():
         return render_template('unapproved_work_order.html', work_orders=work_orders)
 
 
+@app.route('/update_slab_area', methods=['POST'])
+def update_slab_area():
+    project_id = request.form['project_id']
+    query = 'SELECT gf_slab_area, ff_slab_area, sf_slab_area, tf_slab_area, tef_slab_area WHERE project_id=' + str(project_id)
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    result = cur.fetchone()
+    return str(result)
+
+
 @app.route('/check_if_floors_updated', methods=['POST'])
 def check_if_floors_updated():
     project_id = request.form['project_id']
