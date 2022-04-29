@@ -2821,7 +2821,7 @@ def assign_team():
         operations_team_values = values[5:]
 
         assign_operations_team_query = 'INSERT into project_operations_team' + str(tuple(operations_team_columns)).replace("'","") + 'values ' + str(tuple(operations_team_values))
-        cur.execute(assign_operations_team_query)
+        cur.execute(assign_operations_team_query)        
 
         mysql.connection.commit()
         flash('Team updated successfully', 'success')
@@ -2965,7 +2965,19 @@ def edit_team():
             assign_operations_team_query = 'INSERT into project_operations_team' + str(tuple(operations_team_columns)).replace("'","") + 'values ' + str(tuple(operations_team_values))
             cur.execute(assign_operations_team_query)
 
-
+        project_id = request.form['project_id']
+        for i in values[-1]:
+            if str(i).strip() != ''
+                access_to_projects = ''
+                access_query = 'SELECT access from App_users WHERE user_id='+str(i)+' AND  project_id='+str(project_id)
+                cur.execute(access_query)
+                res = cur.fetchone()
+                if res is not None and res[0] is not None:
+                    access_to_projects = res[0]
+                access_to_projects = access_to_projects + ',' + str(project)
+                access_update_query = 'UPDATE App_users SET access="'+access_to_projects+'" WHERE project_id='+str(project_id)     
+                cur.execute(access_update_query)
+                
         mysql.connection.commit()
         flash('Team updated successfully', 'success')
         return redirect('/erp/projects')
