@@ -182,6 +182,7 @@ $(document).ready(function () {
 
     $(".select_trade_for_bill select").on('change', function () {
         const work_order_id_for_trade = $(this).val()
+        console.log(work_order_id_for_trade)
         if (work_order_id_for_trade == 'NT/NMR') {
             $('.nt-nmr-section').removeClass('d-none')
             $('.select_payment_stage').addClass('d-none')
