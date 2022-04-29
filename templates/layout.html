@@ -120,7 +120,7 @@
         order</a>
     {% endif %}
 
-    <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path || "/project_contractor_info" in request.path %} active {% endif %}'>View
+    <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path or "/project_contractor_info" in request.path %} active {% endif %}'>View
         work order</a>
     {% endif %}
 
