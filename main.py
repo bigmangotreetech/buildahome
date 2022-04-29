@@ -1366,7 +1366,11 @@ def create_bill():
         return redirect(request.referrer)
     if request.method == 'GET':
         projects = get_projects()
-        return render_template('create_bill.html', projects=projects)
+        cur = mysql.connection.cursor()
+        contractors_query = 'SELECT id, name FROM contractors'
+        cur.execute(contractors_query)
+        result = cur.fetchall()
+        return render_template('create_bill.html', projects=projects, contractors=result)
     else:
         project_id = request.form['project_id']
         trade = request.form['trade']

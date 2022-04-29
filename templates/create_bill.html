@@ -22,6 +22,47 @@
                     </div>
                 </div>
 
+                <div class="nt-nmr-section d-none">
+                    <div class="row mx-0 mb-3 form-group">
+                        <div class="col-6">
+                            <label for="contractor">Contractor</label>
+                        </div>
+                        <div class="col-6">
+                            <select name="contractor" id="contractor" class="form-control select2">
+                                <option value=""></option>
+                                {% for i in contractor %}
+                                <option value="{{i[0]}}">{{i[1]}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
+                        <div class="col-6">
+                            <label for="quantity">Quantity</label>
+                        </div>
+                        <div class="col-6">
+                            <input type="number" name="quantity" id="quantity" class="form-control select2">
+                                
+                        </div>
+                    </div>
+                    <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
+                        <div class="col-6">
+                            <label for="rate">Rate</label>
+                        </div>
+                        <div class="col-6">
+                            <input type="number" name="rate" id="rate" class="form-control select2">
+                        </div>
+                    </div>
+                    <div class="row mx-0 mb-3 form-group">
+                        <div class="col-6">
+                            <label>Bill amount</label>
+                        </div>
+                        <div class="col-6">
+                            <label class="font-weight-bold ">₹ <span class="nt_nmr_bill_amount"></span></label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
                     <div class="col-6">
                         <label for="project">Trade</label>

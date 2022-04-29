@@ -149,6 +149,9 @@ $(document).ready(function () {
                 dataType: 'json',
                 data: { 'project_id': project_id },
                 success: function (data) {
+                    $(".select_trade_for_bill select").append($("<option></option>")
+                            .attr("value", 'NT/NMR')
+                            .text('NT/NMR'))
                     for (const trade of data) {
                         $(".select_trade_for_bill select").append($("<option></option>")
                             .attr("value", trade[0])
@@ -162,8 +165,32 @@ $(document).ready(function () {
         $(".select_trade_for_bill select").select2()
     })
 
+    if ($('.nt-nmr-section').length > 0) {
+        $('#quantity').on('keyup', function(){
+            quantity = parseFloat($('#quantity').val())
+            rate = parseFloat($('#rate').val()) 
+            bill_amount = (quantity * rate) - (quantity * rate * 0.05) 
+            $('.nt_nmr_bill_amount').text(bill_amount.toString())
+        })
+        $('#rate').on('keyup', function(){
+            quantity = parseFloat($('#quantity').val())
+            rate = parseFloat($('#rate').val()) 
+            bill_amount = (quantity * rate) - (quantity * rate * 0.05) 
+            $('.nt_nmr_bill_amount').text(bill_amount.toString())
+        })
+    }
+
     $(".select_trade_for_bill select").on('change', function () {
         const work_order_id_for_trade = $(this).val()
+        if (work_order_id_for_trade == 'NT/NMR') {
+            $('.nt-nmr-section').removeClass('d-none')
+            $('.select_payment_stage').addClass('d-none')
+            return;
+        } else {
+            $('.nt-nmr-section').addClass('d-none')
+        }
+
+
         if (work_order_id_for_trade) {
             $(".select_payment_stage select").empty()
             $('.select_payment_stage').removeClass('d-none')
