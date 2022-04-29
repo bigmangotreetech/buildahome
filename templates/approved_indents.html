@@ -10,7 +10,6 @@
         <thead>
         <tr>
             <th scope="col">Indent Id</th>
-            <th scope="col">Project</th>
             <th scope="col">Material</th>
             <th scope="col">Quantity</th>
             <th scope="col">Created by</th>
@@ -25,7 +24,6 @@
             {% for i in projects[x] %}
             <tr class="bill-{{i['bill_id']}}">
                 <td>{{i[0]}}</td>
-                <td>{{i[2]}}</td>
                 <td>{{i[3]}}</td>
                 <td>{{i[4]}} {{i[5]}}</td>
                 <td>{{i[7]}}</td>
