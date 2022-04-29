@@ -2974,7 +2974,7 @@ def edit_team():
                 res = cur.fetchone()
                 if res is not None and res[0] is not None:
                     access_to_projects = res[0]
-                access_to_projects = access_to_projects + ',' + str(project)
+                access_to_projects = access_to_projects + ',' + str(project_id)
                 access_update_query = 'UPDATE App_users SET access="'+access_to_projects+'" WHERE user_id='+str(i)     
                 cur.execute(access_update_query)
                 
