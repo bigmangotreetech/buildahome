@@ -1879,7 +1879,11 @@ def update_slab_area():
     cur = mysql.connection.cursor()
     cur.execute(query)
     result = cur.fetchone()
-    return str(result)
+    total_bua_sum = 0
+    for i in result:
+        if i is not None str(i).strip() != '':
+            total_bua_sum = total_bua_sum + int(i)
+    return str(total_bua_sum)
 
 
 @app.route('/check_if_floors_updated', methods=['POST'])
