@@ -3407,6 +3407,21 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/view_bills', methods=['POST'])
+def api_view_bills():
+    if request.method == 'GET':
+        if 'project_id' not in request.args:
+            return 'No project'
+        project_id = request.args['project_id']
+        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
+                      'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
+                      'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
+                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
+                      ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND projects.project_id = '+str(project_id)' ( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) ' \
+                      ' ORDER BY projects.project_id'
+        data = get_bills_as_json(bills_query)
+        return data
+
 @app.route('/API/post_comment', methods=['GET','POST'])
 def post_comment():
     if request.method == 'POST':
