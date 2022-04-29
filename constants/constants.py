@@ -22,5 +22,4 @@ roles = [
             'Planning'
             'Purchase Info',
             'QS Info',
-            'QS Outstation'
         ]
