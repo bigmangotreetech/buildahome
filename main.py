@@ -2068,7 +2068,7 @@ def view_approved_indents():
             return render_template('approved_indents.html', result=data)
         elif current_user_role == 'Purchase Executive':
             current_user_email = session['email']
-            access_query = 'SELECT access, role from App_users WHERE email=' + str(current_user_email)
+            access_query = 'SELECT access, role from App_users WHERE email="' + str(current_user_email) +'"'
             cur.execute(access_query)
             res = cur.fetchone()
             access = res[0]
@@ -2147,7 +2147,7 @@ def view_approved_POs():
             return render_template('approved_pos.html', result=data)
         elif current_user_role == 'Purchase Executive':
             current_user_email = session['email']
-            access_query = 'SELECT access, role from App_users WHERE email=' + str(current_user_email)
+            access_query = 'SELECT access, role from App_users WHERE email="' + str(current_user_email) +'"'
             cur.execute(access_query)
             res = cur.fetchone()
             access = res[0]
