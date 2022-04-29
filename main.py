@@ -3420,7 +3420,7 @@ def api_view_bills():
                       ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND projects.project_id = '+str(project_id)+' AND ( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) ' \
                       ' ORDER BY projects.project_id'
         data = get_bills_as_json(bills_query)
-        return data[project_id]
+        return data
 
 @app.route('/API/post_comment', methods=['GET','POST'])
 def post_comment():
