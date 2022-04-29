@@ -37,22 +37,6 @@
             {% endfor %}    
         {% endfor %}
         
-        {% for i in result %}
-        <tr class="bill-{{i['bill_id']}}">
-            <td>{{i[0]}}</td>
-            <td>{{i[2]}}</td>
-            <td>{{i[3]}}</td>
-            <td>{{i[4]}} {{i[5]}}</td>
-            <td>{{i[7]}}</td>
-            <td>{{i[8]}}</td>
-            <td><a href="/erp/view_indent_details?indent_id={{i[0]}}">
-                <i class="fa fa-external-link"></i>
-            </a></td>
-
-        </tr>
-        {% endfor %}
-
-
         </tbody>
     </table>
 
