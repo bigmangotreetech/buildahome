@@ -185,6 +185,7 @@ $(document).ready(function () {
         console.log(work_order_id_for_trade)
         if (work_order_id_for_trade == 'NT/NMR') {
             $('.nt-nmr-section').removeClass('d-none')
+            $("#contractor").select2()
             $('.select_payment_stage').addClass('d-none')
             return;
         } else {
