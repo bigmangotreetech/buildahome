@@ -20,4 +20,7 @@ roles = [
             'Sales Executive',
             'Billing',
             'Planning'
+            'Purchase Info',
+            'QS Info',
+            'QS Outstation'
         ]

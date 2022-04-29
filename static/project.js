@@ -2,6 +2,14 @@
 $(document).ready(function () {
 
     setTimeout(() => {
+        if ($('.kyp_material_page').length > 0) {
+            $('input').on('keydown', function() {
+                if (e.keyCode === 190 || e.keyCode === 110) {
+                e.preventDefault();
+                }
+            })
+        }
+
         if ($('.edit_vendor_material_type').length > 0) {
             $('#edit_vendor_material_type_select').val($('.edit_vendor_material_type').text())
             $('#edit_vendor_material_type_select').trigger('change')
