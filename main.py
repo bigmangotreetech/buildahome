@@ -613,10 +613,23 @@ def shifting_entry():
         cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is None:
-            flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
+            flash('Total quantity of material has not been specified under KYP material of source project. Entry not recorded', 'danger')
             return redirect('/erp/enter_material')
         if float(result[0]) < (float(quantity)):
-            flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded',
+            flash('Total quantity of material exceeded limit specified under KYP material of source project. Entry not recorded',
+                  'danger')
+            return redirect('/erp/enter_material')
+
+        material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+            from_project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+        
+        cur.execute(material_quantity_query)
+        result = cur.fetchone()
+        if result is None:
+            flash('Total quantity of material has not been specified under KYP material of destination project. Entry not recorded', 'danger')
+            return redirect('/erp/enter_material')
+        if float(result[0]) < (float(quantity)):
+            flash('Total quantity of material exceeded limit specified under KYP material of destination project. Entry not recorded',
                   'danger')
             return redirect('/erp/enter_material')
 
