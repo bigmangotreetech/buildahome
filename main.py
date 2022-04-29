@@ -2323,7 +2323,7 @@ def upload_po_for_indent():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 IST = pytz.timezone('Asia/Kolkata')
-                current_time = datetime.now(IST)
+                current_time = time.time()
                 filename = str(current_time)+'_'+filename
                 output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id) + '_' + filename)
                 if output != 'success':
