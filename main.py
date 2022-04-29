@@ -2966,20 +2966,19 @@ def edit_team():
             cur.execute(assign_operations_team_query)
 
         project_id = request.form['project_id']
-        return str(values)
         for i in values[-1]:
             if str(i).strip() != '':
                 access_to_projects = ''
                 access_query = 'SELECT access from App_users WHERE user_id='+str(i)
                 cur.execute(access_query)
                 res = cur.fetchone()
+                return str(res)
                 if res is not None and res[0] is not None:
                     access_to_projects = res[0]
                 access_to_projects = access_to_projects + ',' + str(project_id)
                 access_update_query = 'UPDATE App_users SET access="'+access_to_projects+'" WHERE user_id='+str(i)     
                 cur.execute(access_update_query)
 
-                95,96,157,183,187,243,211,194,195,233,222,238,247,271,307,334,342,349,351,366,416,409,419,426,428,446,450
                 
         mysql.connection.commit()
         flash('Team updated successfully', 'success')
