@@ -3698,6 +3698,69 @@ def edit_and_approve_indent():
     )
     return jsonify({'message': 'success'})
 
+@app.route('/API/get_my_indents', methods=['GET'])
+def get_my_indents():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        user_id = request.args['user_id']
+        access_query = 'SELECT access, role from App_users WHERE user_id=' + str(user_id)
+        cur.execute(access_query)
+        res = cur.fetchone()
+        access = res[0]
+        role = res[1]
+        if role == 'Admin':
+            indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                            ', App_users.name, indents.timestamp, indents.created_by_user, indents.status FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
+                            ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id AND indents.created_by_user='+str(user_id)
+            cur.execute(indents_query)
+            res = cur.fetchall()
+            data = []
+            for i in res:
+                indent_entry = {}
+                indent_entry['id'] = i[0]
+                indent_entry['project_id'] = i[1]
+                indent_entry['project_name'] = i[2]
+                indent_entry['material'] = i[3]
+                indent_entry['quantity'] = i[4]
+                indent_entry['unit'] = i[5]
+                indent_entry['purpose'] = i[6]
+                indent_entry['created_by_user'] = i[7]
+                indent_entry['timestamp'] = i[8]
+                indent_entry['created_by_user_id'] = i[9]
+                indent_entry['status'] = i[10].replace('_',' ').title()
+                data.append(indent_entry)
+
+            return jsonify(data)
+        elif len(access):
+            access = access.split(',')
+            access_as_int = [int(i) for i in access]
+            access_tuple = tuple(access_as_int)
+            indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                            ', App_users.name, indents.timestamp, indents.created_by_user, indents.status FROM indents INNER JOIN projects on indents.project_id=projects.project_id AND indents.project_id IN ' + str(
+                access_tuple) + '' \
+                                ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id AND indents.created_by_user='+str(user_id)
+            cur.execute(indents_query)
+            res = cur.fetchall()
+            data = []
+            for i in res:
+                indent_entry = {}
+                indent_entry['id'] = i[0]
+                indent_entry['project_id'] = i[1]
+                indent_entry['project_name'] = i[2]
+                indent_entry['material'] = i[3]
+                indent_entry['quantity'] = i[4]
+                indent_entry['unit'] = i[5]
+                indent_entry['purpose'] = i[6]
+                indent_entry['created_by_user'] = i[7]
+                indent_entry['timestamp'] = i[8]
+                indent_entry['created_by_user_id'] = i[9]
+                indent_entry['status'] = i[10].replace('_',' ').title()
+                data.append(indent_entry)
+
+            return jsonify(data)
+        else:
+            return jsonify([])
+
 
 @app.route('/API/get_unapproved_indents', methods=['GET'])
 def get_unapproved_indents():
