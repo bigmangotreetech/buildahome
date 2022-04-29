@@ -511,14 +511,16 @@ $(document).ready(function () {
     function showStandardMilestones() {
         selected_trade = $('.work-order-select-contractor').find(":selected").attr('data-trade')
 
-        if (['civil','electrical','painting','plumbing'].includes(selected_trade.toLowerCase())) {
-            $('.bua-section').removeClass('d-none');
-            $('.cost-per-sqft-section').removeClass('d-none');
-            $('#wo_value').attr('readonly','readonly')
-        } else {
-            $('.bua-section').addClass('d-none');
-            $('.cost-per-sqft-section').addClass('d-none');
-            $('#wo_value').removeAttr('readonly')
+        if (selected_trade) {
+            if (['civil','electrical','painting','plumbing'].includes(selected_trade.toLowerCase())) {
+                $('.bua-section').removeClass('d-none');
+                $('.cost-per-sqft-section').removeClass('d-none');
+                $('#wo_value').attr('readonly','readonly')
+            } else {
+                $('.bua-section').addClass('d-none');
+                $('.cost-per-sqft-section').addClass('d-none');
+                $('#wo_value').removeAttr('readonly')
+            }
         }
         project_id = $(".work_order_project_select").val()
         if (selected_trade && selected_trade.trim() === '' || project_id.trim() === '') return false;
