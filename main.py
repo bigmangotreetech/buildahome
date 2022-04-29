@@ -3407,7 +3407,7 @@ def logout():
 
 
 # APIs for mobile app
-@app.route('/API/view_bills', methods=['POST'])
+@app.route('/API/view_bills', methods=['GET'])
 def api_view_bills():
     if request.method == 'GET':
         if 'project_id' not in request.args:
