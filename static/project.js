@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     setTimeout(() => {
         if ($('.kyp_material_page').length > 0) {
-            $('input').on('keydown', function() {
+            $('input').on('keydown', function(e) {
                 if (e.keyCode === 190 || e.keyCode === 110) {
                 e.preventDefault();
                 }
