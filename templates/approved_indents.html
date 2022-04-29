@@ -19,7 +19,9 @@
         </thead>
         <tbody>
         {% for x in projects %}
-            <tr>{{x}}</tr>
+            <tr>
+                <td>{{x}}</td>
+            </tr>
             {% for i in projects[x] %}
             <tr class="bill-{{i['bill_id']}}">
                 <td>{{i[0]}}</td>
