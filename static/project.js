@@ -377,7 +377,7 @@ $(document).ready(function () {
                 console.log(data)
             },
             error: function (data) {
-                console.log(data)
+                $('.total_bua_summation').text(data)
             }
         });
     }
@@ -496,6 +496,10 @@ $(document).ready(function () {
 
     $('#total_bua').on('keyup', function() {
         total_bua = $('#total_bua').val()
+        if (parseFloat(total_bua) > parseFloat($('.total_bua_summation').text())) {
+            alert('Total bua cannot be more than projects built up area summation')
+            $('#total_bua').val(parseFloat($('.total_bua_summation').text()))
+        }
         cost_per_sqft = $('#cost_per_sqft').val() 
         $('#wo_value').val((parseFloat(cost_per_sqft) & parseFloat(total_bua)).toString())
     })
