@@ -496,8 +496,30 @@ $(document).ready(function () {
         }
     })
 
+    $('#total_bua').on('keyup', function() {
+        total_bua = $('#total_bua').val()
+        cost_per_sqft = $('#cost_per_sqft').val() 
+        $('#wo_value').val((parseFloat(cost_per_sqft) & parseFloat(total_bua)).toString())
+    })
+
+    $('#cost_per_sqft').on('keyup', function() {
+        total_bua = $('#total_bua').val()
+        cost_per_sqft = $('#cost_per_sqft').val() 
+        $('#wo_value').val((parseFloat(cost_per_sqft) & parseFloat(total_bua)).toString())
+    })
+
     function showStandardMilestones() {
         selected_trade = $('.work-order-select-contractor').find(":selected").attr('data-trade')
+
+        if (['civil','electrical','painting','plumbing'].includes(selected_trade.toLowerCase())) {
+            $('.bua-section').removeClass('d-none');
+            $('.cost-per-sqft-section').removeClass('d-none');
+            $('#wo_value').attr('readonly','readonly')
+        } else {
+            $('.bua-section').addClass('d-none');
+            $('.cost-per-sqft-section').addClass('d-none');
+            $('#wo_value').removeAttr('readonly')
+        }
         project_id = $(".work_order_project_select").val()
         if (selected_trade && selected_trade.trim() === '' || project_id.trim() === '') return false;
         $('.milestones_section').find('.milestones_and_percentages_item').remove()
