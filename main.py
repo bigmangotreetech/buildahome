@@ -2067,41 +2067,33 @@ def view_approved_indents():
                 data.append(i)
             return render_template('approved_indents.html', result=data)
         elif current_user_role == 'Purchase Executive':
-            current_user_email = session['email']
-            access_query = 'SELECT access, role from App_users WHERE email="' + str(current_user_email) +'"'
-            cur.execute(access_query)
-            res = cur.fetchone()
-            access = res[0]
-            if len(access):
-                access = access.split(',')
-                access_as_int = [int(i) for i in access]
-                access_tuple = tuple(access_as_int)
-                indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                                ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved_by_qs" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
-                    access_tuple) + '' \
-                                    ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
-                cur.execute(indents_query)
-                data = []
-                result = cur.fetchall()
-                for i in result:
-                    i = list(i)
-                    if len(str(i[8]).strip()) > 0:
-                        i[8] = str(i[8]).strip()
-                        timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                        IST = pytz.timezone('Asia/Kolkata')
-                        current_time = datetime.now(IST)
-                        time_since_creation = current_time - timestamp
-                        difference_in_seconds = time_since_creation.total_seconds()
-                        difference_in_hours = difference_in_seconds // 3600
-                        if difference_in_hours >= 24:
-                            difference_in_days = difference_in_hours // 24
-                            hours_remaining = difference_in_hours % 24
-                            i[8] = str(int(difference_in_days)) + ' days, ' + str(
-                                int(hours_remaining)) + 'hours'
-                        else:
-                            i[8] = str(int(difference_in_hours)) + ' hours'
-                    data.append(i)
-                return render_template('approved_indents.html', result=data)
+            access_tuple = get_projects_for_current_user()
+            indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved_by_qs" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
+                access_tuple) + '' \
+                                ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
+            cur.execute(indents_query)
+            data = []
+            result = cur.fetchall()
+            for i in result:
+                i = list(i)
+                if len(str(i[8]).strip()) > 0:
+                    i[8] = str(i[8]).strip()
+                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                    IST = pytz.timezone('Asia/Kolkata')
+                    current_time = datetime.now(IST)
+                    time_since_creation = current_time - timestamp
+                    difference_in_seconds = time_since_creation.total_seconds()
+                    difference_in_hours = difference_in_seconds // 3600
+                    if difference_in_hours >= 24:
+                        difference_in_days = difference_in_hours // 24
+                        hours_remaining = difference_in_hours % 24
+                        i[8] = str(int(difference_in_days)) + ' days, ' + str(
+                            int(hours_remaining)) + 'hours'
+                    else:
+                        i[8] = str(int(difference_in_hours)) + ' hours'
+                data.append(i)
+            return render_template('approved_indents.html', result=data)
         else:
             return 'You do not have access to view this page'
 
@@ -2146,41 +2138,33 @@ def view_approved_POs():
                 data.append(i)
             return render_template('approved_pos.html', result=data)
         elif current_user_role == 'Purchase Executive':
-            current_user_email = session['email']
-            access_query = 'SELECT access, role from App_users WHERE email="' + str(current_user_email) +'"'
-            cur.execute(access_query)
-            res = cur.fetchone()
-            access = res[0]
-            if len(access):
-                access = access.split(',')
-                access_as_int = [int(i) for i in access]
-                access_tuple = tuple(access_as_int)
-                indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                                ', App_users.name, indents.timestamp, indents.purchase_order FROM indents INNER JOIN projects on indents.status="po_uploaded" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
-                    access_tuple) + '' \
-                                    ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
-                cur.execute(indents_query)
-                data = []
-                result = cur.fetchall()
-                for i in result:
-                    i = list(i)
-                    if len(str(i[8]).strip()) > 0:
-                        i[8] = str(i[8]).strip()
-                        timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                        IST = pytz.timezone('Asia/Kolkata')
-                        current_time = datetime.now(IST)
-                        time_since_creation = current_time - timestamp
-                        difference_in_seconds = time_since_creation.total_seconds()
-                        difference_in_hours = difference_in_seconds // 3600
-                        if difference_in_hours >= 24:
-                            difference_in_days = difference_in_hours // 24
-                            hours_remaining = difference_in_hours % 24
-                            i[8] = str(int(difference_in_days)) + ' days, ' + str(
-                                int(hours_remaining)) + 'hours'
-                        else:
-                            i[8] = str(int(difference_in_hours)) + ' hours'
-                    data.append(i)
-                return render_template('approved_pos.html', result=data)
+            access_tuple = get_projects_for_current_user()
+            indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                            ', App_users.name, indents.timestamp, indents.purchase_order FROM indents INNER JOIN projects on indents.status="po_uploaded" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
+                access_tuple) + '' \
+                                ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
+            cur.execute(indents_query)
+            data = []
+            result = cur.fetchall()
+            for i in result:
+                i = list(i)
+                if len(str(i[8]).strip()) > 0:
+                    i[8] = str(i[8]).strip()
+                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                    IST = pytz.timezone('Asia/Kolkata')
+                    current_time = datetime.now(IST)
+                    time_since_creation = current_time - timestamp
+                    difference_in_seconds = time_since_creation.total_seconds()
+                    difference_in_hours = difference_in_seconds // 3600
+                    if difference_in_hours >= 24:
+                        difference_in_days = difference_in_hours // 24
+                        hours_remaining = difference_in_hours % 24
+                        i[8] = str(int(difference_in_days)) + ' days, ' + str(
+                            int(hours_remaining)) + 'hours'
+                    else:
+                        i[8] = str(int(difference_in_hours)) + ' hours'
+                data.append(i)
+            return render_template('approved_pos.html', result=data)
         else:
             return 'You do not have access to view this page'
 
