@@ -3410,17 +3410,40 @@ def logout():
 @app.route('/API/view_bills', methods=['GET'])
 def api_view_bills():
     if request.method == 'GET':
-        if 'project_id' not in request.args:
-            return 'No project'
         project_id = request.args['project_id']
-        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
-                      'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
-                      'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
-                      ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND projects.project_id = '+str(project_id)+' AND ( wo_bills.approval_2_amount != 0 OR wo_bills.approval_2_amount IS NOT NULL) ' \
-                      ' ORDER BY projects.project_id'
-        data = get_bills_as_json(bills_query)
-        return data
+    contractor_name = request.args['name']
+    contractor_code = request.args['code']
+    trade = request.args['trade']
+
+    cur = mysql.connection.cursor()
+    data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
+
+    get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code="'+contractor_code+'"'
+    cur.execute(get_contractor_query)
+    res = cur.fetchone()
+    if res is not None:
+        data['name'] = res[0]
+        data['code'] = res[1]
+        data['pan'] = res[2]
+
+    get_wo_query = 'SELECT id, value, balance from work_orders WHERE trade=%s AND project_id=%s'
+    cur.execute(get_wo_query, (trade, project_id))
+    res = cur.fetchone()
+    if res is not None:
+        data['value'] = res[1]
+        data['balance'] = res[2]
+        data['trade'] = trade
+        data['work_order_id'] = res[0]
+
+    get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on' \
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s WHERE w.work_order_id=%s'
+    cur.execute(get_bills_query, (contractor_code, project_id, str(data['work_order_id'])))
+    bills = cur.fetchall()
+
+    get_project_query = 'SELECT project_name, project_number from projects WHERE project_id=' + str(project_id)
+    cur.execute(get_project_query)
+    project = cur.fetchone()
+    return jsonify(bills)
 
 @app.route('/API/post_comment', methods=['GET','POST'])
 def post_comment():
