@@ -73,10 +73,10 @@ def allowed_file(filename):
 def get_projects():
     cur = mysql.connection.cursor()
     projects = []
-    if len(session['projects']) > 0:
+    if len(get_projects_for_current_user()) > 0:
         if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head']:
             query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
-                    'AND project_id IN ' + str(session['projects'])
+                    'AND project_id IN ' + str(get_projects_for_current_user())
             cur.execute(query)
             projects = cur.fetchall()
         else:
@@ -1963,7 +1963,7 @@ def view_qs_approval_indents():
                             'INNER JOIN projects on ' \
                             'indents.status="approved" AND ' \
                             'indents.project_id=projects.project_id AND ' \
-                            'indents.project_id IN ' + str(session['projects']) +' '\
+                            'indents.project_id IN ' + str(get_projects_for_current_user()) +' '\
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
         cur.execute(indents_query)
@@ -2031,7 +2031,7 @@ def view_ph_approved_indents():
                             'INNER JOIN projects on ' \
                             'indents.status="approved_by_ph" AND ' \
                             'indents.project_id=projects.project_id AND ' \
-                            'indents.project_id IN ' + str(session['projects']) +' '\
+                            'indents.project_id IN ' + str(get_projects_for_current_user()) +' '\
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
         
@@ -2622,11 +2622,11 @@ def approved_projects():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         result = []
-        if len(session['projects']) > 0:
+        if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head',
                                        'Sales Executive', 'Billing']:
                 approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
-                                          'AND project_id IN ' + str(session['projects']) + ' ORDER BY project_number'
+                                          'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(approved_projects_query)
                 result = cur.fetchall()
             else:
@@ -2645,10 +2645,10 @@ def archived_projects():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         result = []
-        if len(session['projects']) > 0:
+        if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing']:
                 archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=1 ' \
-                                          'AND project_id IN ' + str(session['projects']) + ' ORDER BY project_number'
+                                          'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
             else:
@@ -3175,7 +3175,7 @@ def view_drawings_requests():
             get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
-                            ' WHERE p.project_id IN ' + str(session['projects'])
+                            ' WHERE p.project_id IN ' + str(get_projects_for_current_user())
             cur.execute(get_requests) 
                        
         else: 
@@ -3246,12 +3246,12 @@ def drawings():
 
     query_string = query_string[:-2]
     drawings = []
-    if len(session['projects']) > 0:
+    if len(get_projects_for_current_user()) > 0:
         if session['role'] not in ['Super Admin', 'Purchase Head', 'COO', 'QS Head','QS Engineer', 'Purchase Head', 'Site Engineer',
                                    'Design Head']:
             drawings_info = "SELECT " + query_string + " FROM projects p LEFT OUTER JOIN " + table_name + " d on " \
                             "p.project_id=d.project_id AND p.is_approved=1 AND p.archived=0 " \
-                            ' WHERE p.project_id IN ' + str(session['projects']) +' ORDER BY p.project_number'
+                            ' WHERE p.project_id IN ' + str(get_projects_for_current_user()) +' ORDER BY p.project_number'
 
             cur.execute(drawings_info)
             drawings = cur.fetchall()
