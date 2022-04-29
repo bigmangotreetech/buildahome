@@ -1383,11 +1383,32 @@ def create_bill():
         IST = pytz.timezone('Asia/Kolkata')
         current_time = datetime.now(IST)
         timestamp = current_time.strftime('%d %m %Y at %H %M')
+        cur = mysql.connection.cursor()
+
+
+        if trade == 'NT/NMR':
+            quantity = request.form['quantity']
+            rate = request.form['rate']
+            nt_nmr_bill_amount = request.form['nt_nmr_bill_amount']
+            description = request.form['description']
+
+            contractor_query = 'SELECT name, code, pan from contractors WHERE id='+request.form['contractor']
+            cur.execute(contractor_query)
+            res = cur.fetchone()
+
+            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
+            values = (
+            project_id, trade, description, nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1],
+            res[2], timestamp)
+            cur.execute(insert_query, values)
+            mysql.connection.commit()
+            flash('Bill created successfully', 'success')
+            return redirect('/erp/create_bill')
+
 
         total_payable = float(amount)
         check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
             trade) + '" AND stage="' + str(stage) + '"'
-        cur = mysql.connection.cursor()
         cur.execute(check_if_exists_query)
         res = cur.fetchone()
         if res is not None:

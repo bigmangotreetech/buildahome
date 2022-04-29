@@ -171,12 +171,14 @@ $(document).ready(function () {
             rate = parseFloat($('#rate').val()) 
             bill_amount = (quantity * rate) - (quantity * rate * 0.05) 
             $('.nt_nmr_bill_amount').text(bill_amount.toString())
+            $('input[name="nt_nmr_bill_amount"]').val(bill_amount.toString())
         })
         $('#rate').on('keyup', function(){
             quantity = parseFloat($('#quantity').val())
             rate = parseFloat($('#rate').val()) 
             bill_amount = (quantity * rate) - (quantity * rate * 0.05) 
             $('.nt_nmr_bill_amount').text(bill_amount.toString())
+            $('input[name="nt_nmr_bill_amount"]').val(bill_amount.toString())
         })
     }
 
