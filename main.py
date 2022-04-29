@@ -2094,8 +2094,11 @@ def view_approved_indents():
             cur.execute(indents_query)
             data = []
             result = cur.fetchall()
+            projects = {}
             for i in result:
                 i = list(i)
+                if i[3] not in projects.keys():
+                    projects[i[3]] = []
                 if len(str(i[8]).strip()) > 0:
                     i[8] = str(i[8]).strip()
                     timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
@@ -2111,8 +2114,9 @@ def view_approved_indents():
                             int(hours_remaining)) + 'hours'
                     else:
                         i[8] = str(int(difference_in_hours)) + ' hours'
+                projects[i[3]].append(i)
                 data.append(i)
-            return render_template('approved_indents.html', result=data)
+            return render_template('approved_indents.html', result=data, projects=projects)
         elif current_user_role == 'Purchase Executive':
             access_tuple = get_projects_for_current_user()
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
@@ -2121,9 +2125,12 @@ def view_approved_indents():
                                 ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
             cur.execute(indents_query)
             data = []
+            projects = {}
             result = cur.fetchall()
             for i in result:
                 i = list(i)
+                if i[3] not in projects.keys():
+                    projects[i[3]] = []
                 if len(str(i[8]).strip()) > 0:
                     i[8] = str(i[8]).strip()
                     timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
@@ -2139,8 +2146,9 @@ def view_approved_indents():
                             int(hours_remaining)) + 'hours'
                     else:
                         i[8] = str(int(difference_in_hours)) + ' hours'
+                projects[i[3]].append(i)
                 data.append(i)
-            return render_template('approved_indents.html', result=data)
+            return render_template('approved_indents.html', result=data, projects=projects)
         else:
             return 'You do not have access to view this page'
 
