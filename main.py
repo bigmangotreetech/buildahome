@@ -1939,7 +1939,7 @@ def view_ph_approval_indents():
                 i[8] = str(int(difference_in_hours)) + ' hours'
         projects[i[2]].append(i)
         data.append(i)
-    return render_template(ph_approval_indents.html', result=data, projects=projects)
+    return render_template('ph_approval_indents.html', result=data, projects=projects)
 
 @app.route('/view_qs_approval_indents', methods=['GET'])
 def view_qs_approval_indents():
