@@ -1936,7 +1936,7 @@ def view_qs_approval_indents():
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
 
-        elif current_user_role in ['QS Engineer']:
+        elif current_user_role in ['QS Engineer','Purchase Executive']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
