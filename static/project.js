@@ -266,7 +266,7 @@ $(document).ready(function () {
 
         const contractor_pan = $('.contractor_pan').text()
         $('input[name="contractor_pan"]').val(contractor_pan)
-        if ($('#create_bill_form').hasClass('d-none')) return;
+        if ( trade!='NT/NMR' && $('#create_bill_form').hasClass('d-none')) return;
         
         $("#create_bill_form").submit()
     })
