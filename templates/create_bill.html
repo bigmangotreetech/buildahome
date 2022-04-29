@@ -22,6 +22,18 @@
                     </div>
                 </div>
 
+                
+                <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
+                    <div class="col-6">
+                        <label for="project">Trade</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="trade" id="trade" class="form-control select2" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="nt-nmr-section d-none">
                     <div class="row mx-0 mb-3 form-group">
                         <div class="col-6">
@@ -30,7 +42,7 @@
                         <div class="col-6">
                             <select name="contractor" id="contractor" class="form-control select2">
                                 <option value=""></option>
-                                {% for i in contractor %}
+                                {% for i in contractors %}
                                 <option value="{{i[0]}}">{{i[1]}}</option>
                                 {% endfor %}
                             </select>
@@ -60,17 +72,6 @@
                         <div class="col-6">
                             <label class="font-weight-bold ">₹ <span class="nt_nmr_bill_amount"></span></label>
                         </div>
-                    </div>
-                </div>
-
-                <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
-                    <div class="col-6">
-                        <label for="project">Trade</label>
-                    </div>
-                    <div class="col-6">
-                        <select name="trade" id="trade" class="form-control select2" required>
-                            <option value=""></option>
-                        </select>
                     </div>
                 </div>
 
