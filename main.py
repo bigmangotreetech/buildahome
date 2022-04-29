@@ -608,7 +608,7 @@ def shifting_entry():
         timestamp = current_time.strftime('%d %m %Y at %H %M')
 
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+            from_project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         
         cur.execute(material_quantity_query)
         result = cur.fetchone()
