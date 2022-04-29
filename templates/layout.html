@@ -107,7 +107,7 @@
     <a href="/erp/contractor_registration"
        class='nav-link {% if "/contractor_registration" in request.path %} active {% endif %}'>Contractor
         Registration</a>
-    <a href="/erp/view_contractors" class='nav-link {% if "/view_contractors" in request.path %} active {% endif %}'>View
+    <a href="/erp/view_contractors" class='nav-link {% if "/view_contractors" in request.path or "/contractor_info" in request.path %} active {% endif %}'>View
         Contractors</a>
     <a href="/erp/create_work_order" class='nav-link {% if "/create_work_order" in request.path %} active {% endif %}'>Create
         work order</a>
