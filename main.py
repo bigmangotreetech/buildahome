@@ -2967,7 +2967,7 @@ def edit_team():
 
         project_id = request.form['project_id']
         for i in values[-1]:
-            if str(i).strip() != ''
+            if str(i).strip() != '':
                 access_to_projects = ''
                 access_query = 'SELECT access from App_users WHERE user_id='+str(i)+' AND  project_id='+str(project_id)
                 cur.execute(access_query)
