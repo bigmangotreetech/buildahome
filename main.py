@@ -1374,18 +1374,10 @@ def create_bill():
     else:
         project_id = request.form['project_id']
         trade = request.form['trade']
-        stage = request.form['stage']
-        payment_percentage = request.form['payment_percentage']
-        amount = request.form['amount']
-        contractor_name = request.form['contractor_name']
-        contractor_code = request.form['contractor_code']
-        contractor_pan = request.form['contractor_pan']
         IST = pytz.timezone('Asia/Kolkata')
         current_time = datetime.now(IST)
         timestamp = current_time.strftime('%d %m %Y at %H %M')
         cur = mysql.connection.cursor()
-
-
         if trade == 'NT/NMR':
             quantity = request.form['quantity']
             rate = request.form['rate']
@@ -1406,6 +1398,16 @@ def create_bill():
             return redirect('/erp/create_bill')
 
 
+        
+        stage = request.form['stage']
+        payment_percentage = request.form['payment_percentage']
+        amount = request.form['amount']
+        contractor_name = request.form['contractor_name']
+        contractor_code = request.form['contractor_code']
+        contractor_pan = request.form['contractor_pan']
+
+
+        
         total_payable = float(amount)
         check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
             trade) + '" AND stage="' + str(stage) + '"'
