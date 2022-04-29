@@ -2035,28 +2035,28 @@ def view_ph_approved_indents():
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
         
-            cur.execute(indents_query)
-            data = []
-            result = cur.fetchall()
-            for i in result:
-                i = list(i)
-                if len(str(i[8]).strip()) > 0:
-                    i[8] = str(i[8]).strip()
-                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                    IST = pytz.timezone('Asia/Kolkata')
-                    current_time = datetime.now(IST)
-                    time_since_creation = current_time - timestamp
-                    difference_in_seconds = time_since_creation.total_seconds()
-                    difference_in_hours = difference_in_seconds // 3600
-                    if difference_in_hours >= 24:
-                        difference_in_days = difference_in_hours // 24
-                        hours_remaining = difference_in_hours % 24
-                        i[8] = str(int(difference_in_days)) + ' days, ' + str(
-                            int(hours_remaining)) + 'hours'
-                    else:
-                        i[8] = str(int(difference_in_hours)) + ' hours'
-                data.append(i)
-            return render_template('ph_approval_indents.html', result=data)
+        cur.execute(indents_query)
+        data = []
+        result = cur.fetchall()
+        for i in result:
+            i = list(i)
+            if len(str(i[8]).strip()) > 0:
+                i[8] = str(i[8]).strip()
+                timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                IST = pytz.timezone('Asia/Kolkata')
+                current_time = datetime.now(IST)
+                time_since_creation = current_time - timestamp
+                difference_in_seconds = time_since_creation.total_seconds()
+                difference_in_hours = difference_in_seconds // 3600
+                if difference_in_hours >= 24:
+                    difference_in_days = difference_in_hours // 24
+                    hours_remaining = difference_in_hours % 24
+                    i[8] = str(int(difference_in_days)) + ' days, ' + str(
+                        int(hours_remaining)) + 'hours'
+                else:
+                    i[8] = str(int(difference_in_hours)) + ' hours'
+            data.append(i)
+        return render_template('ph_approval_indents.html', result=data)
 
 @app.route('/view_approved_indents', methods=['GET'])
 def view_approved_indents():
