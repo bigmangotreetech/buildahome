@@ -3756,7 +3756,7 @@ def get_my_indents():
         if role == 'Admin':
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp, indents.created_by_user, indents.status FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
-                            ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id AND indents.created_by_user='+str(user_id)
+                            ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id AND indents.created_by_user='+str(user_id)+' ORDER by indents.id DESC'
             cur.execute(indents_query)
             res = cur.fetchall()
             data = []
@@ -3783,7 +3783,7 @@ def get_my_indents():
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp, indents.created_by_user, indents.status FROM indents INNER JOIN projects on indents.project_id=projects.project_id AND indents.project_id IN ' + str(
                 access_tuple) + '' \
-                                ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id AND indents.created_by_user='+str(user_id)
+                                ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id AND indents.created_by_user='+str(user_id)+' ORDER by indents.id DESC'
             cur.execute(indents_query)
             res = cur.fetchall()
             data = []
