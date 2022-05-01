@@ -3569,7 +3569,7 @@ def notes_picture_uplpoad():
                 return jsonify({'message':'failed'})
 
             cur = mysql.connection.cursor()
-            query = 'UPDATE notes_and_comments SET attachment='+'note_'+str(note_id)+'.'+filetype+' WHERE id='+str(note_id)
+            query = 'UPDATE notes_and_comments SET attachment="note_'+str(note_id)+'.'+filetype+'" WHERE id='+str(note_id)
             cur.execute(query)
             mysql.connection.commit()
             return jsonify({'message':'success'})
