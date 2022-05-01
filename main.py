@@ -3568,11 +3568,11 @@ def notes_picture_uplpoad():
             if output != 'success':
                 return jsonify({'message':'failed'})
 
-        cur = mysql.connection.cursor()
-        query = 'UPDATE notes_and_comments SET attachment='+file.filename.split('.')[-1]+' WHERE id='+str(note_id)
-        cur.execute(query)
-        mysql.connection.commit()
-        return jsonify({'message':'success'})
+            cur = mysql.connection.cursor()
+            query = 'UPDATE notes_and_comments SET attachment='+'note_'+str(note_id)+'.'+filetype+' WHERE id='+str(note_id)
+            cur.execute(query)
+            mysql.connection.commit()
+            return jsonify({'message':'success'})
 
 @app.route('/API/mark_notifications_as_read', methods=['GET','POST'])
 def mark_notifications_as_read():
