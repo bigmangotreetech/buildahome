@@ -3631,11 +3631,14 @@ def create_indent():
         unit = request.form['unit']
         purpose = request.form['purpose']
         timestamp = request.form['timestamp']
+        approval_taken = request.form['approvalTaken']
+        difference_cost = request.form['differenceCost']
+
         status = 'unapproved'
         cur = mysql.connection.cursor()
         user_id = request.form['user_id']
-        query = 'INSERT into indents(project_id, material, quantity, unit, purpose, status, created_by_user, timestamp) values (%s, %s, %s, %s, %s, %s, %s, %s)'
-        values = (project_id, material, quantity, unit, purpose, status, user_id, timestamp)
+        query = 'INSERT into indents(project_id, material, quantity, unit, purpose, status, created_by_user, timestamp, approval_taken, difference_cost) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        values = (project_id, material, quantity, unit, purpose, status, user_id, timestamp, approval_taken, difference_cost)
         cur.execute(query, values)
         mysql.connection.commit()
         return jsonify({'message': 'success'})
