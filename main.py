@@ -3633,6 +3633,11 @@ def create_indent():
         timestamp = request.form['timestamp']
         approval_taken = request.form['approvalTaken']
         difference_cost = request.form['differenceCost']
+        
+        if approval_taken == '0':
+            approval_taken = 'true'
+        else: 
+            approval_taken = 'false'
 
         status = 'unapproved'
         cur = mysql.connection.cursor()
