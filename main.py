@@ -3563,10 +3563,15 @@ def notes_picture_uplpoad():
             flash('No selected file', 'danger ')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            output = send_to_s3(file, app.config["S3_BUCKET"], 'note_'+str(note_id))
+            filetype = file.filename.split('.')[-1]
+            output = send_to_s3(file, app.config["S3_BUCKET"], 'note_'+str(note_id)+'.'+filetype)
             if output != 'success':
                 return jsonify({'message':'failed'})
+
+        cur = mysql.connection.cursor()
+        query = 'UPDATE notes_and_comments SET attachment=1 WHERE id='+str(note_id)
+        cur.execute(query)
+        mysql.connection.commit()
         return jsonify({'message':'success'})
 
 @app.route('/API/mark_notifications_as_read', methods=['GET','POST'])
@@ -3615,7 +3620,7 @@ def get_notes():
         else:
             project_id = request.args['project_id']
             cur = mysql.connection.cursor()
-            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id FROM ' \
+            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id , n.attachment FROM ' \
                             'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
                             ' WHERE p.project_id =' + str(project_id)
