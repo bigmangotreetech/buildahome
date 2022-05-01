@@ -3552,7 +3552,22 @@ def post_comment():
         query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id) values(%s, %s, %s, %s)'
         cur.execute(query, (note, timestamp, user_id, project_id))
         mysql.connection.commit()
-        return 'success'
+        return jsonify({'message':'success', 'note_id': str(cur.lastrowid) })
+
+@app.route('/API/notes_picture_uplpoad', methods=['GET','POST'])
+def notes_picture_uplpoad():
+    if request.method == 'POST':
+        note_id = request.form['note_id']
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file', 'danger ')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            output = send_to_s3(file, app.config["S3_BUCKET"], 'note_'+str(note_id))
+            if output != 'success':
+                return jsonify({'message':'failed')
+        return jsonify({'message':'success')
 
 @app.route('/API/mark_notifications_as_read', methods=['GET','POST'])
 def mark_notifications_as_read():
