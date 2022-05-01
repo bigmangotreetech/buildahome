@@ -3567,7 +3567,7 @@ def notes_picture_uplpoad():
             output = send_to_s3(file, app.config["S3_BUCKET"], 'note_'+str(note_id))
             if output != 'success':
                 return jsonify({'message':'failed'})
-        return jsonify({'message':'success')
+        return jsonify({'message':'success'})
 
 @app.route('/API/mark_notifications_as_read', methods=['GET','POST'])
 def mark_notifications_as_read():
