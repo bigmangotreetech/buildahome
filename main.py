@@ -1982,7 +1982,7 @@ def view_qs_approval_indents():
         cur = mysql.connection.cursor()
         current_user_role = session['role']
         indents_query = ''
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','QS Info']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -2684,7 +2684,7 @@ def approved_projects():
         cur = mysql.connection.cursor()
         result = []
         if len(get_projects_for_current_user()) > 0:
-            if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head',
+            if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning'
                                        'Sales Executive', 'Billing']:
                 approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
