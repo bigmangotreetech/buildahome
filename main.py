@@ -821,7 +821,7 @@ def contractor_registration():
         values = list(request.form.values())
         cur = mysql.connection.cursor()
 
-        check_if_code_exists = 'SELECT id FROM contractors WHERE code='+request.form['code']
+        check_if_code_exists = 'SELECT id FROM contractors WHERE code="'+request.form['code']+'"'
         cur.execute(check_if_code_exists)
         res = cur.fetchone()
         if res is not None:
@@ -885,7 +885,7 @@ def edit_contractor():
     else:
         cur = mysql.connection.cursor()
 
-        check_if_code_exists = 'SELECT id FROM contractors WHERE code='+request.form['code']
+        check_if_code_exists = 'SELECT id FROM contractors WHERE code="'+request.form['code']+'"'
         cur.execute(check_if_code_exists)
         res = cur.fetchone()
         if res is not None:
@@ -3892,7 +3892,7 @@ def get_unapproved_indents():
                 indent_entry['created_by_user'] = i[7]
                 indent_entry['timestamp'] = i[8]
                 indent_entry['created_by_user_id'] = i[9]
-                ndent_entry['difference_cost'] = i[10]
+                indent_entry['difference_cost'] = i[10]
                 indent_entry['approval_taken'] = i[11]
                 data.append(indent_entry)
 
