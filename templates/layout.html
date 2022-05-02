@@ -51,7 +51,7 @@
 <div class="position-fixed sidebar p-3 bg-indigo">
 
     <div class="nav-section-header">Project</div>
-    {% if session['role'] in ['Super Admin','COO','Sales Executive','Billing'] %}
+    {% if session['role'] in ['Super Admin','COO','Sales Executive','Billing','Planning'] %}
     <a href="/erp/create_project" class='nav-link {% if "create_project" in request.path %} active {% endif %}'>Create
         project</a>
     {% endif %}
