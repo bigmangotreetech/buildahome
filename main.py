@@ -2523,7 +2523,7 @@ def create_project():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/create_project'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing']:
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Planning']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -2589,7 +2589,7 @@ def edit_project():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/edit_project'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing']:
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Planning']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
@@ -2684,7 +2684,7 @@ def approved_projects():
         cur = mysql.connection.cursor()
         result = []
         if len(get_projects_for_current_user()) > 0:
-            if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning'
+            if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning',
                                        'Sales Executive', 'Billing']:
                 approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
