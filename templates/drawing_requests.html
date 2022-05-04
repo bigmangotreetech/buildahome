@@ -17,6 +17,9 @@
             <th scope="col">Timestamp</th>
             <th scope="col">Comments</th>
             <th scope="col">Action</th>
+            {% if session['role'] in ['Super Admin', 'Design Head'] %}
+            <th scope="col"></th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -30,6 +33,13 @@
             <td>{{req[5]}}</td>
             <td>{{req[6]}}</td>
             <td><button class="btn">Upload</button></td>
+            {% if session['role'] in ['Super Admin', 'Design Head'] %}
+            <td>
+                <a href="/erp/delete_drawing_request?id={{req[7]}}" class="text-danger"
+                onclick="return confirm('Are you sure you want to delete this drawing request')"
+                >Delete</a>
+            </td>
+            {% endif %}
         </tr>
         {% endfor %}
 

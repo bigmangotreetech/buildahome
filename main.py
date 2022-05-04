@@ -364,6 +364,25 @@ def project_notes():
         cur = mysql.connection.cursor()
         query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id) values(%s, %s, %s, %s)'
         cur.execute(query, (note, timestamp, user_id, project_id))
+
+        note_id = cur.lastrowid        
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file', 'danger ')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filetype = file.filename.split('.')[-1]
+            output = send_to_s3(file, app.config["S3_BUCKET"], 'note_'+str(note_id)+'.'+filetype)
+            if output != 'success':
+                return jsonify({'message':'failed'})
+
+            cur = mysql.connection.cursor()
+            query = 'UPDATE notes_and_comments SET attachment="note_'+str(note_id)+'.'+filetype+'" WHERE id='+str(note_id)
+            cur.execute(query)
+            mysql.connection.commit()
+            return jsonify({'message':'success'})
+
+
         mysql.connection.commit()
         flash('Note Added', 'success')
         return redirect('/erp/project_notes?project_id='+str(project_id))
@@ -3248,14 +3267,14 @@ def view_drawings_requests():
 
         
         if session['role'] not in ['Super Admin','COO']:
-            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose FROM ' \
+            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
                             ' WHERE p.project_id IN ' + str(get_projects_for_current_user())
             cur.execute(get_requests) 
                        
         else: 
-            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose FROM ' \
+            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' 
             cur.execute(get_requests) 
@@ -3263,6 +3282,16 @@ def view_drawings_requests():
             
         return render_template('drawing_requests.html', requests=res)
 
+
+@app.route('/delete_drawing_request', methods=['GET','POST'])
+def delete_drawing_request():
+    request_id = request.args['id']
+    cur = mysql.connection.cursor()
+    query = 'DELETE from drawing_requests WHERE id='+str(request_id)
+    cur.execute(query)
+    mysql.connection.commit()
+    flash("Drawing request has been deleted",'danger')
+    return redirect('/erp/view_drawings_requests')
 
 @app.route('/upload_revised_drawing', methods=['GET', "POST"])
 def upload_revised_drawing():

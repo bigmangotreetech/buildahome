@@ -23,7 +23,7 @@
     </div>
     <div class="w-100 p-3 overflow-x-auto">
         {% if notes is not none %}
-        <form action="/erp/project_notes" method="post">
+        <form action="/erp/project_notes" method="post" enctype="multipart/form-data">
             <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
 
             <div class="row mx-0 mb-3 form-group">
@@ -33,7 +33,16 @@
                 <div class="col-12 p-0">
                     <textarea type="number" name="note" id="note" class="form-control" required></textarea>
                 </div>
-            </div>  
+            </div>
+            
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-12 p-0">
+                    <label for="file">Add attachment</label> <small>(Optional)</small>
+                </div>
+                <div class="col-12 p-0">
+                    <textarea type="file" name="file" id="file" class="form-control"></textarea>
+                </div>
+            </div>
 
 
             <div class="row mx-0 mb-5">
