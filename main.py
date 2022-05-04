@@ -367,10 +367,7 @@ def project_notes():
 
         note_id = cur.lastrowid        
         file = request.files['file']
-        if file.filename == '':
-            flash('No selected file', 'danger ')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
+        if file.filename != '' and file and allowed_file(file.filename):
             filetype = file.filename.split('.')[-1]
             output = send_to_s3(file, app.config["S3_BUCKET"], 'note_'+str(note_id)+'.'+filetype)
             if output != 'success':
