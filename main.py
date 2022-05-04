@@ -346,7 +346,7 @@ def project_notes():
             projects = get_projects()
             project_id = request.args['project_id']
             cur = mysql.connection.cursor()
-            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id FROM ' \
+            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id, n.attachment FROM ' \
                             'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
                             ' WHERE p.project_id =' + str(project_id)
@@ -371,14 +371,14 @@ def project_notes():
             filetype = file.filename.split('.')[-1]
             output = send_to_s3(file, app.config["S3_BUCKET"], 'note_'+str(note_id)+'.'+filetype)
             if output != 'success':
-                return jsonify({'message':'failed'})
+                flash('Failed', 'danger')
+                return redirect('/erp/project_notes?project_id='+str(project_id))
 
             cur = mysql.connection.cursor()
             query = 'UPDATE notes_and_comments SET attachment="note_'+str(note_id)+'.'+filetype+'" WHERE id='+str(note_id)
             cur.execute(query)
             mysql.connection.commit()
-            return jsonify({'message':'success'})
-
+            
 
         mysql.connection.commit()
         flash('Note Added', 'success')

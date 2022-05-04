@@ -16,6 +16,9 @@
                 {% else %}
                 <option value="{{i[0]}}">{{i[1]}}</option>
                 {% endif %}
+                {% if i[4]|string != '0' %}
+                <a href="https://app.buildahome.in/erp/files/{{i[4]}}"></a>
+                {% endif %}
                 {% endfor %}
             </select>
         </div>
