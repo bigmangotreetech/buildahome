@@ -191,7 +191,7 @@ def delete_old_drawings():
     cur = mysql.connection.cursor()
     
     f = open('../static/projects_to_delete.txt','r')
-    i = 0
+    index = 0
     for i in f:
         project_number = i.strip()
         project_id_query = 'SELECT project_id from projects WHERE project_number='+project_number
@@ -208,8 +208,8 @@ def delete_old_drawings():
                 pass
         delete_drawing_query = 'DELETE from Docs WHERE project_id='+str(project_id)+' AND folder!="RECEIPTS" AND folder!="AGREEMENT "'
         cur.execute(delete_drawing_query)
-        i=i+1
-        if i == 2:
+        index=index+1
+        if index == 2:
             break
 
         
