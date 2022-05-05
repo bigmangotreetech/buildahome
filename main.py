@@ -3267,13 +3267,13 @@ def view_drawings_requests():
             get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id, r.project_id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
-                            ' WHERE p.project_id IN ' + str(get_projects_for_current_user())
+                            ' WHERE r.status!="closed" AND p.project_id IN ' + str(get_projects_for_current_user())
             cur.execute(get_requests) 
                        
         else: 
             get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id, r.project_id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
-                            ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' 
+                            ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user WHERE r.status!="closed"' 
             cur.execute(get_requests) 
         res = cur.fetchall()
             
@@ -3446,6 +3446,9 @@ def upload_drawing():
             query = 'UPDATE drawing_requests SET status="closed" ' \
                     'WHERE id='+str(request.form['drawing_request_id'])
             cur.execute(query)
+
+            mysql.connection.commit()
+            return redirect('/erp/view_drawings_requests')
 
         mysql.connection.commit()            
         return redirect('/erp/drawings')
