@@ -66,6 +66,7 @@ $('.upload-drawing-for-request').on('click', function() {
     }
     $('#category').val(category)
 
+    action = 'Complete'
     $('.current-status').text('Changing status to ' + action)
 })
 
