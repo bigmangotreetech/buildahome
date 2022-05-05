@@ -20,7 +20,7 @@ from werkzeug.utils import secure_filename
 from models.projects import projects
 from constants.constants import project_fields, roles
 
-
+# Last labour stage id 412
 app = Flask(__name__)
 # Sql setup
 app.config['MYSQL_HOST'] = 'localhost'
