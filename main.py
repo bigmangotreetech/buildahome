@@ -190,7 +190,7 @@ def get_projects_for_current_user():
 def delete_old_drawings():
     cur = mysql.connection.cursor()
     
-    f = open('projects_to_delete.txt','r')
+    f = open('../static/projects_to_delete.txt','r')
     for i in f:
         project_number = i.strip()
         project_id_query = 'SELECT project_id from projects WHERE project_number='+project_number
