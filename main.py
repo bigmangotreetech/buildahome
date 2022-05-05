@@ -3443,9 +3443,9 @@ def upload_drawing():
             IST = pytz.timezone('Asia/Kolkata')
             current_time = datetime.now(IST)
             timestamp = current_time.strftime('%d %m %Y at %H %M')
-            query = 'UPDATE drawing_requests SET status=%s AND closed_on=%s ' \
+            query = 'UPDATE drawing_requests SET status="closed"' 
                     'WHERE id='+str(request.form['drawing_request_id'])
-            cur.execute(query, ('closed',timestamp))
+            cur.execute(query)
 
         mysql.connection.commit()            
         return redirect('/erp/drawings')
