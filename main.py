@@ -187,6 +187,30 @@ def get_projects_for_current_user():
         else:
             return []
 
+def delete_old_drawings():
+    cur = mysql.connection.cursor()
+    
+    f = open('projects_to_delete.txt','r')
+    for i in f:
+        project_number = i.strip()
+        project_id_query = 'SELECT project_id from projects WHERE project_number='+project_number
+        cur.execute(project_id_query)
+        res = cur.fetchone()
+        project_id = res[0]
+        get_drawings_for_projects = 'SELECT pdf FROM Docs WHERE project_id='+str(project_id)+'  AND (folder!="RECEIPTS" OR folder!="AGREEMENT ")'
+        cur.execute(get_drawings_for_projects)
+        res = cur.fetchall()
+        for d in res:
+            print('Removing /home/buildahome2016/public_html/app.buildahome.in/team/Drawings/'+d[0]+' for project '+str(project_number))
+            os.remove('/home/buildahome2016/public_html/app.buildahome.in/team/Drawings/'+d[0])
+        delete_drawing_query = 'DELETE from Docs WHERE project_id=%s AND (folder!="RECEIPTS" OR folder!="AGREEMENT ")'
+        cur.execute(delete_drawing_query)
+        break
+    
+    return 'success'
+
+
+
 @app.route('/migrate', methods=['GET'])
 def migrate():
     BASE_DIR = '/home/buildahome2016/public_html'
