@@ -186,7 +186,7 @@ def get_projects_for_current_user():
             return tuple(projects)
         else:
             return []
-
+@app.route('/delete_old_drawings', methods=['GET'])
 def delete_old_drawings():
     cur = mysql.connection.cursor()
     
