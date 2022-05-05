@@ -203,7 +203,7 @@ def delete_old_drawings():
         for d in res:
             print('Removing /home/buildahome2016/public_html/app.buildahome.in/team/Drawings/'+d[0]+' for project '+str(project_number))
             os.remove('/home/buildahome2016/public_html/app.buildahome.in/team/Drawings/'+d[0])
-        delete_drawing_query = 'DELETE from Docs WHERE project_id=%s AND (folder!="RECEIPTS" OR folder!="AGREEMENT ")'
+        delete_drawing_query = 'DELETE from Docs WHERE project_id='+str(project_id)+' AND (folder!="RECEIPTS" OR folder!="AGREEMENT ")'
         cur.execute(delete_drawing_query)
         break
     
