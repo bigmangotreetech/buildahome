@@ -25,14 +25,14 @@
         <tbody>
         {% for req in requests %}
         <tr>
-            <td>{{req[0]}}</td>
+            <td data-project-id="{{req[8]}}">{{req[0]}}</td>
             <td>{{req[1]}}</td>
             <td>{{req[2]}}</td>
             <td>{{req[3]}}</td>
             <td>{{req[4]}}</td>
             <td>{{req[5]}}</td>
             <td>{{req[6]}}</td>
-            <td><button class="btn">Upload</button></td>
+            <td><a href="" class="upload-drawing-for-request" data-toggle="#drawing-modal" data-target="modal">Upload</button></td>
             {% if session['role'] in ['Super Admin', 'Design Head'] %}
             <td>
                 <a href="/erp/delete_drawing_request?id={{req[7]}}" class="text-danger"
@@ -64,4 +64,78 @@
 
 
 </div>
+<!-- Modal -->
+<div class="modal fade" id="drawing-modal" tabindex="-1" role="dialog" aria-labelledby="drawingModalLabel"
+aria-hidden="true">
+<div class="modal-dialog  modal-dialog-centered  modal-lg" role="document">
+   <div class="modal-content">
+       <div class="modal-header">
+           <h5 class="modal-title" id="approvalModalLabel">Change drawing status</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+           </button>
+       </div>
+       <div class="modal-body">
+           <div class="row mx-0 mb-3 form-group">
+               <div class="col-6 p-0">
+                   <label>Project</label>
+               </div>
+               <div class="col-6">
+                   <label class="font-weight-bold project_name"></label>
+               </div>
+           </div>
+
+           <div class="row mx-0 mb-3 form-group">
+               <div class="col-6 p-0">
+                   <label>Drawing</label>
+               </div>
+               <div class="col-6">
+                   <label class="font-weight-bold drawing_name"></label>
+               </div>
+           </div>
+
+           <div class="row mx-0 mb-3 form-group drawing-link-section">
+               <div class="col-6 p-0 drawing-links d-flex flex-column">
+
+               </div>
+           </div>
+
+           <div class="row mx-0 mb-3 form-group">
+               <div class="col-8 mt-4 p-0">
+                   <div>Change status to</div>                   
+
+                   <div class="current-status font-weight-bold mt-3">
+
+                   </div>
+               </div>
+           </div>
+
+           <form class="upload-drawing-form" action="/erp/upload_drawing" enctype="multipart/form-data"
+                 method="post">
+               <div class="row mx-0 mb-3 form-group">
+                   <div class="col-8 mt-4 p-0">
+                       <div class="mb-2">Upload drawing</div>
+                       <input type="file" multiple name="drawings[]" id="drawing">
+                       <input type="hidden" name="project_id" id="project_id">
+                       <input type="hidden" name="project_name" class="project_name">
+                       <input type="hidden" name="drawing_name" id="drawing_name">
+                   </div>
+               </div>
+           </form>
+
+       </div>
+
+       <div class="modal-footer">
+           <div class="d-flex w-100 justify-content-between">
+               <button type="button" class="btn text-danger" data-dismiss="modal">Cancel</button>
+               <button type="button" class="btn btn-dark bg-indigo text-white approve_drawing_btn">Confirm</button>
+           </div>
+       </div>
+   </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='drawings.js') }}"></script>
 {% endblock %}
