@@ -138,8 +138,10 @@ $('.drawing-not-applicable').on('click', function () {
 $('.approve_drawing_btn').on('click', function () {
 
     if (action == "Complete") {
-        actionBtn.find('.status').addClass('d-none')
-        actionBtn.find('.bg-success').removeClass('d-none')
+        if (actionBtn) {
+            actionBtn.find('.status').addClass('d-none')
+            actionBtn.find('.bg-success').removeClass('d-none')            
+        }
         if ($('#drawing').val().length) {
             $('.upload-drawing-form').submit()
         } else {
