@@ -3264,14 +3264,14 @@ def view_drawings_requests():
 
         
         if session['role'] not in ['Super Admin','COO']:
-            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id FROM ' \
+            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id, r.project_id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
                             ' WHERE p.project_id IN ' + str(get_projects_for_current_user())
             cur.execute(get_requests) 
                        
         else: 
-            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id FROM ' \
+            get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id, r.project_id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' 
             cur.execute(get_requests) 

@@ -32,7 +32,7 @@
             <td>{{req[4]}}</td>
             <td>{{req[5]}}</td>
             <td>{{req[6]}}</td>
-            <td><a href="" class="upload-drawing-for-request" data-toggle="#drawing-modal" data-target="modal">Upload</button></td>
+            <td><div class="btn upload-drawing-for-request" data-toggle="modal" data-target="#drawing-modal">Upload</button></div>
             {% if session['role'] in ['Super Admin', 'Design Head'] %}
             <td>
                 <a href="/erp/delete_drawing_request?id={{req[7]}}" class="text-danger"

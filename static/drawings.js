@@ -10,6 +10,21 @@ $('th').each(function (index, element) {
         drawings_list.push(element.innerHTML)
 })
 
+$('.upload-drawing-for-request').on('click', function() {
+    $('.drawing-links').html('')
+
+    project_name = $($(this).parents('tr').find('td').get(0)).text()
+    project_id = $($(this).parents('tr').find('td').get(0)).attr('data-project-id')
+
+    $('#project_id').val(project_id)
+    $('.project_name').text(project_name)
+
+    drawing_name =  $($(this).parents('tr').find('td').get(3)).text()
+    $('.drawing_name').text(drawing_name)
+
+    $('.current-status').text('Changing status to ' + action)
+})
+
 $('.status-action').on('click', function () {
     $('.current-status').text('')
     actionBtn = $(this).find('div')
