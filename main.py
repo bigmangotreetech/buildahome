@@ -3406,7 +3406,9 @@ def upload_drawing():
 
         cur = mysql.connection.cursor()
         table_name = ''
-        if 'category' in session:
+        if 'category' in request.form:
+            table_name = request.form['category']
+        elif 'category' in session:
             table_name = session['category']
         else:
             table_name = get_drwaings_table_name()
@@ -3429,17 +3431,23 @@ def upload_drawing():
                 revised_drawing_query = 'INSERT into revised_drawings (name, type, project_id, file, revision) values (%s, %s, %s, %s, %s)'
                 cur.execute(revised_drawing_query, (drawing_name, table_name, str(project_id), result[1], revision))
 
-            mysql.connection.commit()
 
             flash(drawing_name + ' Drawing uploaded to project ' + request.form['project_name'], 'success')
-            return redirect('/erp/drawings')
         else:
             insert_drawing_query = 'INSERT into ' + table_name + ' (project_id, ' + drawing_name + ') values (%s, %s)'
             cur.execute(insert_drawing_query, (str(project_id), '||'.join(drawing_filenames)))
-            mysql.connection.commit()
             drawing_name = drawing_name.replace('_', ' ').capitalize()
             flash(drawing_name + ' Drawing uploaded to project ' + request.form['project_name'], 'success')
-            return redirect('/erp/drawings')
+
+        if 'drawing_request_id' in request.form:
+            IST = pytz.timezone('Asia/Kolkata')
+            current_time = datetime.now(IST)
+            timestamp = current_time.strftime('%d %m %Y at %H %M')
+            query = "UPDATE drawing_requests SET status='closed' AND closed_on='"+timestamp+"' WHERE id"+str(request.form['drawing_request_id'])
+            cur.execute(query)
+            
+        mysql.connection.commit()            
+        return redirect('/erp/drawings')
 
 @app.route('/change_drawing_status', methods=['POST'])
 def change_drawing_status():

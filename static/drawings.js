@@ -4,6 +4,35 @@ var action;
 var project_id;
 var drawing_name;
 var drawing_link;
+var drawingsTableNameMap = {
+    'Working Drawings': 'wokring_drawing',
+    'Misc Details': 'misc_details',
+    'Filter slab layout': 'filler_slab_layout',
+    'Sections': 'sections',
+    '2d elevation': '2d_elevation',
+    'Door window details, Window grill details': 'door_window_details_window_grill_details',
+    'Flooring layout details': 'flooring_layout_details',
+    'Toilet kitchen dadoing details': 'toilet_kitchen_dadoing_details',
+    'Compound wall details': 'compound_wall_details',
+    'Fabrication details':'fabrication_details',
+    'Sky light details': 'sky_light_details',
+    'External and internal paint shades': 'external_and_internal_paint_shades',
+    'Isometric views': 'isometric_views',
+    '3d drawings': '3d_drawings',
+    'Column marking': 'column_marking',
+    'Footing layout': 'footing_layout',
+    'UG sump details': 'ug_sump_details',
+    'Plinth beam layout': 'plinth_beam_layout',
+    'Staircase details': 'staircase_details',
+    'Floor form work beam and slab reinforcement details': 'floor_form_work_beam_and_slab_reinforcement_details',
+    'OHT slab details': 'oht_slab_details',
+    'Lintel details': 'lintel_details',
+    'Electrical drawing': 'electrical_drawing', 
+    'Conduit drawing': 'conduit_drawing',
+    'Water line drawing': 'water_line_drawing', 
+    'Drinage line drawing': 'drainage_line_drawings',
+    'RWH details': 'rwh_details'
+}
 
 $('th').each(function (index, element) {
     if (index != 0)
@@ -15,12 +44,27 @@ $('.upload-drawing-for-request').on('click', function() {
 
     project_name = $($(this).parents('tr').find('td').get(0)).text()
     project_id = $($(this).parents('tr').find('td').get(0)).attr('data-project-id')
+    request_id = $($(this).parents('tr').find('td').get(0)).attr('data-request-id')
 
+    $('#drawing_request_id').val(request_id)
     $('#project_id').val(project_id)
     $('.project_name').text(project_name)
 
     drawing_name =  $($(this).parents('tr').find('td').get(3)).text()
+    $('#drawing_name').val(drawingsTableNameMap[drawing_name])
     $('.drawing_name').text(drawing_name)
+
+    category =  $($(this).parents('tr').find('td').get(2)).text().trim()
+    if(category == 'Artchitectural') {
+        category = 'architect_drawings'
+    } else if(category == 'Structural') {
+        category = 'structural_drawings'
+    } else if(category == 'Electrical') {
+        category = 'electrical_drawings'
+    } else if(category == 'Plumbing') {
+        category = 'plumbing_drawings'
+    }
+    $('#category').val(category)
 
     $('.current-status').text('Changing status to ' + action)
 })

@@ -25,14 +25,14 @@
         <tbody>
         {% for req in requests %}
         <tr>
-            <td data-project-id="{{req[8]}}">{{req[0]}}</td>
+            <td data-project-id="{{req[8]}}" data-request-id="{{req[7]}}">{{req[0]}}</td>
             <td>{{req[1]}}</td>
             <td>{{req[2]}}</td>
             <td>{{req[3]}}</td>
             <td>{{req[4]}}</td>
             <td>{{req[5]}}</td>
             <td>{{req[6]}}</td>
-            <td><div class="btn upload-drawing-for-request" data-toggle="modal" data-target="#drawing-modal">Upload</button></div>
+            <td><div class="btn text-primary upload-drawing-for-request" data-toggle="modal" data-target="#drawing-modal">Upload</button></div>
             {% if session['role'] in ['Super Admin', 'Design Head'] %}
             <td>
                 <a href="/erp/delete_drawing_request?id={{req[7]}}" class="text-danger"
@@ -59,6 +59,10 @@
             font-size: 11px;
             padding: 0.5rem;
             border: 1px solid #dee2e6
+        }
+
+        .upload-drawing-for-request {
+            font-size: 11px;
         }
     </style>
 
@@ -119,6 +123,9 @@ aria-hidden="true">
                        <input type="hidden" name="project_id" id="project_id">
                        <input type="hidden" name="project_name" class="project_name">
                        <input type="hidden" name="drawing_name" id="drawing_name">
+                       <input type="hidden" name="category" id="category">
+                       <input type="hidden" name="drawing_request_id" id="drawing_request_id">
+
                    </div>
                </div>
            </form>
