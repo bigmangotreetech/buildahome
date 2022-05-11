@@ -2366,7 +2366,7 @@ def rollback_indent_by_ph():
         indent_id = request.args['id']
         cur = mysql.connection.cursor()
         query = 'UPDATE indents set status=%s WHERE id=%s'
-        cur.execute(query, ('approved',indent_id))
+        cur.execute(query, ('approved_by_qs',indent_id))
         mysql.connection.commit()
         flash('Indent rolled back','success')
         return redirect('/erp/view_qs_approval_indents')
