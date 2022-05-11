@@ -1914,7 +1914,8 @@ def view_work_order():
             project_id = request.args['project_id']
             work_orders = get_work_orders_for_project(project_id)
 
-            bills_query = 'SELECT wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity, wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='+str(project_id)
+            bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,
+                        ' wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
             cur = mysql.connection.cursor()
             cur.execute(bills_query)
             nt_nmr_bills = cur.fetchall()
