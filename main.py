@@ -851,7 +851,7 @@ def view_users():
         return redirect(request.referrer)
 
     cur = mysql.connection.cursor()
-    view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE NOT role="Client"'
+    view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users'
     cur.execute(view_users_query)
     result = cur.fetchall()
     return render_template('view_users.html', users=result)
@@ -2615,6 +2615,13 @@ def create_project():
         result = cur.fetchall()
         return render_template('create_project.html', sales_executives=result)
     else:
+        cur = mysql.connection.cursor()
+
+        client_name = request.form['client_name']
+        client_phone = request.form['client_phone']
+
+        create_user_query = 'INSERT into App_users (name, phone, role) values (%s, %s, "Client")'
+        cur.execute(create_user_query, (client_name, client_phone))    
 
         column_names = list(request.form.keys())
         values = list(request.form.values())
@@ -2625,7 +2632,6 @@ def create_project():
         timestamp = current_time.strftime('%d %m %Y at %H %M')
         values.append(timestamp)
 
-        cur = mysql.connection.cursor()
         new_project_query = 'INSERT into projects' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
         cur.execute(new_project_query)
@@ -2809,7 +2815,7 @@ def view_project_details():
             'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'sf_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
             'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name','client_phone'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(

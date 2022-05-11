@@ -27,7 +27,10 @@ class projects(object):
                  is_approved,
                  cost_sheet,
                  site_inspection_report,
-                 created_at):
+                 created_at,
+                 client_name,
+                 client_phone                 
+                 ):
         self.project_number = project_number
         self.project_name = project_name
         self.package_type = package_type
@@ -53,6 +56,8 @@ class projects(object):
         self.cost_sheet = cost_sheet
         self.site_inspection_report = site_inspection_report
         self.created_at = created_at
+        self.client_name = client_name
+        self.client_phone = client_phone
         #define a defauult constructor
 
         self.package_types = {'Essential':'false','Premium':'false','Luxury':'false','Green Home':'false','Others':'false'}
