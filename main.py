@@ -1309,7 +1309,7 @@ def delete_wo():
     query = 'DELETE FROM work_orders WHERE id='+wo_id
     cur.execute(query)
     mysql.connection.commit()
-    flash('Work order has been delete', 'danger')
+    flash('Work order has been deleted', 'danger')
     return redirect(request.referrer)
 
 @app.route('/create_work_order', methods=['GET', 'POST'])
@@ -2355,6 +2355,20 @@ def approve_indent_by_qs():
         cur.execute(query, ('approved_by_qs',indent_id))
         mysql.connection.commit()
         flash('Indent approved','success')
+        return redirect('/erp/view_qs_approval_indents')
+
+@app.route('/rollback_indent_by_ph', methods=['GET'])
+def rollback_indent_by_ph():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/rollback_indent_by_ph'
+    if request.method == 'GET':
+        indent_id = request.args['id']
+        cur = mysql.connection.cursor()
+        query = 'UPDATE indents set status=%s WHERE id=%s'
+        cur.execute(query, ('approved',indent_id))
+        mysql.connection.commit()
+        flash('Indent rolled back','success')
         return redirect('/erp/view_qs_approval_indents')
 
 @app.route('/approve_indent_by_ph', methods=['GET'])
