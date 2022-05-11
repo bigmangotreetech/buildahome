@@ -198,11 +198,12 @@ $(document).ready(function () {
 
             $(".select_payment_stage select").append($("<option></option>"))
             project_id = $("#project").val()
+            trade = $('#trade').text()
             $.ajax({
                 url: '/erp/update_payment_stages',
                 type: "POST",
                 dataType: 'json',
-                data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
+                data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade, 'trade': trade },
                 success: function (data) {
                     $('.total_wo_value').text(data['work_order_value'].replaceAll(',',''))
                     $('.contractor_name').text(data['contractor_name'])
