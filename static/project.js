@@ -268,6 +268,15 @@ $(document).ready(function () {
 
         const contractor_pan = $('.contractor_pan').text()
         $('input[name="contractor_pan"]').val(contractor_pan)
+
+        const quantity = $('#quantity').val()
+        $('input[name="quantity"]').val(quantity)
+
+        const rate = $('#rate').val()
+        $('input[name="rate"]').val(rate)
+
+        const description = $('#description').val()
+        $('input[name="description"]').val(rate)
         if ( trade!='NT/NMR' && $('#create_bill_form').hasClass('d-none')) return;
         
         $("#create_bill_form").submit()

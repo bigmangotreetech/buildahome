@@ -53,8 +53,7 @@
                             <label for="quantity">Quantity</label>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="quantity" id="quantity" class="form-control">
-                                
+                            <input type="number" id="quantity" class="form-control">                                
                         </div>
                     </div>
                     <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
@@ -62,7 +61,7 @@
                             <label for="rate">Rate</label>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="rate" id="rate" class="form-control">
+                            <input type="number" id="rate" class="form-control">
                         </div>
                     </div>
                     <div class="row mx-0 mb-3 form-group select_trade_for_bill d-none">
@@ -70,7 +69,7 @@
                             <label for="description">Description</label>
                         </div>
                         <div class="col-6">
-                            <textarea rows="4" name="description" id="description" class="form-control"></textarea>
+                            <textarea rows="4" id="description" class="form-control"></textarea>
                         </div>
                     </div>
                     <div class="row mx-0 mb-3 form-group">
@@ -154,6 +153,9 @@
                     <input type="hidden" name="contractor_name">
                     <input type="hidden" name="contractor_code">
                     <input type="hidden" name="contractor_pan">
+                    <input type="hidden" name="quantity" id="quantity-field">
+                    <input type="hidden" name="rate" id="rate-field">
+                    <input type="hidden" name="description" id="description-field">
                     <input type="hidden" name="nt_nmr_bill_amount">
                 </form>
 
