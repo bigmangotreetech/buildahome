@@ -1509,10 +1509,16 @@ def update_trades_for_contractor():
 
 @app.route('/update_payment_stages', methods=['POST'])
 def update_payment_stages():
+    project_id = request.form['project_id']    
+    trade = request.form['trade']    
+    cur = mysql.connection.cursor()
+    
+
+
+
     work_order_id_for_trade = request.form['work_order_id_for_trade']
     work_order_query = 'SELECT wo.value, c.name, c.code, c.pan from work_orders wo INNER JOIN contractors c ON ' \
                        'wo.contractor_id=c.id WHERE wo.id=' + str(work_order_id_for_trade)
-    cur = mysql.connection.cursor()
     cur.execute(work_order_query)
     res = cur.fetchone()
     if res is not None:
@@ -1520,8 +1526,10 @@ def update_payment_stages():
         contractor_name = res[1]
         contractor_code = res[2]
         contractor_pan = res[3]
+
+        old_bills_query = '(SELECT id FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(trade) + '")'
         payment_stages_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id=' + str(
-            work_order_id_for_trade)
+            work_order_id_for_trade)+ ' WHERE stage NOT IN '+old_bills_query
         cur.execute(payment_stages_query)
         result = cur.fetchall()
         stages = {}
