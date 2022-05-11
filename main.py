@@ -3608,6 +3608,19 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/nt_nmr', methods=['GET'])
+def api_nt_nmr():
+    if request.method == 'GET':
+        project_id=request.args['project_id']
+        bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
+                        ' wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+        cur = mysql.connection.cursor()
+        cur.execute(bills_query)
+        nt_nmr_bills = cur.fetchall()
+
+        return jsonify(nt_nmr_bills)
+
+
 @app.route('/API/view_bills', methods=['GET'])
 def api_view_bills():
     if request.method == 'GET':
