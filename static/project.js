@@ -611,8 +611,8 @@ $(document).ready(function () {
                     console.log(data)
                     for (const trade of data) {
                         $(".select_trade_for_bill select").append($("<option></option>")
-                            .attr("value", trade[0])
-                            .text(trade[1]))
+                            .attr("value", trade)
+                            .text(trade))
                     }
                 }
             });

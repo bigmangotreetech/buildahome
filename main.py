@@ -1499,7 +1499,7 @@ def update_trades_for_contractor():
     trades = []
     if result is not None:
         contractor_trades = result[0]
-        if '[' in contractor_trades:
+        if ',' in contractor_trades:
             trades = contractor_trades
         else:
             trades.append(contractor_trades)
