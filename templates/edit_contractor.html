@@ -66,11 +66,11 @@
                         <select name="trade" id="trade" class="form-control select2" multiple required>
                             <option value=""></option>
                             {% for i in trades %}
-                            {% if i in contractor_details[5] %}
-                            <option value="{{i}}" selected>{{i}}</option>
-                            {% else %}
-                            <option value="{{i}}">{{i}}</option>
-                            {% endif %}
+                                {% if i in contractor_details[5] %}
+                                <option value="{{i}}" selected>{{i}}</option>
+                                {% else %}
+                                <option value="{{i}}">{{i}}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>

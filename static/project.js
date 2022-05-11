@@ -599,8 +599,26 @@ $(document).ready(function () {
         });
     }
 
+    function updateTradesForContractor() {
+        contractor_id = $('.work-order-select-contractor').val()
+        if (contractor_id.length) {
+            $.ajax({
+                url: '/erp/update_trades_for_contractor',
+                type: "POST",
+                dataType: 'json',
+                data: { 'contractor_id': contractor_id },
+                success: function (data) {
+                    for (const trade of data) {
+                        $(".select_trade_for_bill select").append($("<option></option>")
+                            .attr("value", trade[0])
+                            .text(trade[1]))
+                    }
+                }
+            });
+        }
+    }
 
-    $('.work-order-select-contractor').on('change', showStandardMilestones)
+    $('.work-order-select-contractor').on('change', updateTradesForContractor)
     $('.work_order_project_select').on('change', showStandardMilestones)
     $('.add-milestone-stage-btn').on('click', function () {
         milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()

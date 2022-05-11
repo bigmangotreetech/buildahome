@@ -1489,6 +1489,22 @@ def update_trades_for_project():
     result = cur.fetchall()
     return jsonify(list(result))
 
+@app.route('/update_trades_for_contractor', methods=['POST'])
+def update_trades_for_project():
+    contractor_id = request.form['contractor_id']
+    trades_query = 'SELECT trade from contractors WHERE id=' + str(contractor_id)
+    cur = mysql.connection.cursor()
+    cur.execute(trades_query)
+    result = cur.fetchone()
+    trades = []
+    if result is not None:
+        contractor_trades = result[0]
+        if '[' in contractor_trades:
+            trades = contractor_trades
+        else:
+            trades.append(contractor_trades)
+    return jsonify(list(result))
+
 
 @app.route('/update_payment_stages', methods=['POST'])
 def update_payment_stages():
