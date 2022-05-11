@@ -1500,7 +1500,7 @@ def update_trades_for_contractor():
     if result is not None:
         contractor_trades = result[0]
         if ',' in contractor_trades:
-            trades = contractor_trades
+            trades = contractor_trades[1:-1].split(',')
         else:
             trades.append(contractor_trades)
     return jsonify(trades)
