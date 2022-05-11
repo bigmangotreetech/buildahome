@@ -3707,8 +3707,8 @@ def get_notes():
             res = cur.fetchall()
             return jsonify(res)
 
-@app.route('/API/dpr_image_upload1', methods=['POST'])
-def dpr_image_upload1():
+@app.route('/API/dpr_image_upload', methods=['POST'])
+def dpr_image_upload():
     if request.method == 'POST':
         file = request.files['image']
         if file.filename == '':
@@ -3727,20 +3727,6 @@ def dpr_image_upload1():
             output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
             if output != 'success':
                 return output
-        return 'success'
-
-@app.route('/API/dpr_image_upload', methods=['POST'])
-def dpr_image_upload():
-    if request.method == 'POST':
-        file = request.files['image']
-        if file.filename == '':
-            flash('No selected file', 'danger ')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):                        
-            filename = secure_filename(file.filename)
-            output = send_to_s3(file, app.config["S3_BUCKET"], 'migrated/'+filename)
-            if output != 'success':
-                return 'failed'
         return 'success'
 
 @app.route('/API/create_indent', methods=['POST'])
