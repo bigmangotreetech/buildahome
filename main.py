@@ -950,7 +950,8 @@ def edit_contractor():
         for i in column_names[:-1]:
             if i=='trade': 
                 update_string += i + '="' + str(request.form.getlist('trade')).replace("'","") + '", '
-            update_string += i + '="' + request.form[i] + '", '
+            else:
+                update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
         update_string = update_string[:-2]
         update_vendor_query = 'UPDATE contractors SET ' + update_string + ' WHERE id=' + str(
