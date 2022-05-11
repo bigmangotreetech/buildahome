@@ -1516,8 +1516,10 @@ def update_payment_stages():
     old_bills_query = 'SELECT stage FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
             trade) + '"'
     cur.execute(old_bills_query)
-    old_bills = cur.fetchall()
-
+    res = cur.fetchall()
+    old_bills = []
+    for i in res:
+        old_bills.append(i.strip())
 
     work_order_id_for_trade = request.form['work_order_id_for_trade']
     work_order_query = 'SELECT wo.value, c.name, c.code, c.pan from work_orders wo INNER JOIN contractors c ON ' \
@@ -1535,7 +1537,7 @@ def update_payment_stages():
         result = cur.fetchall()
         stages = {}
         for i in result:
-            if i[0] not in old_bills:
+            if i[0].strip() not in old_bills:
                 stages[i[0]] = i[1].replace('%', '')
 
         response = {'work_order_value': work_order_value,
