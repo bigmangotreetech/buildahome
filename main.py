@@ -2380,13 +2380,9 @@ def approve_indent_by_ph():
     if request.method == 'GET':
         indent_id = request.args['id']
         cur = mysql.connection.cursor()
-        if 'difference_cost' in request.args:
-            difference_cost = request.args['difference_cost']
-            query = 'UPDATE indents set status=%s AND difference_cost=%s WHERE id=%s'
-            cur.execute(query, ('approved_by_ph', difference_cost,indent_id))
-        else:
-            query = 'UPDATE indents set status=%s WHERE id=%s'
-            cur.execute(query, ('approved_by_ph',indent_id))
+        difference_cost = request.args['difference_cost']
+        query = 'UPDATE indents set status="approved_by_ph" AND difference_cost="'+str(difference_cost)+'" WHERE id='+str(indent_id)
+        cur.execute(query)
         mysql.connection.commit()
         get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                                    ', indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
