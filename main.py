@@ -944,13 +944,6 @@ def edit_contractor():
     else:
         cur = mysql.connection.cursor()
 
-        check_if_code_exists = 'SELECT id FROM contractors WHERE code="'+request.form['code']+'"'
-        cur.execute(check_if_code_exists)
-        res = cur.fetchone()
-        if res is not None:
-            flash('Contractor with that code already exists. Operation failed', 'danger')
-            return redirect(request.referrer)
-
         column_names = list(request.form.keys())
 
         update_string = ""
