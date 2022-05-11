@@ -179,6 +179,48 @@ $(document).ready(function () {
         })
     }
 
+    $(".select_trade_for_bill select").on('change', function () {
+        const work_order_id_for_trade = $(this).val()
+        console.log(work_order_id_for_trade)
+        if (work_order_id_for_trade == 'NT/NMR') {
+            $('.nt-nmr-section').removeClass('d-none')
+            $("#contractor").select2()
+            $('.select_payment_stage').addClass('d-none')
+            return;
+        } else {
+            $('.nt-nmr-section').addClass('d-none')
+        }
+
+
+        if (work_order_id_for_trade) {
+            $(".select_payment_stage select").empty()
+            $('.select_payment_stage').removeClass('d-none')
+
+            $(".select_payment_stage select").append($("<option></option>"))
+            project_id = $("#project").val()
+            $.ajax({
+                url: '/erp/update_payment_stages',
+                type: "POST",
+                dataType: 'json',
+                data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
+                success: function (data) {
+                    $('.total_wo_value').text(data['work_order_value'].replaceAll(',',''))
+                    $('.contractor_name').text(data['contractor_name'])
+                    $('.contractor_code').text(data['contractor_code'])
+                    $('.contractor_pan').text(data['contractor_pan'])
+                    for (const stage of Object.keys(data['stages'])) {
+                        $(".select_payment_stage select").append($("<option></option>")
+                            .attr("value", data['stages'][stage])
+                            .text(stage))
+                    }
+                }
+            });
+        } else {
+            $('.select_payment_stage').addClass('d-none')
+        }
+        $(".select_payment_stage select").select2()
+    })
+
     $(".select_payment_stage select").on('change', function () {
         let payment_percentage = $(this).val()
         if (payment_percentage) {
@@ -557,8 +599,8 @@ $(document).ready(function () {
     function updateTradesForContractor() {
         contractor_id = $('.work-order-select-contractor').val()
         if (contractor_id.length) {
-            $(".select_trade_for_bill select").empty()
-            $(".select_trade_for_bill select").append($("<option></option>"))
+            $(".work-order-trade-select select").empty()
+            $(".work-order-trade-select select").append($("<option></option>"))
             $.ajax({
                 url: '/erp/update_trades_for_contractor',
                 type: "POST",
@@ -567,7 +609,7 @@ $(document).ready(function () {
                 success: function (data) {
                     console.log(data)
                     for (const trade of data) {
-                        $(".select_trade_for_bill select").append($("<option></option>")
+                        $(".work-order-trade-select select").append($("<option></option>")
                             .attr("value", trade)
                             .text(trade))
                     }
