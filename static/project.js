@@ -276,7 +276,13 @@ $(document).ready(function () {
         $('input[name="rate"]').val(rate)
 
         const description = $('#description').val()
-        $('input[name="description"]').val(rate)
+        $('input[name="description"]').val(description)
+
+        const contractor = $('#contractor').val()
+        $('input[name="contractor"]').val(contractor)
+
+        const nt_nmr_bill_amount = $('.nt_nmr_bill_amount').text()
+        $('input[name="nt_nmr_bill_amount"]').val(nt_nmr_bill_amount)
         if ( trade!='NT/NMR' && $('#create_bill_form').hasClass('d-none')) return;
         
         $("#create_bill_form").submit()
