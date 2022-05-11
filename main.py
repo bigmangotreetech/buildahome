@@ -1490,7 +1490,7 @@ def update_trades_for_project():
     return jsonify(list(result))
 
 @app.route('/update_trades_for_contractor', methods=['POST'])
-def update_trades_for_project():
+def update_trades_for_contractor():
     contractor_id = request.form['contractor_id']
     trades_query = 'SELECT trade from contractors WHERE id=' + str(contractor_id)
     cur = mysql.connection.cursor()
