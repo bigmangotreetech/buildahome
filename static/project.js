@@ -148,7 +148,10 @@ $(document).ready(function () {
                 type: "POST",
                 dataType: 'json',
                 data: { 'project_id': project_id },
-                success: function (data) {                    
+                success: function (data) {        
+                    $(".select_trade_for_bill select").append($("<option></option>")
+                            .attr("value", 'NT/NMR')
+                            .text('NT/NMR'))            
                     for (const trade of data) {
                         $(".select_trade_for_bill select").append($("<option></option>")
                             .attr("value", trade[0])
@@ -181,7 +184,7 @@ $(document).ready(function () {
 
     $(".select_trade_for_bill select").on('change', function () {
         const work_order_id_for_trade = $(this).val()
-        console.log(work_order_id_for_trade)
+        
         if (work_order_id_for_trade == 'NT/NMR') {
             $('.nt-nmr-section').removeClass('d-none')
             $("#contractor").select2()
