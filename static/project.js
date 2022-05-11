@@ -602,6 +602,8 @@ $(document).ready(function () {
     function updateTradesForContractor() {
         contractor_id = $('.work-order-select-contractor').val()
         if (contractor_id.length) {
+            $(".select_trade_for_bill select").empty()
+            $(".select_trade_for_bill select").append($("<option></option>"))
             $.ajax({
                 url: '/erp/update_trades_for_contractor',
                 type: "POST",

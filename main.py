@@ -1503,7 +1503,7 @@ def update_trades_for_contractor():
             trades = contractor_trades
         else:
             trades.append(contractor_trades)
-    return jsonify(list(result))
+    return jsonify(trades)
 
 
 @app.route('/update_payment_stages', methods=['POST'])
