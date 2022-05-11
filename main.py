@@ -21,6 +21,7 @@ from models.projects import projects
 from constants.constants import project_fields, roles
 
 from PIL import Image
+from io import BytesIO
 
 # Last labour stage id 412
 app = Flask(__name__)
