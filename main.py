@@ -1442,8 +1442,8 @@ def create_bill():
             cur.execute(contractor_query)
             res = cur.fetchone()
 
-            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
-            values = (project_id, trade, description,'', nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1], res[2], timestamp)
+            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at, quantity, rate) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s,%s ,%s)'
+            values = (project_id, trade, description,'', nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1], res[2], timestamp, quantity, rate)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Bill created successfully', 'success')
@@ -1914,7 +1914,12 @@ def view_work_order():
             project_id = request.args['project_id']
             work_orders = get_work_orders_for_project(project_id)
 
-        return render_template('view_work_orders.html', projects=projects, work_orders=work_orders)
+            bills_query = 'SELECT wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity, wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='str(project_id)
+            cur = mysql.connection.cursor()
+            cur.execute(bills_query)
+            nt_nmr_bills = cur.fetchall()
+
+        return render_template('view_work_orders.html', projects=projects, work_orders=work_orders, nt_nmr_bills=nt_nmr_bills)
 
 
 @app.route("/view_unsigned_work_order", methods=['GET'])
