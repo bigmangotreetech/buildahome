@@ -3734,8 +3734,7 @@ def dpr_image_upload1():
                     "ContentType": content_type  # Set appropriate content type as per the file
                 }
             )
-            if output != 'success':
-                return output
+    
         return 'migrated/'+filename
 
 @app.route('/API/dpr_image_upload', methods=['POST'])
