@@ -1443,9 +1443,7 @@ def create_bill():
             res = cur.fetchone()
 
             insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)'
-            values = (
-            project_id, trade, description, nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1],
-            res[2], timestamp)
+            values = (project_id, trade, description,'', nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1], res[2], timestamp)
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Bill created successfully', 'success')
