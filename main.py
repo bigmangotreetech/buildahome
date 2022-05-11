@@ -2829,7 +2829,7 @@ def view_project_details():
             sales_executive_query = 'SELECT name from App_users WHERE user_id=' + str(result[8])
             cur.execute(sales_executive_query)
             sales_executive_query_result = cur.fetchone()
-        for i in range(len(fields) - 1):
+        for i in range(len(fields)):
             fields_name_to_show = " ".join(fields[i].split('_')).title()
             if fields_name_to_show == 'Sales Executive' and len(
                     str(result[8])) > 0 and sales_executive_query_result is not None:
