@@ -58,10 +58,22 @@
             </div>
             <div class="row mx-0 mb-3 form-group">
                 <div class="col-6">
-                    Indent created on
+                    Approval taken
                 </div>
                 <div class="col-6">
-                    <b>{{result[8]}}</b>
+                    {% if result[12]|str == '0' %}
+                    <b>
+                        <i class="fa fa-check text-success"></i>
+                    </b>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    Difference cost
+                </div>
+                <div class="col-6">
+                    <b>{{result[11]}}</b>
                 </div>
             </div>
             {% if result[9] != '' %}

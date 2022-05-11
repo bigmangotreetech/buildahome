@@ -2355,7 +2355,7 @@ def approve_indent_by_qs():
         cur.execute(query, ('approved_by_qs',indent_id))
         mysql.connection.commit()
         flash('Indent approved','success')
-        return redirect('/erp/view_qs_approval_indents')
+        return redirect('/erp/view_qs_approval_indents')    
 
 @app.route('/rollback_indent_by_ph', methods=['GET'])
 def rollback_indent_by_ph():
@@ -2411,7 +2411,7 @@ def view_indent_details():
         indent_id = request.args['indent_id']
         cur = mysql.connection.cursor()
         indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status FROM indents INNER JOIN projects on indents.id=' + str(
+                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken FROM indents INNER JOIN projects on indents.id=' + str(
             indent_id) + ' AND indents.project_id=projects.project_id ' \
                          ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
         cur.execute(indents_query)
