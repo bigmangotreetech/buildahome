@@ -1,6 +1,17 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
+    $('.approve-indent-by-ph').on('click', function(e) {
+        e.preventDefault()
+        url = $(this).val()
+        difference_cost = $(".difference_cost").val().toString()
+        if (difference_cost.trim() != '') {
+            url += '&difference_cost='+difference_cost
+            window.location.href = url;
+        }
+
+    })
+
     setTimeout(() => {
         if ($('.kyp_material_page').length > 0) {
             $('input').on('keydown', function(e) {
