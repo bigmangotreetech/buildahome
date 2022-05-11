@@ -3727,10 +3727,10 @@ def dpr_image_upload1():
             # output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
             s3.upload_fileobj(
                 file,
-                bucket_name,
+                app.config["S3_BUCKET"],
                 'migrated/test-resize.jpg',
                 ExtraArgs={
-                    "ACL": acl,
+                    "ACL": "public-read",
                     "ContentType": content_type  # Set appropriate content type as per the file
                 }
             )
