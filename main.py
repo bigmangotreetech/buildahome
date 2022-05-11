@@ -3704,6 +3704,31 @@ def get_notes():
             res = cur.fetchall()
             return jsonify(res)
 
+@app.route('/API/dpr_image_upload1', methods=['POST'])
+def dpr_image_upload1():
+    if request.method == 'POST':
+        file = request.files['image']
+        if file.filename == '':
+            flash('No selected file', 'danger ')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            in_mem_file = BytesIO(file.read())
+            im = Image.open(in_mem_file)
+            width, height = im.size
+            while width > 640 and height > 320:
+                width = width - 100
+                height = height - 100
+            im.resize((width, height))
+            in_mem_file = BytesIO()
+            im.save(in_mem_file, format=im.format)
+            in_mem_file.seek(0)
+            
+            filename = secure_filename(file.filename)
+            output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename)
+            if output != 'success':
+                return 'failed'
+        return 'success'
+
 @app.route('/API/dpr_image_upload', methods=['POST'])
 def dpr_image_upload():
     if request.method == 'POST':
@@ -3711,7 +3736,7 @@ def dpr_image_upload():
         if file.filename == '':
             flash('No selected file', 'danger ')
             return redirect(request.url)
-        if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename):                        
             filename = secure_filename(file.filename)
             output = send_to_s3(file, app.config["S3_BUCKET"], 'migrated/'+filename)
             if output != 'success':
