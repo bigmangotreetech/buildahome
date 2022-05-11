@@ -3724,7 +3724,16 @@ def dpr_image_upload1():
             in_mem_file.seek(0)
             
             filename = secure_filename(file.filename)
-            output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
+            # output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
+            s3.upload_fileobj(
+                file,
+                bucket_name,
+                'migrated/test-resize.jpg',
+                ExtraArgs={
+                    "ACL": acl,
+                    "ContentType": content_type  # Set appropriate content type as per the file
+                }
+            )
             if output != 'success':
                 return output
         return 'migrated/'+filename
