@@ -623,7 +623,7 @@ $(document).ready(function () {
 
     $('.work-order-select-contractor').on('change', updateTradesForContractor)
     $('.work_order_project_select').on('change', showStandardMilestones)
-    $(".select_trade_for_bill1 select").on('change', showStandardMilestones)
+    $(".select_trade_for_bill select").on('change', showStandardMilestones)
     $('.add-milestone-stage-btn').on('click', function () {
         milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
         milestones_and_percentages_item.removeClass('template')
