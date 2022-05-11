@@ -1513,7 +1513,10 @@ def update_payment_stages():
     trade = request.form['trade']    
     cur = mysql.connection.cursor()
     
-
+    old_bills_query = 'SELECT stage FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
+            trade) + '"'
+    cur.execute(old_bills_query)
+    old_bills = cur.fetchall()
 
 
     work_order_id_for_trade = request.form['work_order_id_for_trade']
@@ -1526,16 +1529,14 @@ def update_payment_stages():
         contractor_name = res[1]
         contractor_code = res[2]
         contractor_pan = res[3]
-
-        old_bills_query = '(SELECT stage FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(trade) + '")'
         payment_stages_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id=' + str(
-            work_order_id_for_trade)+ ' WHERE stage NOT IN '+old_bills_query
-            
+            work_order_id_for_trade)
         cur.execute(payment_stages_query)
         result = cur.fetchall()
         stages = {}
         for i in result:
-            stages[i[0]] = i[1].replace('%', '')
+            if i[0] not in old_bills:
+                stages[i[0]] = i[1].replace('%', '')
 
         response = {'work_order_value': work_order_value,
                     'stages': stages,
