@@ -3718,7 +3718,7 @@ def dpr_image_upload1():
             im.thumbnail((600, 1000))
             in_mem_file = BytesIO()
             im.save(in_mem_file, format=im.format)
-            # in_mem_file.seek(0)
+            in_mem_file.seek(0)
             
             filename = secure_filename(file.filename)
             output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename)
