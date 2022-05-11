@@ -876,6 +876,8 @@ def contractor_registration():
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())
+        values[2] = str(request.form.getlist('trade')).replace("'","")
+
         cur = mysql.connection.cursor()
 
         check_if_code_exists = 'SELECT id FROM contractors WHERE code="'+request.form['code']+'"'
@@ -953,6 +955,8 @@ def edit_contractor():
 
         update_string = ""
         for i in column_names[:-1]:
+            elif i=='trade': 
+                update_string += i + '="' + str(request.form.getlist('trade')).replace("'","") + '", '
             update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
         update_string = update_string[:-2]

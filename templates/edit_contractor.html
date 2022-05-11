@@ -62,7 +62,7 @@
                         <label for="trade">Trade</label>
                     </div>
                     <div class="col-6">
-                        <select name="trade" id="trade" class="form-control select2" required>
+                        <select name="trade" id="trade" class="form-control select2" multiple required>
                             <option value=""></option>
                             {% for i in trades %}
                             {% if contractor_details[5] == i %}
