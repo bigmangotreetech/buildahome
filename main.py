@@ -955,7 +955,7 @@ def edit_contractor():
 
         update_string = ""
         for i in column_names[:-1]:
-            elif i=='trade': 
+            if i=='trade': 
                 update_string += i + '="' + str(request.form.getlist('trade')).replace("'","") + '", '
             update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
