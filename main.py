@@ -3727,7 +3727,7 @@ def dpr_image_upload1():
             output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
             if output != 'success':
                 return output
-        return 'success1'
+        return 'migrated/'+filename
 
 @app.route('/API/dpr_image_upload', methods=['POST'])
 def dpr_image_upload():
