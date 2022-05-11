@@ -608,6 +608,7 @@ $(document).ready(function () {
                 dataType: 'json',
                 data: { 'contractor_id': contractor_id },
                 success: function (data) {
+                    console.log(data)
                     for (const trade of data) {
                         $(".select_trade_for_bill select").append($("<option></option>")
                             .attr("value", trade[0])
