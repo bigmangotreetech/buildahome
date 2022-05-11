@@ -872,6 +872,7 @@ def contractor_registration():
         trades = []
         for i in result:
             trades.append(i[0])
+        trades.append('NT/NMR')
         return render_template('contractor_registration.html', trades=trades)
     else:
         column_names = list(request.form.keys())

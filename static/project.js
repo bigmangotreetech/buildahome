@@ -148,10 +148,7 @@ $(document).ready(function () {
                 type: "POST",
                 dataType: 'json',
                 data: { 'project_id': project_id },
-                success: function (data) {
-                    $(".select_trade_for_bill select").append($("<option></option>")
-                            .attr("value", 'NT/NMR')
-                            .text('NT/NMR'))
+                success: function (data) {                    
                     for (const trade of data) {
                         $(".select_trade_for_bill select").append($("<option></option>")
                             .attr("value", trade[0])
@@ -181,48 +178,6 @@ $(document).ready(function () {
             $('input[name="nt_nmr_bill_amount"]').val(bill_amount.toString())
         })
     }
-
-    $(".select_trade_for_bill1 select").on('change', function () {
-        const work_order_id_for_trade = $(this).val()
-        console.log(work_order_id_for_trade)
-        if (work_order_id_for_trade == 'NT/NMR') {
-            $('.nt-nmr-section').removeClass('d-none')
-            $("#contractor").select2()
-            $('.select_payment_stage').addClass('d-none')
-            return;
-        } else {
-            $('.nt-nmr-section').addClass('d-none')
-        }
-
-
-        if (work_order_id_for_trade) {
-            $(".select_payment_stage select").empty()
-            $('.select_payment_stage').removeClass('d-none')
-
-            $(".select_payment_stage select").append($("<option></option>"))
-            project_id = $("#project").val()
-            $.ajax({
-                url: '/erp/update_payment_stages',
-                type: "POST",
-                dataType: 'json',
-                data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade },
-                success: function (data) {
-                    $('.total_wo_value').text(data['work_order_value'].replaceAll(',',''))
-                    $('.contractor_name').text(data['contractor_name'])
-                    $('.contractor_code').text(data['contractor_code'])
-                    $('.contractor_pan').text(data['contractor_pan'])
-                    for (const stage of Object.keys(data['stages'])) {
-                        $(".select_payment_stage select").append($("<option></option>")
-                            .attr("value", data['stages'][stage])
-                            .text(stage))
-                    }
-                }
-            });
-        } else {
-            $('.select_payment_stage').addClass('d-none')
-        }
-        $(".select_payment_stage select").select2()
-    })
 
     $(".select_payment_stage select").on('change', function () {
         let payment_percentage = $(this).val()
@@ -623,7 +578,7 @@ $(document).ready(function () {
 
     $('.work-order-select-contractor').on('change', updateTradesForContractor)
     $('.work_order_project_select').on('change', showStandardMilestones)
-    $(".select_trade_for_bill select").on('change', showStandardMilestones)
+    $(".work-order-trade-select select").on('change', showStandardMilestones)
     $('.add-milestone-stage-btn').on('click', function () {
         milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
         milestones_and_percentages_item.removeClass('template')
