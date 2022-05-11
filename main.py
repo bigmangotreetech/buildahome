@@ -51,15 +51,17 @@ app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpeg', 'jpg']
 
 
-def send_to_s3(file, bucket_name, filename, acl="public-read"):
+def send_to_s3(file, bucket_name, filename, acl="public-read", content_type=''):
     try:
+        if content_type == '':
+            content_type = file.content_type
         s3.upload_fileobj(
             file,
             bucket_name,
             filename,
             ExtraArgs={
                 "ACL": acl,
-                "ContentType": file.content_type  # Set appropriate content type as per the file
+                "ContentType": content_type  # Set appropriate content type as per the file
             }
         )
     except Exception as e:
@@ -3713,6 +3715,7 @@ def dpr_image_upload1():
             flash('No selected file', 'danger ')
             return redirect(request.url)
         if file and allowed_file(file.filename):
+            content_type = file.content_type
             in_mem_file = BytesIO(file.read())
             im = Image.open(in_mem_file)
             im.thumbnail((600, 1000))
@@ -3721,7 +3724,7 @@ def dpr_image_upload1():
             in_mem_file.seek(0)
             
             filename = secure_filename(file.filename)
-            output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename)
+            output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, content_type)
             if output != 'success':
                 return output
         return 'success1'
