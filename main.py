@@ -1909,6 +1909,7 @@ def view_work_order():
         return redirect(request.referrer)
     if request.method == 'GET':
         projects = get_projects()
+        nt_nmr_bills = None
         work_orders = []
         if 'project_id' in request.args:
             project_id = request.args['project_id']
