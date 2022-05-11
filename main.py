@@ -3724,18 +3724,10 @@ def dpr_image_upload1():
             in_mem_file.seek(0)
             
             filename = secure_filename(file.filename)
-            # output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
-            s3.upload_fileobj(
-                file,
-                app.config["S3_BUCKET"],
-                'migrated/test-resize.jpeg',
-                ExtraArgs={
-                    "ACL": "public-read",
-                    "ContentType": content_type  # Set appropriate content type as per the file
-                }
-            )
-
-        return file.content_type
+            output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
+            if output != 'success':
+                return output
+        return 'success'
 
 @app.route('/API/dpr_image_upload', methods=['POST'])
 def dpr_image_upload():
