@@ -3718,7 +3718,7 @@ def dpr_image_upload1():
             while width > 640 and height > 320:
                 width = width - 100
                 height = height - 100
-            im.resize((width, height))
+            im.thumbnail((600, 1000))
             in_mem_file = BytesIO()
             im.save(in_mem_file, format=im.format)
             in_mem_file.seek(0)
