@@ -1371,7 +1371,7 @@ def create_work_order():
         trade = request.form['trade']
 
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id=' + str(project_id) + ' AND trade="' + str(
-            trade) + '"'
+            trade) + '" AND contractor_id='+str(contractor_id)
         cur.execute(check_if_exist_query)   
         result = cur.fetchone()
         if result is not None:
