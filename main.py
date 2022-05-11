@@ -20,6 +20,8 @@ from werkzeug.utils import secure_filename
 from models.projects import projects
 from constants.constants import project_fields, roles
 
+from PIL import Image
+
 # Last labour stage id 412
 app = Flask(__name__)
 # Sql setup
@@ -221,6 +223,13 @@ def migrate():
     BASE_DIR = '/home/buildahome2016/public_html'
     abs_path = os.path.join(BASE_DIR, '/home/buildahome2016/public_html/app.buildahome.in/api/images')
     files = os.listdir(abs_path)
+    im = Image.open(r'/home/buildahome2016/public_html/app.buildahome.in/api/images/' + i)
+    width, height = im.size
+    while width > 640 and height > 320:
+        width = width - 100
+        height = height - 100
+    im.resize((width, height))
+    im.save('/home/buildahome2016/public_html/app.buildahome.in/api/images/' + i)
     try:
         for i in files[0: 10]:
             with open(
