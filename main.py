@@ -1366,6 +1366,8 @@ def create_work_order():
             flash('Percentages do not add up to 100', 'danger')
             return redirect(request.referrer)
 
+        cur = mysql.connection.cursor()
+
         trade = request.form['trade']
 
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id=' + str(project_id) + ' AND trade="' + str(
