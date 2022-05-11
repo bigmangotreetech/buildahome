@@ -285,7 +285,7 @@ $(document).ready(function () {
         $('input[name="nt_nmr_bill_amount"]').val(nt_nmr_bill_amount)
         if ( trade!='NT/NMR' && $('#create_bill_form').hasClass('d-none')) return;
         
-        // $("#create_bill_form").submit()
+        $("#create_bill_form").submit()
     })
 
     function updateApprovalModalDetails(clickedBtn) {
