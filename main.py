@@ -1519,7 +1519,7 @@ def update_payment_stages():
     res = cur.fetchall()
     old_bills = []
     for i in res:
-        old_bills.append(i.strip())
+        old_bills.append(i[0].strip())
 
     work_order_id_for_trade = request.form['work_order_id_for_trade']
     work_order_query = 'SELECT wo.value, c.name, c.code, c.pan from work_orders wo INNER JOIN contractors c ON ' \
