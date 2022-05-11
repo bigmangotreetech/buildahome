@@ -3724,7 +3724,7 @@ def dpr_image_upload1():
             in_mem_file.seek(0)
             
             filename = secure_filename(file.filename)
-            output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, content_type)
+            output = send_to_s3(in_mem_file, app.config["S3_BUCKET"], 'migrated/'+filename, "public-read", content_type)
             if output != 'success':
                 return output
         return 'success1'
