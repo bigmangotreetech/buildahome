@@ -52,9 +52,16 @@
                 <td>{{i[5]}}</td>
                 <td>{{i[6]|int}}</td>
                 <td>
+                    
+                    {% if i[7]|string == ''%}
                     <a style="word-break: break-all;" target="_blank" href="/erp/files/work_order_{{i[0]}}.pdf">
                         View
                     </a>
+                    {% else %}
+                    <a style="word-break: break-all;" target="_blank" href="/erp/files/{{i[7]}}">
+                        Open
+                    </a>
+                    {% endif %}
                 </td>
                 {% if session['role'] == 'Super Admin' %}
                 <td>

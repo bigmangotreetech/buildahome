@@ -333,6 +333,11 @@ async function saveSign() {
 
   var formData = new FormData();
   formData.append("wo_id", $('#wo_id').val())
+
+  formData.append("project_name", $('.project_name').text().trim())
+  formData.append("trade", $('.trade').text().trim())
+  formData.append("contractor_name", $('.contractor_name').text().trim())
+
   formData.append("file", file, 'test.pdf');
 
   $.ajax({
