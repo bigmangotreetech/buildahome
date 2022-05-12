@@ -1990,7 +1990,7 @@ def update_slab_area():
     result = cur.fetchone()
     total_bua_sum = 0
     for i in result:
-        if i is not None and str(i).strip() != '':
+        if i is not None and str(i).strip() != '' and str(i).strip() != 'NIL':
             total_bua_sum = total_bua_sum + int(i)
     return str(total_bua_sum)
 
