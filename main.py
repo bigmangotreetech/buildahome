@@ -1911,7 +1911,7 @@ def view_work_order():
             work_orders = get_work_orders_for_project(project_id)
 
             bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
-                        ' wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+                        ' wo_bills.rate, wo_bills.approval_2_amount, wo.filename FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
             cur = mysql.connection.cursor()
             cur.execute(bills_query)
             nt_nmr_bills = cur.fetchall()
@@ -2529,11 +2529,25 @@ def sign_wo():
 
 @app.route('/upload_signed_wo', methods=['POST'])
 def upload_signed_wo():
+    # project_name+trade+contractor_name
     wo_id = request.form['wo_id']
     cur = mysql.connection.cursor()
-    query = 'UPDATE work_orders SET signed=1 WHERE id=' + wo_id
+    project_name = request.form['project_name']
+    trade = request.form['trade']
+    contractor_name = request.form['contractor_name']
+    
+    project_name = project_name.capitalize().replace(' ', '_').replace('"', '').replace("'", '')
+    trade = trade.capitalize().replace(' ', '_').replace('"', '').replace("'", '')
+    contractor_name = contractor_name.capitalize().replace(' ', '_').replace('"', '').replace("'", '')
+
+    filename = project_name+'_'+trade+'_'+contractor_name+'_'+ str(wo_id) + '.pdf'
+
+    query = 'UPDATE work_orders SET signed=1, filename="'+filename+'" WHERE id=' + wo_id
     cur.execute(query)
     mysql.connection.commit()
+
+
+    
     if 'file' in request.files:
         file = request.files['file']
         if file.filename == '':
@@ -2541,7 +2555,7 @@ def upload_signed_wo():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             flash('Work order signed!', 'success')
-            output = send_to_s3(file, app.config["S3_BUCKET"], 'work_order_' + str(wo_id) + '.pdf')
+            output = send_to_s3(file, app.config["S3_BUCKET"], filename, 'public-read','application/pdf')
             if output != 'success':
                 flash('File upload failed', 'danger')
                 return redirect(request.referrer)
@@ -2553,7 +2567,7 @@ def approve_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
-                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at, wo.filename' \
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' ' \
