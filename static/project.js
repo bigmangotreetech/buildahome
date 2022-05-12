@@ -443,8 +443,6 @@ $(document).ready(function () {
             },
             success: function (data) {
                 console.log(data)
-            },
-            error: function (data) {
                 $('.total_bua_summation').text(data)
             }
         });
