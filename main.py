@@ -1885,7 +1885,7 @@ def clear_wo_balance():
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
-    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance from work_orders wo ' \
+    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename from work_orders wo ' \
                    'INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
     cur.execute(get_wo_query)
@@ -1911,7 +1911,7 @@ def view_work_order():
             work_orders = get_work_orders_for_project(project_id)
 
             bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
-                        ' wo_bills.rate, wo_bills.approval_2_amount, wo.filename FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+                        ' wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
             cur = mysql.connection.cursor()
             cur.execute(bills_query)
             nt_nmr_bills = cur.fetchall()
