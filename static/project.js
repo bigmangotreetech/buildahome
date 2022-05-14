@@ -560,7 +560,7 @@ $(document).ready(function () {
         }
     })
 
-    $('#total_bua').on('keyup', function() {
+    $('#total_bua').on('change', function() {
         total_bua = $('#total_bua').val()
         if (parseFloat(total_bua) > parseFloat($('.total_bua_summation').text())) {
             alert('Total bua cannot be more than projects built up area summation')
@@ -570,7 +570,7 @@ $(document).ready(function () {
         $('#wo_value').val((parseFloat(cost_per_sqft) & parseFloat(total_bua)).toString())
     })
 
-    $('#cost_per_sqft').on('keyup', function() {
+    $('#cost_per_sqft').on('change', function() {
         total_bua = $('#total_bua').val()
         cost_per_sqft = $('#cost_per_sqft').val() 
         $('#wo_value').val((parseFloat(cost_per_sqft) * parseFloat(total_bua)).toString())
