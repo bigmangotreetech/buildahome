@@ -56,6 +56,7 @@ function initialize() {
         if (this.isDrawing) {
           context.lineTo(coors.x, coors.y);
           context.stroke();
+          console.log(coors)
         }
       },
       touchend: function (coors) {
