@@ -106,17 +106,17 @@ function initialize() {
 
     // start drawing when the mousedown event fires, and attach handlers to
     // draw a line to wherever the mouse moves to
-    $("#canvas").mousedown(function (mouseEvent) {
+    $("#canvas").on('mousedown pointerdown', function (mouseEvent) {
       var position = getPosition(mouseEvent, sigCanvas);
       context.moveTo(position.X, position.Y);
       context.beginPath();
 
       // attach event handlers
-      $(this).mousemove(function (mouseEvent) {
+      $(this).on('mousemove pointermove',function (mouseEvent) {
         drawLine(mouseEvent, sigCanvas, context);
-      }).mouseup(function (mouseEvent) {
+      }).on('mouseup pointerup',function (mouseEvent) {
         finishDrawing(mouseEvent, sigCanvas, context);
-      }).mouseout(function (mouseEvent) {
+      }).on('mouseout pointerout',function (mouseEvent) {
         finishDrawing(mouseEvent, sigCanvas, context);
       });
     });
@@ -144,9 +144,9 @@ function finishDrawing(mouseEvent, sigCanvas, context) {
   context.closePath();
 
   // unbind any events which could draw
-  $(sigCanvas).unbind("mousemove")
-    .unbind("mouseup")
-    .unbind("mouseout");
+  $(sigCanvas).unbind("mousemove pointermove")
+    .unbind("mouseup pointerup")
+    .unbind("mouseout pointerout");
 }
 
 // Clear the canvas context using the canvas width and height

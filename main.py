@@ -2415,7 +2415,7 @@ def view_indent_details():
         indent_id = request.args['indent_id']
         cur = mysql.connection.cursor()
         indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken FROM indents INNER JOIN projects on indents.id=' + str(
+                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken, indents.difference_cost_sheet FROM indents INNER JOIN projects on indents.id=' + str(
             indent_id) + ' AND indents.project_id=projects.project_id ' \
                          ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
         cur.execute(indents_query)
@@ -2476,6 +2476,29 @@ def upload_po_for_indent():
         return redirect('/erp/login')
     if request.method == 'POST':
         indent_id = request.form['indent_id']
+        if 'difference_cost_sheet' in request.files:
+             file = request.files['purchase_order']
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                IST = pytz.timezone('Asia/Kolkata')
+                current_time = time.time()
+                filename = str(current_time)+'_'+filename
+                output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id) + '_dc_' + filename)
+                if output != 'success':
+                    flash('File upload failed', 'danger')
+                    return redirect(request.referrer)
+                cur = mysql.connection.cursor()
+                query = 'UPDATE indents set difference_cost_sheet=%s WHERE id=%s'
+                values = (str(indent_id) + '_dc_' + filename, indent_id)
+                cur.execute(query, values)
+                mysql.connection.commit()
+                
+
+
+
         if 'purchase_order' in request.files:
             file = request.files['purchase_order']
             if file.filename == '':
