@@ -31,6 +31,7 @@ $(document).ready(function () {
             stripped_materials = []
             for(const material of materials) 
                 stripped_materials.push(material.trim())
+            console.log(stripped_materials)
             $("#edit_vendor_material_type_select").val(stripped_materials)
             $("#edit_vendor_material_type_select").trigger('change')
         }
