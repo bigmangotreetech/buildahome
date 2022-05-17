@@ -18,6 +18,7 @@ $(document).ready(function () {
 function getPosition(mouseEvent, sigCanvas) {
   var x, y;
 
+  console.log('called')
   var rect = sigCanvas.getBoundingClientRect();
   if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined && mouseEvent.pageX != 0 && mouseEvent.pageY != 0) {
     x = mouseEvent.pageX;
