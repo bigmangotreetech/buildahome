@@ -75,8 +75,8 @@ function initialize() {
       // get the touch coordinates.  Using the first touch in case of multi-touch
       console.log(event)
       var coors = {
-        x: event.touches[0].clientX,
-        y: event.touches[0].clientY
+        x: event.changedTouches[0].clientX,
+        y: event.changedTouches[0].clientY
       };
 
       var mouseEvent = new MouseEvent("mousemove", coors);
@@ -101,16 +101,14 @@ function initialize() {
     }
 
     // attach the touchstart, touchmove, touchend event listeners.
-    sigCanvas.addEventListener('touchmove touchstart touchend', function (event) {
-      event.preventDefault();
-    }, false);
-
     sigCanvas.addEventListener('touchstart', draw, false);
     sigCanvas.addEventListener('touchmove', draw, false);
     sigCanvas.addEventListener('touchend', draw, false);
 
     // prevent elastic scrolling
-    
+    sigCanvas.addEventListener('touchmove', function (event) {
+      event.preventDefault();
+    }, false);
   } 
 
     // start drawing when the mousedown event fires, and attach handlers to
