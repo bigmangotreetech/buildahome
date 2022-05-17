@@ -619,7 +619,10 @@ def shifting_entry():
             'Teak wood door': '',
             'Sal wood door': '',
             'Flush door': '',
-            'Binding wire': ''   
+            'Binding wire': '',
+            'Hardwares': '' ,
+            'Chamber Covers': '' ,
+            'Filler slab material': ''         
         }
 
         return render_template('shifting_entry.html', projects=projects, material_quantity_data=material_quantity_data)
@@ -1252,7 +1255,11 @@ def kyp_material():
         'Teak wood door': '',
         'Sal wood door': '',
         'Flush door': '' ,
-        'Binding wire': ''      
+        'Binding wire': '',
+        'Hardwares': '' ,
+        'Chamber Covers': '' ,
+        'Filler slab material': ''      
+
     }
     if request.method == 'GET':
         cur = mysql.connection.cursor()
