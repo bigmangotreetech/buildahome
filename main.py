@@ -2478,63 +2478,59 @@ def upload_po_for_indent():
         indent_id = request.form['indent_id']
         if 'difference_cost_sheet' in request.files:
             file = request.files['purchase_order']
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                IST = pytz.timezone('Asia/Kolkata')
-                current_time = time.time()
-                filename = str(current_time)+'_'+filename
-                output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id) + '_dc_' + filename)
-                if output != 'success':
-                    flash('File upload failed', 'danger')
-                    return redirect(request.referrer)
-                cur = mysql.connection.cursor()
-                query = 'UPDATE indents set difference_cost_sheet=%s WHERE id=%s'
-                values = (str(indent_id) + '_dc_' + filename, indent_id)
-                cur.execute(query, values)
-                mysql.connection.commit()
+            if file.filename != '':                
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    IST = pytz.timezone('Asia/Kolkata')
+                    current_time = time.time()
+                    filename = str(current_time)+'_'+filename
+                    output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id) + '_dc_' + filename)
+                    if output != 'success':
+                        flash('File upload failed', 'danger')
+                        return redirect(request.referrer)
+                    cur = mysql.connection.cursor()
+                    query = 'UPDATE indents set difference_cost_sheet=%s WHERE id=%s'
+                    values = (str(indent_id) + '_dc_' + filename, indent_id)
+                    cur.execute(query, values)
+                    mysql.connection.commit()
                 
 
 
 
         if 'purchase_order' in request.files:
             file = request.files['purchase_order']
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                IST = pytz.timezone('Asia/Kolkata')
-                current_time = time.time()
-                filename = str(current_time)+'_'+filename
-                output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id) + '_' + filename)
-                if output != 'success':
-                    flash('File upload failed', 'danger')
-                    return redirect(request.referrer)
-                cur = mysql.connection.cursor()
-                query = 'UPDATE indents set status=%s, purchase_order=%s WHERE id=%s'
-                values = ('po_uploaded', str(indent_id) + '_' + filename, indent_id)
-                cur.execute(query, values)
-                mysql.connection.commit()
-
-                get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                                   ', indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
-                                   ' AND indents.id=' + str(indent_id)
-                cur.execute(get_indent_query)
-                result = cur.fetchone()
-                if result is not None:
-                    notification_body = 'PO uploaded for indent with id ' + str(indent_id) + '. Details: ' + str(
-                        result[4]) + ' ' + str(result[5]) + ' ' + str(result[3]) + ' For project ' + str(result[2])
+            if file.filename != '':
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
                     IST = pytz.timezone('Asia/Kolkata')
-                    datetime_ist = datetime.now(IST)
-                    timestamp = datetime_ist.strftime('%A %d %B %H:%M')
-                    send_app_notification('PO Uploaded', notification_body, str(result[8]), str(result[8]),
-                                          'PO uploads', timestamp)
-                    send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]),
-                                          'PO uploads', timestamp)
-                flash('PO Uploaded successfully', 'success')
+                    current_time = time.time()
+                    filename = str(current_time)+'_'+filename
+                    output = send_to_s3(file, app.config["S3_BUCKET"], str(indent_id) + '_' + filename)
+                    if output != 'success':
+                        flash('File upload failed', 'danger')
+                        return redirect(request.referrer)
+                    cur = mysql.connection.cursor()
+                    query = 'UPDATE indents set status=%s, purchase_order=%s WHERE id=%s'
+                    values = ('po_uploaded', str(indent_id) + '_' + filename, indent_id)
+                    cur.execute(query, values)
+                    mysql.connection.commit()
+
+                    get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
+                                    ', indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
+                                    ' AND indents.id=' + str(indent_id)
+                    cur.execute(get_indent_query)
+                    result = cur.fetchone()
+                    if result is not None:
+                        notification_body = 'PO uploaded for indent with id ' + str(indent_id) + '. Details: ' + str(
+                            result[4]) + ' ' + str(result[5]) + ' ' + str(result[3]) + ' For project ' + str(result[2])
+                        IST = pytz.timezone('Asia/Kolkata')
+                        datetime_ist = datetime.now(IST)
+                        timestamp = datetime_ist.strftime('%A %d %B %H:%M')
+                        send_app_notification('PO Uploaded', notification_body, str(result[8]), str(result[8]),
+                                            'PO uploads', timestamp)
+                        send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]),
+                                            'PO uploads', timestamp)
+                    flash('PO Uploaded successfully', 'success')
         return redirect('/erp/view_indent_details?indent_id=' + str(indent_id))
 
 

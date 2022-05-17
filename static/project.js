@@ -300,6 +300,13 @@ $(document).ready(function () {
         $("#create_bill_form").submit()
     })
 
+    $('.indent-upload-submit').on('click', function(e){
+        e.preventDefault()
+        const diff_cost = $('.difference_cost').val()
+        $('.difference_cost_field').val(diff_cost)
+        $('.indent-upload-submit').parents('form').submit()
+    })
+
     function updateApprovalModalDetails(clickedBtn) {
         console.log(clickedBtn)
         if ($(clickedBtn).hasClass('approval_1_btn'))
