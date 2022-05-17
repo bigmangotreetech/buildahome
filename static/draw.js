@@ -51,7 +51,7 @@ function initialize() {
   // This will be defined on a TOUCH device such as iPad or Android, etc.
   var is_touch_device = 'ontouchstart' in document.documentElement;
 
-  if (is_touch_device && false) {
+  if (is_touch_device) {
     // create a drawer which tracks touch movements
     var drawer = {
       isDrawing: false,
@@ -81,17 +81,17 @@ function initialize() {
      
 
       // get the touch coordinates.  Using the first touch in case of multi-touch
-      console.log(event)
-      if (parseInt(event.changedTouches[0].clientX) > 0 && parseInt(event.changedTouches[0].clientY) > 0) {
-        var coors = {
-          x: event.changedTouches[0].clientX,
-          y: event.changedTouches[0].clientY
-        };
+      // console.log(event)
+      // if (parseInt(event.changedTouches[0].clientX) > 0 && parseInt(event.changedTouches[0].clientY) > 0) {
+      //   var coors = {
+      //     x: event.changedTouches[0].clientX,
+      //     y: event.changedTouches[0].clientY
+      //   };
   
-        var mouseEvent = new MouseEvent("mousemove", coors);
-        sigCanvas.dispatchEvent(mouseEvent);
+      //   var mouseEvent = new MouseEvent("mousemove", coors);
+      //   sigCanvas.dispatchEvent(mouseEvent);
   
-      }
+      // }
       
       // // Now we need to get the offset of the canvas location
       // var obj = sigCanvas;
