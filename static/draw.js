@@ -72,8 +72,8 @@ function initialize() {
       // get the touch coordinates.  Using the first touch in case of multi-touch
       console.log(event)
       var coors = {
-        x: event.targetTouches[0].pageX,
-        y: event.targetTouches[0].pageY
+        x: event.changedTouches[0].pageX,
+        y: event.changedTouches[0].pageY
       };
 
       // Now we need to get the offset of the canvas location
