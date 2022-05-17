@@ -19,6 +19,7 @@ function getPosition(mouseEvent, sigCanvas) {
   var x, y;
 
   console.log(mouseEvent)
+  var rect = sigCanvas.getBoundingClientRect();
   if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
     x = mouseEvent.pageX;
     y = mouseEvent.pageY;
@@ -29,8 +30,8 @@ function getPosition(mouseEvent, sigCanvas) {
   }
 
   return {
-    X: x - sigCanvas.offsetLeft,
-    Y: y - sigCanvas.offsetTop
+    X: x - rect.left,
+    Y: y - rect.top
   };
 }
 
