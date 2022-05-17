@@ -70,29 +70,34 @@ function initialize() {
     // create a function to pass touch events and coordinates to drawer
     function draw(event) {
 
+     
+
       // get the touch coordinates.  Using the first touch in case of multi-touch
       console.log(event)
       var coors = {
-        x: event.changedTouches[0].pageX,
-        y: event.changedTouches[0].pageY
+        x: event.changedTouches[0].clientX,
+        y: event.changedTouches[0].clientY
       };
 
-      // Now we need to get the offset of the canvas location
-      var obj = sigCanvas;
+      var mouseEvent = new MouseEvent("mousemove", coors);
+      sigCanvas.dispatchEvent(mouseEvent);
 
-      if (obj.offsetParent) {
-        // Every time we find a new object, we add its offsetLeft and offsetTop to curleft and curtop.
-        do {
-          coors.x -= obj.offsetLeft;
-          coors.y -= obj.offsetTop;
-        }
-        // The while loop can be "while (obj = obj.offsetParent)" only, which does return null
-        // when null is passed back, but that creates a warning in some editors (i.e. VS2010).
-        while ((obj = obj.offsetParent) != null);
-      }
+      // // Now we need to get the offset of the canvas location
+      // var obj = sigCanvas;
 
-      // pass the coordinates to the appropriate handler
-      drawer[event.type](coors);
+      // if (obj.offsetParent) {
+      //   // Every time we find a new object, we add its offsetLeft and offsetTop to curleft and curtop.
+      //   do {
+      //     coors.x -= obj.offsetLeft;
+      //     coors.y -= obj.offsetTop;
+      //   }
+      //   // The while loop can be "while (obj = obj.offsetParent)" only, which does return null
+      //   // when null is passed back, but that creates a warning in some editors (i.e. VS2010).
+      //   while ((obj = obj.offsetParent) != null);
+      // }
+
+      // // pass the coordinates to the appropriate handler
+      // drawer[event.type](coors);
     }
 
     // attach the touchstart, touchmove, touchend event listeners.
