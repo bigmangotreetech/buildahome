@@ -85,7 +85,7 @@ function initialize() {
       if (parseInt(event.changedTouches[0].clientX) > 0 && parseInt(event.changedTouches[0].clientY) > 0) {
         var coors = {
           clientX: event.changedTouches[0].clientX,
-          clientY: event.changedTouches[0].clientY
+          clientY: event.changedTouches[0].clientY,
           x: event.changedTouches[0].clientX,
           y: event.changedTouches[0].clientY
         };
