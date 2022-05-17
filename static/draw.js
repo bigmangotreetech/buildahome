@@ -43,7 +43,7 @@ function initialize() {
   // This will be defined on a TOUCH device such as iPad or Android, etc.
   var is_touch_device = 'ontouchstart' in document.documentElement;
 
-  if (is_touch_device) {
+  if (is_touch_device && false) {
     // create a drawer which tracks touch movements
     var drawer = {
       isDrawing: false,
