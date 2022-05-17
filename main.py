@@ -2477,7 +2477,7 @@ def upload_po_for_indent():
     if request.method == 'POST':
         indent_id = request.form['indent_id']
         if 'difference_cost_sheet' in request.files:
-             file = request.files['purchase_order']
+            file = request.files['purchase_order']
             if file.filename == '':
                 flash('No selected file')
                 return redirect(request.url)
