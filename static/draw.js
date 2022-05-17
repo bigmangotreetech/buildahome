@@ -70,6 +70,7 @@ function initialize() {
     function draw(event) {
 
       // get the touch coordinates.  Using the first touch in case of multi-touch
+      console.log(coors)
       var coors = {
         x: event.targetTouches[0].pageX,
         y: event.targetTouches[0].pageY
