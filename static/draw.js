@@ -56,7 +56,6 @@ function initialize() {
         if (this.isDrawing) {
           context.lineTo(coors.x, coors.y);
           context.stroke();
-          console.log(coors)
         }
       },
       touchend: function (coors) {
@@ -71,6 +70,7 @@ function initialize() {
     function draw(event) {
 
       // get the touch coordinates.  Using the first touch in case of multi-touch
+      console.log(event)
       var coors = {
         x: event.changedTouches[0].pageX,
         y: event.changedTouches[0].pageY
