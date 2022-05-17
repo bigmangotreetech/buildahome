@@ -4,11 +4,10 @@ $(document).ready(function () {
     $('.approve-indent-by-ph').on('click', function(e) {
         e.preventDefault()
         url = $(this).attr('href')
-        difference_cost = $(".difference_cost").val().toString()
+        difference_cost = $(".final_difference_cost").val().toString()
         if (difference_cost.trim() != '') {
             url += '&difference_cost='+difference_cost
-            console.log(url)
-            // window.location.href = url;
+            window.location.href = url;
         }
 
     })
