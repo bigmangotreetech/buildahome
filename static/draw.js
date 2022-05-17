@@ -74,7 +74,7 @@ function initialize() {
 
       // get the touch coordinates.  Using the first touch in case of multi-touch
       console.log(event)
-      if (event.changedTouches[0].clientX > 0) {
+      if (parseInt(event.changedTouches[0].clientX) > 0 && parseInt(event.changedTouches[0].clientY) > 0) {
         var coors = {
           x: event.changedTouches[0].clientX,
           y: event.changedTouches[0].clientY
