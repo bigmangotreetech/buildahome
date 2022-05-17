@@ -18,15 +18,19 @@ $(document).ready(function () {
 function getPosition(mouseEvent, sigCanvas) {
   var x, y;
 
-  console.log(mouseEvent)
   var rect = sigCanvas.getBoundingClientRect();
-  if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
+  if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined && mouseEvent.pageX != 0 && mouseEvent.pageY != 0) {
     x = mouseEvent.pageX;
     y = mouseEvent.pageY;
 
   } else {
+
     x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
     y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    console.log(mouseEvent)
+
+    console.log(x)
+    console.log(y)
   }
 
   return {
