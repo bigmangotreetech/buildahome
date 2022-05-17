@@ -1105,9 +1105,9 @@ def edit_vendor():
         update_string = ""
         for i in column_names[:-1]:
             if i=='location':
-                update_string += i + '="' + str(request.form.getlist('location')).replace("'","") + '", '
+                update_string += i + '="' + str(request.form.getlist('location')).replace("'","''").replace('"','""') + '", '
             elif i=='material_type': 
-                update_string += i + '="' + str(request.form.getlist('material_type')).replace("'","") + '", '
+                update_string += i + '="' + str(request.form.getlist('material_type')).replace("'","''").replace('"','""') + '", '
             else:
                 update_string += i + '="' + request.form[i] + '", '
         # Remove the last comma
