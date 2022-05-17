@@ -115,7 +115,6 @@ function initialize() {
     // draw a line to wherever the mouse moves to
     $("#canvas").on('mousedown pointerdown', function (mouseEvent) {
       var position = getPosition(mouseEvent, sigCanvas);
-      console.log(position)
       context.moveTo(position.X, position.Y);
       context.beginPath();
 
@@ -137,6 +136,8 @@ function initialize() {
 function drawLine(mouseEvent, sigCanvas, context) {
 
   var position = getPosition(mouseEvent, sigCanvas);
+  console.log(position)
+
 
   context.lineTo(position.X, position.Y);
   context.stroke();
