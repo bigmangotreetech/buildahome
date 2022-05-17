@@ -2501,6 +2501,7 @@ def upload_po_for_indent():
                     values = (str(indent_id) + '_dc_' + filename, indent_id)
                     cur.execute(query, values)
                     mysql.connection.commit()
+                    flash('Difference cost sheet Uploaded successfully', 'success')
                 
 
 
