@@ -17,6 +17,8 @@ $(document).ready(function () {
 
 function getPosition(mouseEvent, sigCanvas) {
   var x, y;
+
+  console.log(mouseEvent)
   if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
     x = mouseEvent.pageX;
     y = mouseEvent.pageY;
@@ -138,7 +140,6 @@ function initialize() {
 function drawLine(mouseEvent, sigCanvas, context) {
 
   var position = getPosition(mouseEvent, sigCanvas);
-  console.log(position)
 
 
   context.lineTo(position.X, position.Y);
