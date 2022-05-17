@@ -2476,6 +2476,14 @@ def upload_po_for_indent():
         return redirect('/erp/login')
     if request.method == 'POST':
         indent_id = request.form['indent_id']
+
+        difference_cost = request.form['difference_cost']
+        cur = mysql.connection.cursor()
+        query = 'UPDATE indents set difference_cost=%s WHERE id=%s'
+        values = (difference_cost, indent_id)
+        cur.execute(query, values)
+        mysql.connection.commit()
+
         if 'difference_cost_sheet' in request.files:
             file = request.files['purchase_order']
             if file.filename != '':                
