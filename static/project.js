@@ -7,7 +7,8 @@ $(document).ready(function () {
         difference_cost = $(".difference_cost").val().toString()
         if (difference_cost.trim() != '') {
             url += '&difference_cost='+difference_cost
-            window.location.href = url;
+            console.log(url)
+            // window.location.href = url;
         }
 
     })
