@@ -74,14 +74,17 @@ function initialize() {
 
       // get the touch coordinates.  Using the first touch in case of multi-touch
       console.log(event)
-      var coors = {
-        x: event.changedTouches[0].clientX,
-        y: event.changedTouches[0].clientY
-      };
-
-      var mouseEvent = new MouseEvent("mousemove", coors);
-      sigCanvas.dispatchEvent(mouseEvent);
-
+      if (event.changedTouches[0].clientX > 0) {
+        var coors = {
+          x: event.changedTouches[0].clientX,
+          y: event.changedTouches[0].clientY
+        };
+  
+        var mouseEvent = new MouseEvent("mousemove", coors);
+        sigCanvas.dispatchEvent(mouseEvent);
+  
+      }
+      
       // // Now we need to get the offset of the canvas location
       // var obj = sigCanvas;
 
