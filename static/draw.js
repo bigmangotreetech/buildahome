@@ -7,15 +7,15 @@ $(document).ready(function () {
 
 // works out the X, Y position of the click inside the canvas from the X, Y position on the page
 
-function getPosition(mouseEvent, sigCanvas) {
-  var rect = sigCanvas.getBoundingClientRect();
-  return {
-    X: mouseEvent.clientX - rect.left,
-    Y: mouseEvent.clientY - rect.top
-  };
-}
+// function getPosition(mouseEvent, sigCanvas) {
+//   var rect = sigCanvas.getBoundingClientRect();
+//   return {
+//     X: mouseEvent.clientX - rect.left,
+//     Y: mouseEvent.clientY - rect.top
+//   };
+// }
 
-/*function getPosition(mouseEvent, sigCanvas) {
+function getPosition(mouseEvent, sigCanvas) {
   var x, y;
   if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
     x = mouseEvent.pageX;
@@ -30,7 +30,7 @@ function getPosition(mouseEvent, sigCanvas) {
     X: x - sigCanvas.offsetLeft,
     Y: y - sigCanvas.offsetTop
   };
-}*/
+}
 
 function initialize() {
   // get references to the canvas element as well as the 2D drawing context
