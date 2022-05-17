@@ -43,7 +43,7 @@ function initialize() {
   // This will be defined on a TOUCH device such as iPad or Android, etc.
   var is_touch_device = 'ontouchstart' in document.documentElement;
 
-  if (is_touch_device && false) {
+  if (is_touch_device) {
     // create a drawer which tracks touch movements
     var drawer = {
       isDrawing: false,
@@ -70,7 +70,7 @@ function initialize() {
     function draw(event) {
 
       // get the touch coordinates.  Using the first touch in case of multi-touch
-      console.log(coors)
+      console.log(event)
       var coors = {
         x: event.targetTouches[0].pageX,
         y: event.targetTouches[0].pageY
