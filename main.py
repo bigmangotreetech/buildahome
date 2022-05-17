@@ -1094,12 +1094,8 @@ def edit_vendor():
                                    vendor_id=request.args['vendor_id'])
     else:
         cur = mysql.connection.cursor()
-        check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+'"'
-        cur.execute(check_query)
-        result = cur.fetchone()
-        if result is not None:
-            flash('Vendor with code '+request.form['code']+' already exists', 'danger')
-            return redirect(request.referrer)
+        
+
 
         column_names = list(request.form.keys())[:-1]
 
