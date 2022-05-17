@@ -110,9 +110,8 @@ function initialize() {
       event.preventDefault();
     }, false);
   } 
-}
 
-// start drawing when the mousedown event fires, and attach handlers to
+    // start drawing when the mousedown event fires, and attach handlers to
     // draw a line to wherever the mouse moves to
     $("#canvas").on('mousedown pointerdown', function (mouseEvent) {
       var position = getPosition(mouseEvent, sigCanvas);
@@ -128,6 +127,8 @@ function initialize() {
         finishDrawing(mouseEvent, sigCanvas, context);
       });
     });
+
+}
 
 // draws a line to the x and y coordinates of the mouse event inside
 // the specified element using the specified context
