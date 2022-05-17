@@ -2485,7 +2485,7 @@ def upload_po_for_indent():
         mysql.connection.commit()
 
         if 'difference_cost_sheet' in request.files:
-            file = request.files['purchase_order']
+            file = request.files['difference_cost_sheet']
             if file.filename != '':                
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
