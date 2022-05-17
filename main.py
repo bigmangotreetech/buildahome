@@ -2728,7 +2728,7 @@ def edit_project():
         update_string = ""
         for i in column_names[:-1]:
             if request.form[i].strip() != '':
-                update_string += i + '="' + request.form[i] + '", '
+                update_string += i + '="' + request.form[i].replace('"','""').replace("'","''") + '", '
         # Remove the last comma
         update_string = update_string[:-2]
         update_project_query = 'UPDATE projects SET ' + update_string + ' WHERE project_id=' + str(
