@@ -299,6 +299,16 @@ async function saveSign() {
     size: 11,
   })
 
+  if($(".total_bua").text().trim().length && $(".cost_per_sqft").text().trim().length) {
+    const total_bua = $(".total_bua").text().trim() 
+    const cost_per_sqft = $(".cost_per_sqft").text().trim() 
+    pages[0].drawText('Total BUA :'+total_bua.toString()+', Cost/sqft : '+cost_per_sqft.toString(), {
+      x: 100,
+      y: 395,
+      size: 11,
+    })
+  }
+
   const value = $('.value').text().trim()
   pages[0].drawText(value, {
     x: 448,

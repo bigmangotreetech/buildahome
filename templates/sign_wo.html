@@ -118,6 +118,24 @@
                 </div>
             </div>
 
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label>Total BUA</label>
+                </div>
+                <div class="col-6 total_bua">
+                    {{wo[12]}}
+                </div>
+            </div>
+
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label>Cost per sqft</label>
+                </div>
+                <div class="col-6 cost_per_sqft">
+                    {{wo[13]}}
+                </div>
+            </div>
+
             <input type="hidden" id="wo_id" value="{{wo_id}}">
 
             <div class="d-flex flex-column h-100 justify-content-start mx-3">
@@ -127,7 +145,7 @@
                 </div>
 
                 <div id="iframe2">
-                    <canvas id="annexure_canvas" width="550px" height="600px" class="d-none"></canvas>
+                    <canvas id="annexure_canvas" width="650px" height="600px" class="d-none"></canvas>
                 </div>
                 <div class="d-flex">
                     <input type="submit" class="mt-3 mr-3" value="Clear" id="clearbutton" onclick="clearCanvas();">
