@@ -18,7 +18,6 @@ $(document).ready(function () {
 function getPosition(mouseEvent, sigCanvas) {
   var x, y;
 
-  console.log('called')
   var rect = sigCanvas.getBoundingClientRect();
   if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined && mouseEvent.pageX != 0 && mouseEvent.pageY != 0) {
     x = mouseEvent.pageX;
@@ -28,10 +27,7 @@ function getPosition(mouseEvent, sigCanvas) {
 
     x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
     y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-    console.log(mouseEvent)
 
-    console.log(x)
-    console.log(y)
   }
 
   return {
@@ -81,7 +77,6 @@ function initialize() {
      
 
       // get the touch coordinates.  Using the first touch in case of multi-touch
-      console.log(event)
       if (parseInt(event.changedTouches[0].clientX) > 0 && parseInt(event.changedTouches[0].clientY) > 0) {
         var coors = {
           clientX: event.changedTouches[0].clientX,
@@ -181,6 +176,7 @@ async function getAndPutAnnexure() {
   var formData = new FormData();
   formData.append("work_order_id", $('#wo_id').val())
 
+  wo_value = parseInt($('.value').text().trim())
   $.ajax({
     type: "POST",
     url: "/erp/get_milsetones",
@@ -206,6 +202,9 @@ async function getAndPutAnnexure() {
         context.fillText(stage[0], x, y);
         x = 500;
         context.fillText(stage[1].toString()+'%', x, y);
+        x = 600
+        const amount = parseInt(stage[1]) * wo_value
+        context.fillText('₹ '+amount.toString(), x, y);
         y += 20;
         x = 20;
       }
