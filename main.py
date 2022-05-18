@@ -329,7 +329,6 @@ def profile():
 
         user_id = request.form['user_id']
         name = request.form['name']
-        role = request.form['role']
         email = request.form['email']
         phone = request.form['phone']
         password = request.form['password']
@@ -369,9 +368,9 @@ def profile():
                 if result is not None and result[0] == password:                           
                     cur = mysql.connection.cursor()
                     password = hashlib.sha256(password.encode()).hexdigest()
-                    values = (name, role, phone, email, password)
+                    values = (name, phone, email, password)
                     
-                    update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(
+                    update_query = 'UPDATE App_users set name=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(
                         user_id)
                     cur.execute(update_query, values)
                     flash('User details and password updated', 'success')
@@ -383,8 +382,8 @@ def profile():
                     
         else:
             cur = mysql.connection.cursor()
-            values = (name, role, phone, email)
-            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
+            values = (name, phone, email)
+            update_query = 'UPDATE App_users set name=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
             cur.execute(update_query, values)
             flash('Details updated', 'success')
             mysql.connection.commit()
