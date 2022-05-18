@@ -362,7 +362,8 @@ def profile():
 
                 password = hashlib.sha256(password.encode()).hexdigest()
                 cur = mysql.connection.cursor()
-                query = "SELECT user_id, password FROM App_users WHERE user_id=" + user_id + ""
+                query = "SELECT user_id, password FROM App_users WHERE user_id=" + user_id
+                return query
                 cur.execute(query)
                 result = cur.fetchone()
                 if result is not None and result[1] == password:                           
@@ -376,7 +377,7 @@ def profile():
                     mysql.connection.commit()
                     return redirect(request.referrer)
                 else: 
-                    flash('Incorrect old password. operation failed', 'danger')
+                    flash('Incorrect old password. Operation failed', 'danger')
                     return redirect(request.referrer)
                     
         else:
