@@ -363,7 +363,7 @@ def profile():
                 password = hashlib.sha256(password.encode()).hexdigest()
                 cur = mysql.connection.cursor()
                 query = "SELECT user_id, password FROM App_users WHERE user_id=" + user_id
-                return query
+                return password
                 cur.execute(query)
                 result = cur.fetchone()
                 if result is not None and result[1] == password:                           
