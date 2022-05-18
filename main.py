@@ -360,13 +360,12 @@ def profile():
                     flash('Passwords did not match. Operation failed', 'danger')
                     return redirect(request.referrer)
 
-                password = hashlib.sha256(password.encode()).hexdigest()
+                old_password = hashlib.sha256(old_password.encode()).hexdigest()
                 cur = mysql.connection.cursor()
                 query = "SELECT user_id, password FROM App_users WHERE user_id=" + user_id
-                return password
                 cur.execute(query)
                 result = cur.fetchone()
-                if result is not None and result[1] == password:                           
+                if result is not None and result[1] == old_password:                           
                     cur = mysql.connection.cursor()
                     values = (name, phone, email, password)
                     
