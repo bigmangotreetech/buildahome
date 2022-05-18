@@ -162,7 +162,7 @@
     {% endif %}
 
     <div class="nav-section-header">Account</div>
-    <a href="/erp/profile" class="nav-link">Profile</a>
+    <a href="/erp/profile" class='nav-link {% if "/profile" in request.path %} active {% endif %}'>Profile</a>
     <a href="/erp/logout" class="nav-link">Logout</a>
 
 <!--    {% if session['role'] in ['Super Admin','COO','Planning'] %}-->
