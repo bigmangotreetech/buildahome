@@ -351,7 +351,7 @@ def profile():
 
         if len(password.strip()) > 0:
             old_password = request.form['old_password']
-            if old_password.strip == '':
+            if old_password.strip() == '':
                 flash('Current password field cannot be empty to change password', 'danger')
                 return redirect(request.referrer)
             else: 
