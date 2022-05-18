@@ -325,11 +325,7 @@ def profile():
         else: 
             return redirect('/erp/login')
     else:
-        required_fields = ['name','email', 'phone','old_password', 'password', 'confirm_password']
-        for field in required_fields:
-            if field not in list(request.form.keys()):
-                flash('Missing fields. Operation failed', 'danger')
-                return redirect(request.referrer)
+
 
         user_id = request.form['user_id']
         name = request.form['name']
