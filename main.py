@@ -367,6 +367,7 @@ def profile():
                 result = cur.fetchone()
                 if result is not None and result[1] == old_password:                           
                     cur = mysql.connection.cursor()
+                    password = hashlib.sha256(password.encode()).hexdigest()
                     values = (name, phone, email, password)
                     
                     update_query = 'UPDATE App_users set name=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(
