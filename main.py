@@ -344,9 +344,9 @@ def profile():
                     return redirect(request.referrer)
                 else:
                     cur = mysql.connection.cursor()
-                    update_query = 'UPDATE App_users set profile_picture=%s WHERE user_id=' + str(
+                    update_query = 'UPDATE App_users set profile_picture="'+picture_filename+'" WHERE user_id=' + str(
                         user_id)
-                    cur.execute(update_query, values)
+                    cur.execute(update_query)
                     mysql.connection.commit()
 
         if len(password.strip()) > 0:
