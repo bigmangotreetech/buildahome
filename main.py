@@ -337,7 +337,7 @@ def profile():
             file = request.files['profile_picture']
             if file.filename != '' and file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                picture_filename = 'user_dp_'+str(user_id)+'_' + filename
+                picture_filename = 'user_dp_'+str(user_id)+_ + filename
                 output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
                 if output != 'success':
                     flash('File upload failed', 'danger')
@@ -362,12 +362,11 @@ def profile():
 
                 password = hashlib.sha256(password.encode()).hexdigest()
                 cur = mysql.connection.cursor()
-                query = "SELECT password FROM App_users WHERE user_id=" + user_id + ""
+                query = "SELECT id, password FROM App_users WHERE user_id=" + user_id + ""
                 cur.execute(query)
                 result = cur.fetchone()
-                if result is not None and result[0] == password:                           
+                if result is not None and result[1] == password:                           
                     cur = mysql.connection.cursor()
-                    password = hashlib.sha256(password.encode()).hexdigest()
                     values = (name, phone, email, password)
                     
                     update_query = 'UPDATE App_users set name=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(
