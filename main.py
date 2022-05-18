@@ -239,10 +239,7 @@ def delete_old_drawings():
                     pass
             delete_drawing_query = 'DELETE from Docs WHERE project_id='+str(project_id)+' AND folder!="RECEIPTS" AND folder!="AGREEMENT "'
             cur.execute(delete_drawing_query)
-        
-
-        
-    
+            
     return 'success'
 
 
@@ -315,6 +312,67 @@ def index():
         return redirect('/erp/login')
     return render_template('index.html')
 
+@app.route('/profile', methods=['GET','POST'])
+def profile():
+    if request.method == 'GET':
+        if 'user_id' not in session:
+            user_id = session['user_id']
+            cur = mysql.connection.cursor()
+            view_user_query = 'SELECT user_id, email, name, role, phone, profile_picture FROM App_users WHERE user_id=' + str(user_id)
+            cur.execute(view_user_query)
+            result = cur.fetchone()
+            return render_template('profile.html', user=result)
+        else:
+            required_fields = ['name', 'role', 'email', 'phone','old_password', 'password', 'confirm_password']
+            for field in required_fields:
+                if field not in list(request.form.keys()):
+                    flash('Missing fields. Operation failed', 'danger')
+                    return redirect(request.referrer)
+
+            user_id = request.form['user_id']
+            name = request.form['name']
+            role = request.form['role']
+            email = request.form['email']
+            phone = request.form['phone']
+            password = request.form['password']
+            if len(password.strip()) > 0:
+                old_password = request.form['old_password']
+                if old_password.strip == '':
+                    flash('Current password field cannot be empty to change password', 'danger')
+                    return redirect(request.referrer)
+                else: 
+                    c_password = request.form['confirm_password']
+                    if password != c_password:
+                        flash('Passwords did not match. Operation failed', 'danger')
+                        return redirect(request.referrer)
+
+                    password = hashlib.sha256(password.encode()).hexdigest()
+                    cur = mysql.connection.cursor()
+                    query = "SELECT password FROM App_users WHERE user_id=" + user_id + ""
+                    cur.execute(query)
+                    result = cur.fetchone()
+                    if result is not None and result[0] == password:                           
+                        cur = mysql.connection.cursor()
+                        password = hashlib.sha256(password.encode()).hexdigest()
+                        values = (name, role, phone, email, password)
+                        update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(
+                            user_id)
+                        cur.execute(update_query, values)
+                        flash('User details and password updated', 'success')
+                        mysql.connection.commit()
+                        return redirect(request.referrer)
+                    else: 
+                        flash('Incorrect old password. operation failed', 'danger')
+                        return redirect(request.referrer)
+                        
+            else:
+                cur = mysql.connection.cursor()
+                values = (name, role, phone, email)
+                update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
+                cur.execute(update_query, values)
+                flash('Details updated', 'success')
+                mysql.connection.commit()
+                return redirect('/erp/view_users')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

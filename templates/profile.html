@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <form action="/erp/edit_user"  method="post"  enctype="multipart/form-data">
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="role">Role</label>
+                    </div>
+                    <div class="col-6">
+                        <b>{{user[3]}}</b>
+                    </div>
+                </div>
+
+                <input type="hidden" name="user_id" value="{{user[0]}}">
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="profile_picture">Profile picture</label>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-2">
+                            <img alt="" height="150" width="150"
+                                 src="/erp/files/5" alt=""
+                                 onerror="this.src='./static/profile_picture.PNG'"
+                                 style="border-radius: 50%">
+                        </div>
+                        <input type="file" name="profile_picture" id="profile_picture" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="name">Name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="name" id="name" class="form-control" value="{{user[2]}}" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="email" id="email" value="{{user[1]}}" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="phone">Phone number</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="phone" id="phone" value="{{user[4]}}" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="old_password">Old Password</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="password" name="old_password" id="old_password" class="form-control">
+                    </div>
+                </div>
+
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="password" name="password" id="password" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="confirm_password">Confirm password</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button class="btn btn-dark btn-block bg-indigo text-white ">Submit</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
