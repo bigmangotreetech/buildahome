@@ -349,7 +349,7 @@ def profile():
                         user_id)
                     cur.execute(update_query, values)
                     mysql.connection.commit()
-                    
+
         if len(password.strip()) > 0:
             old_password = request.form['old_password']
             if old_password.strip == '':
@@ -388,7 +388,7 @@ def profile():
             cur.execute(update_query, values)
             flash('Details updated', 'success')
             mysql.connection.commit()
-            return redirect('/erp/view_users')
+            return redirect(request.referrer)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
