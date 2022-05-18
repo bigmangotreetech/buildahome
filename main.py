@@ -23,6 +23,32 @@ from constants.constants import project_fields, roles
 from PIL import Image
 from io import BytesIO
 
+
+
+# Debit note
+
+# Indent audit trail
+
+# Delete indennt
+
+# Project co ordinator wise order indents
+
+# All Bills Project co ordinator
+
+# Debit note = fields
+
+# Edit inventory
+
+#     Site 
+#     Contractor 
+#     Trade 
+#     Stage
+
+#     Generate as direct approved Bills
+
+
+
+
 # Last labour stage id 412
 app = Flask(__name__)
 # Sql setup
