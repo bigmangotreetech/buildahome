@@ -337,7 +337,7 @@ def profile():
             file = request.files['profile_picture']
             if file.filename != '' and file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                picture_filename = 'user_dp_'+str(user_id)+_ + filename
+                picture_filename = 'user_dp_'+str(user_id)+'_'+ filename
                 output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
                 if output != 'success':
                     flash('File upload failed', 'danger')
