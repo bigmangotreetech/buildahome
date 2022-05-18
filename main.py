@@ -315,13 +315,15 @@ def index():
 @app.route('/profile', methods=['GET','POST'])
 def profile():
     if request.method == 'GET':
-        if 'user_id' not in session:
+        if 'user_id' in session:
             user_id = session['user_id']
             cur = mysql.connection.cursor()
             view_user_query = 'SELECT user_id, email, name, role, phone, profile_picture FROM App_users WHERE user_id=' + str(user_id)
             cur.execute(view_user_query)
             result = cur.fetchone()
             return render_template('profile.html', user=result)
+        else: 
+            return redirect('/erp/login')
     else:
         required_fields = ['name', 'role', 'email', 'phone','old_password', 'password', 'confirm_password']
         for field in required_fields:
