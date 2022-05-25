@@ -14,6 +14,7 @@
             <th scope="col">Quantity</th>
             <th scope="col">Created by</th>
             <th scope="col">Time</th>
+            <th scope="col">Billed</th>
         </tr>
         </thead>
         <tbody>
@@ -31,6 +32,13 @@
                 <td><a href="/erp/view_indent_details?indent_id={{i[0]}}">
                     <i class="fa fa-external-link"></i>
                 </a></td>
+                <td>
+                    {% if i[9] == 1 %}
+                    <div class="indicator bg-success"></div>
+                    {% else %}
+                    <div class="indicator bg-danger"></div>
+                    {% end %}
+                </td>
     
             </tr>
             {% endfor %}    
@@ -41,4 +49,11 @@
 
 
 </div>
+<style>
+    .indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+</style>
 {% endblock %}

@@ -2244,7 +2244,7 @@ def view_ph_approved_indents():
                             'indents.unit, ' \
                             'indents.purpose, ' \
                             'App_users.name, ' \
-                            'indents.timestamp FROM indents ' \
+                            'indents.timestamp, indents.billed FROM indents ' \
                             'INNER JOIN projects on ' \
                             'indents.status="approved_by_ph" AND ' \
                             'indents.project_id=projects.project_id ' \
@@ -2259,7 +2259,7 @@ def view_ph_approved_indents():
                             'indents.unit, ' \
                             'indents.purpose, ' \
                             'App_users.name, ' \
-                            'indents.timestamp FROM indents ' \
+                            'indents.timestamp, indents.billed FROM indents ' \
                             'INNER JOIN projects on ' \
                             'indents.status="approved_by_ph" AND ' \
                             'indents.project_id=projects.project_id AND ' \
@@ -2459,6 +2459,20 @@ def approve_indent_by_qs():
         mysql.connection.commit()
         flash('Indent approved','success')
         return redirect('/erp/view_qs_approval_indents')    
+
+@app.route('/mark_as_billed', methods=['GET'])
+def mark_as_billed():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/mark_as_billed'
+    if request.method == 'GET':
+        indent_id = request.args['id']
+        cur = mysql.connection.cursor()
+        query = 'UPDATE indents set billed1=1 WHERE id='+str(indent_id)
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Indent marked as billed','success')
+        return redirect('/erp/view_ph_approved_indents')
 
 @app.route('/rollback_indent_by_ph', methods=['GET'])
 def rollback_indent_by_ph():
