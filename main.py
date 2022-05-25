@@ -654,10 +654,9 @@ def edit_procurement():
             result = cur.fetchone()
             return render_template('edit_procurement.html', data=result)
     else:
+        procurement_id = request.form['procurement_id']
         material = request.form['material']
         description = request.form['description']
-        vendor = request.form['vendor']
-        project = request.form['project']
         po_no = request.form['po_no']
         invoice_no = request.form['invoice_no']
         invoice_date = request.form['invoice_date']
@@ -678,12 +677,6 @@ def edit_procurement():
 
         cur = mysql.connection.cursor()
 
-        vendor_query = 'SELECT name from vendors WHERE id='+str(vendor)
-        cur.execute(vendor_query)
-        result = cur.fetchone()
-        if result is not None:
-            vendor = result[0]
-
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
             project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         cur.execute(material_quantity_query)
@@ -696,13 +689,15 @@ def edit_procurement():
                   'danger')
             return redirect('/erp/enter_material')
 
-        query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
-                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst,
-                  total_amount, difference_cost, photo_date, transportation, loading_unloading, timestamp)
+        query = 'UPDATE procurement set material=%s, description=%s, po_no=%s, invoice_no=%s, invoice_date=%s, quantity=%s, unit=%s, rate=%s, gst=%s,' \
+                  'total_amount=%s, difference_cost=%s, photo_date=%s, transportation=%s, loading_unloading=%s WHERE id='+str(procurement_id)
+        values = (material, description, po_no, invoice_no, invoice_date, quantity, unit, rate, gst,
+                  total_amount, difference_cost, photo_date, transportation, loading_unloading)
+    
+
         cur.execute(query, values)
         mysql.connection.commit()
-        flash('Material was inserted successfully', 'success')
+        flash('Procurement was updated successfully', 'success')
         return redirect('/erp/enter_material')
 
     
