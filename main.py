@@ -669,6 +669,7 @@ def edit_procurement():
         photo_date = request.form['photo_date']
         IST = pytz.timezone('Asia/Kolkata')
         current_time = datetime.now(IST)
+        project=request.form['project_id']
         timestamp = current_time.strftime('%d %m %Y at %H %M')
         
         transportation = request.form['transportation']
