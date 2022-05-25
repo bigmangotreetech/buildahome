@@ -2309,7 +2309,8 @@ def view_approved_indents():
         current_user_role = session['role']
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved_by_qs" AND indents.project_id=projects.project_id ' \
+                            ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="
+                            " AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
 
             cur.execute(indents_query)
@@ -2502,7 +2503,7 @@ def approve_indent_by_ph():
             send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]),
                                     'PO uploads', timestamp)
         flash('Indent approved','success')
-        return redirect('/erp/view_ph_approval_indents')
+        return redirect('/erp/view_approved_POs')
 
 @app.route('/view_indent_details', methods=['GET'])
 def view_indent_details():
@@ -2566,6 +2567,25 @@ def delete_indent():
         mysql.connection.commit()
         flash('Indent deleted','danger')
         return redirect('/erp/view_qs_approval_indents')
+
+@app.route('/close_po_with_comments', methods=['POST'])
+def close_po_with_comments():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_bill'
+        return redirect('/erp/login')
+    if request.method == 'POST':
+        indent_id = request.form['indent_id']
+        comments = request.form['comments']
+
+        cur = mysql.connection.cursor()
+        query = 'UPDATE indents set status=%s WHERE id=%s'
+        values = ('po_uploaded', indent_id)
+        cur.execute(query, values)
+        mysql.connection.commit()
+        return redirect('/erp/view_approved_indents')
+
+
 
 @app.route('/upload_po_for_indent', methods=['POST'])
 def upload_po_for_indent():
