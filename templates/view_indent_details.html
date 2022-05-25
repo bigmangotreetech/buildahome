@@ -107,11 +107,6 @@
              <a onclick="return confirm('Are you sure you want to delete this indent?')" href="/erp/delete_indent?indent_id={{result[0]}}" class="ml-3 btn btn-danger">Delete</a>
             {% endif %}
 
-            {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head','QS Info'] and result[10]=='approved_by_ph' %}
-            
-            <a onclick="return confirm('Are you sure you want to delete this indent?')" href="/erp/delete_indent?indent_id={{result[0]}}" class="ml-3 btn btn-danger">Delete</a>
-            {% endif %}
-
             {% if session['role'] in ['Super Admin','COO','QS Engineer','QS Head','Purchase Head'] and result[10]=='po_uploaded' %}
             <div class="row mx-0 mt-3 form-group">
                 <div class="col-6">
@@ -150,13 +145,16 @@
                 <input type="hidden" class="difference_cost_field" name="difference_cost">
                 
                 <input type="file" name="difference_cost_sheet"  accept="application/pdf,image/*">
-                <div class="row justify-content-center mx-0 my-5">
+                <div class="row justify-content-start mx-0 my-5">
                     <div class="col-6">
-                        <button class="btn btn-dark btn-block bg-indigo text-white indent-upload-submit">Submit</button>
+                        <button class="btn btn-dark  bg-indigo text-white indent-upload-submit">Submit</button>
                     </div>
                 </div>
             </form>
+            {% if session['role'] in ['Super Admin','COO','Purchase Head'] %}
             <a onclick="return confirm('Are you sure you want to delete this indent?')" href="/erp/delete_indent?indent_id={{result[0]}}" class="ml-3 btn btn-danger">Delete</a>
+            {% endif %}
+            
             {% endif %}
 
         </div>
