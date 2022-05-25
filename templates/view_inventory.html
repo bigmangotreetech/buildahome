@@ -140,6 +140,9 @@
                     <th scope="col">GST</th>
                     <th scope="col">Total Amount</th>
                     <th scope="col">Difference cost</th>
+                    {% if session['role'] in ['Super Admin','COO','Purchase Head'] %}
+                    <th scope="col"></th>
+                    {% endif %}
 
                 </tr>
             </thead>
@@ -163,6 +166,11 @@
                     <td>{{i[12]}}</td>
                     <td class="item_cost">{{i[13]|int}}</td>
                     <td class="item_difference_cost">{{i[14]}}</td>
+                    {% if session['role'] in ['Super Admin','COO','Purchase Head'] %}
+                    <td>
+                        <a href="/erp/edit_procurement?procurement_id={{i[0]}}"></a>
+                    </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 <tr>

@@ -636,6 +636,75 @@ def view_inventory():
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project,
                            material=material, material_total_quantity=material_total_quantity)
 
+@app.route('/edit_procurement', methods=['GET','POST'])
+def edit_procurement():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/edit_procurement'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        if 'procurement_id' not in request.args:
+        flash('Somethign went wrong', 'danger')
+        return redirect(request.referrer)
+        if 'procurement_id' in request.args:
+            procurement_id = request.args['procurement_id']
+            procurement_query = 'SELECT * from procurement WHERE id=' + str(procurement_id) 
+            cur = mysql.connection.cursor()
+            result = cur.execute(procurement_query)
+            return render_template('edit_procurement.html', data=result)
+    else:
+        material = request.form['material']
+        description = request.form['description']
+        vendor = request.form['vendor']
+        project = request.form['project']
+        po_no = request.form['po_no']
+        invoice_no = request.form['invoice_no']
+        invoice_date = request.form['invoice_date']
+        quantity = request.form['quantity']
+        unit = request.form['unit']
+        rate = request.form['rate']
+        gst = request.form['gst']
+        total_amount = request.form['total_amount']
+        difference_cost = request.form['difference_cost']
+        photo_date = request.form['photo_date']
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
+        
+        transportation = request.form['transportation']
+        loading_unloading = request.form['loading_unloading']
+
+
+        cur = mysql.connection.cursor()
+
+        vendor_query = 'SELECT name from vendors WHERE id='+str(vendor)
+        cur.execute(vendor_query)
+        result = cur.fetchone()
+        if result is not None:
+            vendor = result[0]
+
+        material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+            project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+        cur.execute(material_quantity_query)
+        result = cur.fetchone()
+        if result is None:
+            flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
+            return redirect('/erp/enter_material')
+        if float(result[0]) < (float(quantity)):
+            flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded',
+                  'danger')
+            return redirect('/erp/enter_material')
+
+        query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
+                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst,
+                  total_amount, difference_cost, photo_date, transportation, loading_unloading, timestamp)
+        cur.execute(query, values)
+        mysql.connection.commit()
+        flash('Material was inserted successfully', 'success')
+        return redirect('/erp/enter_material')
+
+    
 
 @app.route('/shifting_entry', methods=['GET', 'POST'])
 def shifting_entry():
