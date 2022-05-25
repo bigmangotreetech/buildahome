@@ -2515,7 +2515,7 @@ def view_indent_details():
         indent_id = request.args['indent_id']
         cur = mysql.connection.cursor()
         indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken, indents.difference_cost_sheet FROM indents INNER JOIN projects on indents.id=' + str(
+                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken, indents.difference_cost_sheet, indents.comments FROM indents INNER JOIN projects on indents.id=' + str(
             indent_id) + ' AND indents.project_id=projects.project_id ' \
                          ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
         cur.execute(indents_query)
@@ -2576,13 +2576,14 @@ def close_po_with_comments():
         return redirect('/erp/login')
     if request.method == 'POST':
         indent_id = request.form['indent_id']
-        comments = request.form['comments']
+        comments = request.form['comments'].replace('"', '').replace("'", '')
 
         cur = mysql.connection.cursor()
-        query = 'UPDATE indents set status=%s WHERE id=%s'
-        values = ('po_uploaded', indent_id)
+        query = 'UPDATE indents set status=%s, comments=%s WHERE id=%s'
+        values = ('po_uploaded',comments, indent_id)
         cur.execute(query, values)
         mysql.connection.commit()
+        flash('Indent closed with comment successfully', 'success')
         return redirect('/erp/view_approved_indents')
 
 
