@@ -650,7 +650,8 @@ def edit_procurement():
             procurement_id = request.args['procurement_id']
             procurement_query = 'SELECT * from procurement WHERE id=' + str(procurement_id) 
             cur = mysql.connection.cursor()
-            result = cur.execute(procurement_query)
+            cur.execute(procurement_query)
+            result = cur.fetchone()
             return render_template('edit_procurement.html', data=result)
     else:
         material = request.form['material']
