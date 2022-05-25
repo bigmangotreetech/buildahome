@@ -161,7 +161,7 @@
                     <td>{{i[16]}}</td>
                     <td>{{i[17]}}</td>
                     <td>{{i[12]}}</td>
-                    <td>{{i[13]|int}}</td>
+                    <td class="item_cost">{{i[13]|int}}</td>
                     <td class="item_difference_cost">{{i[14]}}</td>
                 </tr>
                 {% endfor %}
@@ -181,6 +181,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td><span class="font-weight-bold" id="total_cost"></span></td>
                     <td><span class="font-weight-bold" id="total_difference_cost"></span></td>
                 </tr>
             </tbody>

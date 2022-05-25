@@ -26,10 +26,15 @@ if($('#total_item_quantity').length) {
 }
 
 if($('.item_difference_cost').length) {
+    let total_cost = 0;
+    $('.item_cost').each(function(index, element){
+        total_cost += parseFloat($(this).text().trim())
+    })
+    $("#total_cost").text(total_cost)
+
     let total_difference_cost = 0;
     $('.item_difference_cost').each(function(index, element){
         total_difference_cost += parseFloat($(this).text().trim())
     })
     $("#total_difference_cost").text(total_difference_cost)
-
 }
