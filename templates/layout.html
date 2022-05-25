@@ -89,7 +89,7 @@
         Entry</a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Billing'] %}
     <div class="nav-section-header">Indents</div>
     <a href="/erp/view_qs_approval_indents"
        class='nav-link {% if "/view_qs_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>Indents for QS</a>
