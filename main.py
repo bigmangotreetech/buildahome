@@ -2468,7 +2468,7 @@ def mark_as_billed():
     if request.method == 'GET':
         indent_id = request.args['id']
         cur = mysql.connection.cursor()
-        query = 'UPDATE indents set billed1=1 WHERE id='+str(indent_id)
+        query = 'UPDATE indents set billed=1 WHERE id='+str(indent_id)
         cur.execute(query)
         mysql.connection.commit()
         flash('Indent marked as billed','success')
