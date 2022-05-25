@@ -1,6 +1,19 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 
+
+    if($('.edit-procurement-material').length) {
+        $('#material').val($('.edit-procurement-material').text())
+        $('#material').trigger('change')
+
+        $('#unit').val($('.edit-procurement-unit').text())
+        $('#unit').trigger('change')
+
+        $('#gst').val($('.edit-procurement-gst').text())
+        $('#gst').trigger('change')
+        
+    }
+
     $('.approve-indent-by-ph').on('click', function(e) {
         e.preventDefault()
         url = $(this).attr('href')
