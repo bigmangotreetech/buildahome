@@ -699,7 +699,7 @@ def edit_procurement():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Procurement was updated successfully', 'success')
-        return redirect('/erp/enter_material')
+        return redirect('/erp/view_inventory?project_id='+project+'&material=All')
 
     
 
