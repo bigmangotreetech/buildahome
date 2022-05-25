@@ -644,8 +644,8 @@ def edit_procurement():
         return redirect('/erp/login')
     if request.method == 'GET':
         if 'procurement_id' not in request.args:
-        flash('Somethign went wrong', 'danger')
-        return redirect(request.referrer)
+            flash('Something went wrong', 'danger')
+            return redirect(request.referrer)
         if 'procurement_id' in request.args:
             procurement_id = request.args['procurement_id']
             procurement_query = 'SELECT * from procurement WHERE id=' + str(procurement_id) 
