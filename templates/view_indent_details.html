@@ -142,7 +142,7 @@
              href="/erp/rollback_indent_by_ph?id={{result[0]}}" class="ml-3 btn btn-info">Rollback</a>
             {% endif %}
 
-            {% if session['role'] in ['Super Admin','COO','Purchase Head'] and result[10]=='approved_by_ph' %}
+            {% if session['role'] in ['Super Admin','COO','Billing'] and result[10]=='approved_by_ph' %}
             <a onclick="return confirm('Are you sure you want to mark this indent as billed?')"
              href="/erp/mark_as_billed?id={{result[0]}}" class="ml-3 btn btn-success">Marked as billed</a>
             {% endif %}
