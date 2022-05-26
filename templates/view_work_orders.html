@@ -107,7 +107,9 @@
                 <td>{{i[5]}}</td>
                 <td>{{i[6]}}</td>
                 <td>
+                    {% if i[4]|string != '' %}
                     <a href="/erp/clear_nt_nmr_balance?bill_id={{i[0]}}" onclick="return confirm('Are you sure you want to clear balance')">Clear balance</a>
+                    {% endif %}
                 </td>
             </tr>
 
