@@ -2011,7 +2011,7 @@ def project_contractor_info():
         data['pan'] = res[3]
 
     get_wo_query = 'SELECT id, value, balance from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
-    cur.execute(get_wo_query, (trade, project_id))
+    cur.execute(get_wo_query, (trade, project_id, contractor_id))
     res = cur.fetchone()
     if res is not None:
         data['value'] = res[1]
