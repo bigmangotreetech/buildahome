@@ -2033,16 +2033,19 @@ def project_contractor_info():
 @app.route('/clear_nt_nmr_balance', methods=['GET'])
 def clear_nt_nmr_balance():
     bill_id = request.args['bill_id']
-
-    bill_query = 'SELECT quantity, rate, approval_2_amount, stage, project_id, contractor_name, contractor_code, contractor_pan, trade from wo_bills WHERE id='+str(bill_id)
     cur = mysql.connection.cursor()
+    update_old_bill = 'UPDATE wo_bills SET cleared_balance=1 WHERE id='+str(bill_id)
+    cur.execute(update_old_bill)
+    mysql.connection.commit()
+    
+    bill_query = 'SELECT quantity, rate, approval_2_amount, stage, project_id, contractor_name, contractor_code, contractor_pan, trade from wo_bills WHERE id='+str(bill_id)
     cur.execute(bill_query)
     res = cur.fetchone()
     if res is not None:
         amount = int(res[0]) * int(res[1])
         payable  = int(res[2])
         difference = amount - payable
-        stage = res[3]+' (Clear balance)'
+        stage = res[3].replace(' (Clear balance)','')+' (Clear balance)'
         project_id = res[4]
         contractor_name = res[5]
         contractor_code = res[6]
@@ -2107,7 +2110,7 @@ def view_work_order():
             work_orders = get_work_orders_for_project(project_id)
 
             bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
-                        ' wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+                        ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
             cur = mysql.connection.cursor()
             cur.execute(bills_query)
             nt_nmr_bills = cur.fetchall()
