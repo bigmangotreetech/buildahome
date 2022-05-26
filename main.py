@@ -2003,12 +2003,14 @@ def project_contractor_info():
     get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code="'+contractor_code+'"'
     cur.execute(get_contractor_query)
     res = cur.fetchone()
+    contractor_id = 0
     if res is not None:
+        contractor_id = res[0]
         data['name'] = res[1]
         data['code'] = res[2]
         data['pan'] = res[3]
 
-    get_wo_query = 'SELECT id, value, balance from work_orders WHERE trade=%s AND project_id=%s'
+    get_wo_query = 'SELECT id, value, balance from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
     cur.execute(get_wo_query, (trade, project_id))
     res = cur.fetchone()
     if res is not None:
