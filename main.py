@@ -2034,7 +2034,7 @@ def project_contractor_info():
 def clear_nt_nmr_balance():
     bill_id = request.args['bill_id']
 
-    bill_query = 'SELECT quantity, rate, approval_2_amount, stage, project_id, contractor_name, contractor_code, contractor_pan, trade WHERE id='+str(bill_id)
+    bill_query = 'SELECT quantity, rate, approval_2_amount, stage, project_id, contractor_name, contractor_code, contractor_pan, trade from wo_bills WHERE id='+str(bill_id)
     cur = mysql.connection.cursor()
     cur.execute(bill_query)
     res = cur.fetchone()
