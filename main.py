@@ -2030,6 +2030,31 @@ def project_contractor_info():
 
     return render_template('project_contractor_info.html', bills=bills, project=project, data=data)
 
+@app.route('/clear_nt_nmr_balance', methods=['GET'])
+def clear_nt_nmr_balance():
+    bill_id = request.args['bill_id']
+
+    bill_query = 'SELECT quantity, rate, approval_2_amount, stage, project_id, contractor_name, contractor_code, contractor_pan, trade WHERE id='+str(bill_id)
+    cur = mysql.connection.cursor()
+    cur.execute(bills_query)
+    res = cur.fetchone()
+    if res is not None:
+        amount = int(res[0]) * int(res[1])
+        payable  = int(res[2])
+        difference = amount - payable
+        description = res[3]+' (Clear balance)'
+        project_id = res[4]
+        contractor_name = res[5]
+        contractor_code = res[6]
+        contractor_pan = res[7]
+        trade = res[8]
+
+
+        bills_query = 'INSERT into wo_bills (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, total_payable) values (%s,%s, %s,%s,%s,%s,%s)'
+        cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, amount))
+
+        flash('Cleared balance','success')
+        return redirect(request.referrer)
 
 @app.route('/clear_wo_balance', methods=['POST'])
 def clear_wo_balance():
