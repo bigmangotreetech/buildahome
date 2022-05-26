@@ -2,6 +2,14 @@
 $(document).ready(function () {
 
 
+    if($('.contractor-profile-picture').length) {
+        $('.contractor-profile-picture').each(function(index, element){
+            const src = $(element).attr('data-src')
+            $(element).attr('src', src)
+        })
+    }
+
+
     if($('.edit-procurement-material').length) {
         $('#material').val($('.edit-procurement-material').text())
         $('#material').trigger('change')

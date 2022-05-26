@@ -36,15 +36,16 @@ from io import BytesIO
 # All Bills Project co ordinator
 
 # Debit note = fields
-
-# Edit inventory
-
 #     Site 
 #     Contractor 
 #     Trade 
-#     Stage
+#     Stage 
 
 #     Generate as direct approved Bills
+
+# Line break check on work order
+
+# contractor sign link
 
 
 
