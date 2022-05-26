@@ -2051,7 +2051,7 @@ def clear_nt_nmr_balance():
 
 
         bills_query = 'INSERT into wo_bills (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, total_payable, approval_2_amount) values (%s,%s, %s,%s,%s,%s,%s,%s)'
-        cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, amount, amount))
+        cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, difference, difference))
         mysql.connection.commit()
 
         flash('Cleared balance','success')
