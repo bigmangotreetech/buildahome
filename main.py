@@ -2042,7 +2042,7 @@ def clear_nt_nmr_balance():
         amount = int(res[0]) * int(res[1])
         payable  = int(res[2])
         difference = amount - payable
-        description = res[3]+' (Clear balance)'
+        stage = res[3]+' (Clear balance)'
         project_id = res[4]
         contractor_name = res[5]
         contractor_code = res[6]
