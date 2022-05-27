@@ -223,6 +223,8 @@ async function saveSign() {
     entered_code = $('#entered_code').val()
     if (entered_code.trim() != $('.verification_code').text().trim()) {
       alert('Invalid verification code')
+      $('.create-wo-btn').attr('disabled','false')
+      $('.create-wo-btn').text('Submit')
       return false;
     }
   }
