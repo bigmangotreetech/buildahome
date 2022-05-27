@@ -33,17 +33,7 @@ import random
 
 # All Bills Project co ordinator
 
-# Debit note = fields
-#     Site 
-#     Contractor 
-#     Trade 
-#     Stage 
-
-#     Generate as direct approved Bills
-
 # Line break check on work order
-
-# contractor sign link
 
 # Shifting entry to not have edit button on view inventory
 
