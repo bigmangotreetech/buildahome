@@ -658,16 +658,20 @@ def debit_note():
         project = request.form['project']
         contractor = request.form['contractor']
         trade = request.form['trade']
-        stage = request.form['stage']
+        stage = request.form['stage'] + '(Debit note)'
         value = request.form['value']
+
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d %m %Y at %H %M')
 
         cur = mysql.connection.cursor()
         contractor_query = 'SELECT name, code, pan from contractors WHERE id='+str(contractor)
         cur.execute(contractor_query)
         res = cur.fetchone()
         
-        bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount) values (%s,%s,%s,%s,%s,%s,%s)'
-        values = (project, res[0], res[1], res[2], trade, stage, '-'+str(value).strip())
+        bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on) values (%s,%s,%s,%s,%s,%s,%s,%s)'
+        values = (project, res[0], res[1], res[2], trade, stage, '-'+str(value).strip(), timestamp)
         cur.execute(bill_query, values)
         mysql.connection.commit()
         flash('Debit note created successfully', 'success')
