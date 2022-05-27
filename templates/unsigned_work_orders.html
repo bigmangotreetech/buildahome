@@ -14,9 +14,11 @@
             <th scope="col">Trade</th>
             <th scope="col">Value</th>
             <th scope="col">Contractor</th>
+            <th scope="col">Verification code</th>
             <th scope="col"></th>
             {% if session['role'] == 'Super Admin' %}
-            <th scope="col"></th>
+            <th scope="col"
+            ></th>
             {% endif %} 
         </tr>
         </thead>
@@ -28,6 +30,7 @@
             <td>{{wo['trade']}}</td>
             <td>{{wo['value']}}</td>
             <td>{{wo['contractor_name']}}</td>
+            <td>{{wo['verification_code']}}</td>
             <td>
                 <a href="/erp/sign_wo?wo_id={{wo['id']}}">Sign</a>
             </td>

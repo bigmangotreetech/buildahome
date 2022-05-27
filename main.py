@@ -1595,9 +1595,10 @@ def create_work_order():
             flash("Work order already exists. Operation failed", 'danger')
             return redirect('/erp/create_work_order')
         else:
-            insert_query = 'INSERT into work_orders (project_id, value, trade, wo_number, cheque_no, contractor_id, comments, created_at, total_bua, cost_per_sqft) ' \
-                           'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            values = (project_id, wo_value, trade, wo_number, cheque_no, contractor_id, comments, timestamp, total_bua, cost_per_sqft)
+            verification_code = str(random.randint(1000,9999))
+            insert_query = 'INSERT into work_orders (project_id, value, trade, wo_number, cheque_no, contractor_id, comments, created_at, total_bua, cost_per_sqft, verification_code) ' \
+                           'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            values = (project_id, wo_value, trade, wo_number, cheque_no, contractor_id, comments, timestamp, total_bua, cost_per_sqft, verification_code)
             cur.execute(insert_query, values)
 
             work_order_id = cur.lastrowid
@@ -2188,7 +2189,7 @@ def view_unsigned_work_order():
     if request.method == 'GET':
         work_orders = []
 
-        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name FROM work_orders wo ' \
+        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name, wo.verification_code FROM work_orders wo ' \
                          'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 INNER JOIN contractors c on c.id=wo.contractor_id'
         cur = mysql.connection.cursor()
         cur.execute(unsigned_query)
@@ -2201,6 +2202,7 @@ def view_unsigned_work_order():
                 'trade': i[3],
                 'value': i[4],
                 'contractor_name': i[5],
+                'verification_code': i[6],
 
             })
 
@@ -2837,7 +2839,7 @@ def sign_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
-                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at , wo.total_bua, wo.cost_per_sqft' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at , wo.total_bua, wo.cost_per_sqft, wo.verification_code' \
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' INNER JOIN contractors c on c.id=wo.contractor_id'

@@ -219,6 +219,13 @@ async function getAndPutAnnexure() {
 async function saveSign() {
   $('.create-wo-btn').attr('disabled','true')
   $('.create-wo-btn').text('Submitting..')
+  if($('.verification_code').text().length) {
+    entered_code = $('#entered_code').val()
+    if (entered_code.trim() != $('.verification_code').text().trim()) {
+      alert('Invalid verification code')
+      return false;
+    }
+  }
   getAndPutAnnexure()
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
