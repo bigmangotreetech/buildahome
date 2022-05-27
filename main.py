@@ -666,7 +666,7 @@ def debit_note():
         cur.execute(contractor_query)
         res = cur.fetchone()
         
-        bill_query = 'INSERT into wo_bills (project, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount) values (%s,%s,%s,%s,%s,%s,%s)'
+        bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount) values (%s,%s,%s,%s,%s,%s,%s)'
         values = (project, res[0], res[1], res[2], trade, stage, '-'+str(value).strip())
         cur.execute(bill_query, values)
         mysql.connection.commit()
