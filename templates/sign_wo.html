@@ -135,6 +135,7 @@
                     {{wo[13]}}
                 </div>
             </div>
+            
 
             <div class="d-none verification_code">
                 {{wo[14]}}
@@ -143,6 +144,11 @@
             <input type="hidden" id="wo_id" value="{{wo_id}}">
 
             <div class="d-flex flex-column h-100 justify-content-start mx-3">
+                <div class="mb-2">
+                    <label>Verification code</label>
+                    <input type="text" class="form-control w-25" id="entered_code">
+                </div>
+
                 <div class="my-2 h5">Sign here</div>
                 <div id="iframe">
                     <canvas id="canvas" width="300px" height="250px" class="bg-white"></canvas>
