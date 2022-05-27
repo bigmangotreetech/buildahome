@@ -2071,7 +2071,10 @@ def project_contractor_info():
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on' \
                         ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s WHERE w.work_order_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id, str(data['work_order_id'])))
-    bills = list(cur.fetchall())
+    bills = []
+    res = cur.fetchall()
+    for i in res:
+        bills.append(i)
 
     get_debit_note_bills = 'SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id=%s AND contractor_code=%s'
     cur.execute(get_debit_note_bills, (project_id, contractor_code))
