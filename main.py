@@ -1133,7 +1133,7 @@ def view_contractors():
         return redirect('/erp/login')
 
     cur = mysql.connection.cursor()
-    contractors_query = 'SELECT id, name, code, pan, phone_number, address, trade, aadhar FROM contractors LIMIT 30'
+    contractors_query = 'SELECT id, name, code, pan, phone_number, address, trade, aadhar FROM contractors'
     cur.execute(contractors_query)
     result = cur.fetchall()
     return render_template('view_contractors.html', contractors=result)
