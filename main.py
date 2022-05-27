@@ -654,6 +654,24 @@ def debit_note():
         contractors = cur.fetchall()
 
         return render_template('debit_note.html', contractors=contractors, projects=projects)
+    else:
+        project = request.form['project']
+        contractor = request.form['contractor']
+        trade = request.form['trade']
+        stage = request.form['stage']
+        value = request.form['value']
+
+        cur = mysql.connection.cursor()
+        contractor_query = 'SELECT name, code, pan WHERE id='+str(contractor)
+        cur.execute(contractor_query)
+        res = cur.fetchone()
+        
+        bill_query = 'INSERT into wo_bills (project, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount) values (%s,%s,%s,%s,%s,%s,%s)'
+        values = (project, res[0], res[1], res[2], trade, stage, '-'+str(value).strip())
+        cur.execute(bill_query, values)
+        mysql.connection.commit()
+        flash('Debit note created successfully', 'success')
+        return redirect(request.referrer)
 
 @app.route('/edit_procurement', methods=['GET','POST'])
 def edit_procurement():
