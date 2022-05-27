@@ -673,9 +673,9 @@ def debit_note():
         get_wo_query = 'SELECT id from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
         cur.execute(get_wo_query, (trade, project, contractor))
         wo_res = cur.fetchone()
-        work_order_id = 0
-        if wo_res is not None:
-            work_order_id = wo_res[0]
+        if wo_res is None:
+            flash('Work order not created for this trade','danger')
+            return redirect(request.referrer)    
 
         
         bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on) values (%s,%s,%s,%s,%s,%s,%s,%s)'
@@ -1133,7 +1133,7 @@ def view_contractors():
         return redirect('/erp/login')
 
     cur = mysql.connection.cursor()
-    contractors_query = 'SELECT id, name, code, pan, phone_number, address, trade, aadhar FROM contractors'
+    contractors_query = 'SELECT id, name, code, pan, phone_number, address, trade, aadhar FROM contractors LIMIT 30'
     cur.execute(contractors_query)
     result = cur.fetchall()
     return render_template('view_contractors.html', contractors=result)
