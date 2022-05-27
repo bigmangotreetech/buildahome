@@ -123,6 +123,8 @@
 
     <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path or "/project_contractor_info" in request.path %} active {% endif %}'>View
         work order</a>
+
+    <a href="/erp/debit_note" class='nav-link {% if "/debit_note" in request.path or "/debit_note" in request.path %} active {% endif %}'>Debit note</a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}

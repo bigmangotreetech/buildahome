@@ -607,7 +607,7 @@ $(document).ready(function () {
     function showStandardMilestones() {
         selected_trade = $("#trade").val()
 
-        if (selected_trade) {
+        if (selected_trade && $('.debit-note').length == 0) {
             if (['civil','electrical','painting','plumbing'].includes(selected_trade.toLowerCase())) {
                 $('.bua-section').removeClass('d-none');
                 $('.cost-per-sqft-section').removeClass('d-none');
@@ -617,6 +617,8 @@ $(document).ready(function () {
                 $('.cost-per-sqft-section').addClass('d-none');
                 $('#wo_value').removeAttr('readonly')
             }
+        } else {
+            $("#stage").empty()
         }
         project_id = $(".work_order_project_select").val()
         if (selected_trade && selected_trade.trim() === '' || project_id.trim() === '') return false;
@@ -637,6 +639,11 @@ $(document).ready(function () {
                     $('.add-milestone-stage-btn').removeClass('d-none')
                     const milestones_and_percentages = data['milestones_and_percentages']
                     for (stage of Object.keys(milestones_and_percentages)) {
+                        if($('.debit-note').length) {
+                            $("#stage").append($("<option></option>")
+                            .attr("value", stage)
+                            .text(stage))
+                        }
                         milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
                         milestones_and_percentages_item.removeClass('template')
                         milestones_and_percentages_item.find('.milestone-field').val(stage)

@@ -29,8 +29,6 @@ from io import BytesIO
 
 # Indent audit trail
 
-# Delete indennt
-
 # Project co ordinator wise order indents
 
 # All Bills Project co ordinator
@@ -46,6 +44,10 @@ from io import BytesIO
 # Line break check on work order
 
 # contractor sign link
+
+# Shifting entry to not have edit button on view inventory
+
+# Do not include transportation and laoading unloading in total amount 
 
 
 
@@ -636,6 +638,21 @@ def view_inventory():
             material_total_quantity = result[0]
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project,
                            material=material, material_total_quantity=material_total_quantity)
+
+@app.route('/debit_note', methods=['GET','POST'])
+def debit_note():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/edit_procurement'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        projects = get_projects()
+
+        contractors_query = 'SELECT id, name, trade FROM contractors'
+        cur.execute(contractors_query)
+        contractors = cur.fetchall()
+
+        return render_template('debit_note.html', contractors=contractors, projects=projects)
 
 @app.route('/edit_procurement', methods=['GET','POST'])
 def edit_procurement():
