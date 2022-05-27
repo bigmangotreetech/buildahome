@@ -662,7 +662,7 @@ def debit_note():
         value = request.form['value']
 
         cur = mysql.connection.cursor()
-        contractor_query = 'SELECT name, code, pan WHERE id='+str(contractor)
+        contractor_query = 'SELECT name, code, pan from contractors WHERE id='+str(contractor)
         cur.execute(contractor_query)
         res = cur.fetchone()
         
