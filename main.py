@@ -648,6 +648,7 @@ def debit_note():
     if request.method == 'GET':
         projects = get_projects()
 
+        cur = mysql.connection.cursor()
         contractors_query = 'SELECT id, name, trade FROM contractors'
         cur.execute(contractors_query)
         contractors = cur.fetchall()
