@@ -22,7 +22,7 @@ from constants.constants import project_fields, roles
 
 from PIL import Image
 from io import BytesIO
-
+import random
 
 
 # Debit note
