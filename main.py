@@ -2080,7 +2080,7 @@ def project_contractor_info():
     cur.execute(get_debit_note_bills, (project_id, contractor_code))
     res = cur.fetchall()
     for i in res:
-        bills.append((res[0],'','',res[1],res[2], res[3]))
+        bills.append((i[0],'','',i[1],i[2], i[3]))
 
     get_project_query = 'SELECT project_name, project_number from projects WHERE project_id=' + str(project_id)
     cur.execute(get_project_query)
