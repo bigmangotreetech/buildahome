@@ -6,7 +6,7 @@ function calcAmount() {
     const transportation = $('#transportation').val()
     const amount = parseFloat(rate) * parseFloat(quantity) 
     const total = ((gst / 100 ) * amount) + amount;
-    const total_with_other_expenses = amount + parseFloat(loading_unloading) + parseFloat(transportation)
+    const total_with_other_expenses = total + parseFloat(loading_unloading) + parseFloat(transportation)
     $("#total_amount").val(total_with_other_expenses)
 }
 
