@@ -203,7 +203,7 @@ async function getAndPutAnnexure() {
         x = 500;
         context.fillText(stage[1].toString()+'%', x, y);
         x = 600
-        const amount = (parseInt(stage[1]) / 100) * wo_value
+        const amount = (parseFloat(stage[1]) / 100) * wo_value
         context.fillText('₹ '+amount.toString(), x, y);
         y += 20;
         x = 20;
