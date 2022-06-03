@@ -1812,6 +1812,7 @@ def view_bills():
                       ' ORDER BY projects.project_id'
         data = get_bills_as_json(bills_query)
 
+        
         access_level = session['access_level']
         return render_template('view_bills.html', data=data, access_level=access_level)
 
@@ -2233,7 +2234,7 @@ def view_unapproved_work_order():
 @app.route('/update_slab_area', methods=['POST'])
 def update_slab_area():
     project_id = request.form['project_id']
-    query = 'SELECT gf_slab_area, ff_slab_area, sf_slab_area, tf_slab_area, tef_slab_area from projects WHERE project_id=' + str(project_id)
+    query = 'SELECT basement_slab_area, gf_slab_area, ff_slab_area, sf_slab_area, tf_slab_area, tef_slab_area from projects WHERE project_id=' + str(project_id)
     cur = mysql.connection.cursor()
     cur.execute(query)
     result = cur.fetchone()
