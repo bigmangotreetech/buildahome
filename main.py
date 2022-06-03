@@ -2068,6 +2068,7 @@ def project_contractor_info():
         bills.append(i)
 
     get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id ="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code ="+str(contractor_code)+" AND trade != 'NT/NMR'"
+    return get_debit_note_bills
     cur.execute(get_debit_note_bills)
     res = cur.fetchall()
     for i in res:
