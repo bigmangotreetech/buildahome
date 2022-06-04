@@ -1892,7 +1892,10 @@ def export_bills():
             ws.write(row, column, i['stage'], read_only)
             cwidth = ws.col(column).width
             if (len(i['stage']) * 367) > cwidth:
-                ws.col(column).width = (len(i['stage']) * 367)
+                if len(i['stage']) * 367 > 65536:
+                    ws.col(column).width = 65535
+                else: 
+                    ws.col(column).width = (len(i['stage']) * 367)
             column = column + 1
 
             ws.write(row, column, float(i['approval_2_amount']))
