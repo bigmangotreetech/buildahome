@@ -27,7 +27,7 @@
             <td class="border border-white"></td>
         </tr>
         <tr class="h5 mt-4 mb-2 border border-white bg-white">
-            <td>{{data[project]['project_name']}}</td>
+            <td>{{data[project]['project_name']}}. Co-ordinator : {{data[project]['coordinator']}}</td>
         </tr>
         {% for i in data[project]['bills'] %}
         <tr class="bill-{{i['bill_id']}}">
