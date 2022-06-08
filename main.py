@@ -1844,7 +1844,7 @@ def view_bills():
                     'approval_2_status': i[11],
                     'approval_2_amount': i[12],
                     'approval_2_notes': i[13],
-                    'id': i[14],
+                    'bill_id': i[14],
                     'created_at': i[15]
                 
                 })
