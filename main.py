@@ -1819,8 +1819,9 @@ def view_bills():
                         ' FROM wo_bills WHERE project_id='+ str(i[0]) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL)'
             cur.execute(bills_query)
             res = cur.fetchall()
+            bills = []
             for i in res:
-                data[i[0]]['bills'].append({
+                bills.append({
                     'trade': i[0],
                     'stage': i[1],
                     'payment_percentage': i[2],
@@ -1839,6 +1840,7 @@ def view_bills():
                     'created_at': i[15]
                 
                 })
+            data[i[0]]['bills'] = bills
                 
         access_level = session['access_level']
         return render_template('view_bills.html', data=data, access_level=access_level)
