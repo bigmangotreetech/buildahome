@@ -26,7 +26,9 @@
             <td>{{wo['value']}}</td>
             <td>{{wo['contractor_name']}}</td>
             <td>
+                {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
                 <a href="/erp/approve_wo?wo_id={{wo['id']}}">Approve</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

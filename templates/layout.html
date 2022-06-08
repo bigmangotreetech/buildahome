@@ -115,7 +115,7 @@
     <a href="/erp/view_unsigned_work_order"
        class='nav-link {% if "/view_unsigned_work_order" in request.path %} active {% endif %}'>Unsigned work order</a>
 
-    {% if session['role'] in ['Super Admin','COO'] %}
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
     <a href="/erp/view_unapproved_work_order"
        class='nav-link {% if "/view_unapproved_work_order" in request.path %} active {% endif %}'>Unapproved work
         order</a>
@@ -132,7 +132,7 @@
     <a href="/erp/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>Create
         bill</a>
 
-    {% if session['role'] in ['Super Admin','COO','QS Head'] %}
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
     <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>Unapproved
         bills</a>
     {% endif %}
