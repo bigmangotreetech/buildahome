@@ -6,6 +6,96 @@
     </div>
 </div>
 <div class="p-5 w-100 table-responsive">
+    
+    {% for coordinator_id in data %}
+       
+        <div class="p-2 mt-4 mb-2 border border-white bg-light w-100" data-toggle="collapse" data-target="#{{coordinator_id}}">
+            {{data[coordinator_id]['coordinator_name']}}</div>
+        </div>
+        <div class="w-100" id="{{coordinator_id}}">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Created on</th>
+                    <th scope="col">Contractor Name</th>
+                    <th scope="col">Contractor PAN</th>
+                    <th scope="col">Contractor Code</th>
+                    <th scope="col">Trade</th>
+                    <th scope="col">Payment Stage</th>
+                    <th scope="col">Total Payable</th>
+                    <th scope="col">Approval 1</th>
+                    <th scope="col">Approval 2</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                {% for project in data[coordinator_id]['projects'] %}
+                <tr class="bg-white">
+                    <td class="border border-white"></td>
+                </tr>
+                <tr class="h5 mt-4 mb-2 border border-white bg-white">
+                    <td>{{project['project_name']}}</td>
+                </tr>
+                {% for i in data[project]['bills'] %}
+                <tr class="bill-{{i['bill_id']}}">
+                    <td class="created_at border-right">{{i['created_at']}}</td>
+                    <td class="contractor_name border-right">{{i['contractor_name']}}</td>
+                    <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
+                    <td class="contractor_code border-right">{{i['contractor_code']}}</td>
+                    <td class="trade border-right">{{i['trade']}}</td>
+                    <td class="stage border-right">{{i['stage']}}</td>
+                    <td class="total_payable border-right">{{i['total_payable']|int}}</td>
+                    <td class="approval_1 d-flex border-right">
+                        {% if i['approval_1_amount'] == '' and session['role'] in ['Super Admin','COO','QS Head'] %}
+                        <button class="approval_1_btn btn py-0 bg-white" data-project-id="{{project}}"
+                                data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
+                                data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
+                        {% else %}
+                        {{i['approval_1_amount']|int}}
+                        {% endif %}
+                        {% if i['approval_1_notes'] != '' %}
+                        <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary" data-toggle="popover"
+                                data-trigger="focus" data-placement="top" title="Notes"
+                                data-content="{{i['approval_1_notes']}}"><i class="fa fa-info-circle"></i></button>
+                        {% endif %}
+
+                    </td>
+                    <td class="approval_2 ">
+                        <div class="d-flex w-100">
+                            {% if i['approval_2_amount'] == '' and session['role'] in ['Super Admin'] %}
+                            <button class="approval_2_btn btn py-0 bg-white" data-project-id="{{project}}"
+                                    data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
+                                    data-toggle="modal" data-target="#approvalModal"><i class="fa fa-pencil"></i></button>
+                            {% if i['approval_1_amount'] != '' %}
+                            <button class="copy_from_approval_1_btn btn btn-dark bg-indigo text-white ml-2 py-0"
+                                    data-project-id="{{project}}"
+                                    data-project-name="{{data[project]['project_name']}}" data-bill-id="{{i['bill_id']}}"
+                                    data-toggle="popover-hover" data-trigger="hover" data-placement="top"
+                                    data-content="Approve proposed amount in approval 1"><i class="fa fa-thumbs-up"></i></button>
+                            {% endif %}
+                            {% else %}
+                            {{i['approval_2_amount']|int}}
+                            {% endif %}
+                            {% if i['approval_2_notes'] != '' %}
+                            <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary"
+                                    data-toggle="popover" data-trigger="focus" data-placement="top" title="Notes"
+                                    data-content="{{i['approval_2_notes']}}"><i class="fa fa-info-circle"></i></button>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <a class="text-danger" href="/erp/delete_bill?bill_id={{i['bill_id']}}" onclick="return confirm('Are you sure you want to delete this bill')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+
+
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -22,12 +112,12 @@
         </tr>
         </thead>
         <tbody>
-        {% for project in data %}
+        {% for coordinator_id in data %}
         <tr class="bg-white">
             <td class="border border-white"></td>
         </tr>
-        <tr class="h5 mt-4 mb-2 border border-white bg-white">
-            <td>{{data[project]['project_name']}}. Co-ordinator : {{data[project]['coordinator']}}</td>
+        <tr class="h5 mt-4 mb-2 border border-white bg-white" data-toggle="collapse" data-target="#{{coordinator_id}}">
+            <td>{{data[coordinator_id]['coordinator_name']}}</td>
         </tr>
         {% for i in data[project]['bills'] %}
         <tr class="bill-{{i['bill_id']}}">
