@@ -93,6 +93,15 @@ $(document).ready(function () {
                 total_paid += parseInt($(element).text())
             }
         })
+        total_billed = 0;
+        $('.billed_amount').each(function(index, element) {
+            if ($(element).text().toString().length) {
+                console.log($(element).text())
+                total_billed += parseInt($(element).text())
+            }
+        })
+        $('.balance').text(total_paid - total_billed)
+        $('.total_billed').text(total_billed)
         $('.total_paid').text(total_paid)
     }
 

@@ -21,11 +21,15 @@
     <div class="mb-3">
         <b>WO value</b>: {{data['value']}}
     </div>
-    <div class="mb-3">
-        <b>Balance</b>: <span class="balance">{{data['balance']|int}}</span>
-    </div>
+    
     <div class="mb-3">
         <b>Total paid</b>: <span class="total_paid"></span>
+    </div>
+    <div class="mb-3">
+        <b>Total billed</b>: <span class="total_billed"></span>
+    </div>
+    <div class="mb-3">
+        <b>Balance</b>: <span class="balance"></span>
     </div>
     {% if data['balance']|string|int > 0 %}
     <div class="mb-3">
@@ -53,7 +57,7 @@
 
             <td>{{i[0]}}</td>
             <td>{{i[1]}}</td>
-            <td>{{i[2]|int}}</td>
+            <td class="billed_amount">{{i[2]|int}}</td>
             <td class="approved_amount">{{i[3]|int}}</td>
             <td>
                 {% if i[4] != 'None' %}
