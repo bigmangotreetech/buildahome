@@ -1811,12 +1811,12 @@ def view_bills():
 
         data = {}
 
-        for i in coordinators_res:
-            data[i[0]] = {'project_name': i[3], 'coordinator': i[2], 'bills': []}
+        for p in coordinators_res:
+            data[i[0]] = {'project_name': p[3], 'coordinator': p[2]}
             bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
                         'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
                         'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
-                        ' FROM wo_bills WHERE project_id='+ str(i[0]) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL)'
+                        ' FROM wo_bills WHERE project_id='+ str(p[0]) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL)'
             cur.execute(bills_query)
             res = cur.fetchall()
             bills = []
