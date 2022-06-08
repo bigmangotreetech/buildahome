@@ -100,7 +100,7 @@ $(document).ready(function () {
                 total_billed += parseInt($(element).text())
             }
         })
-        $('.balance').text(total_paid - total_billed)
+        $('.balance').text(total_billed -  total_paid)
         $('.total_billed').text(total_billed)
         $('.total_paid').text(total_paid)
     }
