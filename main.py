@@ -1816,7 +1816,7 @@ def view_bills():
             bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
                         'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
                         'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
-                        ' FROM wo_bills WHERE wo_bills.project_id='+ str(i[0]) +' wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL'
+                        ' FROM wo_bills WHERE project_id='+ str(i[0]) +' approval_2_amount = 0 OR approval_2_amount IS NULL'
             cur.execute(bills_query)
             res = cur.fetchall()
             for i in res:
