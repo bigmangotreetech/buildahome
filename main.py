@@ -1804,15 +1804,42 @@ def view_bills():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
-                      'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
-                      'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
-                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
-                      ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND ( wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) ' \
-                      ' ORDER BY projects.project_id'
-        data = get_bills_as_json(bills_query)
+        coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
+        cur = mysql.connection.cursor()
+        cur.execute(coordinators)
+        coordinators_res = cur.fetchall()
 
-        
+        data = {}
+
+        for i in coordinators_res:
+            data[i[0]] = {'project_name': i[3], 'coordinator': i[2], 'bills': []}
+            bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
+                        'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
+                        'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
+                        ' FROM wo_bills WHERE wo_bills.project_id='+ str(i[0]) +' wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL'
+            cur.execute(bills_query)
+            res = cur.fetchall()
+            for i in res:
+                data[i[0]]['bills'].append({
+                    'trade': i[0],
+                    'stage': i[1],
+                    'payment_percentage': i[2],
+                    'amount': i[3],
+                    'total_payable': i[4],
+                    'contractor_name': i[5],
+                    'contractor_code': i[6],
+                    'contractor_pan': i[7],
+                    'approval_1_status': i[8],
+                    'approval_1_amount': i[9],
+                    'approval_1_notes': i[10],
+                    'approval_2_status': i[11],
+                    'approval_2_amount': i[12],
+                    'approval_2_notes': i[13],
+                    'id': i[14],
+                    'created_at': i[15]
+                
+                })
+                
         access_level = session['access_level']
         return render_template('view_bills.html', data=data, access_level=access_level)
 
