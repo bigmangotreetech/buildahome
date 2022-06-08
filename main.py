@@ -669,7 +669,7 @@ def debit_note():
 
         
         bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on) values (%s,%s,%s,%s,%s,%s,%s,%s)'
-        values = (project, res[0], res[1], res[2], trade, stage, '-'+str(value).strip(), timestamp)
+        values = (project, res[0], res[1], res[2], trade, stage, str(value).strip(), timestamp)
         cur.execute(bill_query, values)
         mysql.connection.commit()
         flash('Debit note created successfully', 'success')
