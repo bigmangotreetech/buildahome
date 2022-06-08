@@ -1800,7 +1800,7 @@ def view_bills():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_bills'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
