@@ -1812,7 +1812,7 @@ def view_bills():
         data = {}
 
         for p in coordinators_res:
-            data[i[0]] = {'project_name': p[3], 'coordinator': p[2]}
+            data[p[0]] = {'project_name': p[3], 'coordinator': p[2]}
             bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
                         'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
                         'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
@@ -1840,7 +1840,7 @@ def view_bills():
                     'created_at': i[15]
                 
                 })
-            data[i[0]]['bills'] = bills
+            data[p[0]]['bills'] = bills
                 
         access_level = session['access_level']
         return render_template('view_bills.html', data=data, access_level=access_level)
