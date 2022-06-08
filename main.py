@@ -1806,7 +1806,7 @@ def view_bills():
     if request.method == 'GET':
         coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
         cur = mysql.connection.cursor()
-        cur.execute(coordinators)
+        cur.execute(coordinators_query)
         coordinators_res = cur.fetchall()
 
         data = {}
