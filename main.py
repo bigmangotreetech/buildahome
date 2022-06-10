@@ -2108,11 +2108,11 @@ def project_contractor_info():
     for i in res:
         bills.append(i)
 
-    get_clearing_bills = "SELECT stage, approval_2_amount, trade, approved_on, total_payable from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Clearing balance%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
+    get_clearing_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Clearing balance%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
     cur.execute(get_clearing_bills)
     res = cur.fetchall()
     for i in res:
-        bills.append((i[0],'',i[4],i[1],i[2], i[3]))
+        bills.append((i[0],'','',i[1],i[2], i[3]))
 
     get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
     cur.execute(get_debit_note_bills)
@@ -2273,7 +2273,7 @@ def view_unapproved_work_order():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_unapproved_work_order'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
