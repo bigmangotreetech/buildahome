@@ -2150,6 +2150,27 @@ def clear_nt_nmr_balance():
         flash('Cleared balance','success')
         return redirect(request.referrer)
 
+@app.route('/check_if_clear_balance_bill_due', methods=['POST'])
+def check_if_clear_balance_bill_due():
+    balance_amnt = request.form['balance_amnt']
+    contractor_name = request.form['contractor_name']
+    contractor_code = request.form['contractor_code']
+    contractor_pan = request.form['contractor_pan']
+    project_id = request.form['project_id']
+    trade = request.form['trade']
+    work_order_id = request.form['work_order_id']
+    stage = 'Clearing balance'
+
+    cur = mysql.connection.cursor()
+    get_bill = 'SELECT id from wo_bills WHERE project_id=%s AND trade=%s AND contractor_code=%s AND stage="Clearing balance" AND total_payable=%s'
+    cur.execute(get_bill, (project_id, trade, contractor_code, balance_amnt)
+    res = cur.fetchone()
+    if res is not None:
+        return 'Bill for clearing balance exists'
+    else: 
+        return 'Bill for clearing balance does not exists'
+
+
 @app.route('/clear_wo_balance', methods=['POST'])
 def clear_wo_balance():
     balance_amnt = request.form['balance_amnt']
