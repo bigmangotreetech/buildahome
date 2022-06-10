@@ -2166,9 +2166,9 @@ def check_if_clear_balance_bill_due():
     cur.execute(get_bill, (project_id, trade, contractor_code, balance_amnt))
     res = cur.fetchone()
     if res is not None:
-        return 'Bill for clearing balance exists'
+        return jsonify({'message': 'Bill for clearing balance exists'})
     else: 
-        return 'Bill for clearing balance does not exists'
+        return jsonify({'message': 'Bill for clearing balance does not exists'})
 
 
 @app.route('/clear_wo_balance', methods=['POST'])
