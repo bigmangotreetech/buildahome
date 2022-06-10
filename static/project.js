@@ -103,6 +103,10 @@ $(document).ready(function () {
         $('.balance').text(total_billed -  total_paid)
         $('.total_billed').text(total_billed)
         $('.total_paid').text(total_paid)
+
+        if(total_billed - total_paid > 0) {
+            $('.clear-balance-btn').removeClass('d-none')
+        }
     }
 
     window.onload = function(){

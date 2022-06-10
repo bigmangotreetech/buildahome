@@ -31,11 +31,9 @@
     <div class="mb-3">
         <b>Balance</b>: <span class="balance"></span>
     </div>
-    {% if data['balance']|string|int > 0 %}
     <div class="mb-3">
-        <button class="btn clear-balance-btn">Clear balance</button>
+        <button class="btn clear-balance-btn d-none">Clear balance</button>
     </div>
-    {% endif %}
 
 </div>
 <div class="p-5 w-100 table-responsive">
