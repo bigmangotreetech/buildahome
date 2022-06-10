@@ -105,6 +105,7 @@ $(document).ready(function () {
         $('.total_paid').text(total_paid)
 
         if(total_billed - total_paid > 0) {
+            balance_amnt = total_billed - total_paid;
             contractor_name = $('.contractor_name').text()
             contractor_code = $('.contractor_code').text()
             contractor_pan = $('.contractor_pan').text()
