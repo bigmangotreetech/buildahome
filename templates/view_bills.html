@@ -35,9 +35,11 @@
                 <tr class="bg-white">
                     <td class="border border-white"></td>
                 </tr>
+                {% if data[coordinator_id]['projects'][project]['bills']|length %}
                 <tr class="h5 mt-4 mb-2 border border-white bg-white">
                     <td>{{data[coordinator_id]['projects'][project]['project_name']}}</td>
                 </tr>
+                {% endif %}
                 {% for i in data[coordinator_id]['projects'][project]['bills'] %}
                 <tr class="bill-{{i['bill_id']}}">
                     <td class="created_at border-right">{{i['created_at']}}</td>
