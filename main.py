@@ -2163,7 +2163,7 @@ def check_if_clear_balance_bill_due():
 
     cur = mysql.connection.cursor()
     get_bill = 'SELECT id from wo_bills WHERE project_id=%s AND trade=%s AND contractor_code=%s AND stage="Clearing balance" AND total_payable=%s'
-    cur.execute(get_bill, (project_id, trade, contractor_code, balance_amnt)
+    cur.execute(get_bill, (project_id, trade, contractor_code, balance_amnt))
     res = cur.fetchone()
     if res is not None:
         return 'Bill for clearing balance exists'
