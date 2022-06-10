@@ -127,13 +127,11 @@ $(document).ready(function () {
 
                 },
                 success: function (data) {
-                    console.log(data)
+                    if(data['message'] === 'Bill for clearing balance does not exists') $('.clear-balance-btn').removeClass('d-none')
+                    else $('.clear-balance-bill-raised').removeClass('d-none')
                 },
-                error: function (data) {
-                    console.log(data)
-                }
             });
-            $('.clear-balance-btn').removeClass('d-none')
+            
         }
     }
 
