@@ -4210,7 +4210,27 @@ def create_indent():
 
         cur.execute(query, values)
         mysql.connection.commit()
-        return jsonify({'message': 'success'})
+        return jsonify({'message': 'success','indent_id': cur.lastrowid})
+
+@app.route('/API/indent_file_uplpoad', methods=['GET','POST'])
+def indent_file_uplpoad():
+    if request.method == 'POST':
+        indent_id = request.form['indent_id']
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file', 'danger ')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filetype = file.filename.split('.')[-1]
+            output = send_to_s3(file, app.config["S3_BUCKET"], 'indent_attachment_'+str(indent_id)+'.'+filetype)
+            if output != 'success':
+                return jsonify({'message':'failed'})
+
+            cur = mysql.connection.cursor()
+            query = 'UPDATE indents SET attachment="indent_attachment_'+str(indent_id)+'.'+filetype+'" WHERE id='+str(indent_id)
+            cur.execute(query)
+            mysql.connection.commit()
+            return jsonify({'message':'success'})
 
 @app.route('/API/create_drawing_request', methods=['POST'])
 def create_drawing_request():
