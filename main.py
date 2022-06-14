@@ -18,7 +18,7 @@ import time
 from werkzeug.utils import secure_filename
 
 from models.projects import projects
-from constants.constants import project_fields, roles
+from constants.constants import project_fields, roles, materials
 
 from PIL import Image
 from io import BytesIO
@@ -4017,6 +4017,11 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/get_materials', methods=['GET'])
+def get_materials():
+    if request.method == 'GET':
+        return jsonify({'materials': materials})
+
 @app.route('/API/nt_nmr', methods=['GET'])
 def api_nt_nmr():
     if request.method == 'GET':
