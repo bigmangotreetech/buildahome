@@ -25,7 +25,7 @@ roles = [
             'Client'
         ]
 
-    materials = [
+materials = [
         'PCC M 7.5',
         'PCC M 15',
         'M 20',
