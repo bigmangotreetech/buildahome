@@ -3182,7 +3182,7 @@ def approved_projects():
         result = []
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning',
-                                       'Sales Executive', 'Billing']:
+                                       'Sales Executive', 'Billing'] and 'All' not in str(get_projects_for_current_user():
                 approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(approved_projects_query)
@@ -3204,7 +3204,7 @@ def archived_projects():
         cur = mysql.connection.cursor()
         result = []
         if len(get_projects_for_current_user()) > 0:
-            if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing']:
+            if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing'] and 'All' not in str(get_projects_for_current_user():
                 archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=1 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(archived_projects_query)
@@ -3744,7 +3744,7 @@ def view_drawings_requests():
         cur = mysql.connection.cursor()
 
         
-        if session['role'] not in ['Super Admin','COO']:
+        if session['role'] not in ['Super Admin','COO'] or 'All' in str(get_projects_for_current_user():
             get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id, r.project_id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
