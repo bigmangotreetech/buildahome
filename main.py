@@ -1691,7 +1691,7 @@ def get_standard_milestones_and_percentages():
         return jsonify({'message': 'Project not found with id ' + str(project_id)})
     floors = res[0]
     payment_stages_query = 'SELECT stage, payment_percentage from labour_stages WHERE floors="' + str(
-        floors) + '" AND trade="' + trade + '"'
+        floors) + '" AND trade LIKE "%' + trade + '%"'
     cur.execute(payment_stages_query)
     result = cur.fetchall()
     milestones_and_percentages = {}
