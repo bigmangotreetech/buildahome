@@ -3182,7 +3182,7 @@ def approved_projects():
         result = []
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning',
-                                       'Sales Executive', 'Billing'] and 'All' not in str(get_projects_for_current_user():
+                                       'Sales Executive', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
                 approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(approved_projects_query)
@@ -3204,7 +3204,7 @@ def archived_projects():
         cur = mysql.connection.cursor()
         result = []
         if len(get_projects_for_current_user()) > 0:
-            if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing'] and 'All' not in str(get_projects_for_current_user():
+            if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
                 archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=1 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(archived_projects_query)
