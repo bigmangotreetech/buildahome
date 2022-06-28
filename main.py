@@ -3210,7 +3210,7 @@ def archived_projects():
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
             else:
-                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=1 ORDER BY project_number'
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE archived=1 ORDER BY project_number'
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
         return render_template('archived_projects.html', projects=result)
