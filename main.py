@@ -3205,12 +3205,12 @@ def archived_projects():
         result = []
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
-                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE archived=1 ' \
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
             else:
-                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE archived=1 ORDER BY project_number'
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 ORDER BY project_number'
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
         return render_template('archived_projects.html', projects=result)
