@@ -101,5 +101,19 @@ materials = [
         'Binding wire',
         'Hardwares' ,
         'Chamber Covers' ,
-        'Filler slab material'      
+        'Filler slab material',
+        'Electrical',
+        'Water tank',
+        'Plywwod',
+        'Laminates',
+        'Blocks Adhesive',
+        'GI sheets',
+        'Mahogany frames',
+        'WPC Frames',
+        'WPC Doors',
+        'Stone cladding',
+        'Brick cladding',
+        'Plain glass',
+        'Toughned glass',
+        'Polycorbonate sheet'
     ]        

@@ -529,7 +529,7 @@ def enter_material():
     if request.method == 'GET':
         projects = get_projects()
         vendors = get_vendors()
-        return render_template('enter_material.html', projects=projects, vendors=vendors)
+        return render_template('enter_material.html', projects=projects, vendors=vendors, materials=materials)
     else:
         required_fields = ['material', 'description', 'vendor', 'project', 'po_no', 'invoice_no', 'invoice_date',
                            'quantity', 'unit', 'rate', 'gst', 'total_amount', 'difference_cost', 'photo_date','transportation','loading_unloading']
@@ -627,7 +627,7 @@ def view_inventory():
         if result is not None:
             material_total_quantity = result[0]
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project,
-                           material=material, material_total_quantity=material_total_quantity)
+                           material=material, material_total_quantity=material_total_quantity, materials=materials)
 
 @app.route('/debit_note', methods=['GET','POST'])
 def debit_note():
@@ -691,7 +691,7 @@ def edit_procurement():
             cur = mysql.connection.cursor()
             cur.execute(procurement_query)
             result = cur.fetchone()
-            return render_template('edit_procurement.html', data=result)
+            return render_template('edit_procurement.html', data=result, materials=materials)
     else:
         procurement_id = request.form['procurement_id']
         material = request.form['material']
@@ -750,84 +750,9 @@ def shifting_entry():
             session['last_route'] = '/erp/view_inventory'
             return redirect('/erp/login')
         projects = get_projects()
-        material_quantity_data = {
-            'PCC M 7.5': '',
-            'PCC M 15': '',
-            'M 20': '',
-            'M 25': '',
-            'Red Bricks': '',
-            'Exposed Bricks': '',
-            'Wirecut bricks': '',
-            'Earth Blocks': '',
-            'Interlocking Blocks': '',
-            'Solid blocks 4"': '',
-            'Solid blocks 6"': '',
-            'Solid blocks 8"': '',
-            'Porotherm Full blocks 8"': '',
-            'Porotherm Full blocks 6"': '',
-            'Porotherm Full blocks 4"': '',
-            'Porotherm End blocks 8"': '',
-            'Porotherm End blocks 6"': '',
-            'Porotherm End blocks 4"': '',
-            'AAC Blocks 8"': '',
-            'AAC Blocks 6"': '',
-            'AAC Blocks 4"': '',
-            'Glass blocks': '',
-            'Jaali blocks': '',
-            'Door frames': '',
-            'Door Beading': '',
-            'Door Shutters': '',
-            'Windows frames': '',
-            'Windows shutters': '',
-            'UPVC windows': '',
-            'Aluminum windows': '',
-            'Window glass': '',
-            'Hexagonl Rod': '',
-            'Granite': '',
-            'Tiles': '',
-            'Marble': '',
-            'Kota stone': '',
-            'HPL Cladding': '',
-            'Shera Cladding': '',
-            'Floor mat': '',
-            'Plumbing': '',
-            'Sanitary': '',
-            'Aggregates 12mm': '',
-            'Aggregates 20mm': '',
-            'Aggregates 40mm': '',
-            'Cinder': '',
-            'Size stone': '',
-            'Boulders': '',
-            'River sand': '',
-            'POP': '',
-            'white cement': '',
-            'tile adhesive': '',
-            'tile grout': '',
-            'lime paste': '',
-            'Sponge': '',
-            'chicken mesh': '',
-            'Motor': '',
-            'Curing Pipe': '',
-            'Helmet': '',
-            'Jackets': '',
-            'GI sheets': '',
-            'Tarpaulin': '',
-            'Nails': '',
-            'Cement': '',
-            'Steel': '',
-            'M Sand': '',
-            'P Sand': '',
-            'Teak wood frame': '',
-            'Sal wood frame': '',
-            'Honne wood frame': '',
-            'Teak wood door': '',
-            'Sal wood door': '',
-            'Flush door': '',
-            'Binding wire': '',
-            'Hardwares': '' ,
-            'Chamber Covers': '' ,
-            'Filler slab material': ''         
-        }
+        material_quantity_data = {}
+        for i in materials:
+            material_quantity_data[i] = ''        
 
         return render_template('shifting_entry.html', projects=projects, material_quantity_data=material_quantity_data)
     else:
@@ -1207,7 +1132,7 @@ def vendor_registration():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        return render_template('vendor_registration.html')
+        return render_template('vendor_registration.html', materials=materials)
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())
@@ -1298,7 +1223,7 @@ def edit_vendor():
             cur.execute(vendor_query)
             vendor_details = cur.fetchone()
             return render_template('edit_vendor.html', vendor_details=vendor_details[1:],
-                                   vendor_id=request.args['vendor_id'])
+                                   vendor_id=request.args['vendor_id'], materials=materials)
     else:
         cur = mysql.connection.cursor()
         
