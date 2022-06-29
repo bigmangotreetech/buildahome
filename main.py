@@ -613,7 +613,7 @@ def view_inventory():
                 project_id)
         else:
             procurement_query = 'SELECT * from procurement WHERE project_id=' + str(
-                project_id) + ' AND material="' + str(material) + '"'
+                project_id) + ' AND material="' + str(material).replace('"','""') + '"'
         cur.execute(procurement_query)
         procurements = cur.fetchall()
         for i in projects:
