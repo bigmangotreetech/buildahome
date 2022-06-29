@@ -2524,7 +2524,7 @@ def view_deleted_indents():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
-        if current_user_role in ['Super Admin', 'COO', 'QS Engineer','QS Head','QS Info', 'Purchase Head']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="deleted" AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
@@ -4242,6 +4242,15 @@ def create_indent():
         status = 'unapproved'
         cur = mysql.connection.cursor()
 
+        material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+        cur.execute(material_quantity_query)
+        result = cur.fetchone()
+        if result is None:
+            return jsonify({'message': 'failure','reason': 'Total quantity of material exceeded limit specified under KYP material'})
+        if float(result[0]) < (float(quantity)):
+            return jsonify({'message': 'failure','reason': 'Total quantity of material exceeded limit specified under KYP material'})
+
 
         if 'approvalTaken' in request.form and 'differenceCost' in request.form:
             
@@ -4368,6 +4377,16 @@ def edit_and_approve_indent():
     unit = request.form['unit']
     purpose = request.form['purpose']
     cur = mysql.connection.cursor()
+
+    material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+    cur.execute(material_quantity_query)
+    result = cur.fetchone()
+    if result is None:
+        return jsonify({'message': 'failure','reason': 'Total quantity of material exceeded limit specified under KYP material'})
+    if float(result[0]) < (float(quantity)):
+        return jsonify({'message': 'failure','reason': 'Total quantity of material exceeded limit specified under KYP material'})
+
     query = 'UPDATE indents SET status=%s, project_id=%s, material=%s, quantity=%s, unit=%s, purpose=%s, acted_by_user=%s WHERE id=%s'
     values = (status, project_id, material, quantity, unit, purpose, user_id, indent_id)
     cur.execute(query, values)
