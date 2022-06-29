@@ -9,6 +9,11 @@ $(document).ready(function () {
         })
     }
 
+    $('.block-project').on('click', function() {
+        project_id = $(this).attr('data-project-id')
+        $('.project_id').val(project_id)
+    })
+
 
     if($('.edit-procurement-material').length) {
         $('#material').val($('.edit-procurement-material').text())

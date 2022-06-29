@@ -3187,7 +3187,7 @@ def unapproved_projects():
         result = cur.fetchall()
         return render_template('unapproved_projects.html', projects=result)
 
-@app.route('/block_project', methods=['GET'])
+@app.route('/block_project', methods=['POST'])
 def block_project():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
@@ -3195,7 +3195,8 @@ def block_project():
         return redirect('/erp/login')
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        query = 'UPDATE projects SET blocked=1 WHERE project_id='+str(request.args['project_id'])
+        reason = request.form['reason']
+        query = 'UPDATE projects SET blocked=1, block_reason='+reason.replace('"','""').replace("'","''")+' WHERE project_id='+str(request.form['project_id'])
         cur.execute(query)
         mysql.connection.commit()
         return redirect('/erp/projects')
@@ -4076,7 +4077,7 @@ def get_project_block_status():
             return jsonify({'status': 'blocked'})
         else:
             return jsonify({'status': 'open'})
-            
+
 @app.route('/API/nt_nmr', methods=['GET'])
 def api_nt_nmr():
     if request.method == 'GET':
