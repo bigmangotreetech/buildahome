@@ -3193,7 +3193,7 @@ def block_project():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/projects'
         return redirect('/erp/login')
-    if request.method == 'GET':
+    if request.method == 'POST':
         cur = mysql.connection.cursor()
         reason = request.form['reason']
         query = 'UPDATE projects SET blocked=1, block_reason='+reason.replace('"','""').replace("'","''")+' WHERE project_id='+str(request.form['project_id'])
