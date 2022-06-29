@@ -14,6 +14,7 @@
             <th scope="col"></th>
             {% if session['role'] in ['Super Admin','COO','Design Head','Planning'] %}
             <th scope="col"></th>
+            <th scope="col"></th>
             {% endif %}
         </tr>
         </thead>
@@ -31,6 +32,13 @@
             {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] %}
             <td>
                 <a href="/erp/edit_team?project_id={{project[0]}}">View team</a>
+            </td>
+            <td>
+                {% if project[3]|int == 1 %}
+                <a href="/erp/unblock?project_id={{project[0]}}" class="btn btn-primary">Unblock</a>
+                {% else %}
+                <a href="/erp/block?project_id={{project[0]}}" class="btn btn-danger">Block</a>
+                {% endif %}
             </td>
             {% endif %}
         </tr>

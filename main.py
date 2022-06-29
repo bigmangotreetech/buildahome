@@ -3187,6 +3187,31 @@ def unapproved_projects():
         result = cur.fetchall()
         return render_template('unapproved_projects.html', projects=result)
 
+@app.route('/block_project', methods=['GET'])
+def block_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/projects'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects SET blocked=1 WHERE project_id='+str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        return redirect('/erp/projects')
+
+@app.route('/unblock_project', methods=['GET'])
+def unblock_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/projects'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects SET blocked=0 WHERE project_id='+str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        return redirect('/erp/projects')
 
 @app.route('/projects', methods=['GET'])
 def approved_projects():
@@ -3200,12 +3225,12 @@ def approved_projects():
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning',
                                        'Sales Executive', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
-                approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ' \
+                approved_projects_query = 'SELECT project_id, project_name, project_number, blocked from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(approved_projects_query)
                 result = cur.fetchall()
             else:
-                approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
+                approved_projects_query = 'SELECT project_id, project_name, project_number, blocked from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
                 cur.execute(approved_projects_query)
                 result = cur.fetchall()
         return render_template('approved_projects.html', projects=result)
