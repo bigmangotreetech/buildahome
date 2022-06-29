@@ -2759,6 +2759,16 @@ def view_indent_details():
         result = cur.fetchone()
         return render_template('view_indent_details.html', result=result)
 
+@app.route('/update_indent_comments', methods=['POST'])
+def update_indent_comments():
+    indent_id = request.form['indent_id']
+    comments = request.form['comments']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE  indents SET comments=%s WHERE indent_id=%s'
+    cur.execute(query, (comments, indent_id))
+    mysql.connection.commit()
+    return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
+
 @app.route('/edit_indent', methods=['GET','POST'])
 def edit_indent():
     if 'email' not in session:

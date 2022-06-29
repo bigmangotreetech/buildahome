@@ -89,7 +89,12 @@
                     Comments
                 </div>  
                 <div class="col-6">
-                    {{result[14]}}
+                    
+                    <form action="/erp/update_indent_comments" method="POST">
+                        <input type="hidden" name="indent_id" value="{{result[0]}}">
+                        <textarea name="comments" class="form-control mb-2" rows="5">{{result[14]}}</textarea>
+                        <button class="btn btn-dark bg-indigo text-white">Update</button>
+                    </form>
                 </div>
             </div>
             {% if result[9] != '' %}
