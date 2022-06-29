@@ -2774,7 +2774,7 @@ def edit_indent():
                          ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
         cur.execute(indents_query)
         result = cur.fetchone()
-        return render_template('edit_indent.html', result=result)
+        return render_template('edit_indent.html', result=result, materials=materials)
     else: 
         indent_id = request.form['indent_id']
         material = request.form['material']
