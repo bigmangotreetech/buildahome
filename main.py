@@ -2464,7 +2464,7 @@ def view_approved_indents():
                 if len(str(i[8]).strip()) > 0:
                     i[8] = str(i[8]).strip()
                     timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                    IST = pytz.timezone('Asia/Kolkata')
+                    IST = pytz.timezone('Asia/Kolkata') 
                     current_time = datetime.now(IST)
                     time_since_creation = current_time - timestamp
                     difference_in_seconds = time_since_creation.total_seconds()
