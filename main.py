@@ -3196,7 +3196,7 @@ def block_project():
     if request.method == 'POST':
         cur = mysql.connection.cursor()
         reason = request.form['reason']
-        query = 'UPDATE projects SET blocked=1, block_reason='+reason.replace('"','""').replace("'","''")+' WHERE project_id='+str(request.form['project_id'])
+        query = 'UPDATE projects SET blocked=1, block_reason= "'+reason.replace('"','""').replace("'","''")+'" WHERE project_id='+str(request.form['project_id'])
         cur.execute(query)
         mysql.connection.commit()
         return redirect('/erp/projects')
