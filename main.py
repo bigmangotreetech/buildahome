@@ -4070,11 +4070,11 @@ def get_project_block_status():
     if request.method == 'GET':
         project_id = request.args['project_id']
         cur = mysql.connection.cursor()
-        query = 'SELECT blocked from projects WHERE project_id='+str(project_id)
+        query = 'SELECT blocked, block_reason from projects WHERE project_id='+str(project_id)
         cur.execute(query)
         result = cur.fetchone()
         if str(result[0]) == '1':
-            return jsonify({'status': 'blocked'})
+            return jsonify({'status': 'blocked', 'reason': result[1]})
         else:
             return jsonify({'status': 'open'})
 
