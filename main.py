@@ -4064,6 +4064,19 @@ def get_materials():
     if request.method == 'GET':
         return jsonify({'materials': materials})
 
+@app.route('/API/get_project_block_status', methods=['GET'])
+def get_project_block_status():
+    if request.method == 'GET':
+        project_id = request.args['project_id']
+        cur = mysql.connection.cursor()
+        query = 'SELECT blocked from projects WHERE project_id='+str(project_id)
+        cur.execute(query)
+        result = cur.fetchone()
+        if str(result[0]) == '1':
+            return jsonify({'status': 'blocked'})
+        else:
+            return jsonify({'status': 'open'})
+            
 @app.route('/API/nt_nmr', methods=['GET'])
 def api_nt_nmr():
     if request.method == 'GET':
