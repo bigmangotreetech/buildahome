@@ -2614,6 +2614,20 @@ def mark_as_billed():
         flash('Indent marked as billed','success')
         return redirect('/erp/view_ph_approved_indents')
 
+@app.route('/rollback_indent_to_qs', methods=['GET'])
+def rollback_indent_to_qs():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/rollback_indent_to_qs'
+    if request.method == 'GET':
+        indent_id = request.args['id']
+        cur = mysql.connection.cursor()
+        query = 'UPDATE indents set status=%s WHERE id=%s'
+        cur.execute(query, ('approved',indent_id))
+        mysql.connection.commit()
+        flash('Indent rolled back to qs','success')
+        return redirect('/erp/view_qs_approval_indents')
+
 @app.route('/rollback_indent_by_ph', methods=['GET'])
 def rollback_indent_by_ph():
     if 'email' not in session:
