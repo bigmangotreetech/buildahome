@@ -1590,7 +1590,7 @@ def create_bill():
         
         total_payable = float(amount)
         check_if_exists_query = 'SELECT id FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
-            trade) + '" AND stage="' + str(stage) + '"'
+            trade) + '" AND stage="' + str(stage) + '" AND contractor_code="' + str(contractor_code) + '"'
         cur.execute(check_if_exists_query)
         res = cur.fetchone()
         if res is not None:
