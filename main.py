@@ -2767,6 +2767,7 @@ def update_indent_comments():
     query = 'UPDATE  indents SET comments=%s WHERE id=%s'
     cur.execute(query, (comments, indent_id))
     mysql.connection.commit()
+    flash('Comment updated', 'success')
     return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
 
 @app.route('/edit_indent', methods=['GET','POST'])
