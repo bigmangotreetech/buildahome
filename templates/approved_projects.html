@@ -35,9 +35,9 @@
             </td>
             <td>
                 {% if project[3] == 1 %}
-                <a href="/erp/unblock?project_id={{project[0]}}" class="btn btn-primary">Unblock</a>
+                <a href="/erp/unblock_project_id={{project[0]}}" class="btn btn-primary">Unblock</a>
                 {% else %}
-                <a href="/erp/block?project_id={{project[0]}}" class="btn btn-danger">Block</a>
+                <a href="/erp/block_project_id={{project[0]}}" class="btn btn-danger">Block</a>
                 {% endif %}
             </td>
             {% endif %}
