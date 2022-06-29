@@ -73,8 +73,9 @@
     <a href='/erp/view_users {% if "/view_users" in request.path %} active {% endif %}' class='nav-link'>View users</a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Material</div>
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info'] %}
     <a href="/erp/vendor_registration"
        class='nav-link {% if "/vendor_registration" in request.path %} active {% endif %}'>Vendor Registration</a>
     <a href="/erp/view_vendors" class='nav-link {% if "/view_vendors" in request.path %} active {% endif %}'>View
@@ -85,6 +86,7 @@
         Material</a>
     <a href="/erp/shifting_entry" class='nav-link {% if "/shifting_entry" in request.path %} active {% endif %}'>Shifting
         Entry</a>
+    {% endif %}
     <a href="/erp/view_inventory" class='nav-link {% if "/view_inventory" in request.path %} active {% endif %}'>View
         inventory</a>
     {% endif %}

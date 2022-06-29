@@ -596,7 +596,7 @@ def view_inventory():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_inventory'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','QS Engineer','QS Head','QS Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     cur = mysql.connection.cursor()
