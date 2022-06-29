@@ -89,23 +89,28 @@ $(document).ready(function () {
         total_paid = 0;
         $('.approved_amount').each(function(index, element) {
             if ($(element).text().toString().length) {
-                console.log($(element).text())
                 total_paid += parseInt($(element).text())
             }
         })
         total_billed = 0;
         $('.billed_amount').each(function(index, element) {
             if ($(element).text().toString().length) {
-                console.log($(element).text())
                 total_billed += parseInt($(element).text())
             }
         })
-        $('.balance').text(total_billed -  total_paid)
+
+        total_billed_but_not_approved = 0;
+        $('.billed_amount').each(function(index, element) {
+            if ($(element).text().toString().length && $(element).parent('tr').find('.approved_amount').text().trim().toString() != '0') {
+                total_billed_but_not_approved += parseInt($(element).text())
+            }
+        })
+        $('.balance').text(total_billed_but_not_approved -  total_paid)
         $('.total_billed').text(total_billed)
         $('.total_paid').text(total_paid)
 
-        if(total_billed - total_paid > 0) {
-            balance_amnt = total_billed - total_paid;
+        if(total_billed_but_not_approved - total_paid > 0) {
+            balance_amnt = total_billed_but_not_approved - total_paid;
             contractor_name = $('.contractor_name').text()
             contractor_code = $('.contractor_code').text()
             contractor_pan = $('.contractor_pan').text()
