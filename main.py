@@ -621,7 +621,7 @@ def view_inventory():
                 project = i[1]
 
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+            project_id) + " AND material LIKE '%" + str(material).replace('"','""').strip() + "%'"
         cur.execute(material_quantity_query)
         result = cur.fetchone()
         if result is not None:
