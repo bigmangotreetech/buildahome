@@ -5,6 +5,7 @@ project_fields = ['project_number', 'project_name','package_type', 'project_loca
             'paid_percentage', 'comments', 'is_approved', 'cost_sheet', 'site_inspection_report','created_at','client_name','client_phone']
 roles = [
             'QS Head',
+            'QS Info',
             'QS Engineer',
             'Purchase Head',
             'Purchase Executive',
@@ -21,7 +22,6 @@ roles = [
             'Billing',
             'Planning',
             'Purchase Info',
-            'QS Info',
             'Client'
         ]
 
