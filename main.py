@@ -1308,7 +1308,7 @@ def kyp_material():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/kyp_material'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','QS Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     material_quantity_data = {}
