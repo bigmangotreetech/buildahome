@@ -3050,7 +3050,7 @@ def create_project():
         update_filename_query = 'UPDATE projects set cost_sheet=%s, site_inspection_report=%s WHERE project_id=%s'
         cur.execute(update_filename_query, (cost_sheet_filename, site_inspection_report_filename, str(project_id)))
         flash('Project created successfully', 'success')
-        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' created project ' + request.form['project_name'] + ' with number ' + + request.form['project_number'])
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' created project ' + request.form['project_name'] + ' with number ' + request.form['project_number'])
         mysql.connection.commit()
         return redirect(request.referrer)
 
@@ -3117,7 +3117,7 @@ def edit_project():
                                 (site_inspection_report_filename, str(request.form['project_id'])))
 
         mysql.connection.commit()
-        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' updated project ' + request.form['project_name'] + ' with number ' + + request.form['project_number'])
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' updated project ' + request.form['project_name'] + ' with number ' + request.form['project_number'])
         flash('Project updated successfully', 'success')
         return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
 
