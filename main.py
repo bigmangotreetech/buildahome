@@ -70,6 +70,16 @@ app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpeg', 'jpg']
 
 
+def make_entry_in_audit_log(activity):
+    cur = mysql.connection.cursor()
+    query = 'INSERT into erp_audit_log(activity, time) values (%s, %s)'
+    IST = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(IST)
+    timestamp = current_time.strftime('%d=%m-%Y %H:%M')
+    cur.execute(query, (activity, timestamp))
+    mysql.connection.commit()    
+
+
 def send_to_s3(file, bucket_name, filename, acl="public-read", content_type=''):
     try:
         if content_type == '':
@@ -210,6 +220,7 @@ def get_projects_for_current_user():
             return tuple(projects)
         else:
             return []
+            
 @app.route('/delete_old_drawings', methods=['GET'])
 def delete_old_drawings():
     cur = mysql.connection.cursor()
@@ -260,6 +271,15 @@ def migrate():
     except Exception as e:
         print("Something Happened: ", e)
         return str(e)
+
+@app.route('/audit_log', methods=['GET'])
+def audit_log():
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from erp_audit_log ORDER BY id DESC'
+    cur.execute(query)
+    logs = cur.fetchall()
+    return render_template('audit_log.html',logs=logs)
+
 
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
@@ -2922,6 +2942,7 @@ def archive_project():
         query = 'UPDATE projects set archived=1 WHERE project_id=' + str(request.args['project_id'])
         cur.execute(query)
         mysql.connection.commit()
+        make_entry_in_audit_log(session['name'] + 'with email '+ session['email'] + 'archived project ' + request.args['project_name'])
         flash('Project archived', 'warning')
         return redirect(request.referrer)
     else:

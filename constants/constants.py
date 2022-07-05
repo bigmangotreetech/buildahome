@@ -25,6 +25,47 @@ roles = [
             'Client'
         ]
 
+# WIP
+roleToAccess = {
+    'Super Admin': [
+        'Create project', 
+        'View unapproved projects',
+        'View approved projects',
+        'View archived projects',
+        'Create user',
+        'View user',
+        'Edit user',
+        'Delete user',
+        'Vendor registration',
+        'View vendors',
+        'KYP for material',
+        'Enter material',
+        'Shifting entry',
+        'View inventory',
+        'View Indents for QS',
+        'View Indents for purchase',
+        'View Unapproved  POs',
+        'View Approved  POs',
+        'Deleted Indents',
+        'Contractor registration',
+        'View Contractors',
+        'Edit Contractors',
+        'Delete Contractors',
+        'Create work order',
+        'View unsigned work orders',
+        'View unapproved work orders',
+        'View approved work orders',
+        'Debit note',
+        'Create bill',
+        'View unapproved bills',
+        'View approved bills',
+        'View archived bills',
+        'View drawings',
+        'View revised drawings',
+        'View drawing requests'
+        ]
+}
+
 materials = [
         'PCC M 7.5',
         'PCC M 15',
