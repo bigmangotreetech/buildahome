@@ -75,7 +75,7 @@ def make_entry_in_audit_log(activity):
     query = 'INSERT into erp_audit_log(activity, time) values (%s, %s)'
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
-    timestamp = current_time.strftime('%d=%m-%Y %H:%M')
+    timestamp = current_time.strftime('%d-%m-%Y %H:%M')
     cur.execute(query, (activity, timestamp))
     mysql.connection.commit()    
 
@@ -2942,7 +2942,7 @@ def archive_project():
         query = 'UPDATE projects set archived=1 WHERE project_id=' + str(request.args['project_id'])
         cur.execute(query)
         mysql.connection.commit()
-        make_entry_in_audit_log(session['name'] + 'with email '+ session['email'] + 'archived project ' + request.args['project_name'])
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + 'archived project ' + request.args['project_name'])
         flash('Project archived', 'warning')
         return redirect(request.referrer)
     else:
