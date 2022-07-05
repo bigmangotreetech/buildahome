@@ -149,7 +149,7 @@
 
     {% if session['role'] in ['Super Admin','COO','Design Head','Senior Architect','Architect','Structural Designer',
     'Electrical
-    Engineer', 'PHE Designer'] %}
+    Engineer','Electrical Designer', 'PHE Designer'] %}
     <div class="nav-section-header">Design team</div>
     <a href="/erp/drawings" class='nav-link {% if "/drawings" in request.path %} active {% endif %}'>Drawings</a>
     <a href="/erp/revised_drawings" class='nav-link {% if "/revised_drawings" in request.path %} active {% endif %}'>Revised
