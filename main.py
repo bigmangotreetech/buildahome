@@ -263,7 +263,7 @@ def get_dlr_report():
             project2update['workman_status'] = ''
         dlr_data.append(project2update)
 
-    rb = open_workbook("static/updates.xls")
+    rb = open_workbook("../static/updates.xls")
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
@@ -317,7 +317,7 @@ def get_dlr_report():
 
         row = row + 1
 
-    wb.save('static/updates.xls')
+    wb.save('../static/updates.xls')
 
     return 'Job done!'
 
