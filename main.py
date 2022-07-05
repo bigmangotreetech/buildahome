@@ -85,7 +85,7 @@ def make_entry_in_audit_log(activity):
     query = 'INSERT into erp_audit_log(activity, time) values (%s, %s)'
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
-    timestamp = current_time.strftime('%d-%m-%Y %H:%M')
+    timestamp = current_time.strftime('%d-%m-%Y %H:%M:%S')
     cur.execute(query, (activity, timestamp))
     mysql.connection.commit()    
 
