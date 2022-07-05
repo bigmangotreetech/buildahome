@@ -175,7 +175,7 @@
 
     {% if session['role'] in ['Super Admin','COO'] %}
     <div class="nav-section-header">System</div>
-    <a href="/erp/reports" class='nav-link {% if "/reports" in request.path %} active {% endif %}'>Reports</a>
+    <a href="/erp/static/updates.xls" class='nav-link {% if "/reports" in request.path %} active {% endif %}'>Reports</a>
     <a href="/erp/audit_log" class='nav-link {% if "/audit_log" in request.path %} active {% endif %}'>Audit log</a>
     {% endif %}
 
