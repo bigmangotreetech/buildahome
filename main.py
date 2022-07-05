@@ -514,7 +514,7 @@ def project_notes():
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
                             ' WHERE p.project_id =' + str(project_id)
             cur.execute(get_notes)
-            res = cur.fetchall()\
+            res = cur.fetchall()
             return render_template('notes_and_comments.html', projects=projects, notes=res)
     else:
         note = request.form['note']
