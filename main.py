@@ -238,8 +238,8 @@ def get_dlr_report():
     cur = mysql.connection.cursor()
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
-    current_date = current_time.strftime('%A %B %d') 
-    get_projects_query = 'SELECT project_id, project_number, project_name from projects'
+    current_date = current_time.strftime('%A %B %d at %H %M') 
+    get_projects_query = 'SELECT project_id, project_number, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
     cur.execute(get_projects_query)
     projects = cur.fetchall()
 
