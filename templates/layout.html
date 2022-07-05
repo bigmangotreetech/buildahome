@@ -75,7 +75,7 @@
 
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Material</div>
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] %}
     <a href="/erp/vendor_registration"
        class='nav-link {% if "/vendor_registration" in request.path %} active {% endif %}'>Vendor Registration</a>
     <a href="/erp/view_vendors" class='nav-link {% if "/view_vendors" in request.path %} active {% endif %}'>View
