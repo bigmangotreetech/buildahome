@@ -252,7 +252,7 @@ def get_dlr_report():
             'project_name': project_name,
             'project_number': project_number,
         } 
-        current_day_update = 'SELECT update_title, tradesmenMap from App_updates WHERE project_id='+str(project_id)' AND date="'+ current_date +'"'
+        current_day_update = 'SELECT update_title, tradesmenMap from App_updates WHERE project_id='+str(project_id)+' AND date="'+ current_date +'"'
         cur.execute(current_day_update)
         update_result = cur.fetchone()
         if update_result is not None:
