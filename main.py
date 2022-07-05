@@ -243,7 +243,7 @@ def get_dlr_report():
     cur.execute(get_projects_query)
     projects = cur.fetchall()
 
-    dlr_data = []
+    dlr_data = []  
     for project in projects:
         project_id = project[0]
         project_name = project[2]
