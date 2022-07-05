@@ -292,7 +292,6 @@ def get_dlr_report():
     column = 0
     read_only = xlwt.easyxf("")
 
-    data_from_url = result.json()
     for project_data in dlr_data:
         column = 0
         ws.col(column).width = 8000
