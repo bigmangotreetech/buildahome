@@ -3158,7 +3158,7 @@ def block_project():
         query = 'UPDATE projects SET blocked=1, block_reason= "'+reason.replace('"','""').replace("'","''")+'" WHERE project_id='+str(request.form['project_id'])
         cur.execute(query)
         mysql.connection.commit()
-        project_name = getProjectName(project_id)
+        project_name = getProjectName(str(request.form['project_id']))
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' blocked project ' + project_name + ' with reason '+ reason)
         return redirect('/erp/projects')
 
@@ -3173,7 +3173,7 @@ def unblock_project():
         query = 'UPDATE projects SET blocked=0 WHERE project_id='+str(request.args['project_id'])
         cur.execute(query)
         mysql.connection.commit()
-        project_name = getProjectName(project_id)
+        project_name = getProjectName(str(request.form['project_id']))
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unblocked project ' + project_name)
         return redirect('/erp/projects')
 
