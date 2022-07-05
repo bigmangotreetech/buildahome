@@ -69,6 +69,8 @@ s3 = boto3.client(
 app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpeg', 'jpg']
 
+
+
 def getProjectName(project_id):
     cur = mysql.connection.cursor()
     query = 'SELECT project_name from projects WHERE project_id='+str(project_id)
@@ -230,7 +232,38 @@ def get_projects_for_current_user():
             return tuple(projects)
         else:
             return []
-            
+
+@app.route('/get_dlr_report', methods=['GET'])
+def get_dlr_report():
+    cur = mysql.connection.cursor()
+    IST = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(IST)
+    current_date = current_time.strftime('%A %B %d') 
+    get_projects_query = 'SELECT project_id, project_number, project_name from projects'
+    cur.execute(get_project_query)
+    projects = cur.fetchall()
+
+    dlr_data = []
+    for project in projects:
+        project_id = project[0]
+        project_name = project[2]
+        project_number = project[1]
+        project2update = {
+            'project_name': project_name,
+            'project_number': project_number,
+        } 
+        current_day_update = 'SELECT update_title, tradesmenMap from App_updates WHERE project_id='+str(project_id)' AND date="'+ current_date +'"'
+        cur.execute(current_day_update)
+        update_result = cur.fetchone()
+        if update_result is not None:
+            project2update['update'] = update_result[0]
+            project2update['workman_status'] = update_result[1]
+        else:
+            project2update['update'] = 'DLR not updated'
+            project2update['workman_status'] = ''
+        dlr_data.append(project2update)
+    return jsonify(dlr_data)
+
 @app.route('/delete_old_drawings', methods=['GET'])
 def delete_old_drawings():
     cur = mysql.connection.cursor()
