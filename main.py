@@ -69,6 +69,16 @@ s3 = boto3.client(
 app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpeg', 'jpg']
 
+def getProjectName(project_id):
+    cur = mysql.connection.cursor()
+    query = 'SELECT project_name from projects WHERE project_id='+str(project_id)
+    cur.execute(query)
+    result = cur.fetchone()
+    if result is not None:
+        return str(result[0])
+    else:
+        return 'Invalid project'
+
 
 def make_entry_in_audit_log(activity):
     cur = mysql.connection.cursor()
@@ -504,7 +514,7 @@ def project_notes():
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
                             ' WHERE p.project_id =' + str(project_id)
             cur.execute(get_notes)
-            res = cur.fetchall()
+            res = cur.fetchall()\
             return render_template('notes_and_comments.html', projects=projects, notes=res)
     else:
         note = request.form['note']
@@ -2942,7 +2952,7 @@ def archive_project():
         query = 'UPDATE projects set archived=1 WHERE project_id=' + str(request.args['project_id'])
         cur.execute(query)
         mysql.connection.commit()
-        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + 'archived project ' + request.args['project_name'])
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' archived project ' + request.args['project_name'])
         flash('Project archived', 'warning')
         return redirect(request.referrer)
     else:
@@ -2964,6 +2974,7 @@ def unarchive_project():
         query = 'UPDATE projects set archived=0 WHERE project_id=' + str(request.args['project_id'])
         cur.execute(query)
         mysql.connection.commit()
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unarchived project ' + request.args['project_name'])
         flash('Project unarchived', 'success')
         return redirect(request.referrer)
     else:
@@ -3039,6 +3050,7 @@ def create_project():
         update_filename_query = 'UPDATE projects set cost_sheet=%s, site_inspection_report=%s WHERE project_id=%s'
         cur.execute(update_filename_query, (cost_sheet_filename, site_inspection_report_filename, str(project_id)))
         flash('Project created successfully', 'success')
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' created project ' + request.form['project_name'] + ' with number ' + + request.form['project_number'])
         mysql.connection.commit()
         return redirect(request.referrer)
 
@@ -3105,6 +3117,7 @@ def edit_project():
                                 (site_inspection_report_filename, str(request.form['project_id'])))
 
         mysql.connection.commit()
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' updated project ' + request.form['project_name'] + ' with number ' + + request.form['project_number'])
         flash('Project updated successfully', 'success')
         return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
 
@@ -3145,6 +3158,8 @@ def block_project():
         query = 'UPDATE projects SET blocked=1, block_reason= "'+reason.replace('"','""').replace("'","''")+'" WHERE project_id='+str(request.form['project_id'])
         cur.execute(query)
         mysql.connection.commit()
+        project_name = getProjectName(project_id)
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' blocked project ' + project_name + ' with reason '+ reason)
         return redirect('/erp/projects')
 
 @app.route('/unblock_project', methods=['GET'])
@@ -3158,6 +3173,8 @@ def unblock_project():
         query = 'UPDATE projects SET blocked=0 WHERE project_id='+str(request.args['project_id'])
         cur.execute(query)
         mysql.connection.commit()
+        project_name = getProjectName(project_id)
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unblocked project ' + project_name)
         return redirect('/erp/projects')
 
 @app.route('/projects', methods=['GET'])
@@ -3245,6 +3262,7 @@ def approve_project():
     cur = mysql.connection.cursor()
     cur.execute(approve_project_query)
     mysql.connection.commit()
+    make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' approved project ' + request.args['project_name'])
     flash('Project has been approved', 'success')
     return redirect('/erp/view_project_details?project_id=' + str(project_id))
 
@@ -3513,6 +3531,8 @@ def edit_team():
 
                 
         mysql.connection.commit()
+        project_name = getProjectName(project_id)
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' updated team for project ' + project_name)
         flash('Team updated successfully', 'success')
         return redirect('/erp/projects')
 
