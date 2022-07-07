@@ -266,8 +266,9 @@ def get_dlr_report():
     rb = open_workbook("../static/updates.xls")
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
-    current_time = datetime.now(IST)
-    current_time = current_time.strftime('%d-%m-%Y')
+    now = datetime.now(IST)
+    current_time = now.strftime('%d-%m-%Y')
+    current_datetime = now.strftime('%d-%m-%Y %H:%M')
     ws = wb.add_sheet(' ' + str(current_time))
     style = xlwt.XFStyle()
 
@@ -283,12 +284,13 @@ def get_dlr_report():
     pattern.pattern_fore_colour = xlwt.Style.colour_map['yellow']
     yellow_style.pattern = pattern
 
-    ws.write(1, 0, 'Project name', style=style)
-    ws.write(1, 1, 'Project number', style=style)
-    ws.write(1, 2, 'Update', style=style)
-    ws.write(1, 3, 'Workman status', style=style)
+    ws.write(1, 0, 'Report as on '+current_datetime)
+    ws.write(2, 0, 'Project name', style=style)
+    ws.write(2, 1, 'Project number', style=style)
+    ws.write(2, 2, 'Update', style=style)
+    ws.write(2, 3, 'Workman status', style=style)
 
-    row = 2
+    row = 3
     column = 0
     read_only = xlwt.easyxf("")
 
