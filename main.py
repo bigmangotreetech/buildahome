@@ -4317,6 +4317,8 @@ def create_indent():
             project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         cur.execute(material_quantity_query)
         result = cur.fetchone()
+
+        quantity = str(quantity).split()[0]
         if result is None:
             return jsonify({'message': 'failure','reason': 'Total quantity of material exceeded limit specified under KYP material'})
         if float(result[0]) < (float(quantity)):
