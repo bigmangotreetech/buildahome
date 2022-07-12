@@ -335,10 +335,13 @@ def get_dlr_report():
             workMenSplit = project_data['workman_status'][-1:1].split(',')
 
             for workmen2Nos in workMenSplit:
-                workMenName = workmen2Nos.split(':')[0]
-                workMenCount = workmen2Nos.split(':')[1]
-                if tradesMen[column - 3] == workMenName:         
-                    ws.write(row, column, workmanJsonData[key], read_only)
+                try:
+                    workMenName = workmen2Nos.split(':')[0]
+                    workMenCount = workmen2Nos.split(':')[1]
+                    if tradesMen[column - 3] == workMenName:         
+                        ws.write(row, column, workmanJsonData[key], read_only)
+                except:
+                    pass
                 column = column + 1
 
         row = row + 1
