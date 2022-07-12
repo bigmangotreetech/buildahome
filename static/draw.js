@@ -329,14 +329,14 @@ async function saveSign() {
   const notesList = notes.split('\n')
   var yCord = pages[3].getSize().height - 120;
   for(const note of notesList) {
-    pages[3].drawText(notes, {
+    pages[3].drawText(note.trim(), {
       x: 100,
       y: yCord,
       size: 10,
       lineHeight: 12,
       maxWidth: pages[3].getSize().width - 150,
     })
-    yCord += 15;
+    yCord += 30;
   } 
   
 
