@@ -337,7 +337,7 @@ async function saveSign() {
       maxWidth: pages[3].getSize().width - 150,
     })
     noOfLines = parseInt(note.trim().length / 100)
-    yCord = yCord - (20 * noOfLines)
+    yCord = yCord - (14 * noOfLines)
     yCord = yCord - 20;
   } 
   
