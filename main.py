@@ -23,6 +23,8 @@ from constants.constants import project_fields, roles, materials
 from PIL import Image
 from io import BytesIO
 import random
+import json
+
 
 
 # Debit note
@@ -288,7 +290,24 @@ def get_dlr_report():
     ws.write(2, 0, 'Project name', style=style)
     ws.write(2, 1, 'Project number', style=style)
     ws.write(2, 2, 'Update', style=style)
-    ws.write(2, 3, 'Workman status', style=style)
+    column = 3
+    tradesMen = [
+        'Mason',
+        'Helper',
+        'Carpenter',
+        'Barbender',
+        'Painter',
+        'Electrician',
+        'Plumber',
+        'Tile mason',
+        'Granite mason',
+        'Fabricator',
+        'Other workers',
+        'Interior carpenter'
+    ] 
+    for i in tradesMen:
+        ws.write(2, column, i, style=style)
+        i = i+1
 
     row = 3
     column = 0
@@ -313,9 +332,11 @@ def get_dlr_report():
         column = column + 1
         ws.col(column).width = 10000
         if len(project_data['workman_status'].strip()) > 0:
-            project_data['workman_status'] = project_data['workman_status'][1:-1]
-        ws.write(row, column, project_data['workman_status'], read_only)
-
+            workmanJsonData = json.loads(project_data['workman_status'])
+            for key in workmanJsonData:
+                if tradesMen[column - 3] == key:         
+                    ws.write(row, column, workmanJsonData[key], read_only)
+                column = column + 1
         row = row + 1
 
     wb.save('../static/updates.xls')
