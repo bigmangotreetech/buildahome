@@ -332,6 +332,7 @@ def get_dlr_report():
         column = column + 1
         ws.col(column).width = 10000
         if len(project_data['workman_status'].strip()) > 0:
+            return jsonify(json.loads(project_data['workman_status']))
             try:
                 workmanJsonData = json.loads(project_data['workman_status'])
                 for key in workmanJsonData:
