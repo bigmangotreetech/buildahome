@@ -339,7 +339,7 @@ def get_dlr_report():
                     workMenName = workmen2Nos.split(':')[0]
                     workMenCount = workmen2Nos.split(':')[1]
                     if tradesMen[column - 3] == workMenName:         
-                        ws.write(row, column, workmanJsonData[key], read_only)
+                        ws.write(row, column, workMenCount, read_only)
                 except:
                     pass
                 column = column + 1
