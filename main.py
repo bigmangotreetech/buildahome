@@ -307,7 +307,7 @@ def get_dlr_report():
     ] 
     for i in tradesMen:
         ws.write(2, column, i, style=style)
-        i = i+1
+        column = column+1
 
     row = 3
     column = 0
