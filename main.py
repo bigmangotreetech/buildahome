@@ -337,16 +337,12 @@ def get_dlr_report():
 
             for t in tradesMen:
 
-
                 for workmen2Nos in workMenSplit:
-                    try:
-                        workMenName = workmen2Nos.split(':')[0]
-                        workMenCount = workmen2Nos.split(':')[1]
+                    workMenName = workmen2Nos.split(':')[0]
+                    workMenCount = workmen2Nos.split(':')[1]
 
-                        if t == workMenName:         
-                            ws.write(row, column, workMenCount, read_only)
-                    except:
-                        pass
+                    if t == workMenName:         
+                        ws.write(row, column, workMenCount, read_only)
                 column = column + 1
 
         row = row + 1
