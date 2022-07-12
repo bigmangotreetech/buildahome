@@ -342,7 +342,7 @@ def get_dlr_report():
                         workMenName = workmen2Nos.split(':')[0]
                         workMenCount = workmen2Nos.split(':')[1]
 
-                        if t == workMenName:         
+                        if t == workMenName.strip():         
                             ws.write(row, column, workMenCount, read_only)
                 column = column + 1
 
