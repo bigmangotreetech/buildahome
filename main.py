@@ -306,6 +306,7 @@ def get_dlr_report():
         'Interior carpenter'
     ] 
     for i in tradesMen:
+        ws.col(column).width = 5000
         ws.write(2, column, i, style=style)
         column = column+1
 
@@ -330,18 +331,22 @@ def get_dlr_report():
             ws.write(row, column, project_data['update'], read_only)
 
         column = column + 1
-        ws.col(column).width = 10000
+        ws.col(column).width = 5000
         if len(project_data['workman_status'].strip()) > 0:
             workMenSplit = project_data['workman_status'][1:-1].split(',')
 
-            for workmen2Nos in workMenSplit:
-                try:
-                    workMenName = workmen2Nos.split(':')[0]
-                    workMenCount = workmen2Nos.split(':')[1]
-                    if tradesMen[column - 3] == workMenName:         
-                        ws.write(row, column, workMenCount, read_only)
-                except:
-                    pass
+            for t in tradesMen:
+
+
+                for workmen2Nos in workMenSplit:
+                    try:
+                        workMenName = workmen2Nos.split(':')[0]
+                        workMenCount = workmen2Nos.split(':')[1]
+
+                        if t == workMenName:         
+                            ws.write(row, column, workMenCount, read_only)
+                    except:
+                        pass
                 column = column + 1
 
         row = row + 1
