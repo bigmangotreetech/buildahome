@@ -332,7 +332,7 @@ def get_dlr_report():
         column = column + 1
         ws.col(column).width = 10000
         if len(project_data['workman_status'].strip()) > 0:
-            workMenSplit = project_data['workman_status'][-1:1].split(',')
+            workMenSplit = project_data['workman_status'][1:-1].split(',')
 
             for workmen2Nos in workMenSplit:
                 try:
