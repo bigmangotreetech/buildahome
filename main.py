@@ -332,15 +332,15 @@ def get_dlr_report():
         column = column + 1
         ws.col(column).width = 10000
         if len(project_data['workman_status'].strip()) > 0:
-            return jsonify(json.loads(project_data['workman_status']))
-            try:
-                workmanJsonData = json.loads(project_data['workman_status'])
-                for key in workmanJsonData:
-                    if tradesMen[column - 3] == key:         
-                        ws.write(row, column, workmanJsonData[key], read_only)
-                    column = column + 1
-            except:
-                pass
+            workMenSplit = project_data['workman_status'][-1:1].split(',')
+
+            for workmen2Nos in workMenSplit:
+                workMenName = workmen2Nos.split(':')[0]
+                workMenCount = workmen2Nos.split(':')[1]
+                if tradesMen[column - 3] == workMenName:         
+                    ws.write(row, column, workmanJsonData[key], read_only)
+                column = column + 1
+
         row = row + 1
 
     wb.save('../static/updates.xls')
