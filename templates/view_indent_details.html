@@ -53,7 +53,9 @@
                     Attachment
                 </div>
                 <div class="col-6">
-                    <a href="/erp/files/indent_attachment_{{result[0]}}">View attachment</a>
+                    {% if result[14]|str != '' %}
+                    <a href="/erp/files/{{result[14]}}">View attachment</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="row mx-0 mb-3 form-group">
