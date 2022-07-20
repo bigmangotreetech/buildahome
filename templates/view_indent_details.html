@@ -53,8 +53,8 @@
                     Attachment
                 </div>
                 <div class="col-6">
-                    {% if result[14]|str != '' %}
-                    <a href="/erp/files/{{result[14]}}">View attachment</a>
+                    {% if result[15] is not None %}
+                    <a href="/erp/files/{{result[15]}}">View attachment</a>
                     {% endif %}
                 </div>
             </div>
