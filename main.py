@@ -2109,7 +2109,7 @@ def project_contractor_info():
     for i in res:
         bills.append(i)
 
-    get_clearing_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Clearing balance%' AND contractor_code='"+str(contractor_code)+"' AND trade !='"+trade+"' AND trade != 'NT/NMR'"
+    get_clearing_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Clearing balance%' AND contractor_code='"+str(contractor_code)+"' AND trade ='"+trade+"' AND trade != 'NT/NMR'"
     cur.execute(get_clearing_bills)
     res = cur.fetchall()
     for i in res:
