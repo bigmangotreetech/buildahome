@@ -3,17 +3,19 @@ $(document).ready(function () {
 
 
     $('.delete_bill').on('click',function(){
-        let btn = $(this) 
-        let delete_url = $(this).attr('data-delete-url');
-        $.ajax({
-            url: delete_url,
-            type: "GET",
-           
-            success: function (data) {
-                console.log(data)
-                btn.parents('tr').remove();
-            },
-        });
+        if (confirm('Are you sure you want to delete this bill')) {
+            let btn = $(this) 
+            let delete_url = $(this).attr('data-delete-url');
+            $.ajax({
+                url: delete_url,
+                type: "GET",
+            
+                success: function (data) {
+                    console.log(data)
+                    btn.parents('tr').remove();
+                },
+            });
+        }
     })
 
     if($('.contractor-profile-picture').length) {
@@ -396,7 +398,7 @@ $(document).ready(function () {
 
         const po_number = $('.po_number').val()
         $('.po_number_field').val(po_number)
-        
+
         $('.indent-upload-submit').parents('form').submit()
     })
 
