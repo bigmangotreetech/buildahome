@@ -1801,11 +1801,18 @@ def view_bills():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_bills'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
+
+        if session['role'] in ['Super Admin', 'COO', 'QS Head','QS Engineer']:
+            coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
+
+        elif session['role'] in ['Project Manager']:
+            coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL AND p.project_id IN ' + str(get_projects_for_current_user()) +'  order by pot.co_ordinator'
+                  
+            
         cur = mysql.connection.cursor()
         cur.execute(coordinators_query)
         coordinators_res = cur.fetchall()
@@ -1850,7 +1857,7 @@ def view_bills():
                 
                 })
             data[coordinator_id]['projects'][project_id]['bills'] = bills
-                
+       
         access_level = session['access_level']
         return render_template('view_bills.html', data=data, access_level=access_level)
 

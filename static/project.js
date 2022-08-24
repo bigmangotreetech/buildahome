@@ -2,6 +2,20 @@
 $(document).ready(function () {
 
 
+    $('.delete_bill').on('click',function(){
+        let btn = $(this) 
+        let delete_url = $(this).attr('data-delete-url');
+        $.ajax({
+            url: delete_url,
+            type: "GET",
+           
+            success: function (data) {
+                console.log(data)
+                btn.parents('tr').remove();
+            },
+        });
+    })
+
     if($('.contractor-profile-picture').length) {
         $('.contractor-profile-picture').each(function(index, element){
             const src = $(element).attr('data-src')

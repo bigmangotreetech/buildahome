@@ -136,9 +136,8 @@
     <a href="/erp/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>Create
         bill</a>
 
-    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
-    <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>Unapproved
-        bills</a>
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager'] %}
+    <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>Unapproved bills</a>
     {% endif %}
 
     <a href="/erp/view_approved_bills"
