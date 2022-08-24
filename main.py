@@ -2489,7 +2489,7 @@ def view_ph_approved_indents():
                             'indents.project_id IN ' + str(get_projects_for_current_user()) +' '\
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
-        
+         
         cur.execute(indents_query)
         data = []
         projects = {}
