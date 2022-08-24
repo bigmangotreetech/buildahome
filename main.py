@@ -2467,7 +2467,7 @@ def view_ph_approved_indents():
                             'indents.unit, ' \
                             'indents.purpose, ' \
                             'App_users.name, ' \
-                            'indents.timestamp, indents.billed FROM indents ' \
+                            'indents.timestamp, indents.billed, indents.po_number FROM indents ' \
                             'INNER JOIN projects on ' \
                             'indents.status="approved_by_ph" AND ' \
                             'indents.project_id=projects.project_id ' \
@@ -2482,7 +2482,7 @@ def view_ph_approved_indents():
                             'indents.unit, ' \
                             'indents.purpose, ' \
                             'App_users.name, ' \
-                            'indents.timestamp, indents.billed FROM indents ' \
+                            'indents.timestamp, indents.billed, indents.po_number FROM indents ' \
                             'INNER JOIN projects on ' \
                             'indents.status="approved_by_ph" AND ' \
                             'indents.project_id=projects.project_id AND ' \
@@ -2707,7 +2707,7 @@ def view_approved_POs():
         elif current_user_role == 'Purchase Executive':
             access_tuple = get_projects_for_current_user()
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                            ', App_users.name, indents.timestamp, indents.purchase_order FROM indents INNER JOIN projects on indents.status="po_uploaded" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
+                            ', App_users.name, indents.timestamp, indents.purchase_order, indents.po_number FROM indents INNER JOIN projects on indents.status="po_uploaded" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
                 access_tuple) + '' \
                                 ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
             cur.execute(indents_query)
@@ -2833,7 +2833,7 @@ def view_indent_details():
         indent_id = request.args['indent_id']
         cur = mysql.connection.cursor()
         indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
-                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken, indents.difference_cost_sheet, indents.comments, indents.attachment FROM indents INNER JOIN projects on indents.id=' + str(
+                        ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken, indents.difference_cost_sheet, indents.comments, indents.attachment, indents.po_number FROM indents INNER JOIN projects on indents.id=' + str(
             indent_id) + ' AND indents.project_id=projects.project_id ' \
                          ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
         cur.execute(indents_query)
@@ -2927,9 +2927,11 @@ def upload_po_for_indent():
         indent_id = request.form['indent_id']
 
         difference_cost = request.form['difference_cost']
+        po_number = request.form['po_number']
+        
         cur = mysql.connection.cursor()
-        query = 'UPDATE indents set difference_cost=%s WHERE id=%s'
-        values = (difference_cost, indent_id)
+        query = 'UPDATE indents set difference_cost=%s, po_number=%s WHERE id=%s'
+        values = (difference_cost, po_number, indent_id)
         cur.execute(query, values)
         mysql.connection.commit()
 

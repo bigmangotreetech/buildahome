@@ -393,6 +393,10 @@ $(document).ready(function () {
         e.preventDefault()
         const diff_cost = $('.difference_cost').val()
         $('.difference_cost_field').val(diff_cost)
+
+        const po_number = $('.po_number').val()
+        $('.po_number_field').val(po_number)
+        
         $('.indent-upload-submit').parents('form').submit()
     })
 

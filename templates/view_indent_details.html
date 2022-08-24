@@ -80,6 +80,18 @@
             </div>
             <div class="row mx-0 mb-3 form-group">
                 <div class="col-6">
+                    PO number
+                </div>  
+                <div class="col-6">
+                    {% if result[10]=='approved_by_qs' %}
+                    <input type="number" class="form-control po_number mb-2" value="{{result[16]}}">
+                    {% else %}
+                    <input type="number" class="form-control po_number mb-2" value="{{result[16]}}" readonly>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
                     Difference cost
                 </div>  
                 <div class="col-6">
@@ -184,6 +196,7 @@
                 {% endif %}
 
                 <input type="hidden" class="difference_cost_field" name="difference_cost">
+                <input type="hidden" class="po_number_field" name="po_number">
                 
                 <input type="file" name="difference_cost_sheet"  accept="application/pdf,image/*">
                 <div class="row justify-content-start mx-0 my-5">
