@@ -8,7 +8,6 @@
 <div class="p-5 w-100 table-responsive">
 
     {% for coordinator_id in data %}
-    {{data[coordinator_id]['projects']}}
     {% if data[coordinator_id]['projects']|length %}
     <div class="p-2 mt-4 mb-2 border border-white bg-light w-100 btn text-left" data-toggle="collapse"
         data-target="#{{coordinator_id}}">
