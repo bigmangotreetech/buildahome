@@ -229,7 +229,6 @@ $(document).ready(function () {
                     }
                 }
             });
-
     })
 
     $(".update_trades_for_project").on('change', function () {

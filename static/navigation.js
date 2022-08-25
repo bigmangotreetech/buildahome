@@ -3,10 +3,19 @@ $(document).ready(function () {
     function initRedirects() {
         console.log('initRedirects')
         setTimeout(() => {
-            if(window.location.href.includes('view_users') && window.currentTab != 'view_users') {
+            if(window.location.href.includes('view_users') && window.currentTab == null) {
                 window.currentTab = 'view_users'
                 $('.view_users_nav_btn').trigger('click')
-            } 
+            } else if(window.location.href.includes('view_vendors') && window.currentTab == null) {
+                window.currentTab = 'view_vendors'
+                $('.view_vendors_nav_btn').trigger('click')
+            } else if(window.location.href.includes('enter_material') && window.currentTab == null) {
+                window.currentTab = 'enter_material'
+                $('.enter_material_nav_btn').trigger('click')
+            } else {
+                window.currentTab = null;
+            }
+
         },0)
     }
 
@@ -103,6 +112,132 @@ $(document).ready(function () {
                         }
                     }
                 });
+        })
+    }
+
+    function updateSlabArea(project_id) {
+        $.ajax({
+            url: '/erp/update_slab_area',
+            type: "POST",
+            dataType: 'json',
+            data: {
+                'project_id': project_id,
+            },
+            success: function (data) {
+                console.log(data)
+                $('.total_bua_summation').text(data)
+            }
+        });
+    }
+
+    
+    function showStandardMilestones() {
+        selected_trade = $("#trade").val()
+
+        if (selected_trade && $('.debit-note').length == 0) {
+            if (['civil','electrical','painting','plumbing'].includes(selected_trade.toLowerCase())) {
+                $('.bua-section').removeClass('d-none');
+                $('.cost-per-sqft-section').removeClass('d-none');
+                $('#wo_value').attr('readonly','readonly')
+            } else {
+                $('.bua-section').addClass('d-none');
+                $('.cost-per-sqft-section').addClass('d-none');
+                $('#wo_value').removeAttr('readonly')
+            }
+        } else {
+            $("#stage").empty()
+        }
+        project_id = $(".work_order_project_select").val()
+        if (selected_trade && selected_trade.trim() === '' || project_id.trim() === '') return false;
+        $('.milestones_section').find('.milestones_and_percentages_item').remove()
+        $.ajax({
+            url: '/erp/get_standard_milestones_and_percentages',
+            type: "POST",
+            dataType: 'json',
+            data: {
+                'trade': selected_trade,
+                'project_id': project_id
+            },
+            success: function (data) {
+                console.log(data)
+                if (data['message'] == 'success') {
+                    $('.error_message').addClass('d-none')
+                    $('.milestones_section').removeClass('d-none')
+                    $('.add-milestone-stage-btn').removeClass('d-none')
+                    const milestones_and_percentages = data['milestones_and_percentages']
+                    for (stage of Object.keys(milestones_and_percentages)) {
+                        if($('.debit-note').length) {
+                            $("#stage").append($("<option></option>")
+                            .attr("value", stage)
+                            .text(stage))
+                        }
+                        milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
+                        milestones_and_percentages_item.removeClass('template')
+                        milestones_and_percentages_item.find('.milestone-field').val(stage)
+                        milestones_and_percentages_item.find('.percentage-field').val(milestones_and_percentages[stage])
+                        milestones_and_percentages_item.removeClass('d-none')
+                        $('.milestones_section').append(milestones_and_percentages_item)
+                    }
+                } else {
+                    $('.error_message').text(data['message'])
+                    $('.error_message').removeClass('d-none')
+                    $('.milestones_section').addClass('d-none')
+                    $('.add-milestone-stage-btn').addClass('d-none')
+                }
+            }
+        });
+    }
+
+    function updateTradesForContractor() {
+        contractor_id = $('.work-order-select-contractor').val()
+        if (contractor_id.length) {
+            $(".work-order-trade-select select").empty()
+            $(".work-order-trade-select select").append($("<option></option>"))
+            $.ajax({
+                url: '/erp/update_trades_for_contractor',
+                type: "POST",
+                dataType: 'json',
+                data: { 'contractor_id': contractor_id },
+                success: function (data) {
+                    console.log(data)
+                    for (const trade of data) {
+                        $(".work-order-trade-select select").append($("<option></option>")
+                            .attr("value", trade)
+                            .text(trade))
+                    }
+                }
+            });
+        }
+    }
+    
+
+    function initCreateWorkorder() {
+        $(".work_order_project_select").on('change', function () {
+            const project_id = $(this).val()
+            if (project_id) updateSlabArea(project_id)
+        })
+        showStandardMilestones()
+        $('.work-order-select-contractor').on('change', updateTradesForContractor)
+        $(".work-order-trade-select select").on('change', showStandardMilestones)
+        $('.add-milestone-stage-btn').on('click', function () {
+            milestones_and_percentages_item = $('.milestones_and_percentages_item.template').clone()
+            milestones_and_percentages_item.removeClass('template')
+            milestones_and_percentages_item.removeClass('d-none')
+            $('.milestones_section').append(milestones_and_percentages_item)
+            return false
+        })
+        $('.create_work_order_submit').on('click', function(e) {
+            e.preventDefault();
+            percentage = 0;
+            $('.percentage-field').each(function(index, element) {
+                if (element.value)
+                percentage += parseFloat(element.value)
+            })
+            if (parseInt(percentage) != 100) {
+                alert(`Percentages add up to ${percentage.toString()}. Percentages need to add up to 100`)
+                return false;
+            }
+            $('.create_work_order_submit').parents('form').submit()
         })
     }
 
@@ -546,6 +681,7 @@ $(document).ready(function () {
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 initRedirects()
+                initCreateWorkorder();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()

@@ -738,7 +738,7 @@ def enter_material():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
-        return redirect('/erp/enter_material')
+        return redirect('/erp?action=enter_material')
 
 
 @app.route('/view_inventory', methods=['GET'])
@@ -1148,7 +1148,7 @@ def view_users():
 def contractor_registration():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/vendor_registration'
+        session['last_route'] = '/erp/contractor_registration'
         return redirect('/erp/login')
 
     if request.method == 'GET':
@@ -1321,7 +1321,7 @@ def vendor_registration():
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
         flash('Vendor registered', 'success')
-        return redirect('/erp/view_vendors')
+        return redirect('/erp?action=view_vendors')
 
 
 @app.route('/view_vendors', methods=['GET'])
