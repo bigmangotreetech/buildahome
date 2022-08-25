@@ -8,9 +8,16 @@ $(document).ready(function () {
             url: '/erp/create_project',
             type: "GET",        
             success: function (data) {                
-                $('.main-wrapper').html(data)
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
             },
         });
     })
+    
 
 });
