@@ -3,7 +3,10 @@ $(document).ready(function () {
     function initRedirects() {
         console.log('initRedirects')
         setTimeout(() => {
-            if(window.location.href.includes('view_users')) $('.view_users_nav_btn').trigger('click')
+            if(window.location.href.includes('view_users') && window.currentTab != 'view_users') {
+                window.currentTab = 'view_users'
+                $('.view_users_nav_btn').trigger('click')
+            } 
         },0)
     }
 
