@@ -30,7 +30,6 @@ $(document).ready(function () {
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
-                        initSearchProject()
                     }, 0)
                 })
             },
@@ -88,6 +87,8 @@ $(document).ready(function () {
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                        initSearchProject()
+
                     }, 0)
                 })
             },
