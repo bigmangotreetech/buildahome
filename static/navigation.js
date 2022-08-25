@@ -302,8 +302,107 @@ $(document).ready(function () {
             },
         });
     })
-    
 
+    $('.view_qs_approval_indents_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_qs_approval_indents',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.view_approved_indents_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_approved_indents',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.view_approved_POs_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_approved_POs',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    
+    $('.view_ph_approved_indents_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_ph_approved_indents',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+    
+    $('.view_deleted_indents_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_deleted_indents',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+    
+    
+    
+    
+    
     
     
 

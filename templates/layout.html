@@ -83,16 +83,12 @@
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Billing'] %}
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Indents</div>
-    <a href="/erp/view_qs_approval_indents"
-       class='nav-link {% if "/view_qs_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>Indents for QS</a>
-    <a href="/erp/view_approved_indents"
-       class='nav-link {% if "/view_approved_indents" in request.path %} active {% endif %}'>Indents for Purchase</a>
-    <a href="/erp/view_approved_POs" class='nav-link {% if "/view_approved_POs" in request.path %} active {% endif %}'>Unapproved POs</a>
+    <div class='nav-link clickable view_qs_approval_indents_nav_btn {% if "/view_qs_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>Indents for QS</div>
+    <div class='nav-link clickable view_approved_indents_nav_btn {% if "/view_approved_indents" in request.path %} active {% endif %}'>Indents for Purchase</div>
+    <div class='nav-link clickable view_approved_POs_nav_btn {% if "/view_approved_POs" in request.path %} active {% endif %}'>Unapproved POs</div>
     {% endif %}
-    <a href="/erp/view_ph_approved_indents" 
-        class='nav-link {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>Approved POs</a>
-    <a href="/erp/view_deleted_indents" 
-    class='nav-link {% if "/view_deleted_indents" in request.path %} active {% endif %}'>Deleted Indents</a>
+    <div class='nav-link clickable view_ph_approved_indents_nav_btn {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>Approved POs</div>
+    <div class='nav-link clickable view_deleted_indents_nav_btn {% if "/view_deleted_indents" in request.path %} active {% endif %}'>Deleted Indents</div>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
