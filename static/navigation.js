@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     function initSearchProject() {
+        console.log('initSearchProject')
         $('.search-project-field').on('keydown', function() {
             let searchValue = $('.search-project-field').val();
             if(searchValue.trim().length == 0) $('.project-card').parent().addClass('d-none')
