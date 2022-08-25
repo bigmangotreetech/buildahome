@@ -12,7 +12,7 @@ $(document).ready(function () {
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
-                        $('.select2-search__field').get(0).focus()
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
                     }, 0)
                 })
             },
