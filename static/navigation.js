@@ -31,7 +31,6 @@ $(document).ready(function () {
                     url: '/erp/kyp_material?project_id='+project.toString(),
                     type: "GET",        
                     success: function (data) {     
-                        console.log(data)   
                         $('.main-wrapper').html(data);
                         $('.select2').select2();
                         $('.select2').on('click', function(){
