@@ -32,6 +32,7 @@ $(document).ready(function () {
                     type: "GET",        
                     success: function (data) {     
                         $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                         $('.select2').select2();
                         initKypMaterial();
                         $('.select2').on('click', function(){
@@ -55,6 +56,7 @@ $(document).ready(function () {
                     type: "GET",        
                     success: function (data) {        
                         $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                         $('.select2').select2();
                         initViewInventory();
                         $('.select2').on('click', function(){
@@ -79,6 +81,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {         
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -99,6 +102,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -119,6 +123,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -139,6 +144,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 initSearchProject()
                 initBlockProject()
@@ -161,6 +167,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -181,6 +188,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -202,6 +210,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -222,6 +231,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -243,6 +253,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 initKypMaterial();
                 $('.select2').on('click', function(){
@@ -264,6 +275,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -284,6 +296,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -304,6 +317,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 initViewInventory();
                 $('.select2').on('click', function(){
@@ -325,6 +339,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -345,6 +360,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -365,6 +381,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -386,6 +403,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -406,6 +424,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
