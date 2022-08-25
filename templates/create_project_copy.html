@@ -1,0 +1,292 @@
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <form name="myForm" action="/erp/create_project" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h4>Create project</h4>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project_number">Project number</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_number" oninput="this.value = onInputNumberInt(this.value)" id="project_number" class="form-control" required>
+                        <span name="project_number_error" class="d-none" id="project_number_error">Please Enter Project Number</span>  
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project_name">Project name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_name" id="project_name" class="form-control" required>
+                        <span name="project_name_error" class="d-none" id="project_name_error">Please Enter Project Name</span> 
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="client_name">Client name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="client_name" id="client_name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="client_phone">Client phone</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="client_phone" id="client_phone" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="package_type">Package type</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="package_type" id="package_type" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="Essential">Essential</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Luxury">Luxury</option>
+                            <option value="Green Home">Green Home</option>
+                            <option value="Others">Others</option>
+
+                        </select>
+                        <br/>
+                        <span name="package_type_error" class="d-none" id="package_type_error">Please Select Package Type</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="no_of_floors">No of Floors</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="no_of_floors" id="no_of_floors" class="form-control select2" onchange="handleNoOfFloorsChange(this.value)" required>
+                            <option value="">Select</option>
+                            <option value="G + 1">G + 1</option>
+                            <option value="G + 2">G + 2</option>
+                            <option value="G + 3">G + 3</option>
+                            <option value="G + 4">G + 4</option>
+
+                        </select>
+                        <br/>
+                        <span name="no_of_floors_error" class="d-none" id="no_of_floors_error">Please Select No. of floors</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project_value">Project value</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_value" id="project_value" oninput="this.value = onInputNumberInt(this.value)" class="form-control" required>
+                        <span name="project_value_error" class="d-none" id="project_value_error">Please Enter Project Value</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="project_location">Project location</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="project_location" id="project_location" class="form-control" required>
+                        <span name="project_location_error" class="d-none" id="project_location_error">Please Enter Project Location</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="date_of_initial_advance">Date of initial advance</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="date" name="date_of_initial_advance" id="date_of_initial_advance"
+                               class="form-control" required>
+                        <span name="date_of_initial_advance_error" class="d-none" id="date_of_initial_advance_error">Please Select Date of initial advance</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="date_of_agreement">Date of Agreement</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="date" name="date_of_agreement" id="date_of_agreement" class="form-control"
+                               required>
+                        <span name="date_of_agreement_error" class="d-none" id="date_of_agreement_error">Please Select Date of Agreement</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="sales_executive">Sales Executive</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="sales_executive" id="sales_executive" class="form-control select2" required>
+                            <option value=""></option>
+                            {% for i in sales_executives %}
+                            <option value="{{i[0]}}">{{i[1]}}</option>
+                            {% endfor %}
+                        </select>
+                        <br/>
+                        <span name="sales_executive_error" class="d-none" id="sales_executive_error">Please Select Sales Executive</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="site_area">Site Area in Sqft</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="site_area" id="site_area" class="form-control" required>
+                        <span name="site_area_error" class="d-none" id="site_area_error">Please Enter Site Area</span>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="basement_slab_area">Basement Slab Area (If any)</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="basement_slab_area" oninput="this.value = onInputNumberFloat(this.value)" id="basement_slab_area" class="form-control" >
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="gf_slab_area">GF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="gf_slab_area" oninput="this.value = onInputNumberFloat(this.value)" id="gf_slab_area" class="form-control" required>
+                        <span name="gf_slab_area_error" class="d-none" id="gf_slab_area_error">Please Enter GF Slab Area</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="ff_slab_area">FF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="ff_slab_area" oninput="this.value = onInputNumberFloat(this.value)" id="ff_slab_area" class="form-control" required>
+                        <span name="ff_slab_area_error" class="d-none" id="ff_slab_area_error">Please Enter FF Slab Area</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="sf_slab_area">SF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="sf_slab_area" oninput="this.value = onInputNumberFloat(this.value)" id="sf_slab_area" class="form-control" required>
+                        <span name="sf_slab_area_error" class="d-none" id="sf_slab_area_error">Please Enter SF Slab Area</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="tf_slab_area">TF Slab Area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="tf_slab_area" oninput="this.value = onInputNumberFloat(this.value)" id="tf_slab_area" class="form-control" required>
+                        <span name="tf_slab_area_error" class="d-none" id="tf_slab_area_error">Please Enter TF Slab Area</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="tef_slab_area">Te.F Slab area</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="tef_slab_area" oninput="this.value = onInputNumberFloat(this.value)" id="tef_slab_area" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="shr_oht">SHR & OHT</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="shr_oht" id="shr_oht" class="form-control" required>
+                        <span name="shr_oht_error" class="d-none" id="shr_oht_error">Please Enter SHR & OHT</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="elevation_details">Elevation details</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="hidden" name="elevation_details" id="elevation_details"
+                               class="elevation_details_input">
+                        <div class="elevation-details-section">
+                            <input type="text" class="form-control elevation-details d-none mb-2">
+
+                        </div>
+
+                        <button class="btn add-elevation-detail">+</button>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="additional_cost">Additional cost</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="hidden" name="additional_cost" id="additional_cost"
+                               class="additional_cost_input">
+                        <div class="additional-cost-section">
+                            <input type="text" class="form-control additional-cost d-none mb-2">
+
+                        </div>
+
+                        <button class="btn add-additional-cost">+</button>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="paid_percentage">Percentage paid</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="paid_percentage" id="paid_percentage" class="form-control select2" required>
+                            <option value=""></option>
+                            <option value="0">0%</option>%</option>
+                            <option value="2.5">2.5%</option>
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="12">12%</option>
+
+                        </select>
+                        <span name="paid_percentage_error" class="d-none" id="paid_percentage_error">Please Select Percentage paid</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="comments">Comments</label>
+                    </div>
+                    <div class="col-6">
+                        <textarea name="comments" id="comments" rows="3" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="cost_sheet">Cost sheet</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="file" name="cost_sheet" id="cost_sheet" accept="application/pdf" required>
+                        <span name="cost_sheet_error" class="d-none" id="cost_sheet_error">Please Upload Cost sheet</span>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="site_inspection_report">Site inspection report</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="file" name="site_inspection_report" id="site_inspection_report" accept="application/pdf" required>
+                        <span name="site_inspection_report_error" class="d-none" id="site_inspection_report_error">Please Upload Site inspection report</span>
+                    </div>
+                </div>
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button id="create_project_submit" class="btn btn-dark btn-block bg-indigo text-white submit-create-project-form">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
