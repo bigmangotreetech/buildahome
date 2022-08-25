@@ -5,12 +5,10 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');
         $('.main-wrapper').html('')
-        $('.main-wrapper').css('background','rgb(216 216 216)')
         $.ajax({
             url: '/erp/create_project',
             type: "GET",        
             success: function (data) {         
-                $('.main-wrapper').css('background','white')       
                 $('.main-wrapper').html(data);
                 $('.select2').select2();
                 $('.select2').on('click', function(){
@@ -26,12 +24,10 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
-        $('.main-wrapper').css('background','rgb(216 216 216)')
         $.ajax({
             url: '/erp/unapproved_projects',
             type: "GET",        
             success: function (data) {        
-                $('.main-wrapper').css('background','white')          
                 $('.main-wrapper').html(data);
                 $('.select2').select2();
                 $('.select2').on('click', function(){
