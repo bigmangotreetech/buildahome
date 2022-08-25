@@ -763,8 +763,12 @@ def view_inventory():
             procurement_query = 'SELECT * from procurement WHERE project_id=' + str(
                 project_id)
         else:
-            procurement_query = "SELECT * from procurement WHERE project_id=" + str(
-                project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+            if str(material) == 'Cement':
+                procurement_query = "SELECT * from procurement WHERE project_id=" + str(
+                    project_id) + " AND material='Cement'"
+            else:    
+                procurement_query = "SELECT * from procurement WHERE project_id=" + str(
+                    project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         cur.execute(procurement_query)
         procurements = cur.fetchall()
         for i in projects:
@@ -980,13 +984,13 @@ def shifting_entry():
 
         if result[0] is None or (result is not None and result[0] is not None and int(quantity) < int(result[0])):
             deduction_query = "INSERT into procurement (material, description, project_id," \
-                          "quantity, unit, difference_cost) values (%s, %s, %s, %s, %s, %s)"
-            values = (material, description+' to '+to_project_name+' on '+timestamp, from_project, int(quantity) * -1, unit, negative_diff)
+                          "quantity, unit, difference_cost, created_at) values (%s, %s, %s, %s, %s, %s, %s)"
+            values = (material, description+' to '+to_project_name+' on '+timestamp, from_project, int(quantity) * -1, unit, negative_diff, timestamp)
             cur.execute(deduction_query, values)
 
             addition_query = "INSERT into procurement (material, description, project_id," \
-                            "quantity, unit, difference_cost) values (%s, %s,  %s, %s, %s, %s)"
-            values = (material, description+" from "+from_project_name+' on '+timestamp, to_project, quantity, unit, positive_diff)
+                            "quantity, unit, difference_cost, created_at) values (%s, %s,  %s, %s, %s, %s, %s)"
+            values = (material, description+" from "+from_project_name+' on '+timestamp, to_project, quantity, unit, positive_diff, timestamp)
             cur.execute(addition_query, values)
 
             mysql.connection.commit()
@@ -1332,7 +1336,7 @@ def view_vendors():
         return redirect(request.referrer)
 
     cur = mysql.connection.cursor()
-    vendors_query = 'SELECT id, name, code, contact_no FROM vendors ORDER by name'
+    vendors_query = 'SELECT id, name, code, contact_no FROM vendors ORDER by code'
     cur.execute(vendors_query)
     result = cur.fetchall()
     return render_template('view_vendors.html', vendors=result)

@@ -156,5 +156,6 @@ materials = [
         'Brick cladding',
         'Plain glass',
         'Toughned glass',
-        'Polycorbonate sheet'
+        'Polycorbonate sheet',
+        'Laterite stone'
     ]        
