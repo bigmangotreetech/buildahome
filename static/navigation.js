@@ -1,5 +1,20 @@
 $(document).ready(function () {
 
+    function initSearchProject() {
+        $('.search-project-field').on('keydown', function() {
+            let searchValue = $('.search-project-field').val();
+            if(searchValue.trim().length == 0) $('.project-card').parent().addClass('d-none')
+            else {
+                $('.project-card').parent().addClass('d-none')
+                $('.project-card').each(function(index, element) {
+                    if($(element).find('.project-name').text().toLowerCase().trim().includes(searchValue.toLowerCase().trim())) {               
+                        $(element).parent().removeClass('d-none')
+                    }
+                })
+            }
+        })
+    }
+
 
     $('.create_project_nav_btn').on('click', function(){
         $('.nav-link').removeClass('active');
@@ -14,6 +29,7 @@ $(document).ready(function () {
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                        initSearchProject()
                     }, 0)
                 })
             },
