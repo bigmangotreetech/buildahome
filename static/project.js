@@ -1,12 +1,13 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
 $('.search-project-field').on('keydown', function() {
-    let searchValue = $(this).val();
-    if(searchValue.trim().length) $('.project-card').show()
+    let searchValue = $('.search-project-field').val();
+    if(searchValue.trim().length == 0) $('.project-card').parent().addClass('d-none')
     else {
+        $('.project-card').parent().addClass('d-none')
         $('.project-card').each(function(index, element) {
-            if(!$(element).find('.project-name').text().toLowerCase().trim().includes(searchValue.toLowerCase().trim())) {
-                $(element).hide()
+            if($(element).find('.project-name').text().toLowerCase().trim().includes(searchValue.toLowerCase().trim())) {               
+                $(element).parent().removeClass('d-none')
             }
         })
     }
