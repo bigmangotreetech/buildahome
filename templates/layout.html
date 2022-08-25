@@ -64,27 +64,20 @@
 
     {% if session['role'] in ['Super Admin','COO','Billing'] %}
     <div class="nav-section-header ">Users</div>
-    <a href='/erp/create_user {% if "/create_user" in request.path %} active {% endif %}' class='nav-link'>Create
-        user</a>
-    <a href='/erp/view_users {% if "/view_users" in request.path %} active {% endif %}' class='nav-link'>View users</a>
+    <div class='nav-link clickable create_user_nav_btn'>Create user</div>
+    <div class='nav-link clickable view_users_nav_btn'>View users</div>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Material</div>
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] %}
-    <a href="/erp/vendor_registration"
-       class='nav-link {% if "/vendor_registration" in request.path %} active {% endif %}'>Vendor Registration</a>
-    <a href="/erp/view_vendors" class='nav-link {% if "/view_vendors" in request.path %} active {% endif %}'>View
-        Vendors</a>
-    <a href="/erp/kyp_material" class='nav-link {% if "/kyp_material" in request.path %} active {% endif %}'>KYP For
-        material</a>
-    <a href="/erp/enter_material" class='nav-link {% if "/enter_material" in request.path %} active {% endif %}'>Enter
-        Material</a>
-    <a href="/erp/shifting_entry" class='nav-link {% if "/shifting_entry" in request.path %} active {% endif %}'>Shifting
-        Entry</a>
+    <div class='nav-link clickable vendor_registration_nav_btn {% if "/vendor_registration" in request.path %} active {% endif %}'>Vendor Registration</div>
+    <div class='nav-link clickable view_vendors_nav_btn {% if "/view_vendors" in request.path %} active {% endif %}'>View Vendors</div>
+    <div class='nav-link clickable kyp_for_material_nav_btn {% if "/kyp_material" in request.path %} active {% endif %}'>KYP For material</div>
+    <div class='nav-link clickable enter_material_nav_btn {% if "/enter_material" in request.path %} active {% endif %}'>Enter Material</div>
+    <div class='nav-link clickable shifiting_entry_nav_btn {% if "/shifting_entry" in request.path %} active {% endif %}'>Shifting Entry</div>
     {% endif %}
-    <a href="/erp/view_inventory" class='nav-link {% if "/view_inventory" in request.path %} active {% endif %}'>View
-        inventory</a>
+    <div class='nav-link clickable view_inventory_nav_btn {% if "/view_inventory" in request.path %} active {% endif %}'>View inventory</div>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Billing'] %}

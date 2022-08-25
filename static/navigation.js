@@ -101,6 +101,171 @@ $(document).ready(function () {
             },
         });
     })
+
+    $('.create_user_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/create_user',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.view_users_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_users',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+
+    $('.vendor_registration_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/vendor_registration',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.view_vendors_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_vendors',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    
+    $('.kyp_for_material_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/kyp_material',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.enter_material_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/enter_material',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.shifiting_entry_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/shifting_entry',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.view_inventory_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $.ajax({
+            url: '/erp/view_inventory',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+    
+
+    
+    
+
+    
+
+    
+
+    
+    
     
 
 });

@@ -1,8 +1,21 @@
 $('#get_procurement').on('click', function(){
     const project = $("#project").val()
     const material = $("#material").val()
-    if(project.length && material.length)
-    window.location.href = '/erp/view_inventory?project_id='+project.toString()+'&material='+material.toString()
+    if(project.length && material.length) {
+        $.ajax({
+            url: '/erp/view_inventory?project_id='+project.toString()+'&material='+material.toString(),
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    }
 })
 
 
@@ -10,7 +23,19 @@ $('#get_procurement').on('click', function(){
 $("#update_kyp_material").on('click', function(){
     const project = $("#project").val()
     if (project.length) {
-        window.location.href = '/erp/kyp_material?project_id='+project.toString()
+        $.ajax({
+            url: '/erp/kyp_material?project_id='+project.toString(),
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
     }
 })
 
