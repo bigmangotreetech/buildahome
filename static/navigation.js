@@ -56,7 +56,7 @@ $(document).ready(function () {
                     type: "GET",        
                     success: function (data) {        
                         $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                        $('.main-wrapper').css('background','white')
                         $('.select2').select2();
                         initViewInventory();
                         $('.select2').on('click', function(){
@@ -67,6 +67,27 @@ $(document).ready(function () {
                     },
                 });
             }
+        })
+    }
+
+    function initEnterMaterial() {
+        $(".material-select").on('change', function() {
+            $(".vendor-select").empty()
+            $(".vendor-select").append($("<option></option>"))
+            const material_selected = $(this).val().trim()
+            $.ajax({
+                    url: '/erp/get_vendors_for_material',
+                    type: "POST",
+                    dataType: 'json',
+                    data: { 'material_selected': material_selected },
+                    success: function (data) {
+                        for (const vendor of data) {
+                            $(".vendor-select").append($("<option></option>")
+                                .attr("value", vendor[0])
+                                .text(vendor[1]))
+                        }
+                    }
+                });
         })
     }
 
@@ -276,6 +297,7 @@ $(document).ready(function () {
             success: function (data) {        
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
+                initEnterMaterial();
                 $('.select2').select2();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
