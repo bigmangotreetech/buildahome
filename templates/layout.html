@@ -59,10 +59,8 @@
     <div class='nav-link clickable unapproved_projects_nav_btn {% if "unapproved_projects" in request.path %} active {% endif %}'>Unapproved projects</div>
     {% endif %}
 
-    <a href="/erp/archived_projects" class='nav-link {% if "archived_projects" in request.path %} active {% endif %}'>Archived
-        Projects</a>
-    <a href="/erp/projects"
-       class='nav-link {% if "/projects" in request.path and "/projects_" not in request.path %} active {% endif %}'>Projects</a>
+    <div class='nav-link clickable archived_projects_nav_btn {% if "archived_projects" in request.path %} active {% endif %}'>Archived Projects</div>
+    <div class='nav-link clickable projects_nav_btn {% if "/projects" in request.path and "/projects_" not in request.path %} active {% endif %}'>Projects</div>
 
     {% if session['role'] in ['Super Admin','COO','Billing'] %}
     <div class="nav-section-header ">Users</div>
