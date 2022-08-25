@@ -1,6 +1,9 @@
 $(document).ready(function () {
 
-    if(window.location.href.includes('view_users')) $('.view_users_nav_btn').trigger('click')
+    function initRedirects() {
+        if(window.location.href.includes('view_users')) $('.view_users_nav_btn').trigger('click')
+    }
+    
 
     function initSearchProject() {
         console.log('initSearchProject')
@@ -34,8 +37,9 @@ $(document).ready(function () {
                     type: "GET",        
                     success: function (data) {     
                         $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                        $('.main-wrapper').css('background','white')
                         $('.select2').select2();
+                initRedirects()
                         initKypMaterial();
                         $('.select2').on('click', function(){
                             setTimeout(() => {
@@ -60,6 +64,7 @@ $(document).ready(function () {
                         $('.main-wrapper').html(data);
                         $('.main-wrapper').css('background','white')
                         $('.select2').select2();
+                initRedirects()
                         initViewInventory();
                         $('.select2').on('click', function(){
                             setTimeout(() => {
@@ -106,6 +111,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -127,6 +133,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -148,6 +155,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -169,6 +177,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 initSearchProject()
                 initBlockProject()
                 $('.select2').on('click', function(){
@@ -192,6 +201,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -213,6 +223,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -235,6 +246,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -256,6 +268,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -278,6 +291,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 initKypMaterial();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -301,6 +315,7 @@ $(document).ready(function () {
                 $('.main-wrapper').css('background','white')
                 initEnterMaterial();
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -322,6 +337,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -343,6 +359,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 initViewInventory();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
@@ -365,6 +382,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -386,6 +404,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -407,6 +426,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -429,6 +449,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -450,6 +471,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -471,6 +493,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -492,6 +515,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -513,6 +537,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.main-wrapper').css('background','white')
                 $('.select2').select2();
+                initRedirects()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
