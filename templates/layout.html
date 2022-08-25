@@ -94,13 +94,9 @@
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
 
     <div class="nav-section-header">Work orders</div>
-    <a href="/erp/contractor_registration"
-       class='nav-link {% if "/contractor_registration" in request.path %} active {% endif %}'>Contractor
-        Registration</a>
-    <a href="/erp/view_contractors" class='nav-link {% if "/view_contractors" in request.path  or "/edit_contractor" in request.path %} active {% endif %}'>View
-        Contractors</a>
-    <a href="/erp/create_work_order" class='nav-link {% if "/create_work_order" in request.path %} active {% endif %}'>Create
-        work order</a>
+    <div class='nav-link clickable contractor_registration_nav_btn {% if "/contractor_registration" in request.path %} active {% endif %}'>Contractor Registration</div>
+    <div class='nav-link clickable view_contractors_nav_btn {% if "/view_contractors" in request.path  or "/edit_contractor" in request.path %} active {% endif %}'>View Contractors</div>
+    <div class='nav-link clickable create_work_order_nav_btn {% if "/create_work_order" in request.path %} active {% endif %}'>Create work order</div>
     <a href="/erp/view_unsigned_work_order"
        class='nav-link {% if "/view_unsigned_work_order" in request.path %} active {% endif %}'>Unsigned work order</a>
 

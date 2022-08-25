@@ -434,6 +434,74 @@ $(document).ready(function () {
             },
         });
     })
+
+    $('.contractor_registration_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
+        $.ajax({
+            url: '/erp/contractor_registration',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.view_contractors_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
+        $.ajax({
+            url: '/erp/view_contractors',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    $('.create_work_order_nav_btn').on('click', function(){
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');        
+        $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
+        $.ajax({
+            url: '/erp/create_work_order',
+            type: "GET",        
+            success: function (data) {        
+                $('.main-wrapper').html(data);
+                $('.main-wrapper').css('background','white')
+                $('.select2').select2();
+                $('.select2').on('click', function(){
+                    setTimeout(() => {
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                    }, 0)
+                })
+            },
+        });
+    })
+
+    
+
+
+    
     
     
     
