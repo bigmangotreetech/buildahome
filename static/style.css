@@ -46,7 +46,7 @@
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 /* Handle on hover */
@@ -96,10 +96,10 @@ body {
 }
 
 .main-wrapper {
-    width: calc(100% - 270px);
-    left: 270px;
-    top: 70px;
-    height: calc(100% - 72px);
+    width: calc(100% - 250px);
+    left: 250px;
+    top: 67px;
+    height: calc(100% - 67px);
     overflow-y: auto;
     position: absolute;
 }
