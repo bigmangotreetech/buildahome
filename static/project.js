@@ -1,20 +1,5 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
-
-
-    $('.create_project_nav_btn').on('click', function(){
-        $.ajax({
-            url: '/erp/create_project_copy',
-            type: "GET",
-        
-            success: function (data) {
-                
-                $('.main-wrapper').html(data)
-            },
-        });
-    })
-
-
     $('.delete_bill').on('click',function(){
         if (confirm('Are you sure you want to delete this bill')) {
             let btn = $(this) 

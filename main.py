@@ -3185,22 +3185,6 @@ def create_project():
         return redirect(request.referrer)
 
 
-@app.route('/create_project_copy', methods=['GET', 'POST'])
-def create_project_copy():
-    if 'email' not in session:
-        flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/create_project'
-        return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Planning']:
-        flash('You do not have permission to view that page', 'danger')
-        return redirect(request.referrer)
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
-        cur.execute(sales_executives_query)
-        result = cur.fetchall()
-        return render_template('create_project_copy.html', sales_executives=result)
-
 
 @app.route('/edit_project', methods=['GET', 'POST'])
 def edit_project():

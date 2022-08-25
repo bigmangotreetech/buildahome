@@ -1,3 +1,7 @@
+.clickable:hover {
+  cursor: pointer;
+}
+
 .select2-search__field {
     border: none !important;
     outline: none !important;
