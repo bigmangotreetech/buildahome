@@ -3199,9 +3199,9 @@ def create_project_copy():
         sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
         cur.execute(sales_executives_query)
         result = cur.fetchall()
-        return render_template('create_project.html', sales_executives=result)
+        return render_template('create_project_copy.html', sales_executives=result)
 
-        
+
 @app.route('/edit_project', methods=['GET', 'POST'])
 def edit_project():
     if 'email' not in session:
