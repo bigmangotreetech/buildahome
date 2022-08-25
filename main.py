@@ -1046,7 +1046,7 @@ def create_user():
             cur.execute(new_user_query, values)
             flash('User created successfully', 'success')
         mysql.connection.commit()
-        return redirect('/erp/view_users')
+        return redirect('/erp?action=view_users')
 
 
 @app.route('/edit_user', methods=['GET', 'POST'])

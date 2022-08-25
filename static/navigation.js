@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    if(window.location.href.includes('view_users')) $('.view_users_nav_btn').trigger('click')
+
     function initSearchProject() {
         console.log('initSearchProject')
         $('.search-project-field').on('keydown', function() {
