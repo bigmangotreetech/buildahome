@@ -73,6 +73,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/create_project',
             type: "GET",        
@@ -92,6 +93,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/unapproved_projects',
             type: "GET",        
@@ -111,6 +113,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/archived_projects',
             type: "GET",        
@@ -130,6 +133,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/projects',
             type: "GET",        
@@ -151,6 +155,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/create_user',
             type: "GET",        
@@ -170,6 +175,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_users',
             type: "GET",        
@@ -190,6 +196,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/vendor_registration',
             type: "GET",        
@@ -209,6 +216,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_vendors',
             type: "GET",        
@@ -229,6 +237,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/kyp_material',
             type: "GET",        
@@ -249,6 +258,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/enter_material',
             type: "GET",        
@@ -268,6 +278,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/shifting_entry',
             type: "GET",        
@@ -287,6 +298,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_inventory',
             type: "GET",        
@@ -307,6 +319,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_qs_approval_indents',
             type: "GET",        
@@ -326,6 +339,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_approved_indents',
             type: "GET",        
@@ -345,6 +359,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_approved_POs',
             type: "GET",        
@@ -365,6 +380,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_ph_approved_indents',
             type: "GET",        
@@ -384,6 +400,7 @@ $(document).ready(function () {
         $('.nav-link').removeClass('active');
         $(this).addClass('active');        
         $('.main-wrapper').html('')
+        $(".main-wrapper").css({background:'linear-gradient(90deg, rgba(173,173,173,1) 0%, rgba(255,255,255,1) 70%)'});
         $.ajax({
             url: '/erp/view_deleted_indents',
             type: "GET",        
