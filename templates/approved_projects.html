@@ -75,10 +75,12 @@
 <div class="p-5 w-100 row m-0">
     {% for project in projects %}
     <div class="col-sm-12 col-md-6 col-lg-4">
-        <div class="d-flex flex-wrap">
+        
             <div class="project-card p-3">
-                <div class="project-number p-2 mb-2">{{project[2]}}</div>
-                <div class="project-name ml-2 my-auto">{{project[1]}}</div>
+                <div class="d-flex flex-wrap">
+                    <div class="project-number p-2 mb-2">{{project[2]}}</div>
+                    <div class="project-name ml-2 my-auto">{{project[1]}}</div>
+                </div>                
             </div>
             <a href="/erp/edit_team?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn"><i class="fa fa-user-circle-o mr-2"></i><span class="my-auto">Team</span></a>
             <a href="/erp/project_notes?project_id={{project[0]}}" class="d-block mt-1 ml-3 pt-2 d-flex comments-btn"><i class="fa fa-comments-o mr-2"></i><span class="my-auto">Comments & notes</span></a>
@@ -91,7 +93,6 @@
                             
                 <a class="px-3 py-2 mt-4 d-block ml-auto view-details" href="/erp/view_project_details?project_id={{project[0]}}" >View details</a>
             </div>
-        </div>
     </div>
     {% endfor %}
 </div>
