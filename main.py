@@ -3324,12 +3324,12 @@ def approved_projects():
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning',
                                        'Sales Executive', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
-                approved_projects_query = 'SELECT project_id, project_name, project_number, blocked from projects WHERE is_approved=1 AND archived=0 ' \
+                approved_projects_query = 'SELECT project_id, project_name, project_number, blocked, client_phone from projects WHERE is_approved=1 AND archived=0 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(approved_projects_query)
                 result = cur.fetchall()
             else:
-                approved_projects_query = 'SELECT project_id, project_name, project_number, blocked from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
+                approved_projects_query = 'SELECT project_id, project_name, project_number, blocked, client_phone from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
                 cur.execute(approved_projects_query)
                 result = cur.fetchall()
         return render_template('approved_projects.html', projects=result)
