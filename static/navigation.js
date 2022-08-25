@@ -23,6 +23,50 @@ $(document).ready(function () {
         })
     }
 
+    function initKypMaterial() {
+        $("#update_kyp_material").on('click', function(){
+            const project = $("#project").val()
+            if (project.length) {
+                $.ajax({
+                    url: '/erp/kyp_material?project_id='+project.toString(),
+                    type: "GET",        
+                    success: function (data) {     
+                        console.log(data)   
+                        $('.main-wrapper').html(data);
+                        $('.select2').select2();
+                        $('.select2').on('click', function(){
+                            setTimeout(() => {
+                                if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                            }, 0)
+                        })
+                    },
+                });
+            }
+        })
+    }
+
+    function initViewInventory() {
+        $('#get_procurement').on('click', function(){
+            const project = $("#project").val()
+            const material = $("#material").val()
+            if(project.length && material.length) {
+                $.ajax({
+                    url: '/erp/view_inventory?project_id='+project.toString()+'&material='+material.toString(),
+                    type: "GET",        
+                    success: function (data) {        
+                        $('.main-wrapper').html(data);
+                        $('.select2').select2();
+                        $('.select2').on('click', function(){
+                            setTimeout(() => {
+                                if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
+                            }, 0)
+                        })
+                    },
+                });
+            }
+        })
+    }
+
 
     $('.create_project_nav_btn').on('click', function(){
         $('.nav-link').removeClass('active');
@@ -190,6 +234,7 @@ $(document).ready(function () {
             success: function (data) {        
                 $('.main-wrapper').html(data);
                 $('.select2').select2();
+                initKypMaterial();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
@@ -247,6 +292,7 @@ $(document).ready(function () {
             success: function (data) {        
                 $('.main-wrapper').html(data);
                 $('.select2').select2();
+                initViewInventory();
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
