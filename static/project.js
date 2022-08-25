@@ -1,5 +1,17 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {
+$('.search-project-field').on('keydown', function() {
+    let searchValue = $(this).val();
+    if(searchValue.trim().length) $('.project-card').show()
+    else {
+        $('.project-card').each(function(index, element) {
+            if(!$(element).find('.project-name').text().toLowerCase().trim().includes(searchValue.toLowerCase().trim())) {
+                $(element).hide()
+            }
+        })
+    }
+})
+
     $('.delete_bill').on('click',function(){
         if (confirm('Are you sure you want to delete this bill')) {
             let btn = $(this) 
