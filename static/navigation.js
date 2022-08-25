@@ -84,11 +84,10 @@ $(document).ready(function () {
             success: function (data) {        
                 $('.main-wrapper').html(data);
                 $('.select2').select2();
+                initSearchProject()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
-                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
-                        initSearchProject()
-
+                        if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()                        
                     }, 0)
                 })
             },
