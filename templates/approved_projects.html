@@ -60,7 +60,7 @@
 
     .fa-comments-o {
         font-size: 25px;
-        color: #4735dc;
+        color: #000000;
     }
 
     .comments-btn {
@@ -92,7 +92,7 @@
                     {% if project[3] == 1 %}                
                     <a href="/erp/unblock_project?project_id={{project[0]}}" class="d-block mt-1 ml-3 pt-2 d-flex block-btn block-project clickable"><i class="fa fa-ban mr-2"></i><span class="my-auto">Unblock</span></a>                
                     {% else %}
-                    <div data-project-id="{{project[0]}}" data-toggle="modal" data-target="#block-modal" class="d-block mt-1 ml-3 pt-2 d-flex block-btn block-project clickable"><i class="fa fa-ban mr-2"></i><span class="my-auto">Block</span></div>                
+                    <div data-project-id="{{project[0]}}" data-toggle="modal" data-target="#block-modal" class="d-block my-auto mt-1 ml-3 pt-2 d-flex block-btn block-project clickable"><i class="fa fa-ban mr-2"></i><span class="my-auto">Block</span></div>                
                     {% endif %}
                                 
                     <a class="px-3 py-2 mt-4 d-block ml-auto view-details" href="/erp/view_project_details?project_id={{project[0]}}" >View details</a>
