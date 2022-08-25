@@ -52,7 +52,7 @@
 
     <div class="nav-section-header">Project</div>
     {% if session['role'] in ['Super Admin','COO','Sales Executive','Billing','Planning'] %}
-    <div class='nav-link create_project_nav_btn {% if "create_project" in request.path %} active {% endif %}'>Create project</div>
+    <div class='nav-link clickable create_project_nav_btn {% if "create_project" in request.path %} active {% endif %}'>Create project</div>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','Billing'] %}
@@ -223,6 +223,7 @@
 <script src="{{ url_for('static', filename='project.js') }}"></script>
 <script src="{{ url_for('static', filename='erp.js') }}"></script>
 <script src="{{ url_for('static', filename='inventory.js') }}"></script>
+<script src="{{ url_for('static', filename='navigation.js') }}"></script>
 {% block scripts %}{% endblock %}
 
 </body>
