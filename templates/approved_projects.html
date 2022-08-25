@@ -1,10 +1,101 @@
 {% block content %}
+<style>
+    .project-number {
+        min-width: 40px;
+        background: #207d20;
+        color: white;
+        font-weight: 500;
+        border-radius: 50%;
+        height: 40px;
+        display: flex;
+        text-align: center;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid black;
+        max-width: fit-content
+    }
+    .project-card {
+        border-radius: 5px;
+        box-shadow: 0px 0px 8px lightgrey;
+    }
+    .project-name {
+        font-weight: 500;
+    }
+    .view-details {
+        color: #000000;
+        background: #dddddd;
+        width: fit-content;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 500;
+    }
+
+    a:hover {
+        font-size: 12px;
+        transition: all .3s;
+        text-decoration: none;
+    }
+
+    .fa-user-circle-o {
+        font-size: 25px;
+        color: #4735dc;
+    }
+
+    .team-btn {
+        font-size: 12px;
+        font-weight: 500;
+        color: #4735dc;
+    }
+
+    .fa-ban {
+        font-size: 25px;
+        color: #dc3545;
+    }
+
+    .block-btn {
+        font-size: 12px;
+        font-weight: 500;
+        color: #dc3545;
+    }
+
+    .comments-btn {
+        font-size: 12px;
+        font-weight: 500;
+        color: #000000;
+        border-top: 1px solid #e9e9e9;
+    }
+
+</style>
+
 <div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
     <div class="col-12">
         <h4>Projects</h4>
     </div>
 </div>
-<div class="p-5 w-100 table-responsive">
+<div class="p-5 w-100 row m-0">
+    {% for project in projects %}
+    <div class="col-sm-12 col-md-6 col-lg-4">
+        <div class="d-flex flex-wrap">
+            <div class="project-card p-3">
+                <div class="project-number p-2 mb-2">{{project[2]}}</div>
+                <div class="project-name ml-2 my-auto">{{project[1]}}</div>
+            </div>
+            <a href="/erp/edit_team?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn"><i class="fa fa-user-circle-o mr-2"></i><span class="my-auto">Team</span></a>
+            <a href="/erp/project_notes?project_id={{project[0]}}" class="d-block mt-1 ml-3 pt-2 d-flex comments-btn"><i class="fa fa-comments-o mr-2"></i><span class="my-auto">Comments & notes</span></a>
+            <div class="d-flex w-100 justify-content-between">
+                {% if project[3] == 1 %}                
+                <a href="/erp/unblock_project?project_id={{project[0]}}" class="d-block mt-1 ml-3 pt-2 d-flex block-btn block-project clickable"><i class="fa fa-ban mr-2"></i><span class="my-auto">Unblock</span></a>                
+                {% else %}
+                <div data-project-id="{{project[0]}}" data-toggle="modal" data-target="#block-modal" class="d-block mt-1 ml-3 pt-2 d-flex block-btn block-project clickable"><i class="fa fa-ban mr-2"></i><span class="my-auto">Block</span></a>                
+                {% endif %}
+                            
+                <a class="px-3 py-2 mt-4 d-block ml-auto view-details" href="/erp/view_project_details?project_id={{project[0]}}" >View details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="p-5 w-100 table-responsive d-none">
     <table class="table table-striped">
         <thead>
         <tr>
