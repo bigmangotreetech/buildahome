@@ -16,6 +16,13 @@ $(document).ready(function () {
         })
     }
 
+    function initBlockProject() {
+        $('.block-project').on('click', function() {
+            project_id = $(this).attr('data-project-id')
+            $('.project_id').val(project_id)
+        })
+    }
+
 
     $('.create_project_nav_btn').on('click', function(){
         $('.nav-link').removeClass('active');
@@ -85,6 +92,7 @@ $(document).ready(function () {
                 $('.main-wrapper').html(data);
                 $('.select2').select2();
                 initSearchProject()
+                initBlockProject()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()                        
