@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     function initRedirects() {
+        console.log('initRedirects')
         if(window.location.href.includes('view_users')) $('.view_users_nav_btn').trigger('click')
     }
     
