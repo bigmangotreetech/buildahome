@@ -26,7 +26,8 @@ $("#update_kyp_material").on('click', function(){
         $.ajax({
             url: '/erp/kyp_material?project_id='+project.toString(),
             type: "GET",        
-            success: function (data) {        
+            success: function (data) {     
+                console.log(data)   
                 $('.main-wrapper').html(data);
                 $('.select2').select2();
                 $('.select2').on('click', function(){
