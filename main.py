@@ -1099,7 +1099,7 @@ def edit_user():
             cur.execute(update_query, values)
             flash('User updated', 'success')
             mysql.connection.commit()
-            return redirect('/erp/view_users')
+            return redirect('/erp?action=view_users')
 
 
 @app.route('/delete_user', methods=['GET'])
@@ -2780,7 +2780,7 @@ def rollback_indent_to_qs():
         cur.execute(query, ('approved',indent_id))
         mysql.connection.commit()
         flash('Indent rolled back to qs','success')
-        return redirect('/erp/view_qs_approval_indents')
+        return redirect('/erp?action=view_qs_approval_indents')
 
 @app.route('/rollback_indent_by_ph', methods=['GET'])
 def rollback_indent_by_ph():
