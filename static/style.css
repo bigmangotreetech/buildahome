@@ -103,7 +103,7 @@ body {
     position: absolute;
 }
 .nav-link.active {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 500;
     color: greenyellow !important
 }
@@ -112,9 +112,9 @@ body {
 .nav-link {
     display: block;
     color: white !important;
-    padding: 10px !important;
+    padding: 6px !important;
     transition: all .3s;
-    font-size: 14px;
+    font-size: 12px;
     width: fit-content;
 }
 
@@ -124,7 +124,7 @@ body {
 
 .nav-section-header {
     color: white;
-    margin: 0px 10px;
+    margin: 0px 6px;
     margin-top: 30px;
     width: fit-content;
     border-bottom: 1px solid white;
