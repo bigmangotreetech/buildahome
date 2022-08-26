@@ -3,16 +3,19 @@ $(document).ready(function () {
     function initRedirects() {
         console.log('initRedirects')
         setTimeout(() => {
-            if(window.location.href.includes('view_users') && window.currentTab == null) {
+            if(window.location.href.includes('view_users') && window.currentTab == null && $('.nav-link.active').length == 0) {
                 window.currentTab = 'view_users'
                 $('.view_users_nav_btn').trigger('click')
-            } else if(window.location.href.includes('view_vendors') && window.currentTab == null) {
+            } else if(window.location.href.includes('view_vendors') && window.currentTab == null && $('.nav-link.active').length == 0) {
                 window.currentTab = 'view_vendors'
                 $('.view_vendors_nav_btn').trigger('click')
-            } else if(window.location.href.includes('enter_material') && window.currentTab == null) {
+            } else if(window.location.href.includes('enter_material') && window.currentTab == null && $('.nav-link.active').length == 0) {
                 window.currentTab = 'enter_material'
                 $('.enter_material_nav_btn').trigger('click')
-            } else {
+            } else if(window.location.href.includes('view_qs_approval_indents') && window.currentTab == null && $('.nav-link.active').length == 0) {
+                window.currentTab = 'view_qs_approval_indents'
+                $('.view_qs_approval_indents').trigger('click')
+            }else {
                 window.currentTab = null;
             }
 

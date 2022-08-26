@@ -1123,7 +1123,7 @@ def delete_user():
     cur.execute(delete_user_query)
     mysql.connection.commit()
     flash('User deleted', 'danger')
-    return redirect('/erp/view_users')
+    return redirect('/erp?action=view_users')
 
 
 @app.route('/view_users', methods=['GET'])
@@ -2752,7 +2752,7 @@ def approve_indent_by_qs():
         cur.execute(query, ('approved_by_qs',indent_id))
         mysql.connection.commit()
         flash('Indent approved','success')
-        return redirect('/erp/view_qs_approval_indents')    
+        return redirect('/erp?action=view_qs_approval_indents')    
 
 @app.route('/mark_as_billed', methods=['GET'])
 def mark_as_billed():
