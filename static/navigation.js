@@ -15,7 +15,16 @@ $(document).ready(function () {
             } else if(window.location.href.includes('view_qs_approval_indents') && window.currentTab == null && $('.nav-link.active').length == 0) {
                 window.currentTab = 'view_qs_approval_indents'
                 $('.view_qs_approval_indents_nav_btn').trigger('click')
-            }else {
+            } else if(window.location.href.includes('view_approved_indents') && window.currentTab == null && $('.nav-link.active').length == 0) {
+                window.currentTab = 'view_approved_indents'
+                $('.view_approved_indents_nav_btn').trigger('click')
+            } else if(window.location.href.includes('view_approved_POs') && window.currentTab == null && $('.nav-link.active').length == 0) {
+                window.currentTab = 'view_approved_POs'
+                $('.view_approved_POs_nav_btn').trigger('click')
+            } else if(window.location.href.includes('view_ph_approved_indents') && window.currentTab == null && $('.nav-link.active').length == 0) {
+                window.currentTab = 'view_ph_approved_indents'
+                $('.view_ph_approved_indents_nav_btn').trigger('click')
+            } else {
                 window.currentTab = null;
             }
 

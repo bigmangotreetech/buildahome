@@ -2766,7 +2766,7 @@ def mark_as_billed():
         cur.execute(query)
         mysql.connection.commit()
         flash('Indent marked as billed','success')
-        return redirect('/erp/view_ph_approved_indents')
+        return redirect('/erp?action=view_ph_approved_indents')
 
 @app.route('/rollback_indent_to_qs', methods=['GET'])
 def rollback_indent_to_qs():
@@ -2794,7 +2794,7 @@ def rollback_indent_by_ph():
         cur.execute(query, ('approved_by_qs',indent_id))
         mysql.connection.commit()
         flash('Indent rolled back','success')
-        return redirect('/erp/view_qs_approval_indents')
+        return redirect('/erp?action=view_qs_approval_indents')
 
 @app.route('/approve_indent_by_ph', methods=['GET'])
 def approve_indent_by_ph():
@@ -2825,7 +2825,7 @@ def approve_indent_by_ph():
             send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]),
                                     'PO uploads', timestamp)
         flash('Indent approved','success')
-        return redirect('/erp/view_approved_POs')
+        return redirect('/erp?action=view_approved_POs')
 
 @app.route('/view_indent_details', methods=['GET'])
 def view_indent_details():
@@ -2899,7 +2899,7 @@ def delete_indent():
         cur.execute(query)
         mysql.connection.commit()
         flash('Indent deleted','danger')
-        return redirect('/erp/view_qs_approval_indents')
+        return redirect('/erp?action=view_qs_approval_indents')
 
 @app.route('/close_po_with_comments', methods=['POST'])
 def close_po_with_comments():
@@ -2917,7 +2917,7 @@ def close_po_with_comments():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Indent closed with comment successfully', 'success')
-        return redirect('/erp/view_approved_indents')
+        return redirect('/erp?action=view_approved_indents')
 
 
 

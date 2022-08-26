@@ -173,6 +173,15 @@ $(document).ready(function () {
         }, 2000)
     }
 
+    if(window.location.href.includes('view_indent_details')) { 
+        let indentStatus = $(".indent-status").text().trim()
+        if(indentStatus == 'approved') $('.view_qs_approval_indents_nav_btn').addClass('active')
+        if(indentStatus == 'approved_by_qs') $('.view_approved_indents_nav_btn').addClass('active')
+        if(indentStatus == 'po_uploaded') $('.view_approved_POs_nav_btn').addClass('active')
+        if(indentStatus == 'approved_by_ph') $('.view_ph_approved_indents_nav_btn').addClass('active')
+
+    }
+
     if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView({
             behavior: "smooth"
         })
