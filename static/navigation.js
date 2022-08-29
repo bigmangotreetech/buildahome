@@ -249,6 +249,21 @@ $(document).ready(function () {
     
 
     function initCreateWorkorder() {
+        $('#total_bua').on('keyup mouseup', function() {
+            total_bua = $('#total_bua').val()
+            if (parseFloat(total_bua) > parseFloat($('.total_bua_summation').text())) {
+                alert('Total bua cannot be more than projects built up area summation')
+                $('#total_bua').val(parseFloat($('.total_bua_summation').text()))
+            }
+            cost_per_sqft = $('#cost_per_sqft').val() 
+            $('#wo_value').val((parseFloat(cost_per_sqft) & parseFloat(total_bua)).toString())
+        })
+    
+        $('#cost_per_sqft').on('keyup', function() {
+            total_bua = $('#total_bua').val()
+            cost_per_sqft = $('#cost_per_sqft').val() 
+            $('#wo_value').val((parseFloat(cost_per_sqft) * parseFloat(total_bua)).toString())
+        })
         $(".work_order_project_select").on('change', function () {
             const project_id = $(this).val()
             if (project_id) updateSlabArea(project_id)
