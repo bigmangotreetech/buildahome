@@ -102,6 +102,12 @@ body {
     overflow-y: auto;
     position: absolute;
 }
+.flash-messages {
+  width: calc(100% - 250px);
+  left: 250px;
+  top: 67px;    
+  position: absolute;
+}
 .nav-link.active {
     font-size: 14px;
     font-weight: 500;
