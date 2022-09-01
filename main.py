@@ -734,6 +734,7 @@ def enter_material():
             quantity_limit = result[0]
             existing_quantity_query = "SELECT SUM(quantity) from procurement WHERE project_id=" + str(project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
             cur.execute(existing_quantity_query)
+            result = cur.fetchone()
             if result is not None:
                 if (float(result[0]) + float(quantity)) > float(quantity_limit): 
                     flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded','danger')
@@ -1513,7 +1514,7 @@ def kyp_material():
                 cur.execute(material_quantity_insert_query)
                 mysql.connection.commit()
         flash('Quantity chart updated successfully', 'success')
-        return redirect('/erp/kyp_material?project_id=' + str(project_id))
+        return redirect('/erp?action-kyp_material)
 
 
 @app.route('/delete_wo', methods=['GET'])
