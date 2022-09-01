@@ -103,9 +103,9 @@ body {
     position: absolute;
 }
 .flash-messages {
-  width: calc(100% - 250px);
-  left: 250px;
-  top: 67px;    
+  width: 40%;
+  right: 10px;
+  top: 70px;    
   position: absolute;
 }
 .nav-link.active {
