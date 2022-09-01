@@ -725,7 +725,7 @@ def enter_material():
         result = cur.fetchone()
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
-            return redirect('/erp/enter_material')
+            return redirect('/erp?action=enter_material')
         elif float(result[0]) < (float(quantity)):
             flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded',
                   'danger')

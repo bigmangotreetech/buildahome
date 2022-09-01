@@ -103,10 +103,11 @@ body {
     position: absolute;
 }
 .flash-messages {
-  width: 40%;
+  width: 30%;
   right: 10px;
   top: 70px;    
   position: absolute;
+  z-index: 1;
 }
 .nav-link.active {
     font-size: 14px;
