@@ -32,7 +32,9 @@ $(document).ready(function () {
             }
 
         },0)
-    }
+    }        
+        
+    
 
     initRedirects();
     
