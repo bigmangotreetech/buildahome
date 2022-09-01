@@ -119,19 +119,19 @@ body {
 .nav-link {
     display: flex;
     color: white !important;
-    padding: 6px !important;
+    padding: 10px 6px !important;
     transition: all .3s;
     font-size: 12px;
     width: fit-content;
 }
 
 .nav-link:hover {
-    font-size: 18px;
+    font-weight: 600;
 }
 
 .nav-section-header {
     color: white;
-    margin: 0px 6px;
+    margin: 6px;
     margin-top: 30px;
     width: fit-content;
     border-bottom: 1px solid white;
