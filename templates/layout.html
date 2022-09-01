@@ -182,9 +182,12 @@
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager'] %}
     <div class="nav-section-header">Bills</div>
+
+    {% if session['role'] not in ['Project Manager'] %}
     <a href="/erp/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>
         <ion-icon name="document-text-outline"></ion-icon>
         <span class="my-auto">Create bill</span></a>
+    {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager'] %}
     <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>
@@ -192,6 +195,7 @@
         <span class="my-auto">Unapproved bills</span></a>
     {% endif %}
 
+    {% if session['role'] not in ['Project Manager'] %}
     <a href="/erp/view_approved_bills"
        class='nav-link {% if "/view_approved_bills" in request.path %} active {% endif %}'>
        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
@@ -200,6 +204,7 @@
        class='nav-link {% if "/view_archived_bills" in request.path %} active {% endif %}'>
        <ion-icon name="folder-open-outline"></ion-icon>
        <span class="my-auto">Archived bills</span></a>
+    {% endif %}
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','Design Head','Senior Architect','Architect','Structural Designer',
