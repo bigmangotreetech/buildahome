@@ -1514,7 +1514,7 @@ def kyp_material():
                 cur.execute(material_quantity_insert_query)
                 mysql.connection.commit()
         flash('Quantity chart updated successfully', 'success')
-        return redirect('/erp?action-kyp_material)
+        return redirect('/erp?action-kyp_material')
 
 
 @app.route('/delete_wo', methods=['GET'])
