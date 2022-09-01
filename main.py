@@ -735,7 +735,7 @@ def enter_material():
             existing_quantity_query = "SELECT SUM(quantity) from procurement WHERE project_id=" + str(project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
             cur.execute(existing_quantity_query)
             result = cur.fetchone()
-            if result is not None:
+            if result is not None and result[0] is not None:
                 if (float(result[0]) + float(quantity)) > float(quantity_limit): 
                     flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded','danger')
                     return redirect('/erp?action=enter_material')
