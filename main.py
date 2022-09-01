@@ -726,10 +726,19 @@ def enter_material():
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
             return redirect('/erp/enter_material')
-        if float(result[0]) < (float(quantity)):
+        elif float(result[0]) < (float(quantity)):
             flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded',
                   'danger')
-            return redirect('/erp/enter_material')
+            return redirect('/erp?action=enter_material')
+        else:
+            quantity_limit = result[0]
+            existing_quantity_query = "SELECT SUM(quantity) from procurement AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+            cur.execute(existing_quantity_query)
+            if result is not None:
+                if float(result[0]) + (float(quantity)) > quantity_limit: 
+                    flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded','danger')
+                    return redirect('/erp?action=enter_material')
+
 
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
                 "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
