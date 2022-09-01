@@ -170,7 +170,7 @@
 <!--    {% endif %}-->
 
 </div>
-<div class="flash-messages">
+<div>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <div class='flashes m-2'>
@@ -185,10 +185,10 @@
     </div>
     {% endif %}
     {% endwith %}
-    {% block content %}{% endblock %}
+    
 </div>
 <div class="main-wrapper  px-3">
-    
+    {% block content %}{% endblock %} 
 </div>
 <!-- Production version -->
 <script src="https://unpkg.com/@popperjs/core@2"></script>
