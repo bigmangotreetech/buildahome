@@ -3898,7 +3898,7 @@ def view_drawings_requests():
         cur = mysql.connection.cursor()
 
         
-        if session['role'] not in ['Super Admin','COO'] or 'All' not in str(get_projects_for_current_user()):
+        if 'All' not in str(get_projects_for_current_user()):
             get_requests = 'SELECT p.project_name, p.project_number, r.category, r.drawing, u.name, r.timestamp, r.purpose, r.id, r.project_id FROM ' \
                             'drawing_requests r LEFT OUTER JOIN projects p on p.project_id=r.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=r.created_by_user' \
