@@ -115,6 +115,10 @@ body {
     color: greenyellow !important
 }
 
+.nav-link.active ion-icon {
+  color: greenyellow !important
+}
+
 
 .nav-link {
     display: flex;
