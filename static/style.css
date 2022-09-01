@@ -117,7 +117,7 @@ body {
 
 
 .nav-link {
-    display: block;
+    display: flex;
     color: white !important;
     padding: 6px !important;
     transition: all .3s;
@@ -181,4 +181,8 @@ body {
 }
 ion-icon {
   color: white;
+}
+.sidebar ion-icon {
+  font-size: 20px;
+  margin-right: 6px
 }
