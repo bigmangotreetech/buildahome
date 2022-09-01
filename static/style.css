@@ -204,4 +204,11 @@ ion-icon {
 
 .border-bottom.form-group {
   box-shadow: none;
+  display: inline;
+  padding: 12px 0px !important;
+  border-bottom: 2px solid black !important;
+}
+
+.border-bottom.form-group .col-12 {
+  padding: 0px !important;
 }
