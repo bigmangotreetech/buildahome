@@ -15,8 +15,8 @@
         max-width: fit-content
     }
     .project-card {
-        border-radius: 5px;
-        box-shadow: 0px 0px 8px lightgrey;
+        border-radius: 15px;
+        box-shadow: 0px 8px 18px 2px lightgrey;
         margin-bottom: 40px;
         background: #f4efff;
     }
@@ -48,6 +48,11 @@
         font-size: 12px;
         font-weight: 500;
         color: #4735dc;
+    }
+
+    .team-btn ion-icon {
+        color: #4735dc;
+        font-size: 25px;
     }
 
     .fa-ban {
@@ -110,7 +115,9 @@
                     </div>
                 </div>                
                 {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] %}
-                <a href="/erp/edit_team?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn"><img width="50" src="/erp/static/team.svg" alt=""><span class="my-auto ml-2">Team</span></a>
+                <a href="/erp/edit_team?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn">
+                    <ion-icon name="people-outline"></ion-icon>
+                    <span class="my-auto ml-2">Team</span></a>
                 {% endif %}
                 <a href="/erp/project_notes?project_id={{project[0]}}" class="d-block mt-1 ml-3 py-2 d-flex comments-btn"><i class="fa fa-comments-o mr-2"></i><span class="my-auto">Comments & notes</span></a>
                 <div class="d-flex w-100 justify-content-between">
