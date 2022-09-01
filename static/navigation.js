@@ -71,7 +71,7 @@ $(document).ready(function () {
                     type: "GET",        
                     success: function (data) {     
                         $('.main-wrapper').html(data);
-                        $('.main-wrapper').css('background','white')
+                        $('.main-wrapper').css('background','#e4e4e4')
                         $('.select2').select2();
                 initRedirects()
                         initKypMaterial();
@@ -96,7 +96,7 @@ $(document).ready(function () {
                     type: "GET",        
                     success: function (data) {        
                         $('.main-wrapper').html(data);
-                        $('.main-wrapper').css('background','white')
+                        $('.main-wrapper').css('background','#e4e4e4')
                         $('.select2').select2();
                 initRedirects()
                         initViewInventory();
@@ -329,7 +329,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {         
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -351,7 +351,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -373,7 +373,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -395,7 +395,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 initSearchProject()
@@ -419,7 +419,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -441,7 +441,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -464,7 +464,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -486,7 +486,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -509,7 +509,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 initKypMaterial();
@@ -532,7 +532,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 initEnterMaterial();
                 $('.select2').select2();
                 initRedirects()
@@ -555,7 +555,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -577,7 +577,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 initViewInventory();
@@ -600,7 +600,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -622,7 +622,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -644,7 +644,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -667,7 +667,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -689,7 +689,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -711,7 +711,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -733,7 +733,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 $('.select2').on('click', function(){
@@ -755,7 +755,7 @@ $(document).ready(function () {
             type: "GET",        
             success: function (data) {        
                 $('.main-wrapper').html(data);
-                $('.main-wrapper').css('background','white')
+                $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
                 initCreateWorkorder();
