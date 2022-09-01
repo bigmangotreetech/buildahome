@@ -131,6 +131,18 @@ $(document).ready(function () {
         }
     }
 
+    function calcAmount() {
+        const quantity = $('#quantity').val().trim()
+        const rate = $("#rate").val().trim()
+        const gst = $("#gst").val()
+        const loading_unloading = $('#loading_unloading').val()
+        const transportation = $('#transportation').val()
+        const amount = parseFloat(rate) * parseFloat(quantity) 
+        const total = ((gst / 100 ) * amount) + amount;
+        const total_with_other_expenses = total + parseFloat(loading_unloading) + parseFloat(transportation)
+        $("#total_amount").val(total_with_other_expenses)
+    }
+
     function initEnterMaterial() {
         $(".material-select").on('change', function() {
             $(".vendor-select").empty()
@@ -150,6 +162,13 @@ $(document).ready(function () {
                     }
                 });
         })
+        
+        
+        $("#gst").on("change",  calcAmount)
+        $("#rate").on("keyup", calcAmount)
+        $("#quantity").on("keyup", calcAmount)
+        $("#transportation").on("keyup", calcAmount)
+        $("#loading_unloading").on("keyup", calcAmount)
     }
 
     function updateSlabArea(project_id) {
@@ -292,6 +311,7 @@ $(document).ready(function () {
             $('.create_work_order_submit').parents('form').submit()
         })
     }
+    
 
 
     $('.create_project_nav_btn').on('click', function(){
