@@ -180,7 +180,7 @@
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager'] %}
     <div class="nav-section-header">Bills</div>
     <a href="/erp/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>
         <ion-icon name="document-text-outline"></ion-icon>
