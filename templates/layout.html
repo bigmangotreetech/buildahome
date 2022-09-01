@@ -106,7 +106,7 @@
         <span class="my-auto">Enter Material</span>
     </div>
     <div class='nav-link clickable shifiting_entry_nav_btn {% if "/shifting_entry" in request.path %} active {% endif %}'>
-        <ion-icon name="arrow-redo-outline"></ion-icon>
+        <ion-icon name="swap-horizontal-outline"></ion-icon>
         <span class="my-auto">Shifting Entry</span>
     </div>
     {% endif %}
@@ -213,7 +213,9 @@
         <ion-icon name="images"></ion-icon>
         <span class="my-auto">Revised
             Drawings</span></a>
-        <a href="/erp/view_drawings_requests" class='nav-link {% if "/view_drawings_requests" in request.path %} active {% endif %}'>Drawing requests</a>
+        <a href="/erp/view_drawings_requests" class='nav-link {% if "/view_drawings_requests" in request.path %} active {% endif %}'>
+            <ion-icon name="terminal-outline"></ion-icon>
+            <span class="my-auto">Drawing requests</span></a>
         
 <!--    {% if session['role'] in ['Super Admin','COO','Design Head'] %}-->
 <!--    <a href="/erp/projects_with_design_team"-->
