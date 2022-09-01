@@ -107,6 +107,7 @@ body {
     height: calc(100% - 67px);
     overflow-y: auto;
     position: absolute;
+    background-color: #e4e4e4;
 }
 .flash-messages {
   width: 30%;
