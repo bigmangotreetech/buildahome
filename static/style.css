@@ -204,7 +204,7 @@ ion-icon {
 
 .border-bottom.form-group {
   box-shadow: none;
-  display: inline;
+  display: inline-block;
   padding: 12px 0px !important;
   border-bottom: 2px solid black !important;
 }
