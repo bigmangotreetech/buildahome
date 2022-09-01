@@ -43,7 +43,7 @@ $(document).ready(function () {
         console.log('initSearchProject')
         $('.search-project-field').on('keydown', function() {
             let searchValue = $('.search-project-field').val();
-            if(searchValue.trim().length == 0) $('.project-card').parent().addClass('d-none')
+            if(searchValue.trim().length == 0) $('.project-card').parent().removeClass('d-none')
             else {
                 $('.project-card').parent().addClass('d-none')
                 $('.project-card').each(function(index, element) {
