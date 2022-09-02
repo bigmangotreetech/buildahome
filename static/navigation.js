@@ -38,6 +38,14 @@ $(document).ready(function () {
 
     initRedirects();
     
+    function initViewContractors() {
+        if($('.contractor-profile-picture').length) {
+            $('.contractor-profile-picture').each(function(index, element){
+                const src = $(element).attr('data-src')
+                $(element).attr('src', src)
+            })
+        } 
+    }
 
     function initSearchProject() {
         console.log('initSearchProject')
@@ -736,6 +744,7 @@ $(document).ready(function () {
                 $('.main-wrapper').css('background','#e4e4e4')
                 $('.select2').select2();
                 initRedirects()
+                initViewContractors()
                 $('.select2').on('click', function(){
                     setTimeout(() => {
                         if($('.select2-search__field').length) $('.select2-search__field').get(0).focus()
