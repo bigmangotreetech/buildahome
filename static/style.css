@@ -213,3 +213,8 @@ ion-icon {
 .border-bottom.form-group .col-12 {
   padding: 0px !important;
 }
+
+table {
+  background-color: #ffffff;
+}
+
