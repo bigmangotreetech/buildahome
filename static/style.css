@@ -224,4 +224,5 @@ table {
   overflow: hidden;
   border-radius: 50%;
   margin-right: 15px;
+  display: inline-block;
 }
