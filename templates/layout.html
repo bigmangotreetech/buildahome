@@ -41,10 +41,17 @@
     <img src="{{ url_for('static', filename='logo.png') }}" alt="" class="mr-3" width="80">
     <h6 class="text-white my-auto">buildAhome</h6>
     <div class="ml-auto d-none d-md-block my-auto">
-        <a href="/erp" class="btn text-white h6">HOME</a>
+        <a href="/erp" class="btn text-white h6 mb-0 mr-2">HOME</a>
     </div>
     <div class="d-none d-md-block my-auto">
-        <a href="/erp/logout" class="btn text-white h6">LOGOUT</a>
+        <div class="dropdown show">
+            <a class="profile-circle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="{{session['profile_picture']}}" class="h-100 w-100" onerror="this.src='/erp/static/profile_picture.PNG'">
+            </a>
+          
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            </div>
+        </div>
     </div>
 
 </div>

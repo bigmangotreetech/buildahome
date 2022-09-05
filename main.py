@@ -422,7 +422,7 @@ def files(filename):
         res = cur.fetchone()
         if res is not None and res[0].strip() != '':
             filename = res[0] 
-                   
+
     response = redirect(app.config['S3_LOCATION'] + filename)
     return response
 
@@ -565,7 +565,7 @@ def login():
         password = request.form['password']
         password = hashlib.sha256(password.encode()).hexdigest()
         cur = mysql.connection.cursor()
-        query = "SELECT user_id, email, name, role, password, access_level FROM App_users WHERE email='" + username + "'"
+        query = "SELECT user_id, email, name, role, password, access_level, profile_picture FROM App_users WHERE email='" + username + "'"
         cur.execute(query)
         result = cur.fetchone()
         if result is not None:
@@ -575,6 +575,12 @@ def login():
                 session['role'] = result[3]
                 session['name'] = result[2]
                 session['access_level'] = result[5]
+                
+                profile_picture = '/erp/static/profile_picture.PNG'
+                if len(str(result[6]).strip()) > 0:
+                    profile_picture = result[6] 
+                session['profile_picture'] = profile_picture                 
+                
                 session['projects'] = get_projects_for_current_user()
                 flash('Logged in successfully', 'success')
                 return redirect('/erp')
