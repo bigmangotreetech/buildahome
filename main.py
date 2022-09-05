@@ -576,11 +576,11 @@ def login():
                 session['name'] = result[2]
                 session['access_level'] = result[5]
                 
-                # profile_picture = '/erp/static/profile_picture.PNG'
-                # if len(str(result[6])) > 0:
-                #     profile_picture = result[6] 
+                profile_picture = '/erp/static/profile_picture.PNG'
+                if len(str(result[6])) > 0:
+                    profile_picture = '/erp/files/'+result[6] 
                     
-                session['profile_picture'] = result[6]                 
+                session['profile_picture'] = profile_picture                 
                 
                 session['projects'] = get_projects_for_current_user()
                 flash('Logged in successfully', 'success')
