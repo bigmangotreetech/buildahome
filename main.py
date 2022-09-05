@@ -414,6 +414,15 @@ def audit_log():
 
 @app.route('/files/<filename>', methods=['GET'])
 def files(filename):
+    if 'work_order_' in filename:
+        wo_id = filename.replace('work_order_','').replace('.pdf','')
+        cur = mysql.connection.cursor()
+        query = 'SELECT filename from work_orders WHERE id='+str(wo_id)
+        cur.execute(query)
+        res = cur.fetchone()
+        if res is not None and res[0].strip() != '':
+            filename = res[0] 
+                   
     response = redirect(app.config['S3_LOCATION'] + filename)
     return response
 
@@ -4313,7 +4322,7 @@ def get_work_orders():
             return 'No project'
         else:
             project_id = request.args['project_id']
-            work_orders = get_work_orders_for_project(project_id)
+            work_orders = get_work_orders_for_project(project_id)            
             return jsonify(work_orders)
 
 @app.route('/API/get_notes', methods=['GET','POST'])
