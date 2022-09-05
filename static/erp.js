@@ -10,6 +10,13 @@ function calcAmount() {
     $("#total_amount").val(total_with_other_expenses)
 }
 
+$('.dropdown ').on('show.bs.dropdown', function () {
+    $('.main-wrapper').css('zIndex','-1')
+})
+$('.dropdown ').on('hide.bs.dropdown', function () {
+    $('.main-wrapper').css('zIndex','0')
+})
+
 $("#gst").on("change",  calcAmount)
 $("#rate").on("keyup", calcAmount)
 $("#quantity").on("keyup", calcAmount)
