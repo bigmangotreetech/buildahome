@@ -44,15 +44,14 @@
         <a href="/erp" class="btn text-white h6 mb-0 mr-2">HOME</a>
     </div>
     <div class="d-none d-md-block my-auto">
-        <div class="dropdown show">
-            <a class="profile-circle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img src="{{session['profile_picture']}}" class="h-100 w-100" onerror="this.src='/erp/static/profile_picture.PNG'">
-            </a>
-          
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <div class=" my-2 border-bottom border-light">{{session['name']}}</div>
-                <a href="/erp/logout" class="my-2">Logout</a>
-                <a href="/erp/logout" class="my-2">Profile</a>
+        <div class="dropdown">
+            <div class="profile-circle dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="{{session['profile_picture']}}" class="h-100 w-100" onerror="this.src='/erp/static/profile_picture.PNG'">
+            </div>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class=" my-2 border-bottom border-light dropdown-item">{{session['name']}}</div>
+                <a href="/erp/logout" class="my-2 dropdown-item">Logout</a>
+                <a href="/erp/logout" class="my-2 dropdown-item">Profile</a>
             </div>
         </div>
     </div>
