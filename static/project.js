@@ -1,6 +1,13 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {   
 
+    $('.dropdown ').on('show.bs.dropdown', function () {
+        $('.main-wrapper').css('zIndex','-1')
+    })
+    $('.dropdown ').on('show.bs.dropdown', function () {
+        $('.main-wrapper').css('zIndex','0')
+    })
+
     $('.delete_bill').on('click',function(){
         if (confirm('Are you sure you want to delete this bill')) {
             let btn = $(this) 
