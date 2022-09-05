@@ -26,7 +26,7 @@
         <form action="/erp/project_notes" method="post" enctype="multipart/form-data">
             <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
 
-            <div class="row mx-0 mb-3 form-group">
+            <div class="row mx-0 mb-3 form-group p-0">
                 <div class="col-12 p-0">
                     <label for="note">Add new Note</label>
                 </div>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             
-            <div class="row mx-0 mb-3 form-group">
+            <div class="row mx-0 mb-3 form-group  p-0">
                 <div class="col-12 p-0">
                     <label for="file">Add attachment</label> <small>(Optional)</small>
                 </div>
@@ -52,7 +52,7 @@
             </div>
         </form>
         {% for i in notes %}
-        <div class="bg-light my-2 border-left border-dark p-2">
+        <div class="bg-light my-3 border-left border-dark p-2">
             <p class="mb-0" style="font-weight: 500;">{{i[2]}} at {{i[1]}} :</p>
             <p style="white-space: break-spaces">{{i[0]}}</p>
             {% if i[4]|string != '0' %}
