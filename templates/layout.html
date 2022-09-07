@@ -85,11 +85,11 @@
 
     {% if session['role'] in ['Super Admin','COO','Billing'] %}
     <div class="nav-section-header ">Users</div>
-    <a href="'/erp/create_user" class='nav-link clickable '>
+    <a href="/erp/create_user" class='nav-link clickable {% if "/create_user" in request.path%} active {% endif %}'>
         <ion-icon name="person-add-outline"></ion-icon>
         <span class="my-auto">Create user</span>
     </a>
-    <a href="/erp/view_users" class='nav-link clickable'>
+    <a href="/erp/view_users" class='nav-link clickable {% if "/view_users" in request.path%} active {% endif %}'>
         <ion-icon name="people-outline"></ion-icon>
         <span class="my-auto">View users</span>
     </a>
@@ -110,7 +110,7 @@
         <ion-icon name="shield-checkmark-outline"></ion-icon>
         <span class="my-auto">KYP For material</span>
     </a>
-    <a href="'erp/enter_material" class='nav-link clickable {% if "/enter_material" in request.path %} active {% endif %}'>
+    <a href="/erp/enter_material" class='nav-link clickable {% if "/enter_material" in request.path %} active {% endif %}'>
         <ion-icon name="document-text-outline"></ion-icon>
         <span class="my-auto">Enter Material</span>
     </a>
@@ -162,7 +162,7 @@
         <ion-icon name="list-circle"></ion-icon>
         <span>View Contractors</span>
     </a>
-    <a class="/erp/create_work_order"  class='nav-link clickable  {% if "/create_work_order" in request.path %} active {% endif %}'>
+    <a href="/erp/create_work_order"  class='nav-link clickable  {% if "/create_work_order" in request.path %} active {% endif %}'>
         <ion-icon name="add"></ion-icon>
         <span class="my-auto">Create work order</span>
     </a>
