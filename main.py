@@ -741,11 +741,11 @@ def enter_material():
         result = cur.fetchone()
         if result is None:
             flash('Total quantity of material has not been specified under KYP material. Entry not recorded', 'danger')
-            return redirect('/erp?action=enter_material')
+            return redirect('/erp/enter_material')
         elif float(result[0]) < (float(quantity)):
             flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded',
                   'danger')
-            return redirect('/erp?action=enter_material')
+            return redirect('/erp/enter_material')
         else:
             quantity_limit = result[0]
             existing_quantity_query = "SELECT SUM(quantity) from procurement WHERE project_id=" + str(project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
@@ -754,7 +754,7 @@ def enter_material():
             if result is not None and result[0] is not None:
                 if (float(result[0]) + float(quantity)) > float(quantity_limit): 
                     flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded','danger')
-                    return redirect('/erp?action=enter_material')
+                    return redirect('/erp/enter_material')
 
 
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
@@ -764,7 +764,7 @@ def enter_material():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
-        return redirect('/erp?action=enter_material')
+        return redirect('/erp/enter_material')
 
 
 @app.route('/view_inventory', methods=['GET'])
@@ -1072,7 +1072,7 @@ def create_user():
             cur.execute(new_user_query, values)
             flash('User created successfully', 'success')
         mysql.connection.commit()
-        return redirect('/erp?action=view_users')
+        return redirect('/erp/view_users')
 
 
 @app.route('/edit_user', methods=['GET', 'POST'])
@@ -1125,7 +1125,7 @@ def edit_user():
             cur.execute(update_query, values)
             flash('User updated', 'success')
             mysql.connection.commit()
-            return redirect('/erp?action=view_users')
+            return redirect('/erp/view_users')
 
 
 @app.route('/delete_user', methods=['GET'])
@@ -1149,7 +1149,7 @@ def delete_user():
     cur.execute(delete_user_query)
     mysql.connection.commit()
     flash('User deleted', 'danger')
-    return redirect('/erp?action=view_users')
+    return redirect('/erp/view_users')
 
 
 @app.route('/view_users', methods=['GET'])
@@ -1347,7 +1347,7 @@ def vendor_registration():
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
         flash('Vendor registered', 'success')
-        return redirect('/erp?action=view_vendors')
+        return redirect('/erp/view_vendors')
 
 
 @app.route('/view_vendors', methods=['GET'])
@@ -2778,7 +2778,7 @@ def approve_indent_by_qs():
         cur.execute(query, ('approved_by_qs',indent_id))
         mysql.connection.commit()
         flash('Indent approved','success')
-        return redirect('/erp?action=view_qs_approval_indents')    
+        return redirect('/erp/view_qs_approval_indents')    
 
 @app.route('/mark_as_billed', methods=['GET'])
 def mark_as_billed():
@@ -2792,7 +2792,7 @@ def mark_as_billed():
         cur.execute(query)
         mysql.connection.commit()
         flash('Indent marked as billed','success')
-        return redirect('/erp?action=view_ph_approved_indents')
+        return redirect('/erp/view_ph_approved_indents')
 
 @app.route('/rollback_indent_to_qs', methods=['GET'])
 def rollback_indent_to_qs():
@@ -2806,7 +2806,7 @@ def rollback_indent_to_qs():
         cur.execute(query, ('approved',indent_id))
         mysql.connection.commit()
         flash('Indent rolled back to qs','success')
-        return redirect('/erp?action=view_qs_approval_indents')
+        return redirect('/erp/view_qs_approval_indents')
 
 @app.route('/rollback_indent_by_ph', methods=['GET'])
 def rollback_indent_by_ph():
@@ -2820,7 +2820,7 @@ def rollback_indent_by_ph():
         cur.execute(query, ('approved_by_qs',indent_id))
         mysql.connection.commit()
         flash('Indent rolled back','success')
-        return redirect('/erp?action=view_qs_approval_indents')
+        return redirect('/erp/view_qs_approval_indents')
 
 @app.route('/approve_indent_by_ph', methods=['GET'])
 def approve_indent_by_ph():
@@ -2851,7 +2851,7 @@ def approve_indent_by_ph():
             send_app_notification('PO Uploaded', notification_body, str(result[9]), str(result[9]),
                                     'PO uploads', timestamp)
         flash('Indent approved','success')
-        return redirect('/erp?action=view_approved_POs')
+        return redirect('/erp/view_approved_POs')
 
 @app.route('/view_indent_details', methods=['GET'])
 def view_indent_details():
@@ -2925,7 +2925,7 @@ def delete_indent():
         cur.execute(query)
         mysql.connection.commit()
         flash('Indent deleted','danger')
-        return redirect('/erp?action=view_qs_approval_indents')
+        return redirect('/erp/view_qs_approval_indents')
 
 @app.route('/close_po_with_comments', methods=['POST'])
 def close_po_with_comments():
@@ -2943,7 +2943,7 @@ def close_po_with_comments():
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Indent closed with comment successfully', 'success')
-        return redirect('/erp?action=view_approved_indents')
+        return redirect('/erp/view_approved_indents')
 
 
 
