@@ -183,9 +183,20 @@ $(document).ready(function () {
 
     }
 
-    if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView({
-            behavior: "smooth"
-        })
+    $('.nav-link').on('click', function() {
+        localStorage.setItem('sidebarScrollTop', $('.sidebar').scrollTop())
+    })
+
+    // if ( $('.nav-link.active').length ) $('.nav-link.active').get(0).scrollIntoView({
+    //         behavior: "smooth"
+    //     })
+    if ( $('.nav-link.active').length ) {
+        const sidebarScrollTop = localStorage.getItem('sidebarScrollTop')
+        if(sidebarScrollTop) {
+            console.log(sidebarScrollTop)
+            $('.sidebar').scrollTop(sidebarScrollTop)
+        }
+    }
 
     $(document).mouseup(function (e) {
         var container = $(".sidebar");
