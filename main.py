@@ -1118,9 +1118,14 @@ def edit_user():
             return redirect('/erp/view_users')
         else:
             cur = mysql.connection.cursor()
-            values = (name, role, phone, email)
-            update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
-            cur.execute(update_query, values)
+            if str(role) == '':
+                values = (name, phone, email)
+                update_query = 'UPDATE App_users set name=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
+                cur.execute(update_query, values)
+            else:
+                values = (name, role, phone, email)
+                update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
+                cur.execute(update_query, values)
             flash('User updated', 'success')
             mysql.connection.commit()
             return redirect('/erp/view_users')
