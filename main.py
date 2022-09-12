@@ -42,7 +42,15 @@ import json
 # Do not include transportation and laoading unloading in total amount 
 
 
+import pusher
 
+pusher_client = pusher.Pusher(
+  app_id='1474221',
+  key='1ba2990f11546fc4bd80',
+  secret='e66f2a59b86afa57015b',
+  cluster='ap2',
+  ssl=True
+)
 
 # Last labour stage id 412
 app = Flask(__name__)
@@ -2139,8 +2147,8 @@ def project_contractor_info():
         data['work_order_id'] = res[0]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s WHERE w.work_order_id=%s'
-    cur.execute(get_bills_query, (contractor_code, project_id, str(data['work_order_id'])))
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'
+    cur.execute(get_bills_query, (contractor_code, project_id, trade, str(data['work_order_id'])))
     bills = []
     res = cur.fetchall()
     for i in res:
