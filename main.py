@@ -42,16 +42,6 @@ import json
 # Do not include transportation and laoading unloading in total amount 
 
 
-import pusher
-
-pusher_client = pusher.Pusher(
-  app_id='1474221',
-  key='1ba2990f11546fc4bd80',
-  secret='e66f2a59b86afa57015b',
-  cluster='ap2',
-  ssl=True
-)
-
 # Last labour stage id 412
 app = Flask(__name__)
 # Sql setup
