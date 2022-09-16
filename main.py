@@ -2143,7 +2143,7 @@ def project_contractor_info():
         data['trade'] = trade
         data['work_order_id'] = res[0]
 
-    get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on' \
+    get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on, b.cleared_balance' \
                         ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id, trade, str(data['work_order_id'])))
     bills = []
@@ -2230,8 +2230,14 @@ def clear_individual_balance():
     trade = request.form['trade']
     work_order_id = request.form['work_order_id']
     stage = 'Clearing balance for '+ request.form['stage']
+    bill_id = request.form['bill_id']
 
     cur = mysql.connection.cursor()
+
+    update_old_bill = 'UPDATE wo_bills SET cleared_balance=1 WHERE id='+str(bill_id)
+    cur.execute(update_old_bill)
+
+
     bills_query = 'INSERT into wo_bills (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, total_payable) values (%s,%s, %s,%s,%s,%s,%s)'
     cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, balance_amnt))
 
