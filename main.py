@@ -2241,7 +2241,7 @@ def clear_individual_balance():
     bills_query = 'INSERT into wo_bills (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, total_payable) values (%s,%s, %s,%s,%s,%s,%s)'
     cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, balance_amnt))
 
-    work_order_query = 'SELECT balance from work_orders WHERE id=' + work_order_id
+    work_order_balance_query = 'SELECT balance from work_orders WHERE id=' + work_order_id
     cur.execute(work_order_balance_query)
     balance_res = cur.fetchone()
     if balance_res is not None:
