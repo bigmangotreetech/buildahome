@@ -157,5 +157,6 @@ materials = [
         'Plain glass',
         'Toughned glass',
         'Polycorbonate sheet',
-        'Laterite stone'
+        'Laterite stone',
+        'Name board'
     ]        

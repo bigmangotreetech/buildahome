@@ -823,6 +823,36 @@ $(document).ready(function () {
             if(amountDifference > 0) 
                 $(element).removeClass('d-none')            
         })
+
+        $('.clear-individual-balance').on('click', function(){
+            amountDifference = parseInt($(this).parents('tr').find('.billed_amount').text()) - parseInt($(this).parents('tr').find('.approved_amount').text())
+            stageName = $(this).parents('tr').find('.stage').text().trim()
+            contractor_name = $('.contractor_name').text()
+            contractor_code = $('.contractor_code').text()
+            contractor_pan = $('.contractor_pan').text()
+            project_id = $('.project_id').text()
+            trade =  $('.trade').text()
+            work_order_id = $('.work_order_id').text()
+            $.ajax({
+                url: '/erp/clear_individual_balance',
+                type: "POST",
+                dataType: 'json',
+                data: {
+                 'balance_amnt': amountDifference,
+                 'contractor_name': contractor_name,
+                 'contractor_code': contractor_code,
+                 'contractor_pan': contractor_pan,
+                 'project_id': project_id,
+                 'trade': trade,
+                 'work_order_id': work_order_id,
+                 'stage': stageName
+
+                },
+                success: function (data) {
+                    window.location.reload()
+                }
+            });
+        })
     }
 
     $('.clear-balance-btn').on('click', function() {

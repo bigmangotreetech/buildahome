@@ -937,6 +937,8 @@ def shifting_entry():
     else:
         from_project = request.form['from_project']
         to_project = request.form['to_project']
+        shifting_date = request.form['shifting_date']
+
         if from_project == to_project:
             flash('Shifting entry failed. Cannot shift to same project', 'danger')
             return redirect(request.referrer)
@@ -1009,7 +1011,7 @@ def shifting_entry():
         if result[0] is None or (result is not None and result[0] is not None and int(quantity) < int(result[0])):
             deduction_query = "INSERT into procurement (material, description, project_id," \
                           "quantity, unit, difference_cost, created_at) values (%s, %s, %s, %s, %s, %s, %s)"
-            values = (material, description+' to '+to_project_name+' on '+timestamp, from_project, int(quantity) * -1, unit, negative_diff, timestamp)
+            values = (material, description+' to '+to_project_name+' on '+str(shifting_date), from_project, int(quantity) * -1, unit, negative_diff, timestamp)
             cur.execute(deduction_query, values)
 
             addition_query = "INSERT into procurement (material, description, project_id," \
@@ -1533,7 +1535,7 @@ def kyp_material():
                 cur.execute(material_quantity_insert_query)
                 mysql.connection.commit()
         flash('Quantity chart updated successfully', 'success')
-        return redirect('/erp?action-kyp_material')
+        return redirect('/erp/kyp_material')
 
 
 @app.route('/delete_wo', methods=['GET'])
@@ -2217,6 +2219,33 @@ def check_if_clear_balance_bill_due():
     else: 
         return jsonify({'message': 'Bill for clearing balance does not exists'})
 
+
+@app.route('/clear_individual_balance', methods=['POST'])
+def clear_individual_balance():
+    balance_amnt = request.form['balance_amnt']
+    contractor_name = request.form['contractor_name']
+    contractor_code = request.form['contractor_code']
+    contractor_pan = request.form['contractor_pan']
+    project_id = request.form['project_id']
+    trade = request.form['trade']
+    work_order_id = request.form['work_order_id']
+    stage = 'Clearing balance for '+ request.form['stage']
+
+    cur = mysql.connection.cursor()
+    bills_query = 'INSERT into wo_bills (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, total_payable) values (%s,%s, %s,%s,%s,%s,%s)'
+    cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, balance_amnt))
+
+    work_order_query = 'SELECT balance from work_orders WHERE id=' + work_order_id
+    cur.execute(work_order_balance_query)
+    balance_res = cur.fetchone()
+    if balance_res is not None:
+        wo_balance = int(balance_res[0]) -  balance_amnt
+
+        work_order_query = 'UPDATE work_orders SET balance='+str(wo_balance)+' WHERE id=' + work_order_id
+        cur.execute(work_order_query)
+
+    mysql.connection.commit()
+    return jsonify({'message': 'success'})
 
 @app.route('/clear_wo_balance', methods=['POST'])
 def clear_wo_balance():
