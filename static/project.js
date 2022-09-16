@@ -1,6 +1,22 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {   
+    function initSearchProject() {
+        console.log('initSearchProject')
+        $('.search-project-field').on('keydown', function() {
+            let searchValue = $('.search-project-field').val();
+            if(searchValue.trim().length == 0) $('.project-card').parent().removeClass('d-none')
+            else {
+                $('.project-card').parent().addClass('d-none')
+                $('.project-card').each(function(index, element) {
+                    if($(element).find('.project-name').text().toLowerCase().trim().includes(searchValue.toLowerCase().trim())) {               
+                        $(element).parent().removeClass('d-none')
+                    }
+                })
+            }
+        })
+    }
 
+    initSearchProject()
 
     $('.delete_bill').on('click',function(){
         if (confirm('Are you sure you want to delete this bill')) {
