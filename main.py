@@ -2245,7 +2245,7 @@ def clear_individual_balance():
     cur.execute(work_order_balance_query)
     balance_res = cur.fetchone()
     if balance_res is not None:
-        wo_balance = int(balance_res[0]) -  balance_amnt
+        wo_balance = float(balance_res[0]) -  float(balance_amnt)
 
         work_order_query = 'UPDATE work_orders SET balance='+str(wo_balance)+' WHERE id=' + work_order_id
         cur.execute(work_order_query)
