@@ -826,6 +826,9 @@ $(document).ready(function () {
         })
 
         $('.clear-individual-balance').on('click', function(){
+            if($(this).text() != 'Clear balance') return;
+            $(this).css('opacity','0.5')
+            $(this).text('Clearing..')
             amountDifference = parseInt($(this).parents('tr').find('.billed_amount').text()) - parseInt($(this).parents('tr').find('.approved_amount').text())
             stageName = $(this).parents('tr').find('.stage').text().trim()
             bill_id = $(this).parents('tr').find('.bill_id').text().trim()
