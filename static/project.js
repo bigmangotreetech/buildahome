@@ -817,6 +817,14 @@ $(document).ready(function () {
         $('.create_work_order_submit').parents('form').submit()
     })
 
+    if($('.clear-individual-balance').length) {
+        $('.clear-individual-balance').each(function(index, element) {
+            amountDifference = parseInt($(element).parents('tr').find('.billed_amount')) - parseInt($(element).parents('tr').find('.approved_amount'))
+            if(amountDifference > 0) 
+                $(element).removeClass('d-none')            
+        })
+    }
+
     $('.clear-balance-btn').on('click', function() {
         balance_amnt = parseInt($('.balance').text())
         if (balance_amnt) {
