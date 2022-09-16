@@ -2209,7 +2209,7 @@ def check_if_clear_balance_bill_due():
     stage = 'Clearing balance'
 
     cur = mysql.connection.cursor()
-    get_bill = 'SELECT id from wo_bills WHERE project_id=%s AND trade=%s AND contractor_code=%s AND stage="Clearing balance" AND total_payable=%s'
+    get_bill = 'SELECT id from wo_bills WHERE project_id=%s AND trade=%s AND contractor_code=%s AND stage="Clearing balance" AND total_payable=%s AND (approval_2_amount = 0 OR approval_2_amount IS NULL)'
     cur.execute(get_bill, (project_id, trade, contractor_code, balance_amnt))
     res = cur.fetchone()
     if res is not None:
