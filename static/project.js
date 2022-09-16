@@ -819,7 +819,7 @@ $(document).ready(function () {
 
     if($('.clear-individual-balance').length) {
         $('.clear-individual-balance').each(function(index, element) {
-            amountDifference = parseInt($(element).parents('tr').find('.billed_amount')) - parseInt($(element).parents('tr').find('.approved_amount'))
+            amountDifference = parseInt($(element).parents('tr').find('.billed_amount').text()) - parseInt($(element).parents('tr').find('.approved_amount').text())
             if(amountDifference > 0) 
                 $(element).removeClass('d-none')            
         })
