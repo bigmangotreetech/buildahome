@@ -65,7 +65,9 @@
                 {% endif %}
             </td>
             <td>
+                {% if i[6]|string != '0'}
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
+                {% end %}
             </td>
 
         </tr>
