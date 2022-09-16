@@ -19,7 +19,7 @@
         <b>Nature of work</b>: <span class="trade">{{data['trade']}}</span>
     </div>
     <div class="mb-3">
-        <b>WO value</b>: {{data['value']}}
+        <b>WO value</b>: {{data['value']|int}}
     </div>
     
     <div class="mb-3">
@@ -65,6 +65,7 @@
                 {% endif %}
             </td>
             <td>
+                {{ i[6]|string }}
                 {% if i[6]|string != '0' %}
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
                 {% endif %}
