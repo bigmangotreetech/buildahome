@@ -1188,6 +1188,7 @@ def contractor_registration():
         cur.execute(trades_query)
         result = cur.fetchall()
         trades = []
+        trades.append('Deep cleaning')
         for i in result:
             trades.append(i[0])
         trades.append('NT/NMR')
@@ -1697,6 +1698,12 @@ def create_bill():
         contractor_code = request.form['contractor_code']
         contractor_pan = request.form['contractor_pan']
 
+
+        get_debit_note_bill = "SELECT approval_2_amount from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%" +stage+" (Debit note)%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
+        cur.execute(get_debit_note_bill)
+        res = cur.fetchone()
+        if res is not None:
+            amount = float(amount) - float(res[1])
 
         
         total_payable = float(amount)
