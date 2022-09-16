@@ -2,7 +2,7 @@
 $(document).ready(function () {   
     function initSearchProject() {
         console.log('initSearchProject')
-        $('.search-project-field').on('keydown', function() {
+        $('.search-project-field').on('keyup', function() {
             let searchValue = $('.search-project-field').val();
             if(searchValue.trim().length == 0) $('.project-card').parent().removeClass('d-none')
             else {
