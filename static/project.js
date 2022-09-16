@@ -819,6 +819,7 @@ $(document).ready(function () {
 
     if($('.clear-individual-balance').length) {
         $('.clear-individual-balance').each(function(index, element) {
+            if(parseInt($(element).parents('tr').find('.approved_amount').text()) == 0) return;
             amountDifference = parseInt($(element).parents('tr').find('.billed_amount').text()) - parseInt($(element).parents('tr').find('.approved_amount').text())
             if(amountDifference > 0) 
                 $(element).removeClass('d-none')            
@@ -827,6 +828,7 @@ $(document).ready(function () {
         $('.clear-individual-balance').on('click', function(){
             amountDifference = parseInt($(this).parents('tr').find('.billed_amount').text()) - parseInt($(this).parents('tr').find('.approved_amount').text())
             stageName = $(this).parents('tr').find('.stage').text().trim()
+            bill_id = $(this).parents('tr').find('.bill_id').text().trim()
             contractor_name = $('.contractor_name').text()
             contractor_code = $('.contractor_code').text()
             contractor_pan = $('.contractor_pan').text()
@@ -845,7 +847,8 @@ $(document).ready(function () {
                  'project_id': project_id,
                  'trade': trade,
                  'work_order_id': work_order_id,
-                 'stage': stageName
+                 'stage': stageName,
+                 'bill_id': bill_id
 
                 },
                 success: function (data) {
