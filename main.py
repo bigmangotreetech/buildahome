@@ -1699,7 +1699,7 @@ def create_bill():
         contractor_pan = request.form['contractor_pan']
 
 
-        get_debit_note_bill = "SELECT approval_2_amount from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%" +stage.replace('  ',' ')+"(Debit note)%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
+        get_debit_note_bill = "SELECT approval_2_amount from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%" +stage+"(Debit note)%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
         cur.execute(get_debit_note_bill)
         res = cur.fetchone()
         if res is not None:
@@ -2145,7 +2145,7 @@ def project_contractor_info():
     cur.execute(get_wo_query, (trade, project_id, contractor_id))
     res = cur.fetchone()
     if res is not None:
-        data['value'] = res[1]
+        data['value'] = str(res[1]).replace(' ','').replace(',','')
         data['balance'] = res[2]
         data['trade'] = trade
         data['work_order_id'] = res[0]
