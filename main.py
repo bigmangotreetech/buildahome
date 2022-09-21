@@ -1634,6 +1634,21 @@ def create_work_order():
                     insert_milestones_query = 'INSERT into wo_milestones(work_order_id, stage, percentage) values (%s, %s, %s)'
                     cur.execute(insert_milestones_query, (work_order_id, milestones[i], percentages[i]))
 
+            if 'difference_cost_sheet' in request.files:
+                file = request.files['difference_cost_sheet']
+                if file.filename != '':                
+                    if file and allowed_file(file.filename): 
+                        wo_id = cur.lastrowid                       
+                        filename = 'dc_for_wo_' + str(wo_id) + filename
+                        output = send_to_s3(file, app.config["S3_BUCKET"], filename)
+                        if output != 'success':
+                            flash('File upload failed', 'danger')
+                            return redirect(request.referrer)
+                        cur = mysql.connection.cursor()
+                        query = 'UPDATE work_orders set difference_cost_sheet=%s WHERE id=%s'
+                        values = (filename, wo_id)
+                        cur.execute(query, values)
+
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
 
@@ -1792,6 +1807,24 @@ def update_payment_stages():
                     }
         return jsonify(response)
 
+
+@app.route('/get_wo_milestones_and_percentages', methods=['POST'])
+def get_wo_milestones_and_percentages():
+    trade = request.form['trade']
+    project_id = request.form['project_id']
+    contractor_id = request.form['contractor_id']
+    
+    
+    get_bills_query = 'SELECT w.stage, w.percentage' \
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_id=%s AND b.project_id=%s AND trade=%s'
+    cur.execute(get_bills_query, (contractor_id, project_id, trade))
+    bills = []
+    res = cur.fetchall()
+    milestones_and_percentages = {}
+    for i in res:
+        milestones_and_percentages[i[0]] = i[1].replace('%', '')
+    response = {'milestones_and_percentages': milestones_and_percentages, 'message': 'success'}
+    return jsonify(response)
 
 @app.route('/get_standard_milestones_and_percentages', methods=['POST'])
 def get_standard_milestones_and_percentages():
@@ -2134,7 +2167,7 @@ def project_contractor_info():
     get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code="'+contractor_code+'"'
     cur.execute(get_contractor_query)
     res = cur.fetchone()
-    contractor_id = 0
+    contractor_id = 0f
     if res is not None:
         contractor_id = res[0]
         data['name'] = res[1]
