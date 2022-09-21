@@ -1831,7 +1831,7 @@ def get_wo_milestones_and_percentages():
         work_order_id = res[0]
 
     get_bills_query = 'SELECT w.stage, w.percentage' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s AND work_order_id=%s'
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id, trade, work_order_id))
     bills = []
     res = cur.fetchall()
