@@ -836,7 +836,7 @@ $(document).ready(function () {
                             .attr("value", trade)
                             .text(trade))
                         } else {
-                            $(".work-order-trade-select select-debit-note").append($("<option></option>")
+                            $(".work-order-trade-select-debit-note select").append($("<option></option>")
                             .attr("value", trade)
                             .text(trade))
                         }
