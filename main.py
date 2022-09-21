@@ -1814,7 +1814,7 @@ def get_wo_milestones_and_percentages():
     project_id = request.form['project_id']
     contractor_id = request.form['contractor_id']
     
-    
+    cur = mysql.connection.cursor()
     get_bills_query = 'SELECT w.stage, w.percentage' \
                         ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_id=%s AND b.project_id=%s AND trade=%s'
     cur.execute(get_bills_query, (contractor_id, project_id, trade))
