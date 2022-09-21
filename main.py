@@ -1718,7 +1718,7 @@ def create_bill():
         cur.execute(get_debit_note_bill)
         res = cur.fetchone()
         if res is not None:
-            amount = float(amount) - float(res[1])
+            amount = float(amount) - float(res[0])
 
         
         total_payable = float(amount)
