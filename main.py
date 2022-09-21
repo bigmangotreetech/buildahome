@@ -1815,9 +1815,16 @@ def get_wo_milestones_and_percentages():
     contractor_id = request.form['contractor_id']
     
     cur = mysql.connection.cursor()
+
+    get_contractor_query = 'SELECT code from contractors WHERE id='+str(contractor_id)
+    cur.execute(get_contractor_query)
+    res = cur.fetchone()
+    contractor_code = 0
+    if res is not None:
+        contractor_code = res[0]
     get_bills_query = 'SELECT w.stage, w.percentage' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_id=%s AND b.project_id=%s AND trade=%s'
-    cur.execute(get_bills_query, (contractor_id, project_id, trade))
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s'
+    cur.execute(get_bills_query, (contractor_code, project_id, trade))
     bills = []
     res = cur.fetchall()
     milestones_and_percentages = {}
