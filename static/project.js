@@ -831,9 +831,16 @@ $(document).ready(function () {
                 success: function (data) {
                     console.log(data)
                     for (const trade of data) {
-                        $(".work-order-trade-select select").append($("<option></option>")
+                        if($(".work-order-trade-select select").length) {
+                            $(".work-order-trade-select select").append($("<option></option>")
                             .attr("value", trade)
                             .text(trade))
+                        } else {
+                            $(".work-order-trade-select select-debit-note").append($("<option></option>")
+                            .attr("value", trade)
+                            .text(trade))
+                        }
+                        
                     }
                 }
             });
