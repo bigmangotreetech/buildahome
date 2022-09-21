@@ -1822,9 +1822,17 @@ def get_wo_milestones_and_percentages():
     contractor_code = 0
     if res is not None:
         contractor_code = res[0]
+
+    get_wo_query = 'SELECT id from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
+    cur.execute(get_wo_query, (trade, project_id, contractor_id))
+    res = cur.fetchone()
+    work_order_id = 0
+    if res is not None:
+        work_order_id = res[0]
+
     get_bills_query = 'SELECT w.stage, w.percentage' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s'
-    cur.execute(get_bills_query, (contractor_code, project_id, trade))
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s AND work_order_id=%s'
+    cur.execute(get_bills_query, (contractor_code, project_id, trade, work_order_id))
     bills = []
     res = cur.fetchall()
     milestones_and_percentages = {}
