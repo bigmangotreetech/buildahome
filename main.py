@@ -623,9 +623,16 @@ def delete_note():
         return redirect(request.referrer)
     if request.method == 'GET':
         note_id = request.args['id']
+        get_note = 'SELECT n.note, p.project_name FROM ' \
+                            'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
+                            ' WHERE n.id =' + str(note_id)
+        cur.execute(get_note)
+        res = cur.fetchone()
+        if res is not None:
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted note :'+ str(res[0]) + ' from project '+ str(res[1]) )
         cur = mysql.connection.cursor()
         delete_note_query = 'DELETE from notes_and_comments WHERE id=' + str(note_id)
-        cur.execute(delete_note_query)
+        cur.execute(delete_note_query)        
         mysql.connection.commit()
         flash('Note deleted', 'danger')
         return redirect(request.referrer)
@@ -1150,6 +1157,12 @@ def delete_user():
 
     user_id = request.args['user_id']
     cur = mysql.connection.cursor()
+
+    user_query = 'SELECT email from App_users WHERE user_id=' + str(user_id)
+    cur.execute(user_query)
+    res = cur.fetchone()
+    make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted user with email ' + str(res[0]))
+    
     delete_user_query = 'DELETE from App_users WHERE user_id=' + str(user_id)
     cur.execute(delete_user_query)
     mysql.connection.commit()
@@ -1302,8 +1315,14 @@ def delete_contractor():
     if request.method == 'GET':
         if 'contractor_id' in request.args:
             cur = mysql.connection.cursor()
+            contractor_query = 'SELECT name from contractors WHERE id=' + str(request.args['contractor_id'])
+            cur.execute(contractor_query)
+            res = cur.fetchone()
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted contractor ' + str(res[0]))
+            
             contractor_query = 'DELETE from contractors WHERE id=' + request.args['contractor_id']
             cur.execute(contractor_query)
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted contractor with id ' + str(contractor_id))
             mysql.connection.commit()
             flash('Contractor deleted', 'danger')
             return redirect('/erp/view_contractors')
@@ -1461,8 +1480,14 @@ def delete_vendor():
     if request.method == 'GET':
         if 'vendor_id' in request.args:
             cur = mysql.connection.cursor()
+            vendor_query = 'SELECT name from vendors WHERE id=' + str(request.args['vendor_id'])
+            cur.execute(vendor_query)
+            res = cur.fetchone()
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted vendor ' + str(res[0]))
+            
             vendor_query = 'DELETE from vendors WHERE id=' + request.args['vendor_id']
             cur.execute(vendor_query)
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted vendor with id ' + str(request.args['vendor_id']))
             mysql.connection.commit()
             flash('Vendor deleted', 'danger')
             return redirect('/erp/view_vendors')
@@ -1550,8 +1575,18 @@ def delete_wo():
         return redirect(request.referrer)
     wo_id = request.args['id']
     cur = mysql.connection.cursor()
+    get_wo = 'SELECT w.trade, p.project_name FROM ' \
+                        'work_orders w LEFT OUTER JOIN projects p on p.project_id=w.project_id ' \
+                        ' WHERE w.id =' + str(wo_id)
+    cur.execute(get_wo)
+    res = cur.fetchone()
+    if res is not None:
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted '+ str(res[0]) + ' work order from project '+ str(res[1]) )
+    
+
     query = 'DELETE FROM work_orders WHERE id='+wo_id
     cur.execute(query)
+    
     mysql.connection.commit()
     flash('Work order has been deleted', 'danger')
     return redirect(request.referrer)
@@ -2067,6 +2102,7 @@ def delete_bill():
             cur = mysql.connection.cursor()
             delete_bill_query = 'DELETE from wo_bills WHERE id=' + request.args['bill_id']
             cur.execute(delete_bill_query)
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted bill with id ' + str(request.args['bill_id']))
             mysql.connection.commit()
             flash('Bill deleted', 'danger')
             return redirect('/erp/view_bills')
@@ -4030,6 +4066,7 @@ def delete_drawing_request():
     cur = mysql.connection.cursor()
     query = 'DELETE from drawing_requests WHERE id='+str(request_id)
     cur.execute(query)
+    make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted drawing request with id ' + str(request_id))
     mysql.connection.commit()
     flash("Drawing request has been deleted",'danger')
     return redirect('/erp/view_drawings_requests')
