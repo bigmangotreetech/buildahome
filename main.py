@@ -4401,6 +4401,8 @@ def API_get_projects_for_user():
                 project_access_string = project_access_string[1:]
             if project_access_string[-1] == ',':
                 project_access_string = project_access_string[:-1]
+            if len(project_access_string.split(',')) == 1:
+                project_access_string = project_access_string + ',0'
                 
             project_user_has_access_to = str(tuple(project_access_string.split(','))).replace("'",'').replace('"','')   
 
