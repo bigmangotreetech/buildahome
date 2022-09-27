@@ -4351,8 +4351,8 @@ def API_login():
                     API_reponse['project_location'] = project_response[4]
                 else: 
                     API_reponse['message'] = 'Mismatch is phone number. Please contact your coordinator to update your phone number'
-            else:
-                API_reponse['message'] = 'Login failed. Incorrect username'   
+        else:
+            API_reponse['message'] = 'Login failed. Incorrect password'   
     return jsonify(API_reponse)     
 
 
