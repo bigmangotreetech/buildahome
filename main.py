@@ -4341,7 +4341,7 @@ def API_login():
             API_response['message'] = 'success'
 
             API_response['api_token'] = str(uuid.uuid4())
-            update_api_token_query = 'UPDATE App_users SET api_token="'+API_response['api_token']+'" WHERE user_id='+API_response['user_id']
+            update_api_token_query = 'UPDATE App_users SET api_token="'+API_response['api_token']+'" WHERE user_id='+str(API_response['user_id'])
             cur.execute(update_api_token_query)
             mysql.connection.commit()
             
