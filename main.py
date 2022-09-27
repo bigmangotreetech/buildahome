@@ -4327,40 +4327,40 @@ def API_login():
     login_check_query = 'SELECT user_id, role, phone, password FROM App_users WHERE name="'+str(username)+'" or email="'+str(username)+'" LIMIT 1'
     cur.execute(login_check_query)
     login_result = cur.fetchone()
-    API_reponse = {}
+    API_response = {}
     if login_result is None:
-        API_reponse['message'] = 'Login failed. Incorrect username'
-        return jsonify(API_reponse)
+        API_response['message'] = 'Login failed. Incorrect username'
+        return jsonify(API_response)
     else:
-        API_reponse['user_id'] = login_result[0]
-        API_reponse['role'] = login_result[1]
-        API_reponse['phone'] = login_result[2]
+        API_response['user_id'] = login_result[0]
+        API_response['role'] = login_result[1]
+        API_response['phone'] = login_result[2]
 
         # If password matches the phone number or the password set on ERP
-        if password == API_reponse['phone'] or hashlib.sha256(password.encode()).hexdigest() == login_result[3]:
-            API_reponse['message'] = 'success'
+        if password == API_response['phone'] or hashlib.sha256(password.encode()).hexdigest() == login_result[3]:
+            API_response['message'] = 'success'
 
             API_response['api_token'] = uuid.uuid4()
             update_api_token_query = 'UPDATE App_users SET api_token="'+API_response['api_token']+'" WHERE user_id='+API_response['user_id']
             cur.execute(update_api_token_query)
             mysql.connection.commit()
             
-            if API_reponse['role'] == 'Client':
+            if API_response['role'] == 'Client':
                 get_project_for_client_query = 'SELECT project_id, project_name, project_value, completed_percentage, project_location ' \
-                                            'FROM projects WHERE client_phone="'+str(API_reponse['phone'])+'" LIMIT 1'
+                                            'FROM projects WHERE client_phone="'+str(API_response['phone'])+'" LIMIT 1'
                 cur.execute(get_project_for_client_query)
                 project_response = cur.fetchone()
                 if project_response is not None:
-                    API_reponse['project_id'] = project_response[0]
-                    API_reponse['project_name'] = project_response[1]
-                    API_reponse['project_value'] = project_response[2]
-                    API_reponse['completed_percentage'] = project_response[3]
-                    API_reponse['project_location'] = project_response[4]
+                    API_response['project_id'] = project_response[0]
+                    API_response['project_name'] = project_response[1]
+                    API_response['project_value'] = project_response[2]
+                    API_response['completed_percentage'] = project_response[3]
+                    API_response['project_location'] = project_response[4]
                 else: 
-                    API_reponse['message'] = 'Mismatch is phone number. Please contact your coordinator to update your phone number'
+                    API_response['message'] = 'Mismatch is phone number. Please contact your coordinator to update your phone number'
         else:
-            API_reponse['message'] = 'Login failed. Incorrect password'   
-    return jsonify(API_reponse)     
+            API_response['message'] = 'Login failed. Incorrect password'   
+    return jsonify(API_response)     
 
 @app.route('/API/get_projects_for_user', methods=['POST'])
 def API_get_projects_for_user():
@@ -4381,15 +4381,15 @@ def API_get_projects_for_user():
         query = 'SELECT project_id, project_name, client_name, client_phone FROM projects ORDER BY project_number'
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     elif role == 'Site Engineer':
         projects_user_has_access_to_query = 'SELECT access FROM App_users WHERE user_id='+user_id+' LIMIT 1'
@@ -4407,141 +4407,141 @@ def API_get_projects_for_user():
             query = 'SELECT project_id, project_name, client_name, client_phone FROM projects WHERE project_id IN ' + project_user_has_access_to + ' ORDER BY project_number'
             cur.execute(query)
             query_result = cur.fetchall()
-            API_reponse = []
+            API_response = []
             for i in query_result:
                 project = {}
                 project['project_id'] = i[0]
                 project['project_name'] = i[1]
                 project['client_name'] = i[2]
                 project['client_phone'] = i[3]
-                API_reponse.append(project)
-            return jsonify(API_reponse) 
+                API_response.append(project)
+            return jsonify(API_response) 
 
     elif role == 'Project Coordinator':
         query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE co_ordinator=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
         
     elif role == 'Project Manager':
         query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE project_manager=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     elif role == 'Purchase Executive':
         query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE purchase_executive=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     elif role == 'QS Engineer':
         query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE qs_engineer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
         
     elif role == 'Architect':
         query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE architect=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     elif role == 'Structural Designer':
         query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE structural_designer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     elif role == 'Electrical Designer':
         query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE electrical_designer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     elif role == 'PHE Designer':
         query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE phe_designer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     elif role == 'Senior Architect':
         query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE senior_architect=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
-        API_reponse = []
+        API_response = []
         for i in query_result:
             project = {}
             project['project_id'] = i[0]
             project['project_name'] = i[1]
             project['client_name'] = i[2]
             project['client_phone'] = i[3]
-            API_reponse.append(project)
-        return jsonify(API_reponse) 
+            API_response.append(project)
+        return jsonify(API_response) 
 
     else:
         return []
