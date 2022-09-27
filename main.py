@@ -24,6 +24,7 @@ from PIL import Image
 from io import BytesIO
 import random
 import json
+import uuid
 
 
 
@@ -132,106 +133,106 @@ def get_projects():
     return projects
 
 
-def get_projects_for_current_user():
+def get_projects_for_current_user(user_id = '', role = ''):
     if 'user_id' in session:
         user_id = session['user_id']
         role = session['role']
         cur = mysql.connection.cursor()
-        if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','QS Info']:
-            return ('All')
-        elif role == 'Project Coordinator':
-            query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
+    if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','QS Info']:
+        return ('All')
+    elif role == 'Project Coordinator':
+        query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'Project Manager':
+        query = 'SELECT project_id from project_operations_team WHERE project_manager=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'Purchase Executive':
+        query = 'SELECT project_id from project_operations_team WHERE purchase_executive=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'QS Engineer':
+        query = 'SELECT project_id from project_operations_team WHERE qs_engineer=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'Architect':
+        query = 'SELECT project_id from project_design_team WHERE architect=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            if len(str(i[0])) > 0:
                 projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'Project Manager':
-            query = 'SELECT project_id from project_operations_team WHERE project_manager=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'Purchase Executive':
-            query = 'SELECT project_id from project_operations_team WHERE purchase_executive=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'QS Engineer':
-            query = 'SELECT project_id from project_operations_team WHERE qs_engineer=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'Architect':
-            query = 'SELECT project_id from project_design_team WHERE architect=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                if len(str(i[0])) > 0:
-                    projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'Structural Designer':
-            query = 'SELECT project_id from project_design_team WHERE structural_designer=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'Electrical Designer':
-            query = 'SELECT project_id from project_design_team WHERE electrical_designer=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'PHE Designer':
-            query = 'SELECT project_id from project_design_team WHERE phe_designer=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        elif role == 'Senior Architect':
-            query = 'SELECT project_id from project_design_team WHERE senior_architect=' + str(user_id)
-            cur.execute(query)
-            result = cur.fetchall()
-            projects = []
-            for i in result:
-                projects.append(i[0])
-            if len(projects) == 1:
-                projects.append(0)
-            return tuple(projects)
-        else:
-            return []
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'Structural Designer':
+        query = 'SELECT project_id from project_design_team WHERE structural_designer=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'Electrical Designer':
+        query = 'SELECT project_id from project_design_team WHERE electrical_designer=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'PHE Designer':
+        query = 'SELECT project_id from project_design_team WHERE phe_designer=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    elif role == 'Senior Architect':
+        query = 'SELECT project_id from project_design_team WHERE senior_architect=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
+    else:
+        return []
 
 @app.route('/get_dlr_report', methods=['GET'])
 def get_dlr_report():
@@ -4323,7 +4324,7 @@ def API_login():
     password = request.form['password']
 
     cur = mysql.connection.cursor()
-    login_check_query = 'SELECT user_id, role, phone, password FROM App_users WHERE name="'+str(username)+'" LIMIT 1'
+    login_check_query = 'SELECT user_id, role, phone, password FROM App_users WHERE name="'+str(username)+'" or email="'+str(username)+'" LIMIT 1'
     cur.execute(login_check_query)
     login_result = cur.fetchone()
     API_reponse = {}
@@ -4338,6 +4339,12 @@ def API_login():
         # If password matches the phone number or the password set on ERP
         if password == API_reponse['phone'] or hashlib.sha256(password.encode()).hexdigest() == login_result[3]:
             API_reponse['message'] = 'success'
+
+            API_response['api_token'] = uuid.uuid4()
+            update_api_token_query = 'UPDATE App_users SET api_token="'+API_response['api_token']+'" WHERE user_id='+API_response['user_id']
+            cur.execute(update_api_token_query)
+            mysql.connection.commit()
+            
             if API_reponse['role'] == 'Client':
                 get_project_for_client_query = 'SELECT project_id, project_name, project_value, completed_percentage, project_location ' \
                                             'FROM projects WHERE client_phone="'+str(API_reponse['phone'])+'" LIMIT 1'
@@ -4355,7 +4362,190 @@ def API_login():
             API_reponse['message'] = 'Login failed. Incorrect password'   
     return jsonify(API_reponse)     
 
+@app.route('/API/get_projects_for_user', methods=['POST'])
+def API_get_projects_for_user():
+    user_id = request.form['user_id']
+    role = request.form['role']
+    api_token = request.form['api_token']
 
+    cur = mysql.connection.cursor()
+
+    verify_token_query = 'SELECT id from App_users WHERE user_id='+user_id+' AND api_token="'+api_token+'" LIMIT 1'
+    cur.execute(verify_token_query)
+    verify_token_res = cur.fetchone()
+    if verify_token_res is None:
+        return jsonify([])
+
+
+    if role in ['Admin', 'Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Design Head', 'Billing', 'Planning', 'QS Info']:
+        query = 'SELECT project_id, project_name, client_name, client_phone FROM projects ORDER BY project_number'
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    elif role == 'Site Engineer':
+        projects_user_has_access_to_query = 'SELECT access FROM App_users WHERE user_id='+user_id+' LIMIT 1'
+        cur.execute(projects_user_has_access_to_query)
+        project_user_has_access_to_res = cur.fetchone()
+        if project_user_has_access_to_res is not None:
+            project_access_string = project_user_has_access_to_res[0]
+            if project_access_string[0] == ',':
+                project_access_string = project_access_string[1:]
+            if project_access_string[-1] == ',':
+                project_access_string = project_access_string[:-1]
+                
+            project_user_has_access_to = str(tuple(project_access_string.split(','))).replace("'",'').replace('"','')   
+
+            query = 'SELECT project_id, project_name, client_name, client_phone FROM projects WHERE project_id IN ' + project_user_has_access_to + ' ORDER BY project_number'
+            cur.execute(query)
+            query_result = cur.fetchall()
+            API_reponse = []
+            for i in query_result:
+                project = {}
+                project['project_id'] = i[0]
+                project['project_name'] = i[1]
+                project['client_name'] = i[2]
+                project['client_phone'] = i[3]
+                API_reponse.append(project)
+            return jsonify(API_reponse) 
+
+    elif role == 'Project Coordinator':
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE co_ordinator=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+        
+    elif role == 'Project Manager':
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE project_manager=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    elif role == 'Purchase Executive':
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE purchase_executive=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    elif role == 'QS Engineer':
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE qs_engineer=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+        
+    elif role == 'Architect':
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE architect=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    elif role == 'Structural Designer':
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE structural_designer=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    elif role == 'Electrical Designer':
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE electrical_designer=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    elif role == 'PHE Designer':
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE phe_designer=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    elif role == 'Senior Architect':
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE senior_architect=' + str(user_id) + " ORDER BY p.project_number"
+        cur.execute(query)
+        query_result = cur.fetchall()
+        API_reponse = []
+        for i in query_result:
+            project = {}
+            project['project_id'] = i[0]
+            project['project_name'] = i[1]
+            project['client_name'] = i[2]
+            project['client_phone'] = i[3]
+            API_reponse.append(project)
+        return jsonify(API_reponse) 
+
+    else:
+        return []
+        
 
 @app.route('/API/get_materials', methods=['GET'])
 def get_materials():
