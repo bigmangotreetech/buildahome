@@ -4317,6 +4317,46 @@ def logout():
 
 
 # APIs for mobile app
+@app.route('/API/login', methods=['POST'])
+def API_login():
+    username = request.form['username']
+    password = request.form['password']
+
+    cur = mysql.connection.cursor()
+    login_check_query = 'SELECT user_id, role, phone, password FROM App_users WHERE name="'+str(username)+'" LIMIT 1'
+    cur.execute(login_check_query)
+    login_result = cur.fetchone()
+    API_reponse = {}
+    if login_result is None:
+        API_reponse['message'] = 'Login failed. Incorrect username'
+        return jsonify(API_reponse)
+    else:
+        API_reponse['user_id'] = login_result[0]
+        API_reponse['role'] = login_result[1]
+        API_reponse['phone'] = login_result[2]
+
+        # If password matches the phone number or the password set on ERP
+        if password == API_reponse['phone'] or hashlib.sha256(password.encode()).hexdigest() == login_result[3]:
+            API_reponse['message'] = 'success'
+            if API_reponse['role'] == 'Client':
+                get_project_for_client_query = 'SELECT project_id, project_name, project_value, completed_percentage, project_location ' \
+                                            'FROM projects WHERE client_phone="'+str(API_reponse['phone'])+'" LIMIT 1'
+                cur.execute(get_project_for_client_query)
+                project_response = cur.fetchone()
+                if project_response is not None:
+                    API_reponse['project_id'] = project_response[0]
+                    API_reponse['project_name'] = project_response[1]
+                    API_reponse['project_value'] = project_response[2]
+                    API_reponse['completed_percentage'] = project_response[3]
+                    API_reponse['project_location'] = project_response[4]
+                else: 
+                    API_reponse['message'] = 'Mismatch is phone number. Please contact your coordinator to update your phone number'
+            else:
+                API_reponse['message'] = 'Login failed. Incorrect username'   
+    return jsonify(API_reponse)     
+
+
+
 @app.route('/API/get_materials', methods=['GET'])
 def get_materials():
     if request.method == 'GET':
