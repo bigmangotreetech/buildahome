@@ -4370,7 +4370,7 @@ def API_get_projects_for_user():
 
     cur = mysql.connection.cursor()
 
-    verify_token_query = 'SELECT id from App_users WHERE user_id='+user_id+' AND api_token="'+api_token+'" LIMIT 1'
+    verify_token_query = 'SELECT user_id from App_users WHERE user_id='+user_id+' AND api_token="'+api_token+'" LIMIT 1'
     cur.execute(verify_token_query)
     verify_token_res = cur.fetchone()
     if verify_token_res is None:
