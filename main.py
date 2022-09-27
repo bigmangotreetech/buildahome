@@ -4404,7 +4404,7 @@ def API_get_projects_for_user():
                 
             project_user_has_access_to = str(tuple(project_access_string.split(','))).replace("'",'').replace('"','')   
 
-            query = 'SELECT project_id, project_name, client_name, client_phone FROM projects WHERE project_id IN ' + project_user_has_access_to + ' AND WHERE archived=0 AND is_approved=1 ORDER BY project_number'
+            query = 'SELECT project_id, project_name, client_name, client_phone FROM projects WHERE project_id IN ' + project_user_has_access_to + ' AND archived=0 AND is_approved=1 ORDER BY project_number'
             cur.execute(query)
             query_result = cur.fetchall()
             API_response = []
