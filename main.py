@@ -4378,7 +4378,7 @@ def API_get_projects_for_user():
 
 
     if role in ['Admin', 'Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Design Head', 'Billing', 'Planning', 'QS Info']:
-        query = 'SELECT project_id, project_name, client_name, client_phone FROM projects ORDER BY project_number'
+        query = 'SELECT project_id, project_name, client_name, client_phone FROM projects WHERE archived=0 AND is_approved=1 ORDER BY project_number'
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4404,7 +4404,7 @@ def API_get_projects_for_user():
                 
             project_user_has_access_to = str(tuple(project_access_string.split(','))).replace("'",'').replace('"','')   
 
-            query = 'SELECT project_id, project_name, client_name, client_phone FROM projects WHERE project_id IN ' + project_user_has_access_to + ' ORDER BY project_number'
+            query = 'SELECT project_id, project_name, client_name, client_phone FROM projects WHERE project_id IN ' + project_user_has_access_to + ' AND WHERE archived=0 AND is_approved=1 ORDER BY project_number'
             cur.execute(query)
             query_result = cur.fetchall()
             API_response = []
@@ -4418,7 +4418,7 @@ def API_get_projects_for_user():
             return jsonify(API_response) 
 
     elif role == 'Project Coordinator':
-        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE co_ordinator=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE p.archived=0 AND p.is_approved=1 AND co_ordinator=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4432,7 +4432,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
         
     elif role == 'Project Manager':
-        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE project_manager=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE p.archived=0 AND p.is_approved=1 AND project_manager=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4446,7 +4446,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
 
     elif role == 'Purchase Executive':
-        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE purchase_executive=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE p.archived=0 AND p.is_approved=1 AND purchase_executive=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4460,7 +4460,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
 
     elif role == 'QS Engineer':
-        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE qs_engineer=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE p.archived=0 AND p.is_approved=1 AND qs_engineer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4474,7 +4474,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
         
     elif role == 'Architect':
-        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE architect=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE p.archived=0 AND p.is_approved=1 AND architect=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4488,7 +4488,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
 
     elif role == 'Structural Designer':
-        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE structural_designer=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE p.archived=0 AND p.is_approved=1 AND structural_designer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4502,7 +4502,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
 
     elif role == 'Electrical Designer':
-        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE electrical_designer=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE p.archived=0 AND p.is_approved=1 AND electrical_designer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4516,7 +4516,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
 
     elif role == 'PHE Designer':
-        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE phe_designer=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE p.archived=0 AND p.is_approved=1 AND phe_designer=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
@@ -4530,7 +4530,7 @@ def API_get_projects_for_user():
         return jsonify(API_response) 
 
     elif role == 'Senior Architect':
-        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE senior_architect=' + str(user_id) + " ORDER BY p.project_number"
+        query = 'SELECT pdt.project_id, p.project_name, p.client_name, p.client_phone from project_design_team pot INNER JOIN projects p on p.project_id=pdt.project_id WHERE p.archived=0 AND p.is_approved=1 AND senior_architect=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
         API_response = []
