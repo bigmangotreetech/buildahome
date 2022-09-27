@@ -4384,9 +4384,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4410,9 +4410,9 @@ def API_get_projects_for_user():
             API_response = []
             for i in query_result:
                 project = {}
-                project['project_id'] = i[0]
-                project['project_name'] = i[1]
-                project['client_name'] = i[2]
+                project['id'] = i[0]
+                project['name'] = i[1]
+                project['client'] = i[2]
                 project['client_phone'] = i[3]
                 API_response.append(project)
             return jsonify(API_response) 
@@ -4424,9 +4424,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4438,9 +4438,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4452,9 +4452,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4466,9 +4466,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4480,9 +4480,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4494,9 +4494,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4508,9 +4508,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4522,9 +4522,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
@@ -4536,9 +4536,9 @@ def API_get_projects_for_user():
         API_response = []
         for i in query_result:
             project = {}
-            project['project_id'] = i[0]
-            project['project_name'] = i[1]
-            project['client_name'] = i[2]
+            project['id'] = i[0]
+            project['name'] = i[1]
+            project['client'] = i[2]
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
