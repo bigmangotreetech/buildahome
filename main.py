@@ -4340,7 +4340,7 @@ def API_login():
         if password == API_response['phone'] or hashlib.sha256(password.encode()).hexdigest() == login_result[3]:
             API_response['message'] = 'success'
 
-            API_response['api_token'] = uuid.uuid4()
+            API_response['api_token'] = str(uuid.uuid4())
             update_api_token_query = 'UPDATE App_users SET api_token="'+API_response['api_token']+'" WHERE user_id='+API_response['user_id']
             cur.execute(update_api_token_query)
             mysql.connection.commit()
