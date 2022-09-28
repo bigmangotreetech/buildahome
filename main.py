@@ -3166,6 +3166,9 @@ def sign_wo():
             cur = mysql.connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
+            if result is None:
+                flash('This work order is already signed', 'danger')
+                return redirect('/erp/login')
         return render_template('sign_wo.html', wo=result, wo_id=str(request.args['wo_id']))
 
 
