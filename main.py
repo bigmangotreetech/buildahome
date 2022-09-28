@@ -3181,11 +3181,11 @@ def upload_signed_wo():
     check_if_signed_query = 'SELECT signed FROM work_orders WHERE id='+ request.form['wo_id']
     cur.execute(check_if_signed_query)
     check_if_signed_res = cur.fetchone()
-    if str(res[0]) == '1':
+    if str(check_if_signed_res[0]) == '1':
         flash('This work order is already signed', 'danger')
         return redirect('/erp/login')
 
-        
+
     project_name = request.form['project_name']
     trade = request.form['trade']
     contractor_name = request.form['contractor_name']
