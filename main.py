@@ -2024,6 +2024,7 @@ def export_bills():
     ws.write(1, 4, 'Stage', style=style)
     ws.write(1, 5, 'Amount', style=style)
     ws.write(1, 6, 'Created on', style=style)
+    ws.write(1, 7, 'Notes', style=style)
     row = 2
     column = 0
     read_only = xlwt.easyxf("")
@@ -2081,6 +2082,12 @@ def export_bills():
             cwidth = ws.col(column).width
             if (len(i['created_at']) * 367) > cwidth:
                 ws.col(column).width = (len(i['created_at']) * 367)
+            column = column + 1
+
+            ws.write(row, column, i['approval_2_notes'])
+            cwidth = ws.col(column).width
+            if (len(i['approval_2_notes']) * 367) > cwidth:
+                ws.col(column).width = (len(i['approval_2_notes']) * 367)
             column = column + 1
             row = row + 1
         row = row + 1
@@ -2228,7 +2235,7 @@ def project_contractor_info():
         data['code'] = res[2]
         data['pan'] = res[3]
 
-    get_wo_query = 'SELECT id, value, balance from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
+    get_wo_query = 'SELECT id, value, balance, difference_cost_sheet from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
     cur.execute(get_wo_query, (trade, project_id, contractor_id))
     res = cur.fetchone()
     if res is not None:
@@ -2236,6 +2243,7 @@ def project_contractor_info():
         data['balance'] = res[2]
         data['trade'] = trade
         data['work_order_id'] = res[0]
+        data['difference_cost_sheet'] = res[3]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on, b.cleared_balance, b.id' \
                         ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'

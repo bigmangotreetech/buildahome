@@ -135,6 +135,19 @@
                     {{wo[13]}}
                 </div>
             </div>
+
+            {% if wo[15]|string == ''%}
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label>View difference cost sheet</label>
+                </div>
+                <div class="col-6">
+                    <a style="word-break: break-all;" target="_blank" href="/erp/files/{{wo[15]}}">
+                        Open
+                    </a>
+                </div>
+            </div>
+            {% endif %}
             
 
             <div class="d-none verification_code">

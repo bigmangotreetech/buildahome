@@ -18,6 +18,14 @@ $(document).ready(function () {
 
     initSearchProject()
 
+    if($(".percentage-for-stage").length > 1) {
+        total_perc = 0
+        $(".percentage-for-stage").each(function(index, element){
+            if($(element).text().trim() != '') total_perc += parseFloat($(element).text())
+        })
+        $(".percentage-column-header").text(`${total_perc}%`)
+    }
+
     $('.delete_bill').on('click',function(){
         if (confirm('Are you sure you want to delete this bill')) {
             let btn = $(this) 
