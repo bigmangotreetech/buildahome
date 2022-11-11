@@ -1670,7 +1670,7 @@ def create_work_order():
                 file = request.files['difference_cost_sheet']
                 if file.filename != '':                
                     if file and allowed_file(file.filename): 
-                        filename = 'dc_for_wo_' + str(wo_id) + file.filename
+                        filename = 'dc_for_wo_' + str(work_order_id) + file.filename
                         output = send_to_s3(file, app.config["S3_BUCKET"], filename)
                         if output != 'success':
                             flash('File upload failed', 'danger')
