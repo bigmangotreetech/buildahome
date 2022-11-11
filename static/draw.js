@@ -261,7 +261,8 @@ async function saveSign() {
   pages[0].drawText(wo_number, {
     x: 448,
     y: 676,
-    size: 11,
+    size: 10,
+    lineHeight: 13,
   })
 
   const contractor_name = $('.contractor_name').text().trim()

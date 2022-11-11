@@ -1675,7 +1675,7 @@ def create_work_order():
                 if file.filename != '':                
                     if file and allowed_file(file.filename): 
                         wo_id = cur.lastrowid                       
-                        filename = 'dc_for_wo_' + str(wo_id) + filename
+                        filename = 'dc_for_wo_' + str(wo_id) + file.filename
                         output = send_to_s3(file, app.config["S3_BUCKET"], filename)
                         if output != 'success':
                             flash('File upload failed', 'danger')
@@ -2395,7 +2395,7 @@ def view_work_order():
             work_orders = get_work_orders_for_project(project_id)
 
             bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
-                        ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+                        ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance, wo_bills.created_at, wo_bills.approved_on FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
             cur = mysql.connection.cursor()
             cur.execute(bills_query)
             nt_nmr_bills = cur.fetchall()
@@ -3159,7 +3159,7 @@ def sign_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
-                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at , wo.total_bua, wo.cost_per_sqft, wo.verification_code' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at , wo.total_bua, wo.cost_per_sqft, wo.verification_code, wo.difference_cost_sheet' \
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' INNER JOIN contractors c on c.id=wo.contractor_id'
@@ -3221,7 +3221,7 @@ def approve_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
-                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at, wo.filename' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at, wo.filename, wo.difference_cost_sheet' \
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' ' \
