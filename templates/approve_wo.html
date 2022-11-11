@@ -123,6 +123,17 @@
                     <label>View work order</label>
                 </div>
                 <div class="col-6">
+                    <a style="word-break: break-all;" target="_blank" href="/erp/files/{{wo[13]}}">
+                        Open
+                    </a>
+                </div>
+            </div>
+
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6">
+                    <label>View work order</label>
+                </div>
+                <div class="col-6">
                     {% if wo[12]|string == ''%}
                     <a style="word-break: break-all;" target="_blank" href="/erp/files/work_order_{{wo_id}}.pdf">
                         Open
