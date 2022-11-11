@@ -1663,18 +1663,13 @@ def create_work_order():
                            'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
             values = (project_id, wo_value, trade, wo_number, cheque_no, contractor_id, comments, timestamp, total_bua, cost_per_sqft, verification_code)
             cur.execute(insert_query, values)
-
             work_order_id = cur.lastrowid
-            for i in range(len(milestones)):
-                if milestones[i].strip() != '' and percentages[i].strip() != '':
-                    insert_milestones_query = 'INSERT into wo_milestones(work_order_id, stage, percentage) values (%s, %s, %s)'
-                    cur.execute(insert_milestones_query, (work_order_id, milestones[i], percentages[i]))
+
 
             if 'difference_cost_sheet' in request.files:
                 file = request.files['difference_cost_sheet']
                 if file.filename != '':                
                     if file and allowed_file(file.filename): 
-                        wo_id = cur.lastrowid                       
                         filename = 'dc_for_wo_' + str(wo_id) + file.filename
                         output = send_to_s3(file, app.config["S3_BUCKET"], filename)
                         if output != 'success':
@@ -1682,8 +1677,15 @@ def create_work_order():
                             return redirect(request.referrer)
                         cur = mysql.connection.cursor()
                         query = 'UPDATE work_orders set difference_cost_sheet=%s WHERE id=%s'
-                        values = (filename, wo_id)
+                        values = (filename, work_order_id)
                         cur.execute(query, values)
+
+            for i in range(len(milestones)):
+                if milestones[i].strip() != '' and percentages[i].strip() != '':
+                    insert_milestones_query = 'INSERT into wo_milestones(work_order_id, stage, percentage) values (%s, %s, %s)'
+                    cur.execute(insert_milestones_query, (work_order_id, milestones[i], percentages[i]))
+
+
 
             mysql.connection.commit()
             flash('Work order created successfully', 'success')
