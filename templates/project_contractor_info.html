@@ -21,7 +21,7 @@
     <div class="mb-3">
         <b>WO value</b>: {{data['value']|int}}
     </div>
-    {% if data['difference_cost_sheet']|string == ''%}
+    {% if data['difference_cost_sheet']|string != ''%}
     <div class="mb-3">
         <b>View difference cost sheet</b>: <a style="word-break: break-all;" target="_blank" href="/erp/files/{{data['difference_cost_sheet']}}">
             Open
