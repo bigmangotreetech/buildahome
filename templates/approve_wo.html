@@ -148,6 +148,11 @@
                 </div>
             </div>
 
+            {% if old_work_order_exists_for_same_trade == true %}
+            <div class="d-flex font-weight-bold text-danger justify-content-start mx-3">
+                An older work order exists for the same trade with another contractor. Please be sure before approving. 
+            </div>
+            {% endif %}
             <div class="d-flex flex-column h-100 justify-content-start mx-3">
                 <form action="/erp/approve_wo" method="post">
                     <input type="hidden" name="wo_id" value="{{wo_id}}">

@@ -3231,15 +3231,26 @@ def approve_wo():
     if request.method == 'GET':
         if 'wo_id' in request.args:
             work_order_query = 'SELECT p.project_name, p.project_number, wo.trade, wo.value, c.name,' \
-                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at, wo.filename, wo.difference_cost_sheet' \
+                               'c.pan, c.code, c.address, wo.wo_number, wo.cheque_no, wo.comments, wo.created_at, wo.filename, wo.difference_cost_sheet, wo.project_id' \
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' ' \
                                          'INNER JOIN contractors c on c.id=wo.contractor_id'
+
             cur = mysql.connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
-        return render_template('approve_wo.html', wo=result, wo_id=str(request.args['wo_id']))
+
+
+            old_work_order_exists_for_same_trade = false
+            older_work_order_exists_query = 'SELECT id from work_orders WHERE project_id='+str(result[14])+' AND trade="'+str(result[2])+'"'
+            cur.execute(older_work_order_exists_query)
+            old_wo_res = cur.fetchone()
+            if  old_wo_res is not None:
+                old_work_order_exists_for_same_trade = true
+
+
+        return render_template('approve_wo.html', wo=result, wo_id=str(request.args['wo_id']), old_work_order_exists_for_same_trade=old_work_order_exists_for_same_trade)
     else:
         wo_id = request.form['wo_id']
         cur = mysql.connection.cursor()
