@@ -3242,12 +3242,12 @@ def approve_wo():
             result = cur.fetchone()
 
 
-            old_work_order_exists_for_same_trade = false
+            old_work_order_exists_for_same_trade = False
             older_work_order_exists_query = 'SELECT id from work_orders WHERE project_id='+str(result[14])+' AND trade="'+str(result[2])+'"'
             cur.execute(older_work_order_exists_query)
             old_wo_res = cur.fetchone()
             if  old_wo_res is not None:
-                old_work_order_exists_for_same_trade = true
+                old_work_order_exists_for_same_trade = True
 
 
         return render_template('approve_wo.html', wo=result, wo_id=str(request.args['wo_id']), old_work_order_exists_for_same_trade=old_work_order_exists_for_same_trade)
