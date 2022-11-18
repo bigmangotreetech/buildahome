@@ -3243,7 +3243,7 @@ def approve_wo():
 
 
             old_work_order_exists_for_same_trade = False
-            older_work_order_exists_query = 'SELECT id from work_orders WHERE id !='+str(request.args['wo_id'])+' project_id='+str(result[14])+' AND trade LIKE "%'+str(result[2])+'%"'
+            older_work_order_exists_query = 'SELECT id from work_orders WHERE id !='+str(request.args['wo_id'])+' AND project_id='+str(result[14])+' AND trade LIKE "%'+str(result[2])+'%"'
             cur.execute(older_work_order_exists_query)
             old_wo_res = cur.fetchone()
             if  old_wo_res is not None:
