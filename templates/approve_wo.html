@@ -147,8 +147,8 @@
                     {% endif %}
                 </div>
             </div>
-
-            {% if old_work_order_exists_for_same_trade == true %}
+            {{old_work_order_exists_for_same_trade}}
+            {% if old_work_order_exists_for_same_trade|string == "true" %}
             <div class="d-flex font-weight-bold text-danger justify-content-start mx-3">
                 An older work order exists for the same trade with another contractor. Please be sure before approving. 
             </div>
