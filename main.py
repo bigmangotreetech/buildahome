@@ -2253,13 +2253,13 @@ def project_contractor_info():
     for i in res:
         bills.append(i)
 
-    get_clearing_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Clearing balance%' AND contractor_code='"+str(contractor_code)+"' AND trade ='"+trade+"' AND trade != 'NT/NMR'"
+    get_clearing_bills = "SELECT stage, approval_2_amount, trade, approved_on, cleared_balance from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Clearing balance%' AND contractor_code='"+str(contractor_code)+"' AND trade ='"+trade+"' AND trade != 'NT/NMR'"
     cur.execute(get_clearing_bills)
     res = cur.fetchall()
     for i in res:
-        bills.append((i[0],'','',i[1],i[2], i[3]))
+        bills.append((i[0],'','',i[1],i[2], i[3], i[4]))
 
-    get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
+    get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR' AND trade ='"+trade+"'"
     cur.execute(get_debit_note_bills)
     res = cur.fetchall()
     for i in res:
@@ -2332,6 +2332,12 @@ def clear_individual_balance():
     trade = request.form['trade']
     work_order_id = request.form['work_order_id']
     stage = 'Clearing balance for '+ request.form['stage']
+    if 'Clearing balance' in request.form['stage'] and request.form['stage'][-1].isnumeric():
+        stage = request.form['stage'][:-1] + str(int(request.form['stage'][-1]) + 1)
+    elif 'Clearing balance' in request.form['stage']:
+        stage = request.form['stage'] + ' 1'
+
+
     bill_id = request.form['bill_id']
 
     cur = mysql.connection.cursor()
