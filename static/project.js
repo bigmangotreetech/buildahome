@@ -21,7 +21,7 @@ $(document).ready(function () {
     if($(".percentage-for-stage").length > 1) {
         total_perc = 0
         $(".percentage-for-stage").each(function(index, element){
-            if($(element).text().trim() != '') total_perc += parseFloat($(element).text())
+            if($(element).parents('td').find('.billed_amount').text().trim() != '' && $(element).text().trim() != '') total_perc += parseFloat($(element).text())
         })
         $(".percentage-column-header").text(`${total_perc}%`)
     }
