@@ -1203,6 +1203,16 @@ def contractor_registration():
         result = cur.fetchall()
         trades = []
         trades.append('Deep cleaning')
+        trades.append('Civil 1')
+        trades.append('Civil 2')        
+        trades.append('Civil 3')
+        trades.append('Civil 4')
+        trades.append('Fabrication 1')
+        trades.append('Fabrication 2')
+        trades.append('Fabrication 3')
+        trades.append('Fabrication 4')
+        trades.append('Pile foundation')
+
         for i in result:
             trades.append(i[0])
         trades.append('NT/NMR')
@@ -1271,6 +1281,17 @@ def edit_contractor():
             cur.execute(trades_query)
             result = cur.fetchall()
             trades = []
+
+            trades.append('Deep cleaning')
+            trades.append('Civil 1')
+            trades.append('Civil 2')        
+            trades.append('Civil 3')
+            trades.append('Civil 4')
+            trades.append('Fabrication 1')
+            trades.append('Fabrication 2')
+            trades.append('Fabrication 3')
+            trades.append('Fabrication 4')
+            trades.append('Pile foundation')
             for i in result:
                 trades.append(i[0])
             return render_template('edit_contractor.html', trades=trades, contractor_details=contractor_details[1:],

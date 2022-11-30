@@ -49,21 +49,22 @@
                     <td class="trade border-right">{{i['trade']}}</td>
                     <td class="stage border-right">{{i['stage']}}</td>
                     <td class="total_payable border-right">{{i['total_payable']|int}}</td>
-                    <td class="approval_1 d-flex border-right">
-                        {% if i['approval_1_amount'] == '' and session['role'] in ['Super Admin','COO','QS Head'] %}
-                        <button class="approval_1_btn btn py-0 bg-white" data-project-id="{{project}}"
-                            data-project-name="{{data[coordinator_id]['projects'][project]['project_name']}}"
-                            data-bill-id="{{i['bill_id']}}" data-toggle="modal" data-target="#approvalModal"><i
-                                class="fa fa-pencil"></i></button>
-                        {% else %}
-                        {{i['approval_1_amount']|int}}
-                        {% endif %}
-                        {% if i['approval_1_notes'] != '' %}
-                        <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary"
-                            data-toggle="popover" data-trigger="focus" data-placement="top" title="Notes"
-                            data-content="{{i['approval_1_notes']}}"><i class="fa fa-info-circle"></i></button>
-                        {% endif %}
-
+                    <td class="approval_1  border-right">
+                        <div class="w-100 d-flex">
+                            {% if i['approval_1_amount'] == '' and session['role'] in ['Super Admin','COO','QS Head'] %}
+                            <button class="approval_1_btn btn py-0 bg-white" data-project-id="{{project}}"
+                                data-project-name="{{data[coordinator_id]['projects'][project]['project_name']}}"
+                                data-bill-id="{{i['bill_id']}}" data-toggle="modal" data-target="#approvalModal"><i
+                                    class="fa fa-pencil"></i></button>
+                            {% else %}
+                            {{i['approval_1_amount']|int}}
+                            {% endif %}
+                            {% if i['approval_1_notes'] != '' %}
+                            <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary"
+                                data-toggle="popover" data-trigger="focus" data-placement="top" title="Notes"
+                                data-content="{{i['approval_1_notes']}}"><i class="fa fa-info-circle"></i></button>
+                            {% endif %}
+                        </div>
                     </td>
                     <td class="approval_2 ">
                         <div class="d-flex w-100">
