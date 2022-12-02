@@ -1344,7 +1344,7 @@ def delete_contractor():
             
             contractor_query = 'DELETE from contractors WHERE id=' + request.args['contractor_id']
             cur.execute(contractor_query)
-            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted contractor with id ' + str(contractor_id))
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted contractor with id ' + str(request.args['contractor_id']))
             mysql.connection.commit()
             flash('Contractor deleted', 'danger')
             return redirect('/erp/view_contractors')
