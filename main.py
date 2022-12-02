@@ -2491,6 +2491,7 @@ def view_unapproved_work_order():
         cur.execute(unsigned_query)
         result = cur.fetchall()
         for i in result:
+            i = list(i)
             if i[4].strip() == '':
                 i[4] = 0
             work_orders.append({
