@@ -1340,7 +1340,7 @@ def delete_contractor():
             contractor_query = 'SELECT name from contractors WHERE id=' + str(request.args['contractor_id'])
             cur.execute(contractor_query)
             res = cur.fetchone()
-            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted contractor ' + str(res[0]))
+            make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted contractor ' + str(request.args['contractor_id']))
             
             contractor_query = 'DELETE from contractors WHERE id=' + request.args['contractor_id']
             cur.execute(contractor_query)
