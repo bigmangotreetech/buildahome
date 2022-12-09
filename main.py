@@ -856,8 +856,8 @@ def debit_note():
             return redirect(request.referrer)    
 
         
-        bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on, approval_2_notes) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-        values = (project, res[0], res[1], res[2], trade, stage, str(value).strip(), timestamp, note.replace('"','""').replace("'","''"))
+        bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on, approval_2_notes, amount) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        values = (project, res[0], res[1], res[2], trade, stage, str(value).strip(), timestamp, note.replace('"','""').replace("'","''"),str(value).strip())
         cur.execute(bill_query, values)
         mysql.connection.commit()
         flash('Debit note created successfully', 'success')
