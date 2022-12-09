@@ -837,6 +837,7 @@ def debit_note():
         trade = request.form['trade']
         stage = request.form['stage'] + '(Debit note)'
         value = request.form['value']
+        note = request.form['note']
 
         IST = pytz.timezone('Asia/Kolkata')
         current_time = datetime.now(IST)
@@ -855,8 +856,8 @@ def debit_note():
             return redirect(request.referrer)    
 
         
-        bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on) values (%s,%s,%s,%s,%s,%s,%s,%s)'
-        values = (project, res[0], res[1], res[2], trade, stage, str(value).strip(), timestamp)
+        bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on, approval_2_notes) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        values = (project, res[0], res[1], res[2], trade, stage, str(value).strip(), timestamp, note.replace('"','""').replace("'","''"))
         cur.execute(bill_query, values)
         mysql.connection.commit()
         flash('Debit note created successfully', 'success')
@@ -2280,11 +2281,11 @@ def project_contractor_info():
     for i in res:
         bills.append((i[0],'',i[1],i[2],i[3], i[4], i[5], i[6]))
 
-    get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR' AND trade ='"+trade+"'"
+    get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on, amount, approval_2_notes from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR' AND trade ='"+trade+"'"
     cur.execute(get_debit_note_bills)
     res = cur.fetchall()
     for i in res:
-        bills.append((i[0],'','',i[1],i[2], i[3]))
+        bills.append((i[0],'',i[4],i[1],i[2], i[3],i[5]))
 
     get_project_query = 'SELECT project_name, project_number from projects WHERE project_id=' + str(project_id)
     cur.execute(get_project_query)

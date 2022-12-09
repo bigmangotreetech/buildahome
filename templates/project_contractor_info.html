@@ -62,7 +62,15 @@
         {% for i in bills %}
         <tr>
 
-            <td class="stage">{{i[0]}}</td>
+            <td class="stage">{{i[0]}}
+                {% if 'Debit note' in i[0] and i|length > 5 %}
+                <span>
+                    <button type="button" class="btn p-0 ml-2 text-secondary"
+                    data-toggle="popover" data-trigger="focus" data-placement="top" title="Notes"
+                    data-content="{{i[6]}}"><i class="fa fa-info-circle"></i></button>
+                </span>
+                {% endif %}
+            </td>
             <td class="percentage-for-stage">{{i[1]}}</td>
             {% if 'Clearing balance' not in i[0] %}
             <td class="billed_amount">{{i[2]|int}}</td>
