@@ -1626,7 +1626,7 @@ def create_work_order():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         projects = get_projects()
-        floors = ['G + 1', 'G + 2', 'G + 3', 'G + 4']
+        floors = ['G + 1', 'G + 2', 'G + 3', 'G + 4','G + 5','G + 6']
         trades_query = 'SELECT DISTINCT trade from labour_stages'
         cur.execute(trades_query)
         result = cur.fetchall()

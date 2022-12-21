@@ -999,7 +999,7 @@ function validateForm() {
     let x = document.forms["myForm"]
     let isValid = true;
     let no_of_floors = x["no_of_floors"].value ? x["no_of_floors"].value : '';
-    let floor_options = ['G + 1', 'G + 2', 'G + 3', 'G + 4'];
+    let floor_options = ['G + 1', 'G + 2', 'G + 3', 'G + 4','G + 5','G + 6'];
     for (let i = 0; i < x.length; i++) {
         switch (x[i].id) {
             case ("project_number"):
