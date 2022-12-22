@@ -18,6 +18,8 @@ class projects(object):
                  ff_slab_area,
                  sf_slab_area,
                  tf_slab_area,
+                 fof_slab_area,
+                 fif_slab_area,
                  tef_slab_area,
                  shr_oht,
                  additional_cost,
@@ -46,6 +48,8 @@ class projects(object):
         self.ff_slab_area = ff_slab_area
         self.sf_slab_area = sf_slab_area
         self.tf_slab_area = tf_slab_area
+        self.fof_slab_area = fof_slab_area
+        self.fif_slab_area = fif_slab_area
         self.tef_slab_area = tef_slab_area
         self.shr_oht = shr_oht
         self.additional_cost = additional_cost

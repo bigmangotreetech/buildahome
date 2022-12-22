@@ -3584,7 +3584,7 @@ def view_project_details():
         fields = [
             'project_name', 'project_number', 'project_location', 'package_type', 'no_of_floors', 'project_value',
             'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
-            'gf_slab_area', 'ff_slab_area', 'sf_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
+            'gf_slab_area', 'ff_slab_area', 'sf_slab_area','fof_slab_area','fif_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
             'elevation_details', 'additional_cost',
             'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name', 'client_phone'
         ]
