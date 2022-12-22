@@ -2511,7 +2511,7 @@ def view_unapproved_work_order():
 @app.route('/update_slab_area', methods=['POST'])
 def update_slab_area():
     project_id = request.form['project_id']
-    query = 'SELECT basement_slab_area, gf_slab_area, ff_slab_area, sf_slab_area, tf_slab_area, tef_slab_area from projects WHERE project_id=' + str(project_id)
+    query = 'SELECT basement_slab_area, gf_slab_area, ff_slab_area, sf_slab_area, tf_slab_area, fof_slab_area, fif_slab_area, tef_slab_area from projects WHERE project_id=' + str(project_id)
     cur = mysql.connection.cursor()
     cur.execute(query)
     result = cur.fetchone()
