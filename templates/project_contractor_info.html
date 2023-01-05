@@ -72,12 +72,8 @@
                 {% endif %}
             </td>
             <td class="percentage-for-stage">{{i[1]}}</td>
-            {% if 'Clearing balance' not in i[0] %}
             <td class="billed_amount">{{i[2]|int}}</td>
-            {% else %}
-            <td class="">{{i[2]|int}}</td>
-            {% endif %}
-
+            
             <td class="approved_amount">{{i[3]|int}}</td>
             <td>
                 {% if i[4] != 'None' %}
