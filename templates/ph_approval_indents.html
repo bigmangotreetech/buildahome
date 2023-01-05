@@ -5,6 +5,21 @@
         <h4>Approved POs</h4>
     </div>
 </div>
+<style>
+    .search-project-field {
+        font-size: 12px;
+        border-radius: 5px;
+        background: #f9f9f9;
+        border: 1px solid #ffffff;
+        padding: 10px 15px;
+    }
+</style>
+<div class="row m-0 justify-content-end">
+    <div class="col-sm-12 col-md-6 col-lg-4">
+        <input type="text" class="form-control search-po-field" placeholder="Search project">
+    </div>
+</div>
+</div>
 <div class="p-5 w-100 table-responsive">
     <table class="table table-striped">
         <thead>
@@ -21,8 +36,8 @@
         </thead>
         <tbody>
         {% for x in projects %}
-            <tr>
-                <td>{{x}}</td>
+            <tr style="border-top: 2px solid black; padding-top: 40px !important">
+                <td class="project-name">{{x}}</td>
             </tr>
             {% for i in projects[x] %}
             <tr class="bill-{{i['bill_id']}}">
