@@ -25,7 +25,7 @@ $(document).ready(function () {
                         
                         $(element).parent('tr').removeClass('d-none')
                         nextElement = $(element).parent('tr').next()
-                        while (!nextElement.hasClass('project_name')) {
+                        while (!nextElement.hasClass('project-name')) {
                             nextElement.removeClass('d-none')
                             nextElement = nextElement.next()
                         }
