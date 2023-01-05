@@ -1766,7 +1766,7 @@ def create_bill():
 
 
         
-        stage = request.form['stage'].replace('"',"'").replace('"','"')
+        stage = request.form['stage'].replace('"',"'").replace('"',"'")
         payment_percentage = request.form['payment_percentage']
         amount = request.form['amount']
         contractor_name = request.form['contractor_name']
