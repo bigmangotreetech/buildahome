@@ -158,5 +158,6 @@ materials = [
         'Toughned glass',
         'Polycorbonate sheet',
         'Laterite stone',
-        'Name board'
+        'Name board',
+        'M30'
     ]        
