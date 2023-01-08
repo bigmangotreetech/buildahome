@@ -5057,7 +5057,7 @@ def get_my_indents():
                 data.append(indent_entry)
 
             return jsonify(data)
-        elif len(access):
+        elif len(access) > 0:
             access = access.split(',')
             access_as_int = [int(i) for i in access]
             access_tuple = tuple(access_as_int)
