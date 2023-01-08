@@ -154,6 +154,19 @@
                 {{wo[14]}}
             </div>
 
+            {% if  wo_id == 1666 %}
+            <div class="row mx-0 mb-3 form-group">
+                {% for item of milestones_result %}
+                <div class="col-8">
+                    <label>{{item[0]}}</label>
+                </div>
+                <div class="col-4">
+                    <label>{{item[1]}}%</label>
+                </div>
+            {% endfor %}
+            </div>
+            {% endif %}
+
             <input type="hidden" id="wo_id" value="{{wo_id}}">
 
             <div class="d-flex flex-column h-100 justify-content-start mx-3">

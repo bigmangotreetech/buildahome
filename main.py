@@ -3244,7 +3244,11 @@ def sign_wo():
             if result is None:
                 flash('This work order is already signed', 'danger')
                 return redirect('/erp/login')
-        return render_template('sign_wo.html', wo=result, wo_id=str(request.args['wo_id']))
+
+            milestones_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id='+str(request.args['wo_id'])
+            cur.execute(milestones_query)
+            milestones_result = cur.fetchall()
+        return render_template('sign_wo.html',milestones_result=milestones_result, wo=result, wo_id=str(request.args['wo_id']))
 
 
 @app.route('/upload_signed_wo', methods=['POST'])
