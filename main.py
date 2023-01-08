@@ -3248,6 +3248,20 @@ def sign_wo():
             milestones_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id='+str(request.args['wo_id'])
             cur.execute(milestones_query)
             milestones_result = cur.fetchall()
+            milestone_data = []
+            for item in milestones_result:
+                try:
+                    milestone_data.append({
+                        "stage": item[0],
+                        "percent": item[1],
+                        "amount": int(float(item[1]) * float(result[3]))
+                    })
+                except:
+                    milestone_data.append({
+                        "stage": item[0],
+                        "percent": '',
+                        "amount": ''
+                    })
         return render_template('sign_wo.html',milestones_result=milestones_result, wo=result, wo_id=str(request.args['wo_id']))
 
 
