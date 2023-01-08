@@ -3262,7 +3262,7 @@ def sign_wo():
                         "percent": '',
                         "amount": ''
                     })
-        return render_template('sign_wo.html',milestones_result=milestones_result, wo=result, wo_id=str(request.args['wo_id']))
+        return render_template('sign_wo.html',milestone_data=milestone_data, wo=result, wo_id=str(request.args['wo_id']))
 
 
 @app.route('/upload_signed_wo', methods=['POST'])
