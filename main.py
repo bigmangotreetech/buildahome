@@ -2713,8 +2713,10 @@ def view_ph_approved_indents():
                 difference_in_hours = difference_in_seconds // 3600
                 if difference_in_hours >= 24:
                     difference_in_days = difference_in_hours // 24
-                    if difference_in_days > 365:
-                        difference_in_days = str(int(difference_in_days // 365)) + ' year(s), ' + str(int(difference_in_days % 365))
+                    if difference_in_days >= 365:
+                        years = int(difference_in_days // 365)
+                        days = int(difference_in_days % 365)
+                        difference_in_days = str(years) + ' year(s), ' + str(days)
                     hours_remaining = difference_in_hours % 24
                     i[8] = str(difference_in_days) + ' days, ' + str(
                         int(hours_remaining)) + 'hours'
@@ -2760,8 +2762,10 @@ def view_approved_indents():
                     difference_in_hours = difference_in_seconds // 3600
                     if difference_in_hours >= 24:
                         difference_in_days = difference_in_hours // 24
-                        if difference_in_days > 365:
-                            difference_in_days = str(int(difference_in_days // 365)) + ' year(s), ' + str(int(difference_in_days % 365)) + ' year(s), ' + str(int(difference_in_days))
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
                         hours_remaining = difference_in_hours % 24
                         i[8] = str(difference_in_days) + ' days, ' + str(
                             int(hours_remaining)) + 'hours'
@@ -2794,8 +2798,10 @@ def view_approved_indents():
                     difference_in_hours = difference_in_seconds // 3600
                     if difference_in_hours >= 24:
                         difference_in_days = difference_in_hours // 24
-                        if difference_in_days > 365:
-                            difference_in_days = str(int(difference_in_days // 365)) + ' year(s), ' + str(int(difference_in_days % 365)) + ' year(s), ' + str(int(difference_in_days))
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
                         hours_remaining = difference_in_hours % 24
                         i[8] = str(difference_in_days) + ' days, ' + str(
                             int(hours_remaining)) + 'hours'
@@ -2837,8 +2843,10 @@ def view_deleted_indents():
                     difference_in_hours = difference_in_seconds // 3600
                     if difference_in_hours >= 24:
                         difference_in_days = difference_in_hours // 24
-                        if difference_in_days > 365:
-                            difference_in_days = str(int(difference_in_days // 365)) + ' year(s), ' + str(int(difference_in_days % 365)) + ' year(s), ' + str(int(difference_in_days))
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
                         hours_remaining = difference_in_hours % 24
                         i[8] = str(difference_in_days) + ' days, ' + str(
                             int(hours_remaining)) + 'hours'
@@ -2867,8 +2875,10 @@ def view_deleted_indents():
                     difference_in_hours = difference_in_seconds // 3600
                     if difference_in_hours >= 24:
                         difference_in_days = difference_in_hours // 24
-                        if difference_in_days > 365:
-                            difference_in_days = str(int(difference_in_days // 365)) + ' year(s), ' + str(int(difference_in_days % 365)) + ' year(s), ' + str(int(difference_in_days))
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
                         hours_remaining = difference_in_hours % 24
                         i[8] = str(difference_in_days) + ' days, ' + str(
                             int(hours_remaining)) + 'hours'
@@ -2911,8 +2921,10 @@ def view_approved_POs():
                     difference_in_hours = difference_in_seconds // 3600
                     if difference_in_hours >= 24:
                         difference_in_days = difference_in_hours // 24
-                        if difference_in_days > 365:
-                            difference_in_days = str(int(difference_in_days // 365)) + ' year(s), ' + str(int(difference_in_days % 365)) + ' year(s), ' + str(int(difference_in_days))
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
                         hours_remaining = difference_in_hours % 24
                         i[8] = str(difference_in_days) + ' days, ' + str(
                             int(hours_remaining)) + 'hours'
@@ -2941,8 +2953,10 @@ def view_approved_POs():
                     difference_in_hours = difference_in_seconds // 3600
                     if difference_in_hours >= 24:
                         difference_in_days = difference_in_hours // 24
-                        if difference_in_days > 365:
-                            difference_in_days = str(int(difference_in_days // 365)) + ' year(s), ' + str(int(difference_in_days % 365)) + ' year(s), ' + str(int(difference_in_days))
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
                         hours_remaining = difference_in_hours % 24
                         i[8] = str(difference_in_days) + ' days, ' + str(
                             int(hours_remaining)) + 'hours'
