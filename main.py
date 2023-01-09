@@ -4824,7 +4824,7 @@ def get_notes():
             get_notes = 'SELECT n.note, n.timestamp, u.name, n.id , n.attachment FROM ' \
                             'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
-                            ' WHERE n.internal=0 p.project_id =' + str(project_id)
+                            ' WHERE n.internal=0 AND p.project_id =' + str(project_id)
             cur.execute(get_notes)
             res = cur.fetchall()
             return jsonify(res)
