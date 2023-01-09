@@ -652,7 +652,7 @@ def project_notes():
             projects = get_projects()
             project_id = request.args['project_id']
             cur = mysql.connection.cursor()
-            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id, n.attachment FROM ' \
+            get_notes = 'SELECT n.note, n.timestamp, u.name, n.id, n.attachment, n.internal FROM ' \
                             'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
                             ' WHERE p.project_id =' + str(project_id)
@@ -666,10 +666,13 @@ def project_notes():
         timestamp = current_time.strftime('%d %m %Y at %H %M')
         user_id = session['user_id']
         project_id = request.form['project_id']
+        internal = 0
+        if 'internal' in request.form:
+            internal = 1
 
         cur = mysql.connection.cursor()
-        query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id) values(%s, %s, %s, %s)'
-        cur.execute(query, (note, timestamp, user_id, project_id))
+        query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id, internal) values(%s, %s, %s, %s, %s)'
+        cur.execute(query, (note, timestamp, user_id, project_id, str(internal)))
 
         note_id = cur.lastrowid        
         file = request.files['file']

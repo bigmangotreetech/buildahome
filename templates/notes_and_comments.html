@@ -1,5 +1,13 @@
 {% extends 'layout.html' %}
 {% block content %}
+<style>
+    .internal-indicator {
+        height: 12px;
+        width: 12px;
+        background-color: blue;
+        border-radius: 50%;
+    }
+</style>
 <div class=" mt-5 mb-3 pb-2 border-bottom form-group">
     <div class="w-100">
         <h4>Notes and comments</h4>
@@ -31,7 +39,10 @@
                     <label for="note">Add new Note</label>
                 </div>
                 <div class="col-12 p-0">
-                    <textarea type="number" name="note" id="note" class="form-control" required></textarea>
+                    <textarea name="note" id="note" class="form-control" required></textarea>
+                </div>
+                <div class="col-12 p-0 d-flex  mb-3">
+                    <input type="checkbox" name="internal" class="mr-2"> Internal note?
                 </div>
             </div>
             
@@ -53,11 +64,17 @@
         </form>
         {% for i in notes %}
         <div class="bg-light my-3 border-left border-dark p-2">
-            <p class="mb-0" style="font-weight: 500;">{{i[2]}} at {{i[1]}} :</p>
+            <p class="mb-0 d-flex" style="font-weight: 500;">
+                {% if i[5]|string == '1' %}
+                <span class="internal-indicator my-auto mr-2"></span>
+                {% endif %}
+                
+                {{i[2]}} at {{i[1]}} :</p>
             <p style="white-space: break-spaces">{{i[0]}}</p>
             {% if i[4]|string != '0' %}
             <a target="_blank" href="https://app.buildahome.in/erp/files/{{i[4]}}">View attachment</a>
             {% endif %}
+
             
             {% if session['role'] in ['Super Admin','COO'] %}
             <a href="/erp/delete_note?id={{i[3]}}" class="text-danger">Delete</a>
