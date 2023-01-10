@@ -3481,19 +3481,19 @@ def client_billing():
     if res is not None:
         for i in res:
             task_item = {
-                'name': res[2],
-                'start_date': res[3],
-                'end_date': res[4],
-                'percent': res[7],
-                'due': res[8],
-                'paid': res[9],
-                'is_non_tender': res[11],
-                'progress': res[10],
+                'name': i[2],
+                'start_date': i[3],
+                'end_date': i[4],
+                'percent': i[7],
+                'due': i[8],
+                'paid': i[9],
+                'is_non_tender': i[11],
+                'progress': i[10],
                 
             }
             task_item['sub_tasks'] = []
-            if len(res[6]) > 0:
-                sub_task_list = res[6].split('^')
+            if len(i[6]) > 0:
+                sub_task_list = i[6].split('^')
                 for sub_task_item in sub_task_list:
                     task_name = sub_task_item.split('|')
                     task_item['sub_tasks'].append(task_name)
