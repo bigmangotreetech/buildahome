@@ -23,17 +23,17 @@
                         </div>
                         <div class="p-3">
                             {% for sub_task in task['sub_tasks'] %}
-                            <p class="">
+                            <p class="d-flex">
                                 {% if sub_task['is_complete'] %}
-                                <a class="btn btn-success p-1 px-2">
+                                <a class="btn btn-success p-1 px-2 my-auto">
                                     <i class="fa fa-check text-white"></i>
                                 </a>
                                 {% else %}
-                                <a class="btn btn-primary p-1 px-2">
+                                <a class="btn btn-primary p-1 px-2 my-auto">
                                     <i class="fa fa-check text-white"></i>
                                 </a>
                                 {% endif %}
-                                {{sub_task['name']}}
+                                <span class="my-auto ml-2">{{sub_task['name']}}</span>
                             </p>
                             {% endfor %}
                             
