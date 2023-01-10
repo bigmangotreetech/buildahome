@@ -3257,7 +3257,7 @@ def sign_wo():
                     milestone_data.append({
                         "stage": item[0],
                         "percent": item[1],
-                        "amount": int((float(item[1]) / 100 * float(result[3])) * 100)
+                        "amount": int((float(item[1]) / 100 * float(result[3])))
                     })
                 except:
                     milestone_data.append({
