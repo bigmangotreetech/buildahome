@@ -3495,7 +3495,8 @@ def client_billing():
                 sub_task_list = i[6].split('^')
                 for sub_task_item in sub_task_list:
                     task_name = sub_task_item.split('|')
-                    task_item['sub_tasks'].append(task_name)
+                    if len(task_name) > 0:
+                        task_item['sub_tasks'].append(task_name[0])
             tasks.append(task_item)
 
     return render_template('client_billing.html', project_name=project_name, tasks=tasks)
