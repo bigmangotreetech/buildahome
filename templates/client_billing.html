@@ -12,12 +12,12 @@
             <div class="row mx-4 mt-2">
                 {% for task in tasks %}
                 <div class="col-md-3 col-sm-12 p-3">
-                    <div class="card bg-light rounded border border-dark">
-                        <div class="card-header bg-secondary text-white">{{task['name']}} <b
-                                class="float-right text-white">{{task['percent']}}%</b></div>
+                    <div class="card bg-light rounded border">
+                        <div class="card-header bg-secondary text-white">{{task['name']}} 
+                            <b class="float-right text-white">{{task['percent']}} {% if task['is_non_tender']|int == 0 %} % {% endif %}</b></div>
                         <div class="p-3">
                             {% for sub_task in task['sub_tasks'] %}
-                            <p class="ml-3">
+                            <p class="">
                                 <a class="btn btn-success p-1 px-2">
                                     <i class="fa fa-check text-white"></i>
                                 </a>
@@ -29,7 +29,14 @@
                             <small>End date: {{task['end_date']}}</small>
                         </div>
                         <div class="p-3">
+                            {% if task['paid'] == 0 and task['due'] == 0 %}
+                            <btn onclick="" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-warning'>Mark as Due</btn>
+                            {% elif task['due'] == 1 and task['paid'] == 0 %}
+                            <btn onclick="" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-primary'>Mark as paid</btn>
+                            {% else %}
                             <p class="btn btn-block btn-success"><i class="fa fa-check"></i> Paid</p>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>

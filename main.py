@@ -3474,7 +3474,7 @@ def client_billing():
         return 'Invalid project id'
     project_name = res[0]
     
-    tasks_query = 'SELECT * from Tasks WHERE project_id='+str(project_id)
+    tasks_query = 'SELECT * from Tasks WHERE project_id='+str(project_id)+' ORDER BY task_id'
     cur.execute(tasks_query)
     res = cur.fetchall()
     tasks = []

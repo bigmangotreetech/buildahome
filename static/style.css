@@ -58,7 +58,7 @@ html {
     font-size: 14px;
 }
 
-body {
+body, small {
     font-family: 'Montserrat', sans-serif;
     height: 100%;    
     font-size: 12px;
