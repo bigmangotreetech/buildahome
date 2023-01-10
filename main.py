@@ -3472,7 +3472,7 @@ def client_billing():
     res = cur.fetchone()
     if res is None:
         return 'Invalid project id'
-    project_data = {'project_name': res[0], 'client_name': res[1], 'client_phone': res[2], 'project_value': res[3], 'project_location': res[4]}
+    project_name = res[0]
     
     tasks_query = 'SELECT * from Tasks WHERE project_id='+str(project_id)
     cur.execute(tasks_query)
@@ -3498,7 +3498,7 @@ def client_billing():
                     tasks['sub_tasks'].append(task_name)
             tasks.append(task_item)
 
-    return render_template('client_billing.html', project_data=project_data, tasks=tasks)
+    return render_template('client_billing.html', project_name=project_name, tasks=tasks)
 
 @app.route('/edit_project', methods=['GET', 'POST'])
 def edit_project():
