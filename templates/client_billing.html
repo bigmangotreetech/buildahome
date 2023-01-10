@@ -29,7 +29,7 @@
                                     <i class="fa fa-check text-white"></i>
                                 </a>
                                 {% else %}
-                                <btn onclick="set_url('/erp/mark_task_complete?id={{loop.index}}&task_id={{task['id']}}',this);"  data-toggle="modal" data-target="#SchedulerModal" class="btn btn-primary p-1 px-2 my-auto">
+                                <btn onclick="set_url('/erp/mark_task_complete?id={{loop.index - 1}}&task_id={{task['id']}}',this);"  data-toggle="modal" data-target="#SchedulerModal" class="btn btn-primary p-1 px-2 my-auto">
                                     <i class="fa fa-check text-white"></i>
                                 </btn>
                                
