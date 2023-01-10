@@ -39,7 +39,7 @@
                         <div class="p-3">
                             {% if task['paid']|int == 0 and task['due']|int == 0 %}
                             <btn onclick="" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-warning'>Mark as Due</btn>
-                            {% elif task['due']|int == 1 and task['paid']|int == 0 %}
+                            {% elif task['paid']|int == 0 and task['due']|int == 1 %}
                             <btn onclick="" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-primary'>Mark as paid</btn>
                             {% else %}
                             <p class="btn btn-block btn-success"><i class="fa fa-check"></i> Paid</p>
