@@ -3481,6 +3481,7 @@ def client_billing():
     if res is not None:
         for i in res:
             task_item = {
+                'id': i[0],
                 'name': i[2],
                 'start_date': i[3],
                 'end_date': i[4],

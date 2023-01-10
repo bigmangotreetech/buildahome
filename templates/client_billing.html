@@ -42,9 +42,9 @@
                         </div>
                         <div class="p-3">
                             {% if task['paid']|int == 0 and task['due']|int == 0 %}
-                            <btn onclick="" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-warning'>Mark as Due</btn>
+                            <btn onclick="set_url('/erp/mark_task_due?id={{task['id']}}', this);" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-warning'>Mark as Due</btn>
                             {% elif task['paid']|int == 0 and task['due']|int == 1 %}
-                            <btn onclick="" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-primary'>Mark as paid</btn>
+                            <btn onclick="set_url('/erp/mark_task_paid?id={{task['id']}}', this);" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-primary'>Mark as paid</btn>
                             {% else %}
                             <p class="btn btn-block btn-success"><i class="fa fa-check"></i> Paid</p>
                             {% endif %}
@@ -59,6 +59,105 @@
                 class="mt-4 btn btn-danger text-white d-none"><i class="fa fa-trash mr-2"></i>Delete</a>
         </div>
     </div>
-
 </div>
+
+<div id="SchedulerModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        
+        <div class="modal-body">
+          <h5 class="modal-title p-2 border-bottom border-dark"><b>Add a note</b>
+          <button type="button float-right" class="close" data-dismiss="modal">&times;</button></h5>
+          <div class="pt-4">
+              <div class="form-group">
+                <textarea rows='3' class="form-control" id="note" placeholder="Type in note" name="note"></textarea>
+              </div>
+          </div>
+        <button onclick="SubmitForm();" type="button" class="btn btn-success float-right mt-3" data-dismiss="modal">Update</button>
+        </div>
+          
+      </div>
+  
+    </div>
+  </div>
+
+<script>
+  
+    function send_notification(title, message){
+      var recipient = $("#recipient-name").text().trim()
+      console.log(recipient);
+      $.ajax({ 
+          url: 'https://fcm.googleapis.com/fcm/send', 
+          headers: { 
+              'Content-Type': 'application/json' ,
+              'Authorization': 'key=AAAAlQ1Lrfw:APA91bHvI2-qFZNCf-oFfeZgM0JUDxxbuykH_ffka9hPUE0xBpiza4uHF0LmItT_SfMZ1Zl5amGUfAXigaR_VcMsEArqpOwHNup4oRTQ24htJ_GWYH0OWZzFrH2lRY24mnQ-uiHgLyln'
+          } ,
+          dataType: 'json',
+          contentType: 'application/json',
+          method:"POST", 
+          data: JSON.stringify({ 
+              'notification' : { "title": title.toString(), "body": message.toString() },
+               "to" : "/topics/"+recipient,
+               "click_action": 'FLUTTER_NOTIFICATION_CLICK'
+              
+          }),
+          success: function(data) {
+              console.log(data);
+          },
+          error: function(data) {
+              console.log(data);
+          }
+      });    
+    }
+    
+    
+    var note = '';
+    var url = '';
+    var ele;
+    function set_url(value, element){
+        url = value;
+        console.log(url);
+        ele = element;
+    }
+    function SubmitForm(){
+        note=document.getElementById("note").value;
+        note=note.replace("&", "and");
+        url1 = url+"&&note="+note;
+        //   window.location.href = url;
+        $.ajax({
+            url: url1,
+            type: "GET",
+            success: function(data){
+                console.log("Success");
+            }
+        });
+        
+        if(url.includes("complete")){
+            $(ele).removeClass("btn-primary");
+            $(ele).addClass("btn-success");
+            $(ele).removeAttr("data-toggle");
+            send_notification("A task has been marked completed", "Check your scheduler");
+            
+        }
+        else if(url.includes("due")){
+            $(ele).removeClass("btn-warning");
+            $(ele).addClass("btn-primary");
+            $(ele).text("Mark as paid");
+            new_function = $(ele).parent().find(".change_url").text();
+            $(ele).attr("onclick", new_function)
+            send_notification("A task has been marked due for payment", "Check your scheduler");
+        }
+        else if(url.includes("paid")){
+            $(ele).removeClass("btn-primary");
+            $(ele).addClass("btn-success");
+            $(ele).html("<i class='fa fa-check'></i> Paid");
+            $(ele).removeAttr("data-toggle");
+            send_notification("A task payment has been marked paid!", "Check your scheduler");
+        }
+        $("#note").val("");
+    }
+    
+</script>
 {% endblock %}
