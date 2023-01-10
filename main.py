@@ -3491,11 +3491,11 @@ def client_billing():
                 'progress': res[10],
                 
             }
-            tasks['sub_tasks'] = []
+            task_item['sub_tasks'] = []
             if(len(res[6])):
                 for sub_task_item in res[6].split('^'):
                     task_name = sub_task_item.split('|')
-                    tasks['sub_tasks'].append(task_name)
+                    task_item['sub_tasks'].append(task_name)
             tasks.append(task_item)
 
     return render_template('client_billing.html', project_name=project_name, tasks=tasks)
