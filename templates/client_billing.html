@@ -29,9 +29,10 @@
                                     <i class="fa fa-check text-white"></i>
                                 </a>
                                 {% else %}
-                                <a class="btn btn-primary p-1 px-2 my-auto">
+                                <btn onclick="set_url('/erp/mark_task_complete?id=1&task_id={{task['id']}}',this);"  data-toggle="modal" data-target="#SchedulerModal" class="btn btn-primary p-1 px-2 my-auto">
                                     <i class="fa fa-check text-white"></i>
-                                </a>
+                                </btn>
+                               
                                 {% endif %}
                                 <span class="my-auto ml-2">{{sub_task['name']}}</span>
                             </p>

@@ -3463,6 +3463,56 @@ def create_project():
         mysql.connection.commit()
         return redirect(request.referrer)
 
+@app.route('/mark_task_complete', methods=['GET'])
+def mark_task_complete():
+    subtask_id = request.args['id']
+    task_id = request.args['task_id']
+    note = request.args['note']
+    cur = mysql.connection.cursor()
+    
+    query = 'SELECT progress, s_note from Tasks WHERE task_id='+str(task_id)
+    cur.execute(query)
+    res = cur.fetchone()
+    progress = res[0]
+    progress = subtask_id + '|'
+
+    s_note = res[1]
+    s_note = s_note + note
+    s_note = s_note + '|'
+
+    update_query = 'UPDATE Tasks SET progress=%s, s_note=%s WHERE task_id=%s'
+    cur.execute(update_query, (progress, s_note, task_id))
+
+    mysql.connection.commit()
+
+    flash('Sub task marked as completed', 'success')
+    return redirect(request.referrer)
+
+
+@app.route('/mark_task_due', methods=['GET'])
+def mark_task_due():
+    task_id = request.args['id']
+    note = request.args['note']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE Tasks SET due=true, p_note=%s WHERE task_id=%s'
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Task marked as due', 'success')
+    return redirect(request.referrer)
+
+@app.route('/mark_task_paid', methods=['GET'])
+def mark_task_paid():
+    task_id = request.args['id']
+    note = request.args['note']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE Tasks SET paid=true, p_note=%s WHERE task_id=%s'
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Task marked as paid', 'success')
+    return redirect(request.referrer)
+
 @app.route('/client_billing', methods=['GET'])
 def client_billing():
     project_id = request.args['project_id']
