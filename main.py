@@ -3497,7 +3497,7 @@ def client_billing():
                 for j in range(len(sub_task_list)):
                     sub_task_item = sub_task_list[j]
                     task_name = sub_task_item.split('|')
-                    if len(task_name) > 0:
+                    if len(task_name[0]) > 0:
                         task_item['sub_tasks'].append({
                             'name': task_name[0],
                             'is_complete': len(i[10].strip()) > 0 and  j < len(progress_list)
