@@ -3495,7 +3495,7 @@ def mark_task_due():
     note = request.args['note']
     cur = mysql.connection.cursor()
     query = 'UPDATE Tasks SET due=true, p_note=%s WHERE task_id=%s'
-    cur.execute(query)
+    cur.execute(query, (note, task_id))
     mysql.connection.commit()
 
     flash('Task marked as due', 'success')
@@ -3507,7 +3507,7 @@ def mark_task_paid():
     note = request.args['note']
     cur = mysql.connection.cursor()
     query = 'UPDATE Tasks SET paid=true, p_note=%s WHERE task_id=%s'
-    cur.execute(query)
+    cur.execute(query, (note, task_id))
     mysql.connection.commit()
 
     flash('Task marked as paid', 'success')
