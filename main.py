@@ -3485,8 +3485,8 @@ def client_billing():
                 'start_date': i[3],
                 'end_date': i[4],
                 'percent': i[7],
-                'due': i[8],
-                'paid': i[9],
+                'due': i[9],
+                'paid': i[8],
                 'is_non_tender': i[11],
                 'progress': i[10],                
             }
@@ -3500,7 +3500,7 @@ def client_billing():
                     if len(task_name) > 0:
                         task_item['sub_tasks'].append({
                             'name': task_name[0],
-                            'is_complete': j < len(progress_list)
+                            'is_complete': (j + 1) < len(progress_list)
                         })
             tasks.append(task_item)
 

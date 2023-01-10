@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container my-5 pt-5">
     <div class="card my-5">
-        <div class="card-header bg-secondary border-dark`">
+        <div class="card-header text-white bg-secondary ">
             <b>{{project_name}}</b>
             
         </div>
@@ -15,7 +15,7 @@
                     <div class="card bg-light rounded border">
                         <div class="card-header bg-secondary text-white d-flex justify-content-between">
                             <span>{{task['name']}} </span>
-                            <b class="ml-2 my-auto text-white">{{task['percent']}} {% if task['is_non_tender']|int == 0 %} % {% endif %}</b>
+                            <b class="ml-2 my-auto text-white">{{task['percent']}} {% if task['is_non_tender']|int == 0 %}% {% endif %}</b>
                         </div>
                         <div class="p-3">
                             {% for sub_task in task['sub_tasks'] %}
