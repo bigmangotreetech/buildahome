@@ -3463,7 +3463,42 @@ def create_project():
         mysql.connection.commit()
         return redirect(request.referrer)
 
+@app.route('/client_billing', methods=['GET'])
+def client_billing():
+    project_id = request.args['project_id']
+    cur = mysql.connection.cursor()
+    project_details_query = 'SELECT project_name from projects WHERE project_id='+str(project_id)
+    cur.execute(project_details_query)
+    res = cur.fetchone()
+    if res is None:
+        return 'Invalid project id'
+    project_data = {'project_name': res[0], 'client_name': res[1], 'client_phone': res[2], 'project_value': res[3], 'project_location': res[4]}
+    
+    tasks_query = 'SELECT * from Tasks WHERE project_id='+str(project_id)
+    cur.execute(tasks_query)
+    res = cur.fetchall()
+    tasks = []
+    if res is not None:
+        for i in res:
+            task_item = {
+                'name': res[2],
+                'start_date': res[3],
+                'end_date': res[4],
+                'percent': res[7],
+                'due': res[8],
+                'paid': res[9],
+                'is_non_tender': res[11],
+                'progress': res[10],
+                
+            }
+            tasks['sub_tasks'] = []
+            if(len(res[6])):
+                for sub_task_item in res[6].split('^'):
+                    task_name = sub_task_item.split('|')
+                    tasks['sub_tasks'].append(task_name)
+            tasks.append(task_item)
 
+    return render_template('client_billing.html', project_data=project_data, tasks=tasks)
 
 @app.route('/edit_project', methods=['GET', 'POST'])
 def edit_project():
