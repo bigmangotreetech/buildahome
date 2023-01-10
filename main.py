@@ -3493,10 +3493,15 @@ def client_billing():
             task_item['sub_tasks'] = []
             if len(i[6]) > 0:
                 sub_task_list = i[6].split('^')
-                for sub_task_item in sub_task_list:
+                progress_list =  i[10].split('|')
+                for j in range(len(sub_task_list)):
+                    sub_task_item = sub_task_list[j]
                     task_name = sub_task_item.split('|')
                     if len(task_name) > 0:
-                        task_item['sub_tasks'].append(task_name[0])
+                        task_item['sub_tasks'].append({
+                            'name': task_name[0],
+                            'is_complete': j < len(progress_list)
+                        })
             tasks.append(task_item)
 
     return render_template('client_billing.html', project_name=project_name, tasks=tasks)
