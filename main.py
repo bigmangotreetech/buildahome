@@ -3488,8 +3488,7 @@ def client_billing():
                 'due': i[8],
                 'paid': i[9],
                 'is_non_tender': i[11],
-                'progress': i[10],
-                
+                'progress': i[10],                
             }
             task_item['sub_tasks'] = []
             if len(i[6]) > 0:

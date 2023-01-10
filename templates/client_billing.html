@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container my-5 pt-5">
     <div class="card my-5">
-        <div class="card-header">
+        <div class="card-header bg-secondary`">
             <b>{{project_name}}</b>
             
         </div>
@@ -16,7 +16,7 @@
                         <div class="card-header bg-secondary text-white">{{task['name']}} <b
                                 class="float-right text-white">{{task['percent']}}%</b></div>
                         <div class="p-3">
-                            {% for sub_task in task['sub_task'] %}
+                            {% for sub_task in task['sub_tasks'] %}
                             <p class="ml-3">
                                 <a class="btn btn-success p-1 px-2">
                                     <i class="fa fa-check text-white"></i>
