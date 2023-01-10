@@ -3492,8 +3492,9 @@ def client_billing():
                 
             }
             task_item['sub_tasks'] = []
-            if(len(res[6])):
-                for sub_task_item in res[6].split('^'):
+            if len(res[6]) > 0:
+                sub_task_list = res[6].split('^')
+                for sub_task_item in sub_task_list:
                     task_name = sub_task_item.split('|')
                     task_item['sub_tasks'].append(task_name)
             tasks.append(task_item)
