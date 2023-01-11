@@ -4,162 +4,223 @@
     <div class="card my-5">
         <div class="card-header text-white bg-secondary ">
             <b>{{project_name}}</b>
-            
+
         </div>
         <div class="card-body">
 
             <p><b>Project tasks:</b></p>
             <div class="row mx-4 mt-2">
                 {% for task in tasks %}
-                <div class="col-md-3 col-sm-12 p-3">
+
+                <div class="col-md-3 col-sm-12 p-3 task-card">
+                    <span class="d-none task_id">{{task['id']}}</span>
                     {% if task['is_non_tender']|int == 0 %}
                     <div class="card bg-light rounded border">
-                    {% else %}
-                    <div style="background-color: rgb(255, 255, 161)" class="card rounded border">
-                    {% endif %} 
-                        <div class="card-header bg-secondary text-white d-flex justify-content-between">
-                            <span>{{task['name']}} </span>
-                            <b class="ml-2 my-auto text-white" style="white-space: nowrap;">{{task['percent']}}{% if task['is_non_tender']|int == 0 %}% {% endif %}</b>
-                        </div>
-                        <div class="p-3">
-                            {% for sub_task in task['sub_tasks'] %}
-                            <p class="d-flex">
-                                {% if sub_task['is_complete'] %}
-                                <a class="btn btn-success p-1 px-2 my-auto">
-                                    <i class="fa fa-check text-white"></i>
-                                </a>
-                                {% else %}
-                                <btn onclick="set_url('/erp/mark_task_complete?id={{loop.index - 1}}&task_id={{task['id']}}',this);"  data-toggle="modal" data-target="#SchedulerModal" class="btn btn-primary p-1 px-2 my-auto">
-                                    <i class="fa fa-check text-white"></i>
-                                </btn>
-                               
-                                {% endif %}
-                                <span class="my-auto ml-2">{{sub_task['name']}}</span>
-                            </p>
-                            {% endfor %}
-                            
-                            <small>Start date: {{task['start_date']}}</small><br>
-                            <small>End date: {{task['end_date']}}</small>
-                        </div>
-                        <div class="p-3">
-                            {% if task['paid']|int == 0 and task['due']|int == 0 %}
-                            <btn onclick="set_url('/erp/mark_task_due?id={{task['id']}}', this);" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-warning'>Mark as Due</btn>
-                            {% elif task['paid']|int == 0 and task['due']|int == 1 %}
-                            <btn onclick="set_url('/erp/mark_task_paid?id={{task['id']}}', this);" data-toggle="modal" data-target="#SchedulerModal" class='btn btn-block btn-primary'>Mark as paid</btn>
-                            {% else %}
-                            <p class="btn btn-block btn-success"><i class="fa fa-check"></i> Paid</p>
+                        {% else %}
+                        <div style="background-color: rgb(255, 255, 161)" class="card rounded border">
                             {% endif %}
+                            <div class="card-header bg-secondary text-white d-flex justify-content-between">
+                                <span class="task-name">{{task['name']}} </span>
+                                <b class="ml-2 my-auto text-white" style="white-space: nowrap;">{{task['percent']}}{% if
+                                    task['is_non_tender']|int == 0 %}% {% endif %}</b>
+                            </div>
+                            <div class="p-3">
+                                {% for sub_task in task['sub_tasks'] %}
+                                <p class="d-flex">
+                                    {% if sub_task['is_complete'] %}
+                                    <a class="btn btn-success p-1 px-2 my-auto">
+                                        <i class="fa fa-check text-white"></i>
+                                    </a>
+                                    {% else %}
+                                    <btn onclick="set_url('/erp/mark_task_complete?id={{loop.index - 1}}&task_id={{task['id']}}',this);"
+                                        data-toggle="modal" data-target="#SchedulerModal"
+                                        class="btn btn-primary p-1 px-2 my-auto">
+                                        <i class="fa fa-check text-white"></i>
+                                    </btn>
+
+                                    {% endif %}
+                                    <span class="my-auto ml-2">{{sub_task['name']}}</span>
+                                </p>
+                                {% endfor %}
+
+                                <small>Start date: <span
+                                        class="task-start-date">{{task['start_date']}}</span></small><br>
+                                <small>End date: <span class="task-end-date">{{task['end_date']}}</span></small>
+                            </div>
+                            <div class="p-3 d-flex justify-content-between">
+                                <div class="p-3">
+                                    {% if task['paid']|int == 0 and task['due']|int == 0 %}
+                                    <btn onclick="set_url('/erp/mark_task_due?id={{task['id']}}', this);"
+                                        data-toggle="modal" data-target="#SchedulerModal"
+                                        class='btn btn-block btn-warning'>Mark as Due</btn>
+                                    {% elif task['paid']|int == 0 and task['due']|int == 1 %}
+                                    <btn onclick="set_url('/erp/mark_task_paid?id={{task['id']}}', this);"
+                                        data-toggle="modal" data-target="#SchedulerModal"
+                                        class='btn btn-block btn-primary'>Mark as paid</btn>
+                                    {% else %}
+                                    <p class="btn btn-block btn-success"><i class="fa fa-check"></i> Paid</p>
+                                    {% endif %}
+
+                                </div>
+                                <button class="btn btn-secondary text-white edit-task" data-toggle="modal"
+                                    data-target="#EditTaskModal">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                            </div>
 
                         </div>
                     </div>
+                    {% endfor %}
+
+
+                    <a onclick="return window.confirm('Are you sure?');" href=""
+                        class="mt-4 btn btn-danger text-white d-none"><i class="fa fa-trash mr-2"></i>Delete</a>
                 </div>
-                {% endfor %}
-                
-
-            <a onclick="return window.confirm('Are you sure?');" href=""
-                class="mt-4 btn btn-danger text-white d-none"><i class="fa fa-trash mr-2"></i>Delete</a>
+            </div>
         </div>
-    </div>
-</div>
 
-<div id="SchedulerModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-  
-      <!-- Modal content-->
-      <div class="modal-content">
-        
-        <div class="modal-body">
-          <h5 class="modal-title p-2"><b>Add a note</b>
-          <button type="button float-right" class="close" data-dismiss="modal">&times;</button></h5>
-          <div class="pt-4">
-              <div class="">
-                <textarea rows='3' class="form-control" id="note" placeholder="Type in note" name="note"></textarea>
-              </div>
-          </div>
-        <button onclick="SubmitForm();" type="button" class="btn btn-success float-right mt-3" data-dismiss="modal">Update</button>
+        <div id="SchedulerModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <h5 class="modal-title p-2"><b>Add a note</b>
+                            <button type="button float-right" class="close" data-dismiss="modal">&times;</button>
+                        </h5>
+                        <div class="pt-4">
+                            <div class="">
+                                <textarea rows='3' class="form-control" id="note" placeholder="Type in note"
+                                    name="note"></textarea>
+                            </div>
+                        </div>
+                        <button onclick="SubmitForm();" type="button" class="btn btn-success float-right mt-3"
+                            data-dismiss="modal">Update</button>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
-          
-      </div>
-  
-    </div>
-  </div>
+        <div id="EditTaskModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
 
-<script>
-  
-    function send_notification(title, message){
-      var recipient = $("#recipient-name").text().trim()
-      console.log(recipient);
-      $.ajax({ 
-          url: 'https://fcm.googleapis.com/fcm/send', 
-          headers: { 
-              'Content-Type': 'application/json' ,
-              'Authorization': 'key=AAAAlQ1Lrfw:APA91bHvI2-qFZNCf-oFfeZgM0JUDxxbuykH_ffka9hPUE0xBpiza4uHF0LmItT_SfMZ1Zl5amGUfAXigaR_VcMsEArqpOwHNup4oRTQ24htJ_GWYH0OWZzFrH2lRY24mnQ-uiHgLyln'
-          } ,
-          dataType: 'json',
-          contentType: 'application/json',
-          method:"POST", 
-          data: JSON.stringify({ 
-              'notification' : { "title": title.toString(), "body": message.toString() },
-               "to" : "/topics/"+recipient,
-               "click_action": 'FLUTTER_NOTIFICATION_CLICK'
-              
-          }),
-          success: function(data) {
-              console.log(data);
-          },
-          error: function(data) {
-              console.log(data);
-          }
-      });    
-    }
-    
-    
-    var note = '';
-    var url = '';
-    var ele;
-    function set_url(value, element){
-        url = value;
-        console.log(url);
-        ele = element;
-    }
-    function SubmitForm(){
-        note=document.getElementById("note").value;
-        note=note.replace("&", "and");
-        url1 = url+"&&note="+note;
-        //   window.location.href = url;
-        $.ajax({
-            url: url1,
-            type: "GET",
-            success: function(data){
-                console.log("Success");
-                window.location.reload()
+                <!-- Modal content-->
+                <div class="modal-content">
+
+                    <form method="post" action="/erp/edit_task" class="modal-body">
+                        <h5 class="modal-title p-2"><b>Edit task</b>
+                            <button type="button float-right" class="close" data-dismiss="modal">&times;</button>
+                        </h5>
+                        <div class="row m-0">
+                            <input type="hidden" name="task_id">
+                            <div class="col-12 pt-4">
+                                <label for="">Task name</label>
+                                <input class="task-name form-control" name="name">
+                            </div>
+                            <div class="pt-4 col-6">
+                                <label for="">Start date</label>
+                                <input class="task-start-date form-control" name="start_date" type="date">
+                            </div>
+                            <div class="pt-4">
+                                <label for="">End date</label>
+                                <input class="task-end-date form-control" name="end_date" type="date">
+                            </div>
+                        </div>
+
+                        <button onclick="SubmitForm();" type="button" class="btn btn-success float-right mt-3"
+                            data-dismiss="modal">Update</button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+
+            function send_notification(title, message) {
+                var recipient = $("#recipient-name").text().trim()
+                console.log(recipient);
+                $.ajax({
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'key=AAAAlQ1Lrfw:APA91bHvI2-qFZNCf-oFfeZgM0JUDxxbuykH_ffka9hPUE0xBpiza4uHF0LmItT_SfMZ1Zl5amGUfAXigaR_VcMsEArqpOwHNup4oRTQ24htJ_GWYH0OWZzFrH2lRY24mnQ-uiHgLyln'
+                    },
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    method: "POST",
+                    data: JSON.stringify({
+                        'notification': { "title": title.toString(), "body": message.toString() },
+                        "to": "/topics/" + recipient,
+                        "click_action": 'FLUTTER_NOTIFICATION_CLICK'
+
+                    }),
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
             }
-        });
-        
-        if(url.includes("complete")){
-            $(ele).removeClass("btn-primary");
-            $(ele).addClass("btn-success");
-            $(ele).removeAttr("data-toggle");
-            send_notification("A task has been marked completed", "Check your scheduler");
-            
-        }
-        else if(url.includes("due")){
-            $(ele).removeClass("btn-warning");
-            $(ele).addClass("btn-primary");
-            $(ele).text("Mark as paid");
-            new_function = $(ele).parent().find(".change_url").text();
-            $(ele).attr("onclick", new_function)
-            send_notification("A task has been marked due for payment", "Check your scheduler");
-        }
-        else if(url.includes("paid")){
-            $(ele).removeClass("btn-primary");
-            $(ele).addClass("btn-success");
-            $(ele).html("<i class='fa fa-check'></i> Paid");
-            $(ele).removeAttr("data-toggle");
-            send_notification("A task payment has been marked paid!", "Check your scheduler");
-        }
-        $("#note").val("");
-    }
-    
-</script>
-{% endblock %}
+
+
+            var note = '';
+            var url = '';
+            var ele;
+            function set_url(value, element) {
+                url = value;
+                console.log(url);
+                ele = element;
+            }
+            function SubmitForm() {
+                note = document.getElementById("note").value;
+                note = note.replace("&", "and");
+                url1 = url + "&&note=" + note;
+                //   window.location.href = url;
+                $.ajax({
+                    url: url1,
+                    type: "GET",
+                    success: function (data) {
+                        console.log("Success");
+                        window.location.reload()
+                    }
+                });
+
+                if (url.includes("complete")) {
+                    $(ele).removeClass("btn-primary");
+                    $(ele).addClass("btn-success");
+                    $(ele).removeAttr("data-toggle");
+                    send_notification("A task has been marked completed", "Check your scheduler");
+
+                }
+                else if (url.includes("due")) {
+                    $(ele).removeClass("btn-warning");
+                    $(ele).addClass("btn-primary");
+                    $(ele).text("Mark as paid");
+                    new_function = $(ele).parent().find(".change_url").text();
+                    $(ele).attr("onclick", new_function)
+                    send_notification("A task has been marked due for payment", "Check your scheduler");
+                }
+                else if (url.includes("paid")) {
+                    $(ele).removeClass("btn-primary");
+                    $(ele).addClass("btn-success");
+                    $(ele).html("<i class='fa fa-check'></i> Paid");
+                    $(ele).removeAttr("data-toggle");
+                    send_notification("A task payment has been marked paid!", "Check your scheduler");
+                }
+                $("#note").val("");
+            }
+
+            $('.edit-task').on('click', function () {
+                $("#EditTaskModal .task_id").val($(this).parents('.task-card').find('.task_id').text().trim())
+                $("#EditTaskModal .task-name").val($(this).parents('.task-card').find('.task-name').text().trim())
+                $("#EditTaskModal .task-start-date").val($(this).parents('.task-card').find('.task-start-date').text().trim())
+                $("#EditTaskModal .task-end-date").val($(this).parents('.task-card').find('.task-end-date').text().trim())
+            })
+
+        </script>
+        {% endblock %}

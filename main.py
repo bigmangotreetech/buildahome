@@ -3463,6 +3463,21 @@ def create_project():
         mysql.connection.commit()
         return redirect(request.referrer)
 
+@app.route('/edit_task', methods=['POST'])
+def edit_task():
+    task_id = request.form['task_id']
+    task_name = request.form['name']
+    start_date = request.form['start_date']
+    end_date = request.form['end_date']
+
+    cur = mysql.connection.cursor()
+    query = 'UPDATE Tasks set task_name=%s, task_start_date=%s, task_end_date=%s WHERE task_id=%s'
+    cur.execute(query, (task_name, start_date, end_date, task_id))
+
+    mysql.connection.commit()
+    flash('Task has been edited', 'success')
+    return redirect(request.referrer)
+
 @app.route('/mark_task_complete', methods=['GET'])
 def mark_task_complete():
     subtask_id = request.args['id']
