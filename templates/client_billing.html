@@ -49,7 +49,7 @@
                                 <small>End date: <span class="task-end-date">{{task['end_date']}}</span></small>
                             </div>
                             <div class="p-3 d-flex justify-content-between">
-                                <div class="p-3 my-auto ">
+                                <div class="my-auto ">
                                     {% if task['paid']|int == 0 and task['due']|int == 0 %}
                                     <btn onclick="set_url('/erp/mark_task_due?id={{task['id']}}', this);"
                                         data-toggle="modal" data-target="#SchedulerModal"
