@@ -48,7 +48,7 @@
                                 <small>End date: <span class="task-end-date">{{task['end_date']}}</span></small>
                             </div>
                             <div class="p-3 d-flex justify-content-between">
-                                <div class="p-3">
+                                <div class="p-3 my-auto ">
                                     {% if task['paid']|int == 0 and task['due']|int == 0 %}
                                     <btn onclick="set_url('/erp/mark_task_due?id={{task['id']}}', this);"
                                         data-toggle="modal" data-target="#SchedulerModal"
@@ -62,7 +62,7 @@
                                     {% endif %}
 
                                 </div>
-                                <button class="btn btn-secondary text-white edit-task" data-toggle="modal"
+                                <button class="my-auto btn btn-secondary text-white edit-task" data-toggle="modal"
                                     data-target="#EditTaskModal">
                                     <i class="fa fa-pencil"></i>
                                 </button>
@@ -215,12 +215,7 @@
                 $("#note").val("");
             }
 
-            $('.edit-task').on('click', function () {
-                $("#EditTaskModal .task_id").val($(this).parents('.task-card').find('.task_id').text().trim())
-                $("#EditTaskModal .task-name").val($(this).parents('.task-card').find('.task-name').text().trim())
-                $("#EditTaskModal .task-start-date").val($(this).parents('.task-card').find('.task-start-date').text().trim())
-                $("#EditTaskModal .task-end-date").val($(this).parents('.task-card').find('.task-end-date').text().trim())
-            })
+            
 
         </script>
         {% endblock %}

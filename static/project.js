@@ -1,5 +1,13 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {   
+
+    $('.edit-task').on('click', function () {
+        $("#EditTaskModal .task_id").val($(this).parents('.task-card').find('.task_id').text().trim())
+        $("#EditTaskModal .task-name").val($(this).parents('.task-card').find('.task-name').text().trim())
+        $("#EditTaskModal .task-start-date").val($(this).parents('.task-card').find('.task-start-date').text().trim())
+        $("#EditTaskModal .task-end-date").val($(this).parents('.task-card').find('.task-end-date').text().trim())
+    })
+
     function initSearchProject() {
         console.log('initSearchProject')
         $('.search-project-field').on('keyup', function() {
