@@ -6,6 +6,7 @@ $(document).ready(function () {
         $("#EditTaskModal .task-name").val($(this).parents('.task-card').find('.task-name').text().trim())
         $("#EditTaskModal .task-start-date").val($(this).parents('.task-card').find('.task-start-date').text().trim())
         $("#EditTaskModal .task-end-date").val($(this).parents('.task-card').find('.task-end-date').text().trim())
+        $("#EditTaskModal .task-percent").val($(this).parents('.task-card').find('.task-percent').text().trim())
     })
 
     function initSearchProject() {

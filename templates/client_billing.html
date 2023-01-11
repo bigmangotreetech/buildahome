@@ -21,7 +21,8 @@
                             {% endif %}
                             <div class="card-header bg-secondary text-white d-flex justify-content-between">
                                 <span class="task-name">{{task['name']}} </span>
-                                <b class="ml-2 my-auto text-white" style="white-space: nowrap;">{{task['percent']}}{% if
+                                <b class="ml-2 my-auto text-white" style="white-space: nowrap;">
+                                    <span class='task-percent'>{{task['percent']}}</span>{% if
                                     task['is_non_tender']|int == 0 %}% {% endif %}</b>
                             </div>
                             <div class="p-3">
@@ -115,17 +116,21 @@
                         </h5>
                         <div class="row m-0">
                             <input type="hidden" class="task_id" name="task_id">
-                            <div class="col-12 pt-4">
+                            <div class="col-10 pt-4">
                                 <label for="">Task name</label>
-                                <input class="task-name form-control" name="name">
+                                <input class="task-name form-control" name="name" required>
+                            </div>
+                            <div class="col-2 pt-4">
+                                <label for="">Payment percentage</label>
+                                <input class="task-percent form-control" name="percent" required>
                             </div>
                             <div class="pt-4 col-6">
                                 <label for="">Start date</label>
-                                <input class="task-start-date form-control" name="start_date" type="date">
+                                <input class="task-start-date form-control" name="start_date" type="date" required>
                             </div>
                             <div class="pt-4">
                                 <label for="">End date</label>
-                                <input class="task-end-date form-control" name="end_date" type="date">
+                                <input class="task-end-date form-control" name="end_date" type="date" required>
                             </div>
                         </div>
 
