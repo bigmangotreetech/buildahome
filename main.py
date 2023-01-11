@@ -1708,7 +1708,7 @@ def create_work_order():
             for i in range(len(milestones)):
                 if milestones[i].strip() != '' and percentages[i].strip() != '':
                     insert_milestones_query = 'INSERT into wo_milestones(work_order_id, stage, percentage) values (%s, %s, %s)'
-                    cur.execute(insert_milestones_query, (work_order_id, milestones[i], percentages[i]))
+                    cur.execute(insert_milestones_query, (work_order_id, milestones[i].strip(), percentages[i]))
 
 
 
