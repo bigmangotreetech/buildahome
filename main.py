@@ -3469,10 +3469,11 @@ def edit_task():
     task_name = request.form['name']
     start_date = request.form['start_date']
     end_date = request.form['end_date']
+    percent = request.form['percent']
 
     cur = mysql.connection.cursor()
-    query = 'UPDATE Tasks set task_name=%s, task_start_date=%s, task_finish_date=%s WHERE task_id=%s'
-    cur.execute(query, (task_name, start_date, end_date, task_id))
+    query = 'UPDATE Tasks set payment_percentage=%s, task_name=%s, task_start_date=%s, task_finish_date=%s WHERE task_id=%s'
+    cur.execute(query, (percent, task_name, start_date, end_date, task_id))
 
     mysql.connection.commit()
     flash('Task has been edited', 'success')
