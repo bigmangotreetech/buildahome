@@ -3471,7 +3471,7 @@ def edit_task():
     end_date = request.form['end_date']
 
     cur = mysql.connection.cursor()
-    query = 'UPDATE Tasks set task_name=%s, task_start_date=%s, task_end_date=%s WHERE task_id=%s'
+    query = 'UPDATE Tasks set task_name=%s, task_start_date=%s, task_finish_date=%s WHERE task_id=%s'
     cur.execute(query, (task_name, start_date, end_date, task_id))
 
     mysql.connection.commit()
