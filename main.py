@@ -2271,7 +2271,7 @@ def project_contractor_info():
         data['difference_cost_sheet'] = res[3]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on, b.cleared_balance, b.id' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage = TRIM(w.stage) AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id, trade, str(data['work_order_id'])))
     bills = []
     res = cur.fetchall()
