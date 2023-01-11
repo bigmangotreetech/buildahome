@@ -3490,7 +3490,7 @@ def mark_task_complete():
     cur.execute(query)
     res = cur.fetchone()
     progress = res[0]
-    progress = subtask_id + '|'
+    progress = progress + subtask_id + '|'
 
     s_note = res[1]
     s_note = s_note + note
