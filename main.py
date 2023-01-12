@@ -5242,7 +5242,11 @@ def get_unapproved_indents():
         elif len(access):
             access = access.split(',')
             access_as_int = [int(i) for i in access]
-            access_tuple = tuple(access_as_int)
+            access_tuple = ''
+            if len(access_as_int) == 1:
+                access_tuple = '('+str(access_as_int[0])+')'
+            else:
+                access_tuple = tuple(access_as_int)
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp, indents.created_by_user , indents.difference_cost, indents.approval_taken FROM indents INNER JOIN projects on indents.status="unapproved" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
                 access_tuple) + '' \
