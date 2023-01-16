@@ -1216,6 +1216,9 @@ def contractor_registration():
         trades.append('Fabrication 3')
         trades.append('Fabrication 4')
         trades.append('Pile foundation')
+        trades.append('Flooring 1')
+        trades.append('Flooring 2')
+        trades.append('Elevation Flooring')
 
         for i in result:
             trades.append(i[0])
@@ -1296,6 +1299,10 @@ def edit_contractor():
             trades.append('Fabrication 3')
             trades.append('Fabrication 4')
             trades.append('Pile foundation')
+            trades.append('Flooring 1')
+            trades.append('Flooring 2')
+            trades.append('Elevation Flooring')
+            
             for i in result:
                 trades.append(i[0])
             return render_template('edit_contractor.html', trades=trades, contractor_details=contractor_details[1:],
