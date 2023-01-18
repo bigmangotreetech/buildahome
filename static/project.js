@@ -167,7 +167,7 @@ $(document).ready(function () {
         })
         total_billed = 0;
         $('.billed_amount').each(function(index, element) {
-            if ($(element).text().toString().length) {
+            if ($(element).text().toString().length && !$(element).parent('tr').find('.stage').text().trim().includes('Clearing balance')) {
                 total_billed += parseInt($(element).text())
             }
         })
