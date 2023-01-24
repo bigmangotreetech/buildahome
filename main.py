@@ -1624,6 +1624,29 @@ def delete_wo():
     flash('Work order has been deleted', 'danger')
     return redirect(request.referrer)
 
+@app.route('/upload_doc', methods=['POST'])
+def upload_doc():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/create_work_order'
+        return redirect('/erp/login')
+    if 'difference_cost_sheet' in request.files:
+        file = request.files['difference_cost_sheet']
+        work_order_id = request.form['wo_id']
+        if file.filename != '':                
+            if file and allowed_file(file.filename): 
+                filename = 'dc_for_wo_' + str(work_order_id) + file.filename
+                output = send_to_s3(file, app.config["S3_BUCKET"], filename)
+                if output != 'success':
+                    flash('File upload failed', 'danger')
+                    return redirect(request.referrer)
+                cur = mysql.connection.cursor()
+                query = 'UPDATE work_orders set difference_cost_sheet=%s WHERE id=%s'
+                values = (filename, work_order_id)
+                cur.execute(query, values)
+                flash("Difference cost sheet uploaded", 'success')
+                return redirect(request.referrer)
+
 @app.route('/create_work_order', methods=['GET', 'POST'])
 def create_work_order():
     if 'email' not in session:
