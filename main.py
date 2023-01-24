@@ -1645,7 +1645,7 @@ def upload_doc():
                 values = (filename, work_order_id)
                 cur.execute(query, values)
 
-                mysql.connection.commit
+                mysql.connection.commit()
                 flash("Difference cost sheet uploaded", 'success')
                 return redirect(request.referrer)
 
