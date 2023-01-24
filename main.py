@@ -1644,6 +1644,8 @@ def upload_doc():
                 query = 'UPDATE work_orders set difference_cost_sheet=%s WHERE id=%s'
                 values = (filename, work_order_id)
                 cur.execute(query, values)
+
+                mysql.connection.commit
                 flash("Difference cost sheet uploaded", 'success')
                 return redirect(request.referrer)
 
