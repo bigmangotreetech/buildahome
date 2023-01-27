@@ -750,7 +750,7 @@ $(document).ready(function () {
     })
 
     function showWorkOrderMilestone() {
-        selected_trade = $("#trade").val()
+        selected_trade = $("#trade").val().trim()
 
         if (selected_trade && $('.debit-note').length == 0) {
             if (['civil','electrical','painting','plumbing'].includes(selected_trade.toLowerCase())) {
