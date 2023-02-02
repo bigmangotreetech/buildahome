@@ -94,6 +94,11 @@
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
                 {% endif %}
             </td>
+            {% if session['role'] in ['Super Admin'] %}
+                <td>
+                    <a href="/erp/delete_bill?bill_id={{i[7]}}" onclick="return window.confirm('Are you sure?');" class="btn text-danger">Delete</a>
+                </td>            
+            {% endif %}
 
         </tr>
         {% endfor %}
