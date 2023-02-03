@@ -21,8 +21,10 @@
 </div>
 
 {% for x in projects %}
-<div class="mx-5 p-3 bg-light mb-4 project-name" data-toggle="collapse" data-target="#pos-{{loop.index}}">{{x}}</div>
-<div class="p-5 w-100 table-responsive collapse" id="pos-{{loop.index}}">
+<div class="mx-5 px-3 py-2 bg-light mt-4 project-name" >
+    <button data-toggle="collapse" data-target="#pos-{{loop.index}}" class="btn">{{x}}</button>
+</div>
+<div class="px-5 pb-5 w-100 table-responsive collapse" id="pos-{{loop.index}}">
     <table class="table table-striped">
         <thead>
         <tr>
