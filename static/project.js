@@ -28,6 +28,7 @@ $(document).ready(function () {
             let searchValue = $('.search-po-field').val();
             if(searchValue.trim().length == 0) $('.project-name').removeClass('d-none')
             else {
+                $('.collapse.show').collapse('hide');
                 $('.project-name').addClass('d-none')
                 $('.project-name').each(function(index, element) {
                     if($(element).text().toLowerCase().trim().includes(searchValue.toLowerCase().trim())) {               
