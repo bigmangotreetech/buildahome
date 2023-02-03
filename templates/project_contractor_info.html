@@ -59,7 +59,12 @@
         {% for i in notes %}
         <div class="w-100 mb-3 pb-3 border-bottom">
             <div class="note">{{i[2]}}</div>
-            <div class="w-100 text-right fs-12 mt-2">{{i[3]}} on {{i[4]}}</div>
+            <div class="w-100 text-right fs-12 mt-2">
+                {{i[3]}} on {{i[4]}}
+                {% if i[5] == session['email'] %}
+                    <a href="/erp/delete_work_order_note?id={{i[0]}}" onclick="return window.confirm('Are you sure?');" class="ml-2 text-danger">Delete</a>
+                {% endif %}
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -134,7 +139,7 @@
                     <input type="hidden" name="work_order_id" value="{{data['work_order_id']}}">
                     <div class="pt-4">
                         <div class="">
-                            <textarea rows='3' class="form-control" id="note" placeholder="Type in note"
+                            <textarea rows='5' class="form-control" id="note" placeholder="Type in note"
                                 name="note"></textarea>
                         </div>
                     </div>

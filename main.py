@@ -700,14 +700,26 @@ def project_notes():
 def add_work_order_note():
     work_order_id = request.form['work_order_id']
     note = request.form['note']
-    query = 'INSERT into work_order_notes (work_order_id, note, posted_by, posted_at) values(%s,%s,%s,%s)'
+    query = 'INSERT into work_order_notes (work_order_id, note, posted_by, posted_at, posted_by_email) values(%s,%s,%s,%s,%s)'
     cur = mysql.connection.cursor()
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
     timestamp = current_time.strftime('%d-%m-%Y at %H:%M')
-    values = (work_order_id, note, session['name'], timestamp)
+    values = (work_order_id, note, session['name'], timestamp, session['email'])
     cur.execute(query, values)
+    flash('Note added!', 'success')
     mysql.connection.commit()
+
+    return redirect(redirect_url())
+
+@app.route('/delete_work_order_note', methods=['GET'])
+def delete_work_order_note():
+    id = request.args['id']
+    query = 'DELETE FROM work_order_notes WHERE id='+str(id)
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    mysql.connection.commit()
+    flash('Note deleted', 'danger')
 
     return redirect(redirect_url())
 
