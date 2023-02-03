@@ -704,8 +704,8 @@ def add_work_order_note():
     cur = mysql.connection.cursor()
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
-    timestamp = current_time.strftime('%d %m %Y at %H %M')
-    values = (work_order_id, note, session['name'],timestamp)
+    timestamp = current_time.strftime('%d-%m-%Y at %H:%M')
+    values = (work_order_id, note, session['name'], timestamp)
     cur.execute(query, values)
     mysql.connection.commit()
 

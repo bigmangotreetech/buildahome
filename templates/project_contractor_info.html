@@ -57,9 +57,9 @@
             <button data-toggle="modal" data-target="workOrderNoteModal" class="ml-3 btn bg-indigo text-white"><i class="fa fa-plus"></i></button>
         </h5>
         {% for i in notes %}
-        <div class="w-100 mb-3">
+        <div class="w-100 mb-3 pb-3 border-bottom">
             <div class="note">{{i[2]}}</div>
-            <div class="w-100 text-right fs-12">{{i[3]}} at {{i[4]}}</div>
+            <div class="w-100 text-right fs-12 mt-2">{{i[3]}} on {{i[4]}}</div>
         </div>
         {% endfor %}
     </div>
@@ -154,6 +154,9 @@
     .wo-notes-section {
         height: 40vh;
         overflow-y: auto;
+    }
+    .note {
+        white-space: break-spaces;
     }
 </style>
 {% endblock %}
