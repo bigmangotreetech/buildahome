@@ -70,7 +70,10 @@ s3 = boto3.client(
 app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpeg', 'jpg']
 
-
+def redirect_url(default='index'):
+    return request.args.get('next') or \
+           request.referrer or \
+           url_for(default)
 
 def getProjectName(project_id):
     cur = mysql.connection.cursor()
@@ -692,6 +695,21 @@ def project_notes():
         mysql.connection.commit()
         flash('Note Added', 'success')
         return redirect('/erp/project_notes?project_id='+str(project_id))
+
+@app.route('/add_work_order_note', methods=['POST'])
+def add_work_order_note():
+    work_order_id = request.form['work_order_id']
+    note = request.form['note']
+    query = 'INSERT into work_order_notes (work_order_id, note, posted_by, posted_at) values(%s,%s,%s,%s)'
+    cur = mysql.connection.cursor()
+    IST = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(IST)
+    timestamp = current_time.strftime('%d %m %Y at %H %M')
+    values = (work_order_id, note, session['name'],timestamp)
+    cur.execute(query, values)
+    mysql.connection.commit()
+
+    return redirect(redirect_url())
 
 @app.route('/enter_material', methods=['GET', 'POST'])
 def enter_material():
@@ -2320,17 +2338,21 @@ def project_contractor_info():
     for i in res:
         bills.append((i[0],'',i[1],i[2],i[3], i[4], i[5], i[6]))
 
-    get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on, amount, approval_2_notes from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR' AND trade ='"+trade+"'"
+    get_debit_note_bills = "SELECT stage, approval_2_amount, trade, approved_on, amount, approval_2_notes, id from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%Debit note%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR' AND trade ='"+trade+"'"
     cur.execute(get_debit_note_bills)
     res = cur.fetchall()
     for i in res:
-        bills.append((i[0],'',i[4],i[1],i[2], i[3],i[5]))
+        bills.append((i[0],'',i[4],i[1],i[2], i[3],i[5], i[6]))
 
     get_project_query = 'SELECT project_name, project_number from projects WHERE project_id=' + str(project_id)
     cur.execute(get_project_query)
     project = cur.fetchone()
 
-    return render_template('project_contractor_info.html', bills=bills, project=project, data=data)
+    get_work_order_notes_query = 'SELECT * from work_order_notes WHERE work_order_id='+str(data['work_order_id'] )+' ORDER BY id DESC'
+    cur.execute(get_work_order_notes_query)
+    notes = cur.fetchall()
+
+    return render_template('project_contractor_info.html', bills=bills, project=project, data=data, notes=notes)
 
 @app.route('/clear_nt_nmr_balance', methods=['GET'])
 def clear_nt_nmr_balance():

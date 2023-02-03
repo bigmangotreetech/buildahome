@@ -1,55 +1,68 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class=" mt-5 px-5">
-    <div class="mb-3">
-        <b>Project</b>: {{project[0]}}
-    </div>
-    <div class="d-none work_order_id">{{data['work_order_id']}}</div>
-    <div class="d-none project_id">{{request.args['project_id']}}</div>
-    <div class="mb-3">
-        <b>Contractor Name</b>: <span class="contractor_name">{{data['name']}}</span>
-    </div>
-    <div class="mb-3">
-        <b>Contractor Code</b>: <span class="contractor_code">{{data['code']}}</span>
-    </div>
-    <div class="mb-3">
-        <b>Contractor PAN</b>: <span class="contractor_pan">{{data['pan']}}</span>
-    </div>
-    <div class="mb-3">
-        <b>Nature of work</b>: <span class="trade">{{data['trade']}}</span>
-    </div>
-    <div class="mb-3">
-        <b>WO value</b>: {{data['value']|int}}
-    </div>
-    {% if data['difference_cost_sheet']|string != ''%}
-    <div class="mb-3">
-        <b>View difference cost sheet</b>: <a style="word-break: break-all;" target="_blank" href="/erp/files/{{data['difference_cost_sheet']}}">
-            Open
-        </a>
-    </div>
-    {% else %}
-    <form class="p-3 bg-light mb-2 col-12 col-md-6" action="/erp/upload_doc" method="post" enctype="multipart/form-data">
-        Upload difference of cost sheet <br>
-        <input type="hidden" name="wo_id" value="{{data['work_order_id']}}">
-        <input type="file" name="difference_cost_sheet" required>
-        <button type="submit" class="btn bg-indigo text-white my-2">Submit</button>
-    </form>
-    {% endif %}
+<div class="row mx-0 justify-content-between">
+    <div class=" mt-5 px-5">
+        <div class="mb-3">
+            <b>Project</b>: {{project[0]}}
+        </div>
+        <div class="d-none work_order_id">{{data['work_order_id']}}</div>
+        <div class="d-none project_id">{{request.args['project_id']}}</div>
+        <div class="mb-3">
+            <b>Contractor Name</b>: <span class="contractor_name">{{data['name']}}</span>
+        </div>
+        <div class="mb-3">
+            <b>Contractor Code</b>: <span class="contractor_code">{{data['code']}}</span>
+        </div>
+        <div class="mb-3">
+            <b>Contractor PAN</b>: <span class="contractor_pan">{{data['pan']}}</span>
+        </div>
+        <div class="mb-3">
+            <b>Nature of work</b>: <span class="trade">{{data['trade']}}</span>
+        </div>
+        <div class="mb-3">
+            <b>WO value</b>: {{data['value']|int}}
+        </div>
+        {% if data['difference_cost_sheet']|string != ''%}
+        <div class="mb-3">
+            <b>View difference cost sheet</b>: <a style="word-break: break-all;" target="_blank" href="/erp/files/{{data['difference_cost_sheet']}}">
+                Open
+            </a>
+        </div>
+        {% else %}
+        <form class="p-3 bg-light mb-2 col-12 col-md-6" action="/erp/upload_doc" method="post" enctype="multipart/form-data">
+            Upload difference of cost sheet <br>
+            <input type="hidden" name="wo_id" value="{{data['work_order_id']}}">
+            <input type="file" name="difference_cost_sheet" required>
+            <button type="submit" class="btn bg-indigo text-white my-2">Submit</button>
+        </form>
+        {% endif %}
+        
+        <div class="mb-3">
+            <b>Total paid</b>: <span class="total_paid"></span>
+        </div>
+        <div class="mb-3">
+            <b>Total billed</b>: <span class="total_billed"></span>
+        </div>
+        <div class="mb-3">
+            <b>Balance</b>: <span class="balance"></span>
+        </div>
+        <div class="mb-3">
+            <button class="btn clear-balance-btn d-none">Clear balance</button>
+            <div class="clear-balance-bill-raised d-none">Clear balance bill has been raised and is due for approval</div>
+        </div>
     
-    <div class="mb-3">
-        <b>Total paid</b>: <span class="total_paid"></span>
     </div>
-    <div class="mb-3">
-        <b>Total billed</b>: <span class="total_billed"></span>
+    <div class="col-4 wo-notes-section mt-5 mr-5 bg-white p-3">
+        <h5>Work order notes
+            <button data-toggle="modal" data-target="workOrderNoteModal" class="ml-3 btn bg-indigo text-white"><i class="fa fa-plus"></i></button>
+        </h5>
+        {% for i in notes %}
+        <div class="w-100 mb-3">
+            <div class="note">{{i[2]}}</div>
+            <div class="w-100 text-right fs-12">{{i[3]}} at {{i[4]}}</div>
+        </div>
+        {% endfor %}
     </div>
-    <div class="mb-3">
-        <b>Balance</b>: <span class="balance"></span>
-    </div>
-    <div class="mb-3">
-        <button class="btn clear-balance-btn d-none">Clear balance</button>
-        <div class="clear-balance-bill-raised d-none">Clear balance bill has been raised and is due for approval</div>
-    </div>
-
 </div>
 <div class="p-5 w-100 table-responsive">
     <table class="table table-striped">
@@ -94,7 +107,7 @@
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
                 {% endif %}
             </td>
-            {% if session['role'] in ['Super Admin'] %}
+            {% if session['role'] in ['Super Admin'] and 'Debit note' in i[0] %}
                 <td>
                     <a href="/erp/delete_bill?bill_id={{i[7]}}" onclick="return window.confirm('Are you sure?');" class="btn text-danger">Delete</a>
                 </td>            
@@ -107,10 +120,40 @@
 
 
 </div>
+<div id="workOrderNoteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <form action="/erp/add_work_order_note" method="post">
+                    <h5 class="modal-title p-2"><b>Add a note</b>
+                        <button type="button float-right" class="close" data-dismiss="modal">&times;</button>
+                    </h5>
+                    <input type="hidden" name="work_order_id" value="{{data['work_order_id']}}">
+                    <div class="pt-4">
+                        <div class="">
+                            <textarea rows='3' class="form-control" id="note" placeholder="Type in note"
+                                name="note"></textarea>
+                        </div>
+                    </div>
+                    <button class="btn bg-indigo text-white float-right mt-3">Submit</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 <style>
     .clear-individual-balance {
         font-size: 12px;
         font-weight: 500;
+    }
+    .wo-notes-section {
+        height: 40vh;
+        overflow-y: auto;
     }
 </style>
 {% endblock %}
