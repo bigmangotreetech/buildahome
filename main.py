@@ -2567,7 +2567,10 @@ def view_unapproved_work_order():
         for i in result:
             value = 0
             if i[4].strip() != '':
-                value =  str(int(float(i[4].strip().replace(',',''))))
+                try:
+                    value =  str(int(float(i[4].strip().replace(',',''))))
+                except:
+                    value = i[4].strip().replace(',','')
             work_orders.append({
                 'project_name': i[0],
                 'project_number': i[1],
