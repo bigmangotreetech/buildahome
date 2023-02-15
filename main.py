@@ -1237,6 +1237,7 @@ def add_trade():
             trades.append(i[0])
         return render_template('add_trade.html',trades=trades)
     else:
+        cur = mysql.connection.cursor()
         trade = request.form['trade']
         trades_query = 'INSERT into labour_stages(trade) values(%s)'
         cur.execute(trades_query, (trade))
