@@ -154,6 +154,14 @@
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
 
     <div class="nav-section-header">Work orders</div>
+
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
+    <a href="/erp/add_trade" class='nav-link clickable {% if "/add_trade" in request.path %} active {% endif %}'>
+        <ion-icon name="add"></ion-icon>
+        <span class="my-auto">Add custom trade</span>
+    </a>
+    {% endif %}
+
     <a href="/erp/contractor_registration" class='nav-link clickable {% if "/contractor_registration" in request.path %} active {% endif %}'>
         <ion-icon name="person-add"></ion-icon>
         <span class="my-auto">Contractor Registration</span>

@@ -1223,6 +1223,28 @@ def view_users():
     return render_template('view_users.html', users=result)
 
 
+@app.route('/add_trade', methods=['GET','POST'])
+def add_trade():
+    if session['role'] not in ['Super Admin']:
+        return 'You do not have permission to view this page'
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        trades_query = 'SELECT DISTINCT trade from labour_stages WHERE stage=""'
+        cur.execute(trades_query)
+        result = cur.fetchall()
+        trades = []
+        for i in result:
+            trades.append(i[0])
+        return render_template('add_trade.html',trades=trades)
+    else:
+        trade = request.form['trade']
+        trades_query = 'INSERT into labour_stages(trade) values(%s)'
+        cur.execute(trades_query, (trade))
+        mysql.connection.commit()
+        flash('Trade added!', 'success')
+        return redirect('/erp/add_trade')
+
+
 @app.route('/contractor_registration', methods=['GET', 'POST'])
 def contractor_registration():
     if 'email' not in session:
