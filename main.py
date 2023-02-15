@@ -1239,7 +1239,7 @@ def add_trade():
     else:
         cur = mysql.connection.cursor()
         trade = request.form['trade']
-        trades_query = 'INSERT into labour_stages(trade) values(%s)'
+        trades_query = 'INSERT into labour_stages (trade) values (%s)'
         cur.execute(trades_query, (trade))
         mysql.connection.commit()
         flash('Trade added!', 'success')
