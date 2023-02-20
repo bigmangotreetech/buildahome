@@ -4,7 +4,7 @@ $(document).ready(function () {
     $('#get_expenses').on('click', function(){
         const project = $("#project").val()
         if(project.length) {
-            window.location.href = '/erp/view_inventory?project_id='+project.toString()       
+            window.location.href = '/erp/expenses?project_id='+project.toString()       
         }
     })
     
