@@ -237,6 +237,92 @@ def get_projects_for_current_user(user_id = '', role = ''):
     else:
         return []
 
+@app.route('/expenses', methods=['GET', 'POST'])
+def expenses():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_vendor'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        data = {}
+        if 'project_id' in request.args:
+            project_id = request.args['project_id']
+
+            cur = mysql.connection.cursor()
+
+            project_value_query = 'SELECT project_value from projects WHERE project_id = '+str(project_id)
+            cur.execute(project_value_query)
+            res = cur.fetchone()
+            if res is not None:
+                try:
+                    data['project_value'] = int(res[0])
+                except:
+                    return 'Project value incorrect'
+
+
+            data['total_nt'] = 0
+            data['total_billed'] = 0
+            data['total_outstanding'] = 0
+
+            tasks_query = 'SELECT payment_percentage, paid, due, is_non_tender_task, task_name from Tasks WHERE project_id='+str(project_id)
+            cur.execute(tasks_query)
+            res = cur.fetchall()
+            if res is not None:
+                for task in res:
+                    if str(task[3]) == '1':
+                        try:
+                            data['total_nt'] += int(task[0])
+                        except:
+                            return 'Error: '+ data['task_name'] + ' has value '+ str(task[0]) +' which is not a number' 
+                    else:                        
+                        try:
+                            task_value =  data['project_value'] * float(task[0])
+                            if str(task[1]) == '1':
+                                data['total_billed'] += task_value
+                            if str(task[2]) == '1' and str(task[1]) == '0':
+                                data['total_outstanding'] += task_value
+                        except:
+                            return 'Error: '+ data['task_name'] + ' has value '+ str(task[0]) +' which is not a number' 
+
+            data['total_material_spend'] = 0
+            data['total_material_dc'] = 0
+
+            procurement_query = 'SELECT total_amount, difference_cost, id FROM procurement WHERE project_id='+str(project_id)
+            cur.execute(procurement_query)
+            res = cur.fetchall()
+            if res is not None:
+                for entry in res:
+                    try:  
+                        data['total_material_spend'] += int(entry[0])
+                    except:
+                        return 'Error: Entry with id '+ str(entry[2]) + ' has incorrect amount'
+                    try:  
+                        data['total_material_dc'] += int(entry[1])
+                    except:
+                        return 'Error: Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
+                    
+            data['total_wo_spend'] = 0
+            data['total_wo_value'] = 0
+
+            work_order_value_query = 'SELECT id, wo_number, value from work_orders WHERE project_id='+ str(project_id)
+            cur.execute(work_order_value_query)
+            res = cur.fetchall()
+            if res is not None:
+                for wo in res:
+                    try:
+                        data['total_wo_value'] += int(wo[2])
+                    except:
+                        return 'Error: Value incorrect for work order with id '+ str(wo[0]) +' and number '+ str(wo[1])
+            
+                        
+            return render_template('expenses.html', data=data)
+
+        return render_template('expenses.html')
+
+
 @app.route('/get_dlr_report', methods=['GET'])
 def get_dlr_report():
     cur = mysql.connection.cursor()

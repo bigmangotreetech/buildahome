@@ -95,6 +95,13 @@
     </a>
     {% endif %}
 
+    {% if session['role'] in ['Super Admin'] %}
+    <a href="/erp/expenses" class='nav-link clickable {% if "/expenses" in request.path %} active {% endif %}'>
+        <ion-icon name="logo-usd"></ion-icon>
+        <span class="my-auto">Expenses</span>
+    </a>
+    {% endif %}
+
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Material</div>
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] %}
