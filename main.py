@@ -274,18 +274,18 @@ def expenses():
                 for task in res:
                     if str(task[3]) == '1':
                         try:
-                            data['total_nt'] += int(task[0])
+                            data['total_nt'] += int(task[0].strip())
                         except:
-                            return 'Error: '+  str(task[3]) + ' has value '+ str(task[0]) +' which is not a number' 
+                            return 'Error: Task '+  str(task[4]) + ' has value '+ str(task[0]) +' which is not a number' 
                     else:                        
                         try:
-                            task_value =  data['project_value'] * float(task[0])
+                            task_value =  data['project_value'] * float(task[0].strip())
                             if str(task[1]) == '1':
                                 data['total_billed'] += task_value
                             if str(task[2]) == '1' and str(task[1]) == '0':
                                 data['total_outstanding'] += task_value
                         except:
-                            return 'Error: '+ str(task[3]) + ' has value '+ str(task[0]) +' which is not a number' 
+                            return 'Error: Task '+ str(task[4]) + ' has value '+ str(task[0]) +' which is not a number' 
 
             data['total_material_spend'] = 0
             data['total_material_dc'] = 0
@@ -296,11 +296,11 @@ def expenses():
             if res is not None:
                 for entry in res:
                     try:  
-                        data['total_material_spend'] += int(entry[0])
+                        data['total_material_spend'] += int(entry[0].strip())
                     except:
                         return 'Error: Entry with id '+ str(entry[2]) + ' has incorrect amount'
                     try:  
-                        data['total_material_dc'] += int(entry[1])
+                        data['total_material_dc'] += int(entry[1].strip())
                     except:
                         return 'Error: Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
                     
@@ -313,7 +313,7 @@ def expenses():
             if res is not None:
                 for wo in res:
                     try:
-                        data['total_wo_value'] += int(wo[2])
+                        data['total_wo_value'] += int(wo[2].strip())
                     except:
                         return 'Error: Value incorrect for work order with id '+ str(wo[0]) +' and number '+ str(wo[1])
             
