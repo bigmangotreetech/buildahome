@@ -13,19 +13,20 @@ $(document).ready(function () {
         $(element).text(metric_name)
     })
 
-    // $(".spin_up").each(function(index, element) {
-    //     value = $(element).attr('data-value')
-    //     if (parseInt(value) == 0) $(element).text(value.toString()) 
-    //     else {
-    //         var initValue = parseInt(value) - 100
-    //         const interval = setInterval(() => {
-    //             if (initValue > parseInt(value)) clearInterval(interval)
-    //             initValue += 1;
-    //             $(element).text(initValue.toString())
-    //         }, 500)
-    //     }
+    $(".spin_up").each(function(index, element) {
+        const value = $(element).attr('data-value')
+        if (parseInt(value) == 0) $(element).text(value.toString()) 
+        else {
+            var initValue = parseInt(value) - 100
+            const interval = setInterval(() => {
+                if (initValue >= parseInt(value)) clearInterval(interval)
+                $(element).text(initValue.toString())
+                initValue += 1;
+                
+            }, 10)
+        }
         
-    // })
+    })
     
 
     $('.edit-task').on('click', function () {
