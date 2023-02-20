@@ -277,6 +277,7 @@ def expenses():
                         if str(task[0]).strip() != '':  
                             try:
                                 data['total_nt'] += float(str(task[0]).strip())
+                                data['total_nt'] = int(data['total_nt'])
                             except:
                                 return 'Error: Task '+  str(task[4]) + ' has value '+ str(task[0]) +' which is not a number' 
                     else:
@@ -285,8 +286,10 @@ def expenses():
                                 task_value =  data['project_value'] * float(str(task[0]).strip())
                                 if str(task[1]) == '1':
                                     data['total_billed'] += task_value
+                                    data['total_billed'] = int(data['total_billed'])
                                 if str(task[2]) == '1' and str(task[1]) == '0':
                                     data['total_outstanding'] += task_value
+                                    data['total_outstanding'] = int(data['total_outstanding'])
                             except:
                                 return 'Error: Task '+ str(task[4]) + ' has value '+ str(task[0]) +' which is not a number' 
 
@@ -301,11 +304,13 @@ def expenses():
                     if str(entry[0]).strip() != '':
                         try:  
                             data['total_material_spend'] += float(str(entry[0]).strip())
+                            data['total_material_spend'] = int(data['total_material_spend'])
                         except:
                             return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect amount'
                     if str(entry[1]).strip() != '':
                         try:  
                             data['total_material_dc'] += float(str(entry[1]).strip())
+                            data['total_material_dc'] = int(data['total_material_dc'])
                         except:
                             return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
                     
@@ -320,6 +325,7 @@ def expenses():
                     if str(wo[2]).strip() != '':
                         try:
                             data['total_wo_value'] += float(str(wo[2]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
+                            data['total_wo_value'] = int(data['total_wo_value'])
                         except:
                             return 'Error: Value incorrect for work order with id '+ str(wo[0]) +' and number '+ str(wo[1])
             
