@@ -9,19 +9,18 @@ $(document).ready(function () {
     })
 
     $(".metric_name").each(function(index, element) {
-        const metric_name = $(element).text().replaceAll('_','') 
+        const metric_name = $(element).text().replaceAll('_',' ') 
         $(element).text(metric_name)
     })
 
     $(".spin_up").each(function(index, element) {
         value = $(element).attr('data-value')
-        var initValue = 0
-        var step = parseInt(parseInt(value) / 2000) 
+        var initValue = parseInt(value) - 100
         const interval = setInterval(() => {
-            if (initValue == parseInt(initValue)) clearInterval(interval)
-            initValue++
+            if (initValue > parseInt(value)) clearInterval(interval)
+            initValue += 1;
             $(element).text(initValue.toString())
-        }, step)
+        }, 10)
     })
     
 
