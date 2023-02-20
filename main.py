@@ -276,7 +276,7 @@ def expenses():
                         try:
                             data['total_nt'] += int(task[0])
                         except:
-                            return 'Error: '+ data['task_name'] + ' has value '+ str(task[0]) +' which is not a number' 
+                            return 'Error: '+  str(task[3]) + ' has value '+ str(task[0]) +' which is not a number' 
                     else:                        
                         try:
                             task_value =  data['project_value'] * float(task[0])
@@ -285,7 +285,7 @@ def expenses():
                             if str(task[2]) == '1' and str(task[1]) == '0':
                                 data['total_outstanding'] += task_value
                         except:
-                            return 'Error: '+ data['task_name'] + ' has value '+ str(task[0]) +' which is not a number' 
+                            return 'Error: '+ str(task[3]) + ' has value '+ str(task[0]) +' which is not a number' 
 
             data['total_material_spend'] = 0
             data['total_material_dc'] = 0
