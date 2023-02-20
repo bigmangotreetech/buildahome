@@ -296,13 +296,13 @@ def expenses():
             if res is not None:
                 for entry in res:
                     try:  
-                        data['total_material_spend'] += float(entry[0].strip())
+                        data['total_material_spend'] += float(str(entry[0]).strip())
                     except:
-                        return 'Error: Entry with id '+ str(entry[2]) + ' has incorrect amount'
+                        return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect amount'
                     try:  
-                        data['total_material_dc'] += float(entry[1].strip())
+                        data['total_material_dc'] += float(str(entry[1]).strip())
                     except:
-                        return 'Error: Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
+                        return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
                     
             data['total_wo_spend'] = 0
             data['total_wo_value'] = 0
