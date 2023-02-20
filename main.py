@@ -248,6 +248,7 @@ def expenses():
         return redirect(request.referrer)
     if request.method == 'GET':
         data = {}
+        projects = get_projects()
         if 'project_id' in request.args:
             project_id = request.args['project_id']
 
@@ -323,9 +324,9 @@ def expenses():
                             return 'Error: Value incorrect for work order with id '+ str(wo[0]) +' and number '+ str(wo[1])
             
                         
-            return render_template('expenses.html', data=data)
-
-        return render_template('expenses.html')
+            return render_template('expenses.html', data=data, projects=projects)
+        
+        return render_template('expenses.html', projects=projects)
 
 
 @app.route('/get_dlr_report', methods=['GET'])
