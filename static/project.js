@@ -22,7 +22,7 @@ $(document).ready(function () {
                 if (initValue > parseInt(value)) clearInterval(interval)
                 initValue += 1;
                 $(element).text(initValue.toString())
-            }, 10)
+            }, 500)
         }
         
     })
