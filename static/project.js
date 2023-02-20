@@ -15,12 +15,16 @@ $(document).ready(function () {
 
     $(".spin_up").each(function(index, element) {
         value = $(element).attr('data-value')
-        var initValue = parseInt(value) - 100
-        const interval = setInterval(() => {
-            if (initValue > parseInt(value)) clearInterval(interval)
-            initValue += 1;
-            $(element).text(initValue.toString())
-        }, 10)
+        if (parseInt(value) == 0) $(element).text(value.toString()) 
+        else {
+            var initValue = parseInt(value) - 100
+            const interval = setInterval(() => {
+                if (initValue > parseInt(value)) clearInterval(interval)
+                initValue += 1;
+                $(element).text(initValue.toString())
+            }, 10)
+        }
+        
     })
     
 
