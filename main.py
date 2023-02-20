@@ -294,7 +294,7 @@ def expenses():
                                 return 'Error: Task '+ str(task[4]) + ' has value '+ str(task[0]) +' which is not a number' 
 
             data['total_material_spend'] = 0
-            data['total_material_dc'] = 0
+            data['total_material_difference_cost'] = 0
 
             procurement_query = 'SELECT total_amount, difference_cost, id FROM procurement WHERE project_id='+str(project_id)
             cur.execute(procurement_query)
@@ -314,8 +314,8 @@ def expenses():
                         except:
                             return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
                     
-            data['total_wo_spend'] = 0
-            data['total_wo_value'] = 0
+            data['total_WO_spend'] = 0
+            data['total_WO_value'] = 0
 
             work_order_value_query = 'SELECT id, wo_number, value from work_orders WHERE project_id='+ str(project_id)
             cur.execute(work_order_value_query)
