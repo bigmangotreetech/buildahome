@@ -23,11 +23,31 @@
         <button id="get_expenses" class="btn text-white bg-indigo  mb-2">Get expenses</button>
     </div>
     <div class="w-100 p-3 overflow-x-auto">
-        {{ data }}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Metric</th>
+                    <th scope="col">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for metric in data %}
+                <tr>
+                    <td class="metric_name">{{ metric }}</td>
+                    <td class="spin_up" data-value="{{ data[metric] }}"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
     </div>
 </div>
 
 <style>
+    .metric_name {
+        text-transform: capitalize;
+    }
+
     td {
         font-size: 11px;
         font-weight: 500;

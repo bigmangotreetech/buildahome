@@ -7,6 +7,22 @@ $(document).ready(function () {
             window.location.href = '/erp/expenses?project_id='+project.toString()       
         }
     })
+
+    $(".metric_name").each(function(index, element) {
+        const metric_name = $(element).text().replaceAll('_','') 
+        $(element).text(metric_name)
+    })
+
+    $(".spin_up").each(function(index, element) {
+        value = $(element).attr('data-value')
+        var initValue = 0
+        var step = parseInt(parseInt(value) / 2000) 
+        const interval = setInterval(() => {
+            if (initValue == parseInt(initValue)) clearInterval(interval)
+            initValue++
+            $(element).text(initValue.toString())
+        }, step)
+    })
     
 
     $('.edit-task').on('click', function () {
