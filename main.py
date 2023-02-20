@@ -274,12 +274,12 @@ def expenses():
                 for task in res:
                     if str(task[3]) == '1':
                         try:
-                            data['total_nt'] += int(task[0].strip())
+                            data['total_nt'] += int(str(task[0]).strip())
                         except:
                             return 'Error: Task '+  str(task[4]) + ' has value '+ str(task[0]) +' which is not a number' 
                     else:                        
                         try:
-                            task_value =  data['project_value'] * float(task[0].strip())
+                            task_value =  data['project_value'] * float(str(task[0]).strip())
                             if str(task[1]) == '1':
                                 data['total_billed'] += task_value
                             if str(task[2]) == '1' and str(task[1]) == '0':
