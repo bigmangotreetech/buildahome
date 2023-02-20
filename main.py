@@ -318,7 +318,7 @@ def expenses():
                 for wo in res:
                     if str(wo[2]).strip() != '':
                         try:
-                            data['total_wo_value'] += float(str(wo[2]).strip())
+                            data['total_wo_value'] += float(str(wo[2]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
                         except:
                             return 'Error: Value incorrect for work order with id '+ str(wo[0]) +' and number '+ str(wo[1])
             
