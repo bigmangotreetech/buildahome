@@ -611,7 +611,7 @@ def index():
         cur.execute(indents_query)
         res = cur.fetchall()
         if res is not None:
-            appr
+            approved_pos_count = len(res)
     elif current_user_role in ['Purchase Executive']:
         indents_query = 'SELECT indents.id, ' \
                         'projects.project_id, ' \
