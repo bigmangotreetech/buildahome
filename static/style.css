@@ -195,6 +195,10 @@ body, small {
   font-weight: 500;
 }
 
+.fw-100 {
+  font-weight: 100;
+}
+
 ion-icon {
   color: white;
 }

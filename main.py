@@ -563,7 +563,9 @@ def index():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp'
         return redirect('/erp/login')
-    return render_template('index.html')
+    
+    projects = get_projects()
+    return render_template('index.html',projects=projects)
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():
