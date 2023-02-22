@@ -591,6 +591,8 @@ def index():
 
     current_user_role = session['role']
     indents_query = ''
+    approved_pos_count = 0
+    
     if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Billing']:
         indents_query = 'SELECT indents.id, ' \
                         'projects.project_id, ' \
@@ -606,6 +608,10 @@ def index():
                         'indents.project_id=projects.project_id ' \
                         'LEFT OUTER JOIN App_users on ' \
                         'indents.created_by_user=App_users.user_id'
+        cur.execute(indents_query)
+        res = cur.fetchall()
+        if res is not None:
+            appr
     elif current_user_role in ['Purchase Executive']:
         indents_query = 'SELECT indents.id, ' \
                         'projects.project_id, ' \
@@ -623,11 +629,10 @@ def index():
                         'LEFT OUTER JOIN App_users on ' \
                         'indents.created_by_user=App_users.user_id'
          
-    cur.execute(indents_query)
-    approved_pos_count = 0
-    res = cur.fetchall()
-    if res is not None:
-        approved_pos_count = len(res)
+        cur.execute(indents_query)
+        res = cur.fetchall()
+        if res is not None:
+            approved_pos_count = len(res)
 
     dpr_query = 'SELECT COUNT(update_id) FROM `App_updates` WHERE updated_at >= CURDATE()'
     cur.execute(dpr_query)
