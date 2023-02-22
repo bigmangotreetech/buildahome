@@ -16,12 +16,28 @@
          </div>
     </div>
     
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-sm-6 col-md-3 col-lg-2 d-flex flex-column justify-content-between">
         <div class="mt-3 bg-white rounded p-3 text-center">
             <span class="text-warning spin_up fs-60" data-value="{{vendor_count}}"></span>
-        <div class="mt-2 fs-16">Vendors</div>
+            <div class="mt-2 fs-16">Vendors</div>
         </div>
         
+        <div class="mt-3 bg-white rounded p-3 text-center">
+            <span class="text-primary spin_up fs-60" data-value="{{Contractor_count}}"></span>
+            <div class="mt-2 fs-16">Contractors</div>
+        </div>
+    </div>
+    
+    <div class="col-sm-6 col-md-3 col-lg-2 d-flex flex-column justify-content-between">
+        <div class="mt-3 bg-white rounded p-3 text-center">
+            <span class="text-danger spin_up fs-60" data-value="{{work_orders_count}}"></span>
+            <div class="mt-2 fs-16">Work orders</div>
+        </div>
+        
+        <div class="mt-3 bg-white rounded p-3 text-center">
+            <span class="text-success spin_up fs-60" data-value="{{approved_pos_count}}"></span>
+            <div class="mt-2 fs-16">Approved POS</div>
+        </div>
     </div>
     
 

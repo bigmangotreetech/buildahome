@@ -567,6 +567,7 @@ def index():
     projects = get_projects()
 
     cur = mysql.connection.cursor()
+    
     vendors_query = 'SELECT COUNT(id) FROM vendors ORDER by code'
     cur.execute(vendors_query)
     res = cur.fetchone()
@@ -574,7 +575,61 @@ def index():
     if res is not None:
         vendor_count = str(res[0]).strip()
 
-    return render_template('index.html',projects=projects, vendor_count=vendor_count)
+    contractors_query = 'SELECT COUNT(id) FROM contractors'
+    cur.execute(contractors_query)
+    res = cur.fetchone()
+    contractor_count = 0
+    if res is not None:
+        contractor_count = str(res[0]).strip()
+
+    work_orders_query = 'SELECT COUNT(id) FROM work_orders'
+    cur.execute(work_orders_query)
+    res = cur.fetchone()
+    work_orders_count = 0
+    if res is not None:
+        work_orders_count = str(res[0]).strip()
+
+    current_user_role = session['role']
+    indents_query = ''
+    if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Billing']:
+        indents_query = 'SELECT indents.id, ' \
+                        'projects.project_id, ' \
+                        'projects.project_name, ' \
+                        'indents.material, ' \
+                        'indents.quantity, ' \
+                        'indents.unit, ' \
+                        'indents.purpose, ' \
+                        'App_users.name, ' \
+                        'indents.timestamp, indents.billed, indents.po_number FROM indents ' \
+                        'INNER JOIN projects on ' \
+                        'indents.status="approved_by_ph" AND ' \
+                        'indents.project_id=projects.project_id ' \
+                        'LEFT OUTER JOIN App_users on ' \
+                        'indents.created_by_user=App_users.user_id'
+    elif current_user_role in ['Purchase Executive']:
+        indents_query = 'SELECT indents.id, ' \
+                        'projects.project_id, ' \
+                        'projects.project_name, ' \
+                        'indents.material, ' \
+                        'indents.quantity, ' \
+                        'indents.unit, ' \
+                        'indents.purpose, ' \
+                        'App_users.name, ' \
+                        'indents.timestamp, indents.billed, indents.po_number FROM indents ' \
+                        'INNER JOIN projects on ' \
+                        'indents.status="approved_by_ph" AND ' \
+                        'indents.project_id=projects.project_id AND ' \
+                        'indents.project_id IN ' + str(get_projects_for_current_user()) +' '\
+                        'LEFT OUTER JOIN App_users on ' \
+                        'indents.created_by_user=App_users.user_id'
+         
+    cur.execute(indents_query)
+    approved_pos_count = 0
+    res = cur.fetchall()
+    if res is not None:
+        approved_pos_count = len(res)
+
+    return render_template('index.html',projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count)
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():
