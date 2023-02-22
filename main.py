@@ -125,12 +125,12 @@ def get_projects():
     projects = []
     if len(get_projects_for_current_user()) > 0:
         if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info']:
-            query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
+            query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number' \
                     'AND project_id IN ' + str(get_projects_for_current_user())
             cur.execute(query)
             projects = cur.fetchall()
         else:
-            query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0'
+            query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
             cur.execute(query)
             projects = cur.fetchall()
     return projects
@@ -565,7 +565,16 @@ def index():
         return redirect('/erp/login')
     
     projects = get_projects()
-    return render_template('index.html',projects=projects)
+
+    cur = mysql.connection.cursor()
+    vendors_query = 'SELECT COUNT(id) FROM vendors ORDER by code'
+    cur.execute(vendors_query)
+    res = cur.fetchone()
+    vendor_count = 0
+    if res is not None:
+        vendor_count = str(res[0]).strip()
+
+    return render_template('index.html',projects=projects, vendor_count=vendor_count)
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():

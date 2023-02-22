@@ -195,6 +195,10 @@ body, small {
     font-size: 18px;
 }
 
+.fs-60 {
+  font-size: 60px;
+}
+
 .fw-500 {
   font-weight: 500;
 }

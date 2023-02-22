@@ -2,16 +2,26 @@
 {% block content %}
 <div class='mt-5 w-100 row mx-0'>    
     <div class="col-12 bg-white rounded py-4 px-3 border-radius-10 fw-100">
-        <div>Welcome back, {{session['name']}}!</div>
+        <div class="fs-18">Welcome back, {{session['name']}}!</div>
         <div>Role: {{session['role']}} </div>
     </div>
-    <div class="mt-3 bg-white rounded p-3 col-sm-12 col-md-6 col-lg-4">
-       <div class="fs-16 fw-500 mb-3">Projects <span class="spin_up" data-value="{{projects|length}}"></span></div> 
-       <div class="dashboard-card">
-       {% for i in projects %}
-       <div class="py-2">{{i[1]}}</div>
-       {% endfor %}
-       </div>
+    <div class=" col-sm-12 col-md-6 col-lg-4">
+        <div class="mt-3 bg-white rounded p-3">
+            <div class="fs-16 fw-500 mb-1 border-bottom pb-2 d-inline border-dark">Projects <span class="fs-12">(<span class="spin_up" data-value="{{projects|length}}"></span>)</span></div> 
+            <div class="dashboard-card mt-3">
+            {% for i in projects %}
+            <div class="py-2">{{i[1]}}</div>
+            {% endfor %}
+            </div>
+         </div>
+    </div>
+    
+    <div class="col-sm-6 col-md-3 col-lg-2">
+        <div class="mt-3 bg-white rounded p-3 text-center">
+            <span class="text-warning spin_up fs-24" data_value="{{vendor_count}}"></span>
+        <div class="mt-2 fs-16">Vendors</div>
+        </div>
+        
     </div>
     
 
@@ -35,7 +45,7 @@
 <style>
     
     .dashboard-card {
-        height: 400px;
+        height: 300px;
         overflow: auto;
     }
 </style>
