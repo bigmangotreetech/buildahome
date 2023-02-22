@@ -207,6 +207,10 @@ body, small {
   font-weight: 100;
 }
 
+.text-indigo {
+  color: indigo;
+}
+
 ion-icon {
   color: white;
 }
