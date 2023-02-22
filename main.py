@@ -634,7 +634,10 @@ def index():
         if res is not None:
             approved_pos_count = len(res)
 
-    dpr_query = 'SELECT COUNT(update_id) FROM `App_updates` WHERE updated_at >= CURDATE()'
+    IST = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(IST)
+    current_date = current_time.strftime('%A %B %d') 
+    dpr_query = 'SELECT COUNT(update_id) FROM `App_updates` WHERE date = "'+current_date+'"'
     cur.execute(dpr_query)
     res = cur.fetchone()
     dpr_count = 0
