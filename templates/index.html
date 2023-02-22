@@ -95,19 +95,19 @@ google.charts.setOnLoadCallback(drawChart);
 
 function drawChart() {
 
-    var graphData = [];
+    var graphData = [['Month','Spend']];
 
     var metrics = document.getElementsByClassName('metric_name')
     for(const metricElement of metrics) {
         metric_name = metricElement.innerHTML
         metric_value = parseInt(metricElement.nextElementSibling.getAttribute("data-value"))
-        graphData.push([metric_value, metric_name ])
+        graphData.push([metric_name, metric_value])
     } 
 
     var data = google.visualization.arrayToDataTable(graphData);
 
     var options = {
-    title: 'World Wide Wine Production'
+        title: 'World Wide Wine Production'
     };
 
     var chart = new google.visualization.BarChart(document.getElementById('chart'));
