@@ -237,6 +237,22 @@ def get_projects_for_current_user(user_id = '', role = ''):
     else:
         return []
 
+@app.route('/set_material_timestamps', methods=['GET'])
+def set_material_timestamps():
+    cur = mysql.connection.cursor()
+    query = 'SELECT id, created_at from procurement'
+    cur.execute(query)
+    res = cur.fetchall()
+    for i in res:
+        if str(i[1]).strip() != '':
+            time = datetime.strptime(str(i[1]) + '%d %m %Y at %H %M')
+            IST = pytz.timezone('Asia/Kolkata')
+
+            update_query = 'UPDATE procurement SET created_at_datetime=%s WHERE id='+str(i[0])
+            cur.execute(update_query, (time.strftime('%Y-%m-%d %H:%M:%S')))
+
+    mysql.connection.commit()
+
 @app.route('/expenses', methods=['GET', 'POST'])
 def expenses():
     if 'email' not in session:
