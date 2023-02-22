@@ -101,7 +101,7 @@ function drawChart() {
     for(const metricElement of metrics) {
         metric_name = metricElement.innerHTML
         metric_value = parseInt(metricElement.nextElementSibling.getAttribute("data-value"))
-        graphData.push([metric_name, metric_value])
+        graphData.push([metric_value, metric_name ])
     } 
 
     var data = google.visualization.arrayToDataTable(graphData);
