@@ -253,6 +253,8 @@ def set_material_timestamps():
 
     mysql.connection.commit()
 
+    return 'Done'
+
 @app.route('/expenses', methods=['GET', 'POST'])
 def expenses():
     if 'email' not in session:
