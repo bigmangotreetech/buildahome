@@ -99,7 +99,7 @@ function drawChart() {
 
     var metrics = document.getElementsByClassName('metric_name')
     for(const metricElement of metrics) {
-        metric_name = metricElement.innerHTML()
+        metric_name = metricElement.innerHTML
         metric_value = parseInt(metricElement.nextSibling.getAttribute("data-value"))
         graphData.push([metric_name, metric_value])
     } 
