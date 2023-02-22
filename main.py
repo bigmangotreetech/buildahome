@@ -2022,7 +2022,9 @@ def create_bill():
             quantity = request.form['quantity']
             rate = request.form['rate']
             nt_nmr_bill_amount = request.form['nt_nmr_bill_amount']
-            description = request.form['description'].replace('"',"'").replace('"','"')
+            description = request.form['description'] 
+
+            description = description.replace("'","''")
 
             contractor_query = 'SELECT name, code, pan from contractors WHERE id='+request.form['contractor']
             cur.execute(contractor_query)
@@ -2037,7 +2039,8 @@ def create_bill():
 
 
         
-        stage = request.form['stage'].replace('"',"").replace("'","''").strip()
+        stage = request.form['stage']
+        stage = stage.replace("'","''").strip()
         payment_percentage = request.form['payment_percentage']
         amount = request.form['amount']
         contractor_name = request.form['contractor_name']
@@ -2045,7 +2048,7 @@ def create_bill():
         contractor_pan = request.form['contractor_pan']
 
 
-        get_debit_note_bill = "SELECT approval_2_amount from wo_bills WHERE project_id="+str(project_id)+" AND stage LIKE '%" +stage+"(Debit note)%' AND contractor_code='"+str(contractor_code)+"' AND trade != 'NT/NMR'"
+        get_debit_note_bill = 'SELECT approval_2_amount from wo_bills WHERE project_id='+str(project_id)+' AND stage LIKE "%' + stage +'(Debit note)%" AND contractor_code="'+str(contractor_code)+'" AND trade != "NT/NMR"'
         cur.execute(get_debit_note_bill)
         res = cur.fetchone()
         if res is not None:
