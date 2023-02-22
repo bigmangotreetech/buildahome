@@ -17,7 +17,7 @@ $(document).ready(function () {
         const value = $(element).attr('data-value')
         if (parseInt(value) == 0) $(element).text(value.toString()) 
         else {
-            var initValue = parseInt(value) - 50
+            var initValue = parseInt(value) > 100 ? parseInt(value) - 50 : parseInt(value) - 10
             const interval = setInterval(() => {
                 if (initValue >= parseInt(value)) clearInterval(interval)
                 $(element).text(initValue.toString())

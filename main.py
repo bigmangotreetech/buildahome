@@ -309,8 +309,8 @@ def expenses():
                             return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect amount'
                     if str(entry[1]).strip() != '':
                         try:  
-                            data['total_material_dc'] += float(str(entry[1]).strip())
-                            data['total_material_dc'] = int(data['total_material_dc'])
+                            data['total_material_difference_cost'] += float(str(entry[1]).strip())
+                            data['total_material_difference_cost'] = int(data['total_material_difference_cost'])
                         except:
                             return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
                     
