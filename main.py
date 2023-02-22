@@ -245,7 +245,7 @@ def set_material_timestamps():
     res = cur.fetchall()
     for i in res:
         if str(i[1]).strip() != '':
-            time = datetime.strptime(str(i[1]) + '%d %m %Y at %H %M')
+            time = datetime.strptime(str(i[1]) , '%d %m %Y at %H %M')
             IST = pytz.timezone('Asia/Kolkata')
 
             update_query = 'UPDATE procurement SET created_at_datetime=%s WHERE id='+str(i[0])
