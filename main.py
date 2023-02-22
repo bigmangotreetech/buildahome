@@ -2024,7 +2024,6 @@ def create_bill():
             nt_nmr_bill_amount = request.form['nt_nmr_bill_amount']
             description = request.form['description'] 
 
-            description = description.replace("'","''")
 
             contractor_query = 'SELECT name, code, pan from contractors WHERE id='+request.form['contractor']
             cur.execute(contractor_query)
