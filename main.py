@@ -629,7 +629,14 @@ def index():
     if res is not None:
         approved_pos_count = len(res)
 
-    return render_template('index.html',projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count)
+    dpr_query = 'SELECT COUNT(update_id) FROM `App_updates` WHERE updated_at >= CURDATE()'
+    cur.execute(dpr_query)
+    res = cur.fetchone()
+    dpr_count = 0
+    if res is not None:
+        dpr_count = res[0]
+
+    return render_template('index.html',projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count)
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():
