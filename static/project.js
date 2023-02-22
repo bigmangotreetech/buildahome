@@ -940,6 +940,30 @@ $(document).ready(function () {
                 $(element).removeClass('d-none')            
         })
 
+        $('.force-open-to-clear-balance').each(function(index, element) {
+            if(parseInt($(element).parents('tr').find('.approved_amount').text()) == 0) return;
+            amountDifference = parseInt($(element).parents('tr').find('.billed_amount').text()) - parseInt($(element).parents('tr').find('.approved_amount').text())
+            if(amountDifference > 0) 
+                $(element).removeClass('d-none')            
+        })
+
+        $('.force-open-to-clear-balance').on('click', function(){
+            if(confirm('Are you sure you want to open this bill to clear balance?')) {
+                bill_id = $(this).parents('tr').find('.bill_id').text().trim()
+                $.ajax({
+                    url: '/erp/force_open_clear_balance',
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                    'bill_id': bill_id
+                    },
+                    success: function (data) {
+                        window.location.reload()
+                    }
+                })
+            }
+        })
+
         $('.clear-individual-balance').on('click', function(){
             if($(this).text() != 'Clear balance') return;
             $(this).css('opacity','0.5')

@@ -110,6 +110,9 @@
                 {% if '0' in i[6]|string %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
+                {% elif '1' in i[6]|string and session['role'] in ['Super Admin'] %}
+                <span class="bill_id d-none">{{i[7]}}</span>
+                <span class="force-open-to-clear-balance btn text-primary d-none">Open to Clear balance</span>
                 {% endif %}
             </td>
             {% if session['role'] in ['Super Admin'] and 'Debit note' in i[0] %}

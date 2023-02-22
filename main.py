@@ -2618,6 +2618,18 @@ def check_if_clear_balance_bill_due():
     else: 
         return jsonify({'message': 'Bill for clearing balance does not exists'})
 
+@app.route('/force_open_clear_balance', methods=['POST'])
+def force_open_clear_balance():
+    bill_id = request.form['bill_id']
+
+    cur = mysql.connection.cursor()
+
+    update_old_bill = 'UPDATE wo_bills SET cleared_balance=0 WHERE id='+str(bill_id)
+    cur.execute(update_old_bill)
+
+    mysql.connection.commit()
+    flash('Bill reversed to clear balance')
+    return jsonify({'message': 'success'})
 
 @app.route('/clear_individual_balance', methods=['POST'])
 def clear_individual_balance():
