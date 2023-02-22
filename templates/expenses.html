@@ -31,10 +31,10 @@
                 </tr>
             </thead>
             <tbody>
-                {% for metric in total_material_spend %}
+                {% for metric in data %}
                 <tr>
                     <td class="metric_name">{{ metric }}</td>
-                    <td class="spin_up" data-value="{{ total_material_spend[metric] }}"></td>
+                    <td class="spin_up" data-value="{{ data[metric] }}"></td>
                 </tr>
                 {% endfor %}
             </tbody>
