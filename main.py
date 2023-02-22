@@ -992,11 +992,11 @@ def enter_material():
                     flash('Total quantity of material exceeded limit specified under KYP material. Entry not recorded','danger')
                     return redirect('/erp/enter_material')
 
-
+        created_at_datetime = current_time.strftime('%Y-%m-%d %H:%M:%S')
         query = "INSERT into procurement (material, description, vendor, project_id, po_no, invoice_no, invoice_date," \
-                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                "quantity, unit, rate, gst, total_amount, difference_cost, photo_date, transportation, loading_unloading, created_at, created_at_datetime) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst,
-                  total_amount, difference_cost, photo_date, transportation, loading_unloading, timestamp)
+                  total_amount, difference_cost, photo_date, transportation, loading_unloading, timestamp, created_at_datetime)
         cur.execute(query, values)
         mysql.connection.commit()
         flash('Material was inserted successfully', 'success')
@@ -1247,15 +1247,17 @@ def shifting_entry():
         cur.execute(check_if_shifting_is_possible, (from_project, material))
         result = cur.fetchone()
 
+        created_at_datetime = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
         if result[0] is None or (result is not None and result[0] is not None and int(quantity) < int(result[0])):
             deduction_query = "INSERT into procurement (material, description, project_id," \
-                          "quantity, unit, difference_cost, created_at) values (%s, %s, %s, %s, %s, %s, %s)"
-            values = (material, description+' to '+to_project_name+' on '+str(shifting_date), from_project, int(quantity) * -1, unit, negative_diff, timestamp)
+                          "quantity, unit, difference_cost, created_at, created_at_datetime) values (%s, %s, %s, %s, %s, %s, %s, %s)"
+            values = (material, description+' to '+to_project_name+' on '+str(shifting_date), from_project, int(quantity) * -1, unit, negative_diff, timestamp, created_at_datetime)
             cur.execute(deduction_query, values)
 
             addition_query = "INSERT into procurement (material, description, project_id," \
-                            "quantity, unit, difference_cost, created_at) values (%s, %s,  %s, %s, %s, %s, %s)"
-            values = (material, description+" from "+from_project_name+' on '+timestamp, to_project, quantity, unit, positive_diff, timestamp)
+                            "quantity, unit, difference_cost, created_at, created_at_datetime) values (%s, %s,  %s, %s, %s, %s, %s, %s)"
+            values = (material, description+" from "+from_project_name+' on '+timestamp, to_project, quantity, unit, positive_diff, timestamp, created_at_datetime)
             cur.execute(addition_query, values)
 
             mysql.connection.commit()
