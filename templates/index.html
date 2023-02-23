@@ -65,16 +65,14 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <div id="chart" style="max-width:100%; height:400px"></div>
+            <canvas id="myChart" style="width:100%; max-width:600px"></canvas>
 
         </div>
     </div>
     
 
 </div>
-<script
-src="https://www.gstatic.com/charts/loader.js">
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <!-- <script src="https://js.pusher.com/7.2/pusher.min.js"></script> -->
 <script>
 
@@ -90,28 +88,39 @@ src="https://www.gstatic.com/charts/loader.js">
 //     alert(JSON.stringify(data));
 // });
 
-google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(drawChart);
 
+drawChart()
 function drawChart() {
 
-    var graphData = [['Month','Spend']];
-
+    var xValues = [];
+    var yValues = [];
+    var barColors = ['orange','green','blue']
     var metrics = document.getElementsByClassName('metric_name')
     for(const metricElement of metrics) {
-        metric_name = metricElement.innerHTML
+        metric_name = metricElement.innerHTML.split('_').
         metric_value = parseInt(metricElement.nextElementSibling.getAttribute("data-value"))
-        graphData.push([metric_name, metric_value])
+        xValues.push(metric_name)
+        yValues.push(metric_value)
+        
     } 
 
-    var data = google.visualization.arrayToDataTable(graphData);
-
-    var options = {
-        title: 'World Wide Wine Production'
-    };
-
-    var chart = new google.visualization.BarChart(document.getElementById('chart'));
-    chart.draw(data, options);
+    new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            legend: {display: false},
+            title: {
+                display: true,
+                text: "Last three months materail spend trend"
+            }
+        }
+    });
 
 }
 
