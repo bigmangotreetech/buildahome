@@ -106,7 +106,7 @@ function drawChart() {
     var metrics = document.getElementsByClassName('metric_name')
     for(const metricElement of metrics) {
         var metric_name = metricElement.innerHTML
-        var metric_value = parseInt(metricElement.nextElementSibling.getAttribute("data-value"))
+        var metric_value = parseInt(metricElement.nextElementSibling.getAttribute("data-value")) / 100000
         xValues.unshift(metric_name)
         yValues.unshift(metric_value)
         
