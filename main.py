@@ -668,17 +668,18 @@ def index():
 
     for i in range(0, 12, 1):
 
+        current_month_int =  int(datetime.strptime(str(current_month) , '%B').strftime('%m'))
         total_material_spend = {
             current_month: 0,           
         }
         
 
 
-        total_material_previous_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL '+str(int(current_month)-i)+' MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL '+str(int(current_month)-i)+' MONTH))'
+        total_material_previous_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL '+str(int(current_month_int)-i)+' MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL '+str(int(current_month_int)-i)+' MONTH))'
         cur.execute(total_material_previous_month_spend_query)
         res = cur.fetchone()
         if res is not None:
-            total_material_spend[month_name] = res[0]
+            total_material_spend[current_month] = res[0]
 
         weeks_to_sub =  4 * (i+1)
         current_month = datetime.datetime.now() - datetime.timedelta(weeks=weeks_to_sub)
