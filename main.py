@@ -665,6 +665,7 @@ def index():
     current_month = current_time.strftime('%B')
 
     time_now = datetime.now()
+    total_material_spend = {}
 
     for i in range(0, 12, 1):
 
