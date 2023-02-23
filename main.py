@@ -669,9 +669,8 @@ def index():
 
     for i in range(0, 12, 1):
 
-        total_material_spend = {
-            current_month: 0,           
-        }
+        total_material_spend[current_month] = 0
+           
         
 
 
