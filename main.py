@@ -662,28 +662,23 @@ def index():
     if res is not None:
         dpr_count = res[0]
 
-    total_material_spend = {
-        'Current month': 0,
-        'Previous month': 0,
-        'Last to last month': 0
-    }
-    total_material_current_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(now()) and YEAR(created_at_datetime) = YEAR(now())'
-    cur.execute(total_material_current_month_spend_query)
-    res = cur.fetchone()
-    if res is not None:
-        total_material_spend['Current month'] = res[0]
+    current_month = current_time.strftime('%-m')
 
-    total_material_previous_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL 1 MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL 1 MONTH))'
-    cur.execute(total_material_previous_month_spend_query)
-    res = cur.fetchone()
-    if res is not None:
-        total_material_spend['Previous month'] = res[0]
 
-    total_material_last_to_last_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL 2 MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL 2 MONTH))'
-    cur.execute(total_material_last_to_last_month_spend_query)
-    res = cur.fetchone()
-    if res is not None:
-        total_material_spend['Last to last month'] = res[0]
+    for i in range(current_month, 0, -1):
+
+        month_name =  datetime.strptime(current_month , '%-m').strftime('%B')
+        total_material_spend = {
+            month_name: 0,           
+        }
+
+
+        total_material_previous_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL '+str(current_month-i)+' MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL '+str(current_month-i)+' MONTH))'
+        cur.execute(total_material_previous_month_spend_query)
+        res = cur.fetchone()
+        if res is not None:
+            total_material_spend[month_name] = res[0]
+
 
 
     return render_template('index.html',projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
