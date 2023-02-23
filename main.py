@@ -9,7 +9,7 @@ import xlwt
 from xlrd import open_workbook
 from xlutils.copy import copy
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import time
 from time import mktime
@@ -682,7 +682,7 @@ def index():
             total_material_spend[current_month] = res[0]
 
         weeks_to_sub =  4 * (i+1)
-        current_month = datetime.datetime.now() - datetime.timedelta(weeks=weeks_to_sub)
+        current_month = datetime.now() - timedelta(weeks=weeks_to_sub)
         current_month = current_month.strftime('%B')
 
 
