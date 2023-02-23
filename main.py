@@ -665,12 +665,13 @@ def index():
     current_month = current_time.strftime('%m')
 
 
-    for i in range(int(current_month), 0, -1):
+    for i in range(0, 12, 1):
 
-        month_name =  datetime.strptime(current_month , '%m').strftime('%B')
+        month_name =  datetime.strptime(str(current_month) , '%m').strftime('%B')
         total_material_spend = {
             month_name: 0,           
         }
+        
 
 
         total_material_previous_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL '+str(int(current_month)-i)+' MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL '+str(int(current_month)-i)+' MONTH))'
@@ -678,6 +679,8 @@ def index():
         res = cur.fetchone()
         if res is not None:
             total_material_spend[month_name] = res[0]
+
+        current_month = int(current_month) - 1
 
 
 
