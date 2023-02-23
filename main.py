@@ -662,15 +662,14 @@ def index():
     if res is not None:
         dpr_count = res[0]
 
-    current_month = current_time.strftime('%m')
+    current_month = current_time.strftime('%B')
 
 
 
     for i in range(0, 12, 1):
 
-        month_name =  datetime.strptime(str(current_month) , '%m').strftime('%B')
         total_material_spend = {
-            month_name: 0,           
+            current_month: 0,           
         }
         
 
@@ -681,10 +680,9 @@ def index():
         if res is not None:
             total_material_spend[month_name] = res[0]
 
-        current_month = int(current_month) - 1
-        if current_month == 0:
-            current_month = 12
-
+        weeks_to_sub =  4 * (i+1)
+        current_month = datetime.datetime.now() - datetime.timedelta(weeks=weeks_to_sub)
+        current_month = current_month.strftime('%B')
 
 
     return render_template('index.html',projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
