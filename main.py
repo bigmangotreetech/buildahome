@@ -664,7 +664,7 @@ def index():
 
     current_month = current_time.strftime('%B')
 
-
+    time_now = datetime.now()
 
     for i in range(0, 12, 1):
 
@@ -682,7 +682,7 @@ def index():
             total_material_spend[current_month] = res[0]
 
         weeks_to_sub =  4 * (i+1)
-        current_month = datetime.now() - timedelta(weeks=weeks_to_sub)
+        current_month = time_now - timedelta(weeks=weeks_to_sub)
         current_month = current_month.strftime('%B')
 
 
