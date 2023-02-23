@@ -665,7 +665,7 @@ def index():
     total_material_spend = {
         'Current month': 0,
         'Previous month': 0,
-        'Last to last_month': 0
+        'Last to last month': 0
     }
     total_material_current_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(now()) and YEAR(created_at_datetime) = YEAR(now())'
     cur.execute(total_material_current_month_spend_query)

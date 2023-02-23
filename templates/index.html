@@ -99,8 +99,8 @@ function drawChart() {
     for(const metricElement of metrics) {
         var metric_name = metricElement.innerHTML
         var metric_value = parseInt(metricElement.nextElementSibling.getAttribute("data-value"))
-        xValues.push(metric_name)
-        yValues.push(metric_value)
+        xValues.unshift(metric_name)
+        yValues.unshift(metric_value)
         
     } 
 
@@ -114,6 +114,7 @@ function drawChart() {
             }]
         },
         options: {
+            barThickness: 15,
             legend: {display: false},
             title: {
                 display: true,
