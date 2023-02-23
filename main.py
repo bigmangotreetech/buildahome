@@ -666,7 +666,7 @@ def index():
 
 
 
-    for i in range(1, 13, 1):
+    for i in range(0, 12, 1):
 
         month_name =  datetime.strptime(str(current_month) , '%m').strftime('%B')
         total_material_spend = {
