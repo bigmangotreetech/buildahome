@@ -97,7 +97,7 @@ function drawChart() {
     var barColors = ['orange','green','blue']
     var metrics = document.getElementsByClassName('metric_name')
     for(const metricElement of metrics) {
-        var metric_name = metricElement.innerHTML.split('_').
+        var metric_name = metricElement.innerHTML
         var metric_value = parseInt(metricElement.nextElementSibling.getAttribute("data-value"))
         xValues.push(metric_name)
         yValues.push(metric_value)

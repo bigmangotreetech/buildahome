@@ -663,27 +663,27 @@ def index():
         dpr_count = res[0]
 
     total_material_spend = {
-        'current_month': 0,
-        'previous_month': 0,
-        'last_to_last_month': 0
+        'Current month': 0,
+        'Previous month': 0,
+        'Last to last_month': 0
     }
     total_material_current_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(now()) and YEAR(created_at_datetime) = YEAR(now())'
     cur.execute(total_material_current_month_spend_query)
     res = cur.fetchone()
     if res is not None:
-        total_material_spend['current_month'] = res[0]
+        total_material_spend['Current month'] = res[0]
 
     total_material_previous_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL 1 MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL 1 MONTH))'
     cur.execute(total_material_previous_month_spend_query)
     res = cur.fetchone()
     if res is not None:
-        total_material_spend['previous_month'] = res[0]
+        total_material_spend['Previous month'] = res[0]
 
     total_material_last_to_last_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL 2 MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL 2 MONTH))'
     cur.execute(total_material_last_to_last_month_spend_query)
     res = cur.fetchone()
     if res is not None:
-        total_material_spend['last_to_last_month'] = res[0]
+        total_material_spend['Last to last month'] = res[0]
 
 
     return render_template('index.html',projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
