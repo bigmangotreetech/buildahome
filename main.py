@@ -662,12 +662,12 @@ def index():
     if res is not None:
         dpr_count = res[0]
 
-    current_month = current_time.strftime('%-m')
+    current_month = current_time.strftime('%m')
 
 
     for i in range(int(current_month), 0, -1):
 
-        month_name =  datetime.strptime(current_month , '%-m').strftime('%B')
+        month_name =  datetime.strptime(current_month , '%m').strftime('%B')
         total_material_spend = {
             month_name: 0,           
         }
