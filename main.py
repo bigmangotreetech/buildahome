@@ -361,14 +361,13 @@ def expenses():
 
                             bills_query = 'SELECT SUM(amount), id from wo_bills WHERE trade="'+str(trade)+'" AND contractor_code="'+str(contractor_code)+'" AND project_id='+str(project_id)
                             cur.execute(bills_query)
-                            bres = cur.fetchall()
+                            bres = cur.fetchone()
                             if bres is not None:
-                                for bill in bres:
-                                    if str(bill[0]).strip() != '':
-                                        try:
-                                            data['total_WO_spend'] += int(float(str(bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
-                                        except:
-                                            return 'Error: Amount incorrect for bill with id '+ str(bill[1]) 
+                                if str(bres[0]).strip() != '':
+                                    try:
+                                        data['total_WO_spend'] += int(float(str(bres[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
+                                    except:
+                                        return 'Error: Amount incorrect for bill with id '+ str(bres[1]) 
                         
             nt_query = 'SELECT SUM(total_payable), id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
             cur = mysql.connection.cursor()
