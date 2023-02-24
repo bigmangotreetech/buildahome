@@ -373,9 +373,9 @@ def expenses():
                         nt_query = 'SELECT SUM(total_payable), id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
                         cur = mysql.connection.cursor()
                         cur.execute(nt_query)
-                        res = cur.fetchall()
-                        if res is not None:
-                            for nt_bill in res:
+                        nt_query_res = cur.fetchall()
+                        if nt_query_res is not None:
+                            for nt_bill in nt_query_res:
                                 try:
                                     data['total_WO_NT'] += int(float(str(nt_bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
                                 except:
