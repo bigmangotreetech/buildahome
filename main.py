@@ -375,6 +375,7 @@ def expenses():
                         cur.execute(nt_query)
                         nt_query_res = cur.fetchone()
                         if nt_query_res is not None:
+                            return data['total_WO_spend']
                             return str(int(float(str(nt_query_res[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))))
                             try:
                                 data['total_WO_NT'] += int(float(str(nt_query_res[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
