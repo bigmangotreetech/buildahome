@@ -373,14 +373,12 @@ def expenses():
                         nt_query = 'SELECT SUM(total_payable), id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
                         cur = mysql.connection.cursor()
                         cur.execute(nt_query)
-                        nt_query_res = cur.fetchall()
+                        nt_query_res = cur.fetchone()
                         if nt_query_res is not None:
-                            return str(nt_query_res)
-                            for nt_bill in nt_query_res:
-                                try:
-                                    data['total_WO_NT'] += int(float(str(nt_bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
-                                except:
-                                    return 'Error: Amount incorrect for nt bill with id '+ str(nt_bill[1]) 
+                            try:
+                                data['total_WO_NT'] += int(float(str(nt_query_res[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
+                            except:
+                                return 'Error: Amount incorrect for nt bill with id '+ str(nt_query_res[1]) 
                         
             return render_template('expenses.html', data=data, projects=projects)
         
