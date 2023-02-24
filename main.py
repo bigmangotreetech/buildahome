@@ -359,10 +359,10 @@ def expenses():
                         if cresult is not None:
                             contractor_code = cresult[0]
 
-                            bills_query = 'SELECT SUM(amount) from wo_bills WHERE trade="'+str(trade)+'" AND contractor_code="'+str(contractor_code)+'" AND project_id='+str(project_id)
+                            bills_query = 'SELECT SUM(amount), COUNT(amount) from wo_bills WHERE trade="'+str(trade)+'" AND contractor_code="'+str(contractor_code)+'" AND project_id='+str(project_id)
                             cur.execute(bills_query)
                             bres = cur.fetchone()
-                            if bres is not None:
+                            if bres is not None and str(bres[1]) != '0':
                                 if str(bres[0]).strip() != '' and str(bres[0]).strip() != 'NULL':
                                     try:
                                         data['total_WO_spend'] += int(float(str(bres[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
