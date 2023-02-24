@@ -688,7 +688,7 @@ def index():
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
     current_date = current_time.strftime('%A %B %d') 
-    dpr_query = 'SELECT COUNT(update_id) FROM `App_updates` WHERE date = "'+current_date+'"'
+    dpr_query = 'SELECT COUNT(update_id) FROM `App_updates` WHERE MONTH(updated_at) = MONTH(CURDATE())  date = "'+current_date+'"'
     cur.execute(dpr_query)
     res = cur.fetchone()
     dpr_count = 0
