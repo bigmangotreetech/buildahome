@@ -321,14 +321,12 @@ def expenses():
                 for entry in res:
                     if str(entry[0]).strip() != '':
                         try:  
-                            data['total_material_spend'] += float(str(entry[0]).strip())
-                            data['total_material_spend'] = int(data['total_material_spend'])
+                            data['total_material_spend'] += int(float(str(entry[0]).strip()))
                         except:
                             return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect amount'
                     if str(entry[1]).strip() != '':
                         try:  
-                            data['total_material_difference_cost'] += float(str(entry[1]).strip())
-                            data['total_material_difference_cost'] = int(data['total_material_difference_cost'])
+                            data['total_material_difference_cost'] += int(float(str(entry[1]).strip()))
                         except:
                             return 'Error: Material Entry with id '+ str(entry[2]) + ' has incorrect difference cost'
                     
@@ -346,8 +344,7 @@ def expenses():
                 for wo in res:
                     if str(wo[2]).strip() != '':
                         try:
-                            data['total_WO_value'] += float(str(wo[2]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
-                            data['total_WO_value'] = int(data['total_WO_value'])
+                            data['total_WO_value'] += int(float(str(wo[2]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
                         except:
                             return 'Error: Value incorrect for work order with id '+ str(wo[0]) +' and number '+ str(wo[1])
                     work_order_id = wo[0]
@@ -369,8 +366,7 @@ def expenses():
                                 for bill in bres:
                                     if str(bill[0]).strip() != '':
                                         try:
-                                            data['total_WO_spend'] += float(str(bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
-                                            data['total_WO_spend'] = int(data['total_WO_spend'])
+                                            data['total_WO_spend'] += int(float(str(bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
                                         except:
                                             return 'Error: Amount incorrect for bill with id '+ str(bill[1]) 
                         
@@ -381,8 +377,7 @@ def expenses():
                         if res is not None:
                             for nt_bill in res:
                                 try:
-                                    data['total_WO_NT'] += float(str(nt_bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
-                                    data['total_WO_NT'] = int(data['total_WO_NT'])
+                                    data['total_WO_NT'] += int(float(str(nt_bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
                                 except:
                                     return 'Error: Amount incorrect for nt bill with id '+ str(nt_bill[1]) 
                         
