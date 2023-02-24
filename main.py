@@ -380,11 +380,11 @@ def expenses():
                         res = cur.fetchall()
                         if res is not None:
                             for nt_bill in res:
-                                # try:
+                                try:
                                     data['total_WO_NT'] += float(str(nt_bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
-                                    data['total_WO_NT'] = int(nt_bill['total_WO_NT'])
-                                # except:
-                                #     return 'Error: Amount incorrect for nt bill with id '+ str(nt_bill[1]) 
+                                    data['total_WO_NT'] = int(data['total_WO_NT'])
+                                except:
+                                    return 'Error: Amount incorrect for nt bill with id '+ str(nt_bill[1]) 
                         
             return render_template('expenses.html', data=data, projects=projects)
         
