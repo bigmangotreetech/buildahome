@@ -379,7 +379,7 @@ def expenses():
                                 data['total_WO_NT'] += int(float(str(nt_query_res[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
                             except:
                                 return 'Error: Amount incorrect for nt bill with id '+ str(nt_query_res[1]) 
-            return work_order_ids
+            return str(work_order_ids)
             return render_template('expenses.html', data=data, projects=projects)
         
         return render_template('expenses.html', projects=projects)
