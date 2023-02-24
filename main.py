@@ -370,16 +370,17 @@ def expenses():
                                         except:
                                             return 'Error: Amount incorrect for bill with id '+ str(bill[1]) 
                         
-                        nt_query = 'SELECT SUM(total_payable), id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
-                        cur = mysql.connection.cursor()
-                        cur.execute(nt_query)
-                        nt_query_res = cur.fetchone()
-                        if nt_query_res is not None:
-                            try:
-                                data['total_WO_NT'] += int(float(str(nt_query_res[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
-                            except:
-                                return 'Error: Amount incorrect for nt bill with id '+ str(nt_query_res[1]) 
-            return str(work_order_ids)
+            nt_query = 'SELECT SUM(total_payable), id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+            cur = mysql.connection.cursor()
+            cur.execute(nt_query)
+            nt_query_res = cur.fetchone()
+            if nt_query_res is not None:
+                try:
+                    data['total_WO_NT'] += int(float(str(nt_query_res[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
+                except:
+                    return 'Error: Amount incorrect for nt bill with id '+ str(nt_query_res[1]) 
+
+
             return render_template('expenses.html', data=data, projects=projects)
         
         return render_template('expenses.html', projects=projects)
