@@ -334,6 +334,7 @@ def expenses():
                     
             data['total_WO_spend'] = 0
             data['total_WO_value'] = 0
+            data['total_WO_NT'] = 0
 
             work_order_value_query = 'SELECT id, wo_number, value, contractor_id, trade from work_orders WHERE project_id='+ str(project_id)
             cur.execute(work_order_value_query)
@@ -372,6 +373,18 @@ def expenses():
                                             data['total_WO_spend'] = int(data['total_WO_spend'])
                                         except:
                                             return 'Error: Amount incorrect for bill with id '+ str(bill[1]) 
+                        
+                        nt_query = 'SELECT SUM(total_payable), id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+                        cur = mysql.connection.cursor()
+                        cur.execute(nt_query)
+                        res = cur.fetchone()
+                        if res is not None:
+                            for nt_bill in res:
+                                try:
+                                    data['total_WO_NT'] += float(str(nt_bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
+                                    data['total_WO_NT'] = int(nt_bill['total_WO_NT'])
+                                except:
+                                    return 'Error: Amount incorrect for bill with id '+ str(nt_bill[1]) 
                         
             return render_template('expenses.html', data=data, projects=projects)
         
