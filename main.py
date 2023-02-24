@@ -363,7 +363,7 @@ def expenses():
                             cur.execute(bills_query)
                             bres = cur.fetchone()
                             if bres is not None:
-                                if str(bres[0]).strip() != '':
+                                if str(bres[0]).strip() != '' and str(bres[0]).strip() != 'NULL':
                                     try:
                                         data['total_WO_spend'] += int(float(str(bres[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
                                     except:
