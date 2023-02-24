@@ -335,9 +335,12 @@ def expenses():
             data['total_WO_spend'] = 0
             data['total_WO_value'] = 0
 
-            work_order_value_query = 'SELECT id, wo_number, value from work_orders WHERE project_id='+ str(project_id)
+            work_order_value_query = 'SELECT id, wo_number, value, contractor_id, trade from work_orders WHERE project_id='+ str(project_id)
             cur.execute(work_order_value_query)
             res = cur.fetchall()
+
+            work_order_ids = []
+
             if res is not None:
                 for wo in res:
                     if str(wo[2]).strip() != '':
@@ -346,7 +349,29 @@ def expenses():
                             data['total_WO_value'] = int(data['total_WO_value'])
                         except:
                             return 'Error: Value incorrect for work order with id '+ str(wo[0]) +' and number '+ str(wo[1])
-            
+                    work_order_id = wo[0]
+                    if work_order_id not in work_order_ids:
+                        work_order_ids.append(work_order_id)
+
+                        contractor_id = wo[3]
+                        trade = wo[4]
+                        contractor_query = 'SELECT code from contractors WHERE id='+str(contractor_id)
+                        cur.execute(contractor_query)
+                        cresult = cur.fetchone()
+                        if cresult is not None:
+                            contractor_code = cresult[0]
+
+                            bills_query = 'SELECT SUM(amount), id from wo_bills WHERE trade="'+str(trade)+'" AND contractor_code="'+str(contractor_code)+'" AND project_id='+str(project_id)
+                            cur.execute(bills_query)
+                            bres = cur.fetchall()
+                            if bres is not None:
+                                for bill in bres:
+                                    if str(bill[0]).strip() != '':
+                                        try:
+                                            data['total_WO_spend'] += float(str(bill[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-',''))
+                                            data['total_WO_spend'] = int(data['total_WO_spend'])
+                                        except:
+                                            return 'Error: Amount incorrect for bill with id '+ str(bill[1]) 
                         
             return render_template('expenses.html', data=data, projects=projects)
         
