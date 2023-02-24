@@ -377,8 +377,6 @@ def expenses():
                         if nt_query_res is not None:
                             try:
                                 data['total_WO_NT'] += int(float(str(nt_query_res[0]).strip().replace(',','').replace('/','').replace('\\','').replace('-','')))
-                                return str(data['total_WO_NT'])
-
                             except:
                                 return 'Error: Amount incorrect for nt bill with id '+ str(nt_query_res[1]) 
                         
