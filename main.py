@@ -444,7 +444,7 @@ def material_report():
                 heading_row_column_no += 1
                 
                 ws.col(heading_row_column_no).width = 5000
-                ws.write(2, heading_row_column_no, material)
+                ws.write(2, heading_row_column_no, material+ " DC")
             
 
             total_amount = item[1]
