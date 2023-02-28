@@ -384,6 +384,61 @@ def expenses():
         
         return render_template('expenses.html', projects=projects)
 
+@app.route('/material_report', methods=['GET'])
+def material_report():
+    cur = mysql.connection.cursor()
+    get_projects_query = 'SELECT project_id, project_number, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
+    cur.execute(get_projects_query)
+    projects = cur.fetchall()
+    
+    materials_column_no = {}
+
+    rb = open_workbook("../static/material_report.xlsx")
+    wb = copy(rb)
+    IST = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(IST)
+    current_time = now.strftime('%d-%m-%Y')
+    current_datetime = now.strftime('%d-%m-%Y %H:%M')
+    ws = wb.add_sheet(' ' + str(current_time))
+    style = xlwt.XFStyle()
+
+    ws.write(1, 0, 'Report as on '+current_datetime)
+    ws.write(2, 0, 'Project Name')
+    ws.write(2, 1, 'Project Number')
+
+    heading_row_column_no = 2
+
+    project_row_number = 3
+
+
+    # font
+    font = xlwt.Font()
+    font.bold = True
+    style.font = font
+
+    for project in projects:
+        project_id = project[0]
+        project_number = project[1]
+        project_name = project[2]
+
+        ws.write(project_row_number, 0, project_name)
+        ws.write(project_row_number, 1, project_number)
+
+
+        material_query = 'SELET material, total_amount, difference_cost FROM procurement WHERE project_id = '+str(project_id)
+        cur.execute(material_query)
+        result = cur.fetchall()
+        for item in result:
+            material = item[0]
+            if material not in materials_column_no.keys():
+                materials_column_no[material] = heading_row_column_no
+                heading_row_column_no += 1
+            
+
+    wb.save('../static/material_report.xlsx')
+
+    return 'Job done!'
+
 
 @app.route('/get_dlr_report', methods=['GET'])
 def get_dlr_report():
