@@ -435,17 +435,17 @@ def material_report():
             material = item[0]
             if material not in materials_column_no.keys():
                 materials_column_no[material] = heading_row_column_no
-                heading_row_column_no += 1
                 
                 ws.col(heading_row_column_no).width = 5000
                 ws.write(2, heading_row_column_no, material)
-
-                materials_column_no[material+ " DC"] = heading_row_column_no
                 heading_row_column_no += 1
+                
+                materials_column_no[material+ " DC"] = heading_row_column_no
                 
                 ws.col(heading_row_column_no).width = 5000
                 ws.write(2, heading_row_column_no, material+ " DC")
-            
+                heading_row_column_no += 1
+                
 
             total_amount = item[1]
             if material not in project_material_cost.keys():
