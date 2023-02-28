@@ -425,6 +425,8 @@ def material_report():
         ws.write(project_row_number, 0, project_name)
         ws.write(project_row_number, 1, project_number)
 
+        project_material_cost = {}
+        project_material_difference_cost = {}
 
         material_query = 'SELECT material, total_amount, difference_cost FROM procurement WHERE project_id='+str(project_id)
         cur.execute(material_query)
@@ -434,8 +436,47 @@ def material_report():
             if material not in materials_column_no.keys():
                 materials_column_no[material] = heading_row_column_no
                 heading_row_column_no += 1
-
+                
+                ws.col(heading_row_column_no).width = 5000
                 ws.write(2, heading_row_column_no, material)
+
+                materials_column_no[material+ " DC"] = heading_row_column_no
+                heading_row_column_no += 1
+                
+                ws.col(heading_row_column_no).width = 5000
+                ws.write(2, heading_row_column_no, material)
+            
+
+            total_amount = item[1]
+            if material not in project_material_cost.keys():
+                try:
+                    project_material_cost[material] = int(float(total_amount)) 
+                except:
+                    print()
+            else:
+                try:
+                    project_material_cost[material] = project_material_cost[material] + int(float(total_amount)) 
+                except:
+                    print()
+            
+
+            difference_cost = item[2]
+            if material not in project_material_difference_cost.keys():
+                try:
+                    project_material_difference_cost[material] = int(float(difference_cost)) 
+                except:
+                    print()
+            else:
+                try:
+                    project_material_difference_cost[material] = project_material_difference_cost[material] + int(float(difference_cost)) 
+                except:
+                    print()
+
+        for material in project_material_cost:
+            ws.write(project_row_number, materials_column_no[material], project_material_cost[material])
+
+        for material in project_material_difference_cost:
+            ws.write(project_row_number, materials_column_no[material], project_material_difference_cost[material])
         
         project_row_number += 1    
 
