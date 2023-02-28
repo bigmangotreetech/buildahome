@@ -476,7 +476,7 @@ def material_report():
             ws.write(project_row_number, materials_column_no[material], project_material_cost[material])
 
         for material in project_material_difference_cost:
-            ws.write(project_row_number, materials_column_no[material], project_material_difference_cost[material])
+            ws.write(project_row_number, materials_column_no[material + ' DC'], project_material_difference_cost[material])
         
         project_row_number += 1    
 
