@@ -410,6 +410,7 @@ def material_report():
 
     project_row_number = 3
 
+    ws.col(0).width = 5000
 
     # font
     font = xlwt.Font()
@@ -433,6 +434,8 @@ def material_report():
             if material not in materials_column_no.keys():
                 materials_column_no[material] = heading_row_column_no
                 heading_row_column_no += 1
+
+                ws.write(2, heading_row_column_no, material)
         
         project_row_number += 1    
 
