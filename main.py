@@ -393,7 +393,7 @@ def material_report():
     
     materials_column_no = {}
 
-    rb = open_workbook("../static/material_report.xlsx")
+    rb = open_workbook("../static/material_report.xls")
     wb = copy(rb)
     IST = pytz.timezone('Asia/Kolkata')
     now = datetime.now(IST)
@@ -435,7 +435,7 @@ def material_report():
                 heading_row_column_no += 1
             
 
-    wb.save('../static/material_report.xlsx')
+    wb.save('../static/material_report.xls')
 
     return 'Job done!'
 
