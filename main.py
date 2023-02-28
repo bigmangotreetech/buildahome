@@ -399,7 +399,7 @@ def material_report():
     now = datetime.now(IST)
     current_time = now.strftime('%d-%m-%Y')
     current_datetime = now.strftime('%d-%m-%Y %H:%M')
-    ws = wb.add_sheet(' ' + str(current_time))
+    ws = wb.add_sheet(' ' + str(current_datetime))
     style = xlwt.XFStyle()
 
     ws.write(1, 0, 'Report as on '+current_datetime)
