@@ -425,7 +425,7 @@ def material_report():
         ws.write(project_row_number, 1, project_number)
 
 
-        material_query = 'SELET material, total_amount, difference_cost FROM procurement WHERE project_id='+str(project_id)
+        material_query = 'SELECT material, total_amount, difference_cost FROM procurement WHERE project_id='+str(project_id)
         cur.execute(material_query)
         result = cur.fetchall()
         for item in result:
