@@ -1217,7 +1217,7 @@ def debit_note():
     else:
         project = request.form['project']
         contractor = request.form['contractor']
-        trade = request.form['trade']
+        trade = request.form['trade'].strip()
         stage = request.form['stage'] + '(Debit note)'
         value = request.form['value']
         note = request.form['note']
