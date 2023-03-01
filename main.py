@@ -2114,7 +2114,7 @@ def create_work_order():
 
         cur = mysql.connection.cursor()
 
-        trade = request.form['trade']
+        trade = request.form['trade'].strip()
 
         check_if_exist_query = 'SELECT id from work_orders WHERE project_id=' + str(project_id) + ' AND trade="' + str(
             trade) + '" AND contractor_id='+str(contractor_id)
