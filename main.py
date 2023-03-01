@@ -2316,7 +2316,7 @@ def update_payment_stages():
 
 @app.route('/get_wo_milestones_and_percentages', methods=['POST'])
 def get_wo_milestones_and_percentages():
-    trade = request.form['trade']
+    trade = request.form['trade'].strip()
     project_id = request.form['project_id']
     contractor_id = request.form['contractor_id']
     
