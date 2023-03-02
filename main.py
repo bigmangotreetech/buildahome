@@ -384,6 +384,17 @@ def expenses():
         
         return render_template('expenses.html', projects=projects)
 
+@app.route('/reports', methods=['GET'])
+def reports():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_vendor'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    return render_template('reports.html')
+
 @app.route('/material_report', methods=['GET'])
 def material_report():
     cur = mysql.connection.cursor()

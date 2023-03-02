@@ -1,6 +1,32 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {   
 
+    $("#generate_material_report").on('click', function(){
+        if($(this).text().trim() == 'Generating') return;
+        $(this).text('Generating')
+        $.ajax({
+            url: '/erp/material_report',
+            type: "GET",
+        
+            success: function (data) {
+                $("#generate_material_report").addClass('d-none')
+            },
+        });
+    })
+
+    $("#generate_trade_report").on('click', function(){
+        if($(this).text().trim() == 'Generating') return;
+        $(this).text('Generating')
+        $.ajax({
+            url: '/erp/trade_report',
+            type: "GET",
+        
+            success: function (data) {
+                $("#generate_trade_report").addClass('d-none')
+            },
+        });
+    })
+
     $('#get_expenses').on('click', function(){
         const project = $("#project").val()
         if(project.length) {
