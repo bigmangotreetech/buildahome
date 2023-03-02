@@ -525,8 +525,6 @@ def trade_report():
         ws.write(project_row_number, 0, project_name)
         ws.write(project_row_number, 1, project_number)
 
-        project_material_cost = {}
-        project_material_difference_cost = {}
 
         trade_query = 'SELECT DISTINCT trade from wo_bills WHERE project_id='+str(project_id)
         cur.execute(trade_query)
@@ -539,7 +537,7 @@ def trade_report():
                     trade_column_no[trade] = heading_row_column_no
                     
                     ws.col(heading_row_column_no).width = 5000
-                    ws.write(2, heading_row_column_no, material)
+                    ws.write(2, heading_row_column_no, trade)
                     heading_row_column_no += 1
 
                 trade_total_query = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project_id)+' AND trade="'+trade+'"'
