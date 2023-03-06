@@ -1243,7 +1243,7 @@ def view_inventory():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_inventory'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','QS Engineer','QS Head','QS Info']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','QS Engineer','QS Head','QS Info','Project Manager','Finance']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     cur = mysql.connection.cursor()
@@ -2769,7 +2769,7 @@ def project_contractor_info():
     project_id = request.args['project_id']
     contractor_name = request.args['name']
     contractor_code = request.args['code']
-    trade = request.args['trade']
+    trade = request.args['trade'].strip()
 
     cur = mysql.connection.cursor()
     data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
@@ -2965,7 +2965,7 @@ def view_work_order():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_work_order'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer','Project Manager','Finance']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':

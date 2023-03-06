@@ -20,6 +20,7 @@ roles = [
             'Site Engineer',
             'Sales Executive',
             'Billing',
+            'Finance',
             'Planning',
             'Purchase Info',
             'Client'

@@ -132,6 +132,13 @@
     </a>
     {% endif %}
 
+    {% if session['role'] in ['Project Manager','Finance'] %}
+    <a href="/erp/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
+        <ion-icon name="server-outline"></ion-icon>
+        <span class="my-auto">View inventory</span>
+    </a>
+    {% endif %}
+
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Billing'] %}
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Indents</div>
@@ -202,6 +209,12 @@
         <ion-icon name="bag-remove-outline"></ion-icon>
         <span class="my-auto">Debit note</span>
     </a>
+    {% endif %}
+
+    {% if session['role'] in ['Project Manager','Finance'] %}
+    <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path or "/project_contractor_info" in request.path %} active {% endif %}'>
+        <ion-icon name="glasses-outline"></ion-icon>
+        <span>View work order</span></a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager'] %}
