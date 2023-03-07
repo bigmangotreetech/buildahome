@@ -37,7 +37,7 @@
                         <select name="trade" id="trade" class="form-control select2" multiple required>
                             <option value=""></option>
                             {% for i in trades %}
-                            <option value="{{i}}">{{i}}</option>
+                            <option value="{{i.strip()}}">{{i.strip()}}</option>
                             {% endfor %}
                         </select>
                     </div>

@@ -2350,6 +2350,9 @@ def update_trades_for_contractor():
             trades = contractor_trades[1:-1].split(',')
         else:
             trades.append(contractor_trades)
+    for i in range(len(trades)):
+        trades[i] = trades[i].strip()
+        
     return jsonify(trades)
 
 
