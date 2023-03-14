@@ -132,14 +132,14 @@
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Project Manager','Finance'] %}
+    {% if session['role'] in ['Project Manager','Finance','Billing'] %}
     <a href="/erp/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
         <ion-icon name="server-outline"></ion-icon>
         <span class="my-auto">View inventory</span>
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Billing'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info'] %}
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Indents</div>
     <a href="/erp/view_qs_approval_indents" class='nav-link clickable {% if "/view_qs_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>
@@ -162,6 +162,13 @@
     <a href="/erp/view_deleted_indents" class='nav-link clickable  {% if "/view_deleted_indents" in request.path %} active {% endif %}'>
         <ion-icon name="trash-outline"></ion-icon>
         <span class="my-auto">Deleted Indents</span>
+    </a>
+    {% endif %}
+
+    {% if session['role'] in ['Billing'] %}
+    <a href="/erp/view_ph_approved_indents" class='nav-link clickable  {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+        <span class="my-auto">Approved POs</span>
     </a>
     {% endif %}
 
@@ -211,7 +218,7 @@
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Project Manager','Finance'] %}
+    {% if session['role'] in ['Project Manager','Finance','Billing'] %}
     <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path or "/project_contractor_info" in request.path %} active {% endif %}'>
         <ion-icon name="glasses-outline"></ion-icon>
         <span>View work order</span></a>

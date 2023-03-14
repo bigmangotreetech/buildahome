@@ -124,7 +124,7 @@ def get_projects():
     cur = mysql.connection.cursor()
     projects = []
     if len(get_projects_for_current_user()) > 0:
-        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning']:
+        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning','Finance']:
             query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number ' \
                     'AND project_id IN ' + str(get_projects_for_current_user())
             cur.execute(query)
@@ -1491,7 +1491,7 @@ def shifting_entry():
 
             addition_query = "INSERT into procurement (material, description, project_id," \
                             "quantity, unit, difference_cost, created_at, created_at_datetime) values (%s, %s,  %s, %s, %s, %s, %s, %s)"
-            values = (material, description+" from "+from_project_name+' on '+timestamp, to_project, quantity, unit, positive_diff, timestamp, created_at_datetime)
+            values = (material, description+" from "+from_project_name+' on '+str(shifting_date), to_project, quantity, unit, positive_diff, timestamp, created_at_datetime)
             cur.execute(addition_query, values)
 
             mysql.connection.commit()
