@@ -2968,7 +2968,7 @@ def view_work_order():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/view_work_order'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer','Project Manager','Finance']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer','Project Manager','Finance','Billing']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
