@@ -125,8 +125,8 @@ def get_projects():
     projects = []
     if len(get_projects_for_current_user()) > 0:
         if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning','Finance']:
-            query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number ' \
-                    'AND project_id IN ' + str(get_projects_for_current_user())
+            query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
+                    'AND project_id IN ' + str(get_projects_for_current_user())+ ' ORDER BY project_number'
             cur.execute(query)
             projects = cur.fetchall()
         else:
