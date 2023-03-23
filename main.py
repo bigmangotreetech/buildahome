@@ -896,7 +896,7 @@ def index():
         current_month = current_month.strftime('%B')
 
 
-    return render_template('index.html',projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
+    return render_template('index.html',current_user_projects = get_projects_for_current_user(), projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():

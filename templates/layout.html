@@ -165,7 +165,7 @@
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Billing'] %}
+    {% if session['role'] in ['Billing','Project Manager'] %}
     <a href="/erp/view_ph_approved_indents" class='nav-link clickable  {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>
         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
         <span class="my-auto">Approved POs</span>
