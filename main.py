@@ -4001,6 +4001,19 @@ def create_project():
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
+        
+        if 'agreement' in request.files:
+            file = request.files['agreement']
+            if file.filename == '':
+                flash('No selected file', 'danger ')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                site_inspection_report_filename = 'agreement' + str(project_id) + '_' + filename
+                output = send_to_s3(file, app.config["S3_BUCKET"], site_inspection_report_filename)
+                if output != 'success':
+                    flash('File upload failed', 'danger')
+                    return redirect(request.referrer)
 
         update_filename_query = 'UPDATE projects set cost_sheet=%s, site_inspection_report=%s WHERE project_id=%s'
         cur.execute(update_filename_query, (cost_sheet_filename, site_inspection_report_filename, str(project_id)))
