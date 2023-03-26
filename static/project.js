@@ -1220,6 +1220,15 @@ function validateForm() {
                     document.getElementById("site_inspection_report_error").setAttribute("class", "d-none");
                 }
                 break;
+            case ("agreement"):
+                    if (x[i].files.length == 0) {
+                        document.getElementById("agreement_error").setAttribute("class", "error");
+                        isValid = false;
+                    }
+                    else {
+                        document.getElementById("agreement_error").setAttribute("class", "d-none");
+                    }
+                    break;
             case ("shr_oht"):
                 if (x[i].value == "") {
                     document.getElementById("shr_oht_error").setAttribute("class", "error");
