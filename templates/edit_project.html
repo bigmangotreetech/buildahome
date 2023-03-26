@@ -357,7 +357,20 @@
                   <a style="word-break: break-all;" target="_blank"
                      href="/erp/files/{{p.agreement}}">{{p.agreement}}</a>
                   <span name="agreement_error" class="d-none" id="agreement_error">Please
-                     Upload Agreement report</span>
+                     Upload Agreement</span>
+               </div>
+            </div>
+            <div class="row mx-0 mb-3 form-group">
+               <div class="col-6">
+                  <label for="area_statement">Area statement</label>
+               </div>
+               <div class="col-6">
+                  <input type="file" name="area_statement" id="area_statement"
+                     accept="application/pdf" />
+                  <a style="word-break: break-all;" target="_blank"
+                     href="/erp/files/{{p.area_statement}}">{{p.area_statement}}</a>
+                  <span name="agreement_error" class="d-none" id="agreement_error">Please
+                     Upload Area statement</span>
                </div>
             </div>
             <input type="hidden" name="project_id" value="{{request.args['project_id']}}" />
