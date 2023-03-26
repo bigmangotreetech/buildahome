@@ -4328,8 +4328,8 @@ def view_project_details():
                 details[fields_name_to_show] = sales_executive_query_result[0]
             else:
                 details[fields_name_to_show] = result[i]
-        return render_template('view_project_details.html', details=details, approved=str(result[-5]),
-                               archived=str(result[-4]))
+        return render_template('view_project_details.html', details=details, approved=str(result[-7]),
+                               archived=str(result[-6]))
 
 
 @app.route('/approve_project', methods=['GET'])
