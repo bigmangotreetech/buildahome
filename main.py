@@ -1093,7 +1093,7 @@ def projects_with_team():
                 project_map['Project Coordinator'] = res[2]
                 project_map['Project Manager'] = res[3]
 
-            users_query = 'SELECT name from App_users WHERE role="Site Engineer" AND access LIKE %"'+str(project[0])+'"%'
+            users_query = 'SELECT name from App_users WHERE role="Site Engineer" AND access LIKE "%'+str(project[0])+'%"'
             cur.execute(users_query)
             res = cur.fetchall()
             site_engineers = []
