@@ -1090,8 +1090,16 @@ def projects_with_team():
             cur.execute(existing_team_query)
             res = cur.fetchone()
             if res is not None:
-                project_map['Project Coordinator'] = res[2]
-                project_map['Project Manager'] = res[3]
+                pc_query = 'SELECT name from App_users WHERE user_id='+str(res[2])
+                cur.execute(pc_query)
+                user = cur.fetchone()
+                if user is not None:
+                    project_map['Project Coordinator'] = user[2]
+                pm_query = 'SELECT name from App_users WHERE user_id='+str(res[3])
+                cur.execute(pm_query)
+                user = cur.fetchone()
+                if user is not None:
+                    project_map['Project Manager'] = user[3]
 
             users_query = 'SELECT name from App_users WHERE role="Site Engineer" AND access LIKE "%'+str(project[0])+'%"'
             cur.execute(users_query)
