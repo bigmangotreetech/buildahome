@@ -1098,7 +1098,7 @@ def projects_with_team():
             res = cur.fetchall()
             site_engineers = []
             for i in res:
-                site_engineers.append(i)
+                site_engineers.append(i[0])
             
             project_map['Site engineers'] = ', '.join(site_engineers)
             team.append(project_map)
