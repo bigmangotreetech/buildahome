@@ -2529,7 +2529,7 @@ def view_nt_due_bills():
                       'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                       'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
                       ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
-                      '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL) AND nt_due != 1'
+                      '(wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) AND nt_due = 1'
     
     data = get_bills_as_json(bills_query)
     first_bill_id = 0
