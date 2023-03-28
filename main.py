@@ -2324,8 +2324,8 @@ def create_bill():
             cur.execute(contractor_query)
             res = cur.fetchone()
 
-            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at, quantity, rate) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s,%s ,%s)'
-            values = (project_id, trade, description,'', nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1], res[2], timestamp, quantity, rate)
+            insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at, quantity, rate, nt_due) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s,%s ,%s,%s)'
+            values = (project_id, trade, description,'', nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1], res[2], timestamp, quantity, rate,'1')
             cur.execute(insert_query, values)
             mysql.connection.commit()
             flash('Bill created successfully', 'success')
@@ -2516,6 +2516,30 @@ def get_bills_as_json(bills_query):
     return data
 
 
+@app.route('/view_nt_due_bills', methods=['GET'])
+def view_nt_due_bills():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_bills'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager']:
+        flash('You do not have permission to view that page', 'danger')
+    bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
+                      'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
+                      'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
+                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
+                      ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
+                      '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL) AND nt_due != 1'
+    
+    data = get_bills_as_json(bills_query)
+    first_bill_id = 0
+    for project in data:
+        for i in data[project]['bills']:
+            first_bill_id = i['bill_id']
+            break
+        break
+    return render_template('view_nt_due_bills.html', data=data, first_bill_id=first_bill_id)
+
 @app.route('/view_bills', methods=['GET'])
 def view_bills():
     if 'email' not in session:
@@ -2553,7 +2577,7 @@ def view_bills():
             bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
                         'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
                         'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
-                        ' FROM wo_bills WHERE project_id='+ str(p[0]) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL)'
+                        ' FROM wo_bills WHERE project_id='+ str(p[0]) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL) AND nt_due != 1'
             cur.execute(bills_query)
             res = cur.fetchall()
             bills = []

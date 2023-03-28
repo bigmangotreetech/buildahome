@@ -239,6 +239,9 @@
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager'] %}
+    <a href="/erp/view_nt_due_bills" class='nav-link {% if "/view_nt_due_bills" in request.path %} active {% endif %}'>
+        <ion-icon name="ellipse-outline"></ion-icon>
+        <span class="my-auto">Unapproved NT bills</span></a>
     <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>
         <ion-icon name="ellipse-outline"></ion-icon>
         <span class="my-auto">Unapproved bills</span></a>
