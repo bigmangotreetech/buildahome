@@ -83,6 +83,11 @@
         <span class="my-auto">Projects</span>
     </a>
 
+    <a href="/erp/projects_with_team" class='nav-link clickable  {% if "/projects_with_team" in request.path and "/projects_with_team" not in request.path %} active {% endif %}'>
+        <ion-icon name="checkbox-outline"></ion-icon>
+        <span class="my-auto">Projects with team</span>
+    </a>
+
     {% if session['role'] in ['Super Admin','COO','Billing'] %}
     <div class="nav-section-header ">Users</div>
     <a href="/erp/create_user" class='nav-link clickable {% if "/create_user" in request.path%} active {% endif %}'>

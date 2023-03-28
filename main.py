@@ -1072,6 +1072,39 @@ def delete_note():
         flash('Note deleted', 'danger')
         return redirect(request.referrer)
 
+@app.route('/projects_with_team', methods=['GET'])
+def projects_with_team():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/enter_material'
+        return redirect('/erp/login')
+    if request.method == 'GET':
+        query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        projects = cur.fetchall()
+        team = []
+        for project in projects:
+            project_map = {'Project Name': project[1]}
+            existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project_id)
+            cur.execute(existing_team_query)
+            res = cur.fetchone()
+            if res is not None:
+                project_map['Project Coordinator'] = res[2]
+                project_map['Project Manager'] = res[3]
+
+            users_query = 'SELECT name from App_users WHERE role="Site Engineer" AND access LIKE %'+str(project)+'%'
+            cur.execute(users_query)
+            res = cur.fetchall()
+            site_engineers = []
+            for i in res:
+                site_engineers.append(i)
+            
+            project_map['Site engineers'] = site_engineers.join(', ')
+            team.append(project_map)
+
+        return render_template('projects_with_team', team=team)
+
 @app.route('/project_notes', methods=['GET','POST'])
 def project_notes():
     if 'email' not in session:
