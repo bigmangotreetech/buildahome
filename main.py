@@ -2380,7 +2380,7 @@ def create_bill():
         contractor_code = request.form['contractor_code']
         contractor_pan = request.form['contractor_pan']
 
-        contractor_query = 'SELECT id from contractors WHERE code='+request.form['contractor_code']
+        contractor_query = 'SELECT id from contractors WHERE code="'+request.form['contractor_code']+'"'
         cur.execute(contractor_query)
         contractor_query_res = cur.fetchone()
 
