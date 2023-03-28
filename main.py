@@ -2540,6 +2540,45 @@ def view_nt_due_bills():
         break
     return render_template('view_nt_due_bills.html', data=data, first_bill_id=first_bill_id)
 
+@app.route('/approve_nt_bill', methods=['GET'])
+def approve_nt_bill():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_bills'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    bill_id = request.args['bill_id']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE wo_bills SET nt_due = 0 WHERE id='+str(bill_id)
+    cur.execute(query)
+    make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' approved nt bill with id ' + str(request.args['bill_id']))
+    mysql.connection.commit()
+    flash('Bill approved','success')
+
+    return redirect(request.referrer)
+
+@app.route('/reject_nt_bill', methods=['GET'])
+def reject_nt_bill():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/view_bills'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    bill_id = request.args['bill_id']
+    cur = mysql.connection.cursor()
+    query = 'UPDATE wo_bills SET nt_due = -1 WHERE id='+str(bill_id)
+    cur.execute(query)
+    make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' rejected nt bill with id ' + str(request.args['bill_id']))
+    mysql.connection.commit()
+    flash('Bill rejected','danger')
+
+    return redirect(request.referrer)
+
+
 @app.route('/view_bills', methods=['GET'])
 def view_bills():
     if 'email' not in session:
