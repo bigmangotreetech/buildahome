@@ -69,6 +69,14 @@
                         Delete
                     </a>
                 </td>
+                <td class="">
+                    {% if i[8]|string == '1'%}
+                    <a href="/erp/unlock_wo?id={{i[0]}}" onclick="return confirm('Are you sure you want to unlock this work order?')" class="text-success ml-3">Unlock</a>
+                    {% else %}
+                    <a href="/erp/lock_wo?id={{i[0]}}" onclick="return confirm('Are you sure you want to lock this work order?')"  class="text-danger">Lock</a>
+                    {% endif %}
+
+                </td>
                 {% endif %}
             </tr>
 

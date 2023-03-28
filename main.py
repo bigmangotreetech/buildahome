@@ -1195,6 +1195,31 @@ def delete_work_order_note():
 
     return redirect(redirect_url())
 
+@app.route('/lock_wo', methods=['GET'])
+def lock_wo():
+    id = request.args['id']
+    query = 'UPDATE work_order SET locked=1 id='+str(id)
+    make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    mysql.connection.commit()
+    flash('work order locked', 'danger')
+
+    return redirect(redirect_url())
+
+@app.route('/unlock_wo', methods=['GET'])
+def unlock_wo():
+    id = request.args['id']
+    query = 'UPDATE work_order SET locked=0 id='+str(id)
+    make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    mysql.connection.commit()
+    flash('work order unlocked', 'success')
+
+    return redirect(redirect_url())
+
+
 @app.route('/enter_material', methods=['GET', 'POST'])
 def enter_material():
     if 'email' not in session:
@@ -2341,6 +2366,14 @@ def create_bill():
         contractor_code = request.form['contractor_code']
         contractor_pan = request.form['contractor_pan']
 
+        check_if_wo_locked_query = 'SELECT locked FROM work_orders WHERE project_id='+str(project_id)+' AND trade='+str(project_id)+' AND contractor_id='+str(+request.form['contractor'])
+        cur.execute(check_if_wo_locked_query)
+        res = cur.fetchone()
+        if res is not None:
+            if str(res[0]) == '1':
+                flash("Work order locked. Please ask your administrator to unlock the work order. Operation failed", 'danger')
+                return redirect('/erp/create_bill')
+
         double_quotes_escaped_stage = stage.replace('"','""')
         get_debit_note_bill = 'SELECT approval_2_amount from wo_bills WHERE project_id='+str(project_id)+' AND stage LIKE "%' + double_quotes_escaped_stage +'(Debit note)%" AND contractor_code="'+str(contractor_code)+'" AND trade != "NT/NMR"'
         cur.execute(get_debit_note_bill)
@@ -2570,7 +2603,7 @@ def reject_nt_bill():
         return redirect(request.referrer)
     bill_id = request.args['bill_id']
     cur = mysql.connection.cursor()
-    query = 'UPDATE wo_bills SET nt_due = -1 WHERE id='+str(bill_id)
+    query = 'UPDATE wo_bills SET nt_due = "-1" WHERE id='+str(bill_id)
     cur.execute(query)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' rejected nt bill with id ' + str(request.args['bill_id']))
     mysql.connection.commit()
@@ -3058,7 +3091,7 @@ def clear_wo_balance():
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
-    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename from work_orders wo ' \
+    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked from work_orders wo ' \
                    'INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
     cur.execute(get_wo_query)
