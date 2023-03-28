@@ -2380,7 +2380,7 @@ def create_bill():
         contractor_code = request.form['contractor_code']
         contractor_pan = request.form['contractor_pan']
 
-        check_if_wo_locked_query = 'SELECT locked FROM work_orders WHERE project_id='+str(project_id)+' AND trade='+str(project_id)+' AND contractor_id='+str(+request.form['contractor'])
+        check_if_wo_locked_query = 'SELECT locked FROM work_orders WHERE project_id='+str(project_id)+' AND trade='+str(project_id)+' AND contractor_id='+str(request.form['contractor'])
         cur.execute(check_if_wo_locked_query)
         res = cur.fetchone()
         if res is not None:
