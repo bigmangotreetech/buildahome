@@ -1086,14 +1086,14 @@ def projects_with_team():
         team = []
         for project in projects:
             project_map = {'Project Name': project[1]}
-            existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project_id)
+            existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project[0])
             cur.execute(existing_team_query)
             res = cur.fetchone()
             if res is not None:
                 project_map['Project Coordinator'] = res[2]
                 project_map['Project Manager'] = res[3]
 
-            users_query = 'SELECT name from App_users WHERE role="Site Engineer" AND access LIKE %'+str(project)+'%'
+            users_query = 'SELECT name from App_users WHERE role="Site Engineer" AND access LIKE %'+str(project[0])+'%'
             cur.execute(users_query)
             res = cur.fetchall()
             site_engineers = []
