@@ -301,7 +301,7 @@ def expenses():
                     else:
                         if str(task[0]).strip() != '':                     
                             try:
-                                task_value =  data['project_value'] * float(str(task[0]).strip())
+                                task_value =  data['project_value'] * float(str(task[0]).strip()) // 100
                                 if str(task[2]) == '1':
                                     data['total_billed'] += task_value
                                     data['total_billed'] = int(data['total_billed'])
