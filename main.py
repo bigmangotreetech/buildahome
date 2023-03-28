@@ -1197,6 +1197,13 @@ def delete_work_order_note():
 
 @app.route('/lock_wo', methods=['GET'])
 def lock_wo():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/enter_material'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     id = request.args['id']
     query = 'UPDATE work_orders SET locked=1 id='+str(id)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
@@ -1209,6 +1216,13 @@ def lock_wo():
 
 @app.route('/unlock_wo', methods=['GET'])
 def unlock_wo():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/enter_material'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     id = request.args['id']
     query = 'UPDATE work_orders SET locked=0 id='+str(id)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
