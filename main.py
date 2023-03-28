@@ -1198,7 +1198,7 @@ def delete_work_order_note():
 @app.route('/lock_wo', methods=['GET'])
 def lock_wo():
     id = request.args['id']
-    query = 'UPDATE work_order SET locked=1 id='+str(id)
+    query = 'UPDATE work_orders SET locked=1 id='+str(id)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
     cur = mysql.connection.cursor()
     cur.execute(query)
@@ -1210,7 +1210,7 @@ def lock_wo():
 @app.route('/unlock_wo', methods=['GET'])
 def unlock_wo():
     id = request.args['id']
-    query = 'UPDATE work_order SET locked=0 id='+str(id)
+    query = 'UPDATE work_orders SET locked=0 id='+str(id)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
     cur = mysql.connection.cursor()
     cur.execute(query)
