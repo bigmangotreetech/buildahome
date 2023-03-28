@@ -1103,7 +1103,7 @@ def projects_with_team():
             project_map['Site engineers'] = ', '.join(site_engineers)
             team.append(project_map)
 
-        return render_template('projects_with_team', team=team)
+        return render_template('projects_with_team.html', team=team)
 
 @app.route('/project_notes', methods=['GET','POST'])
 def project_notes():
