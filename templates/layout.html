@@ -295,7 +295,7 @@
         <span class="my-auto">Logout</span></a>
 
 
-    {% if session['role'] in ['Super Admin','COO'] %}
+    {% if session['role'] in ['Super Admin','COO', 'Planning'] %}
     <div class="nav-section-header">System</div>
     <a href="/erp/reports" class='nav-link {% if "/reports" in request.path %} active {% endif %}'>
         <ion-icon name="bar-chart-outline"></ion-icon>
