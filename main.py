@@ -885,7 +885,7 @@ def index():
 
         total_material_spend[current_month] = 0
            
-        total_material_previous_month_spend_query = 'SELECT SUM(total_amount) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL '+str(i)+' MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL '+str(i)+' MONTH))'
+        total_material_previous_month_spend_query = 'SELECT SUM(CAST(total_amount AS UNSIGNED)) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL '+str(i)+' MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL '+str(i)+' MONTH))'
         cur.execute(total_material_previous_month_spend_query)
         res = cur.fetchone()
         if res is not None:
