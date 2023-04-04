@@ -5297,6 +5297,7 @@ def API_login():
                     API_response['project_value'] = project_response[2]
                     API_response['completed_percentage'] = project_response[3]
                     API_response['project_location'] = project_response[4]
+                    API_response['location'] = project_response[4]
                 else: 
                     API_response['message'] = 'Mismatch is phone number. Please contact your coordinator to update your phone number'
         else:
@@ -5631,7 +5632,7 @@ def get_POs():
 def get_work_orders():
     if request.method == 'GET':
         if 'project_id' not in request.args:
-            return 'No project'
+            return ()
         else:
             project_id = request.args['project_id']
             work_orders = get_work_orders_for_project(project_id)            
@@ -5641,7 +5642,7 @@ def get_work_orders():
 def get_notes():
     if request.method == 'GET':
         if 'project_id' not in request.args:
-            return 'No project'
+            return ()
         else:
             project_id = request.args['project_id']
             cur = mysql.connection.cursor()
