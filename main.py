@@ -390,7 +390,7 @@ def reports():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/delete_vendor'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO']:
+    if session['role'] not in ['Super Admin', 'COO','Planning']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     return render_template('reports.html')
