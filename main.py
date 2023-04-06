@@ -5499,16 +5499,23 @@ def get_materials():
 @app.route('/API/get_project_block_status', methods=['GET'])
 def get_project_block_status():
     if request.method == 'GET':
-        if 'project_id' not in request.args:
+        try:
+            if 'project_id' not in request.args:
+                return jsonify({'status': 'open'})
+            project_id = request.args['project_id']
+            cur = mysql.connection.cursor()
+            query = 'SELECT blocked, block_reason from projects WHERE project_id='+str(project_id)
+            cur.execute(query)
+            result = cur.fetchone()
+            if result is not None:
+                if str(result[0]) == '1':
+                    return jsonify({'status': 'blocked', 'reason': result[1]})
+
             return jsonify({'status': 'open'})
-        project_id = request.args['project_id']
-        cur = mysql.connection.cursor()
-        query = 'SELECT blocked, block_reason from projects WHERE project_id='+str(project_id)
-        cur.execute(query)
-        result = cur.fetchone()
-        if str(result[0]) == '1':
-            return jsonify({'status': 'blocked', 'reason': result[1]})
-        else:
+        except:
+            f = open('custom_error_log.txt', 'a')
+            f.write('SELECT blocked, block_reason from projects WHERE project_id='+str(project_id))
+            f.close()
             return jsonify({'status': 'open'})
 
 @app.route('/API/nt_nmr', methods=['GET'])
