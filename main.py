@@ -5292,7 +5292,7 @@ def API_login():
                 cur.execute(get_project_for_client_query)
                 project_response = cur.fetchone()
                 if project_response is not None:
-                    API_response['project_id'] = project_response[0]
+                    API_response['project_id'] = str(project_response[0])
                     API_response['project_name'] = project_response[1]
                     API_response['project_value'] = project_response[2]
                     API_response['completed_percentage'] = project_response[3]
