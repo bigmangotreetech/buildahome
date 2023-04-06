@@ -5514,7 +5514,8 @@ def get_project_block_status():
             return jsonify({'status': 'open'})
         except:
             f = open('custom_error_log.txt', 'a')
-            f.write('SELECT blocked, block_reason from projects WHERE project_id='+str(project_id))
+            f.write(str(request.args))
+            f.write('SELECT blocked, block_reason from projects WHERE project_id='+str(project_id)+'/n')
             f.close()
             return jsonify({'status': 'open'})
 
