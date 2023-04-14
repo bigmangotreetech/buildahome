@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class= "col-12">
+        <h4>Document</h4>
+    </div>
+</div>
+<div class="w-100 text-right">
+    <a href="#add-document" class="bg-indigo btn text-white">Add new</a>
+</div>
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Tye</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in documents %}
+        <tr>
+            <td>{{i[0]}}</td>
+            <td>{{i[2]}}</td>
+            <td>{{i[4]}}</td>
+            <td>
+                <a href="/erp/files/{{i[3]}}"></a>
+            </td>
+
+        </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+</div>
+<div id="add-document" class="col-md-6">
+    <form action="/erp/add_document" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
+        <div class="form-group mb-3">
+            <label for="name">Name of document</label>
+            <input type="text" class="form-control" name="name">
+        </div>
+        <div class="form-group mb-3">        
+            <input type="file" class="form-control" name="file">
+        </div>
+        <button class="bg-indigo btn text-white mt-3">Submit</button>
+    </form>
+</div>
+{% endblock %}

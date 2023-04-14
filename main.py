@@ -255,6 +255,48 @@ def set_material_timestamps():
 
     return 'Done'
 
+@app.route('/documents', methods=['GET'])
+def documents():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_vendor'
+        return redirect('/erp/login')
+    project_id = request.args['project_id']
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from project_documents WHERE project_id='+str(project_id)
+    cur.execute(query)
+    res = cur.fetchall()
+
+    return render_template('documents.html', documents=res)
+
+@app.route('/add_document', method=['POST'])
+def add_document():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_vendor'
+        return redirect('/erp/login')
+    
+    project_id = request.form['project_id']
+    name = request.form['name']
+    type = 'custom'
+
+    if 'file' in request.files:
+        file = request.files['file']
+        if file.filename != '' and file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            picture_filename = str(project_id)+'/'+ filename
+            output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
+            if output != 'success':
+                flash('File upload failed', 'danger')
+                return redirect(request.referrer)
+            else:
+                cur = mysql.connection.cursor()
+                query = 'INSERT into project_documents(name, filename, type, project_id) values(%s,%s,%s,%s)'
+                cur.execute(query, (name, filename, type, project_id))
+                mysql.connection.commit()
+                flash('File uploaded', 'success')
+                return redirect(request.referrer)
+
 @app.route('/expenses', methods=['GET', 'POST'])
 def expenses():
     if 'email' not in session:

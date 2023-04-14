@@ -125,6 +125,9 @@
                         <span class="my-auto ml-2">Client billing</span></a> -->
                 {% endif %}
                 <a href="/erp/project_notes?project_id={{project[0]}}" class="d-block mt-1 ml-3 py-2 d-flex comments-btn"><i class="fa fa-comments-o mr-2"></i><span class="my-auto">Comments & notes</span></a>
+                <a href="/erp/documents?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn">
+                    <ion-icon name="document-outline"></ion-icon>
+                    <span class="my-auto ml-2">Documents</span></a>
                 <div class="d-flex w-100 justify-content-between">
                     {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] %}
                     {% if project[3] == 1 %}                
