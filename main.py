@@ -296,6 +296,25 @@ def add_document():
                 mysql.connection.commit()
                 flash('File uploaded', 'success')
                 return redirect(request.referrer)
+            
+@app.route('/delete_project_doc', methods=['GET'])
+def delete_project_doc():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/erp/delete_vendor'
+        return redirect('/erp/login')
+    if session['role'] not in ['Super Admin']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect('/erp/login')
+    
+    id = request.args['id']
+    cur = mysql.connection.cursor()
+    query = 'DELETE from project_documents WHERE id='+str(id)
+    cur.execute(query)
+    mysql.connection.commit()
+    
+    flash('File deleted', 'danger')
+    return redirect(request.referrer)
 
 @app.route('/expenses', methods=['GET', 'POST'])
 def expenses():

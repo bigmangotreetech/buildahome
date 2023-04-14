@@ -16,6 +16,7 @@
             <th scope="col">Name</th>
             <th scope="col">Tye</th>
             <th scope="col"></th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -26,6 +27,11 @@
             <td>{{i[4]}}</td>
             <td>
                 <a href="/erp/files/{{i[3]}}">View</a>
+            </td>
+            <td>
+                {% if session['role'] in ['Super Admin'] %}
+                <a href="/erp/delete_project_doc?id={{i[0]}}" class="text-danger" onclick="return confirm('Are you sure')">Delete</a>
+                {% endif %}
             </td>
 
         </tr>
