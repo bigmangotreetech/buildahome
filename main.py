@@ -269,7 +269,7 @@ def documents():
 
     return render_template('documents.html', documents=res)
 
-@app.route('/add_document', method=['POST'])
+@app.route('/add_document', methods=['POST'])
 def add_document():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
