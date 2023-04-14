@@ -284,7 +284,7 @@ def add_document():
         file = request.files['file']
         if file.filename != '' and file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            picture_filename = str(project_id)+'/'+ filename
+            picture_filename = str(project_id)+'_'+ filename
             output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
             if output != 'success':
                 flash('File upload failed', 'danger')
@@ -292,7 +292,7 @@ def add_document():
             else:
                 cur = mysql.connection.cursor()
                 query = 'INSERT into project_documents(name, filename, type, project_id) values(%s,%s,%s,%s)'
-                cur.execute(query, (name, filename, type, project_id))
+                cur.execute(query, (name, str(project_id)+'_'+ filename, type, project_id))
                 mysql.connection.commit()
                 flash('File uploaded', 'success')
                 return redirect(request.referrer)

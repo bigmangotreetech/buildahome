@@ -25,7 +25,7 @@
             <td>{{i[2]}}</td>
             <td>{{i[4]}}</td>
             <td>
-                <a href="/erp/files/{{request.args['project_id']}}/{{i[3]}}">View</a>
+                <a href="/erp/files/{{i[3]}}">View</a>
             </td>
 
         </tr>
@@ -37,7 +37,7 @@
 
 
 </div>
-<div id="add-document" class="col-md-6 mx-5 border border-secondary rounded">
+<div id="add-document" class="col-md-6 mx-5 bg-light py-3 rounded">
     <form action="/erp/add_document" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
         <div class="form-group mb-3">
@@ -47,7 +47,7 @@
         <div class="form-group mb-3">        
             <input type="file" class="form-control" name="file">
         </div>
-        <button class="bg-indigo btn text-white mt-3 pl-3">Submit</button>
+        <button class="bg-indigo btn text-white mt-3">Submit</button>
     </form>
 </div>
 {% endblock %}
