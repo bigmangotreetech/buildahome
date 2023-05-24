@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, request, session, flash, jsonify, url_for
 from werkzeug.datastructures import FileStorage
 
-from flask_mysqldb import MySQL
 import hashlib
 import boto3, botocore
 import requests, json
@@ -59,7 +58,22 @@ app.config['S3_LOCATION'] = os.environ.get('S3_LOCATION')
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 
-mysql = MySQL(app)
+import mysql.connector
+
+host = '166.62.6.102'  # Replace with the database hostname
+user = 'buildahome'  # Replace with the database username
+password = 'build*2019'  # Replace with the database password
+database = 'buildahome2016'  # Replace with the database name
+
+# Establish the connection
+connection = mysql.connector.connect(
+    host=host,
+    user=user,
+    password=password,
+    database=database
+)
+cursor = connection.cursor()
+
 
 s3 = boto3.client(
     "s3",
@@ -76,7 +90,7 @@ def redirect_url(default='index'):
            url_for(default)
 
 def getProjectName(project_id):
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'SELECT project_name from projects WHERE project_id='+str(project_id)
     cur.execute(query)
     result = cur.fetchone()
@@ -87,13 +101,13 @@ def getProjectName(project_id):
 
 
 def make_entry_in_audit_log(activity):
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'INSERT into erp_audit_log(activity, time) values (%s, %s)'
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
     timestamp = current_time.strftime('%d-%m-%Y %H:%M:%S')
     cur.execute(query, (activity, timestamp))
-    mysql.connection.commit()    
+    connection.commit()    
 
 
 def send_to_s3(file, bucket_name, filename, acl="public-read", content_type=''):
@@ -121,7 +135,7 @@ def allowed_file(filename):
 
 
 def get_projects():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     projects = []
     if len(get_projects_for_current_user()) > 0:
         if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning','Finance']:
@@ -140,7 +154,7 @@ def get_projects_for_current_user(user_id = '', role = ''):
     if 'user_id' in session:
         user_id = session['user_id']
         role = session['role']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
     if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','QS Info','Finance']:
         return ('All')
     elif role == 'Project Coordinator':
@@ -239,7 +253,7 @@ def get_projects_for_current_user(user_id = '', role = ''):
 
 @app.route('/set_material_timestamps', methods=['GET'])
 def set_material_timestamps():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'SELECT id, created_at from procurement'
     cur.execute(query)
     res = cur.fetchall()
@@ -251,7 +265,7 @@ def set_material_timestamps():
             update_query = 'UPDATE procurement SET created_at_datetime="'+time+'" WHERE id='+str(i[0])
             cur.execute(update_query)
 
-    mysql.connection.commit()
+    connection.commit()
 
     return 'Done'
 
@@ -262,7 +276,7 @@ def documents():
         session['last_route'] = '/erp/delete_vendor'
         return redirect('/erp/login')
     project_id = request.args['project_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'SELECT * from project_documents WHERE project_id='+str(project_id)
     cur.execute(query)
     res = cur.fetchall()
@@ -290,10 +304,10 @@ def add_document():
                 flash('File upload failed', 'danger')
                 return redirect(request.referrer)
             else:
-                cur = mysql.connection.cursor()
+                cur = connection.cursor()
                 query = 'INSERT into project_documents(name, filename, type, project_id) values(%s,%s,%s,%s)'
                 cur.execute(query, (name, str(project_id)+'_'+ filename, type, project_id))
-                mysql.connection.commit()
+                connection.commit()
                 flash('File uploaded', 'success')
                 return redirect(request.referrer)
             
@@ -308,10 +322,10 @@ def delete_project_doc():
         return redirect('/erp/login')
     
     id = request.args['id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'DELETE from project_documents WHERE id='+str(id)
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
     
     flash('File deleted', 'danger')
     return redirect(request.referrer)
@@ -331,7 +345,7 @@ def expenses():
         if 'project_id' in request.args:
             project_id = request.args['project_id']
 
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
 
             project_value_query = 'SELECT project_value from projects WHERE project_id = '+str(project_id)
             cur.execute(project_value_query)
@@ -431,7 +445,7 @@ def expenses():
                                         return 'Error: Amount incorrect for bill with trade "'+str(trade)+'" AND contractor_code "'+str(contractor_code)
                         
             nt_query = 'SELECT SUM(total_payable), id FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute(nt_query)
             nt_query_res = cur.fetchone()
             if nt_query_res is not None:
@@ -458,7 +472,7 @@ def reports():
 
 @app.route('/material_report', methods=['GET'])
 def material_report():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     get_projects_query = 'SELECT project_id, project_number, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
     cur.execute(get_projects_query)
     projects = cur.fetchall()
@@ -558,7 +572,7 @@ def material_report():
 
 @app.route('/trade_report', methods=['GET'])
 def trade_report():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     get_projects_query = 'SELECT project_id, project_number, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
     cur.execute(get_projects_query)
     projects = cur.fetchall()
@@ -629,7 +643,7 @@ def trade_report():
 
 @app.route('/get_dlr_report', methods=['GET'])
 def get_dlr_report():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
     current_date = current_time.strftime('%A %B %d') 
@@ -746,7 +760,7 @@ def get_dlr_report():
 
 @app.route('/delete_old_drawings', methods=['GET'])
 def delete_old_drawings():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     
     f = open('../static/projects_to_delete.txt','r')
     for i in f:
@@ -797,7 +811,7 @@ def migrate():
 
 @app.route('/audit_log', methods=['GET'])
 def audit_log():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'SELECT * from erp_audit_log ORDER BY id DESC'
     cur.execute(query)
     logs = cur.fetchall()
@@ -808,7 +822,7 @@ def audit_log():
 def files(filename):
     if 'work_order_' in filename:
         wo_id = filename.replace('work_order_','').replace('.pdf','')
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'SELECT filename from work_orders WHERE id='+str(wo_id)
         cur.execute(query)
         res = cur.fetchone()
@@ -836,7 +850,7 @@ def upload_migrated_image():
 @app.route('/transfer_image_to_s3', methods=['GET'])
 def transfer_image_to_s3():
     last_file_query = 'SELECT image from Daily_images ORDER BY updated_at DESC LIMIT 1'
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(last_file_query)
     res = cur.fetchone()
     last_file = res[0]
@@ -858,7 +872,7 @@ def index():
     
     projects = get_projects()
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     
     vendors_query = 'SELECT COUNT(id) FROM vendors ORDER by code'
     cur.execute(vendors_query)
@@ -964,7 +978,7 @@ def profile():
     if request.method == 'GET':
         if 'user_id' in session:
             user_id = session['user_id']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             view_user_query = 'SELECT user_id, email, name, role, phone, profile_picture FROM App_users WHERE user_id=' + str(user_id)
             cur.execute(view_user_query)
             result = cur.fetchone()
@@ -990,11 +1004,11 @@ def profile():
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
                 else:
-                    cur = mysql.connection.cursor()
+                    cur = connection.cursor()
                     update_query = 'UPDATE App_users set profile_picture="'+picture_filename+'" WHERE user_id=' + str(
                         user_id)
                     cur.execute(update_query)
-                    mysql.connection.commit()
+                    connection.commit()
 
         if len(password.strip()) > 0:
             old_password = request.form['old_password']
@@ -1008,12 +1022,12 @@ def profile():
                     return redirect(request.referrer)
 
                 old_password = hashlib.sha256(old_password.encode()).hexdigest()
-                cur = mysql.connection.cursor()
+                cur = connection.cursor()
                 query = "SELECT user_id, password FROM App_users WHERE user_id=" + user_id
                 cur.execute(query)
                 result = cur.fetchone()
                 if result is not None and result[1] == old_password:                           
-                    cur = mysql.connection.cursor()
+                    cur = connection.cursor()
                     password = hashlib.sha256(password.encode()).hexdigest()
                     values = (name, phone, email, password)
                     
@@ -1021,19 +1035,19 @@ def profile():
                         user_id)
                     cur.execute(update_query, values)
                     flash('User details and password updated', 'success')
-                    mysql.connection.commit()
+                    connection.commit()
                     return redirect(request.referrer)
                 else: 
                     flash('Incorrect old password. Operation failed', 'danger')
                     return redirect(request.referrer)
                     
         else:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             values = (name, phone, email)
             update_query = 'UPDATE App_users set name=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
             cur.execute(update_query, values)
             flash('Details updated', 'success')
-            mysql.connection.commit()
+            connection.commit()
             return redirect(request.referrer)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -1058,7 +1072,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         password = hashlib.sha256(password.encode()).hexdigest()
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = "SELECT user_id, email, name, role, password, access_level, profile_picture FROM App_users WHERE email='" + username + "'"
         cur.execute(query)
         result = cur.fetchone()
@@ -1126,10 +1140,10 @@ def delete_note():
         res = cur.fetchone()
         if res is not None:
             make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted note :'+ str(res[0]) + ' from project '+ str(res[1]) )
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         delete_note_query = 'DELETE from notes_and_comments WHERE id=' + str(note_id)
         cur.execute(delete_note_query)        
-        mysql.connection.commit()
+        connection.commit()
         flash('Note deleted', 'danger')
         return redirect(request.referrer)
 
@@ -1141,7 +1155,7 @@ def projects_with_team():
         return redirect('/erp/login')
     if request.method == 'GET':
         query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(query)
         projects = cur.fetchall()
         team = []
@@ -1187,7 +1201,7 @@ def project_notes():
         else:
             projects = get_projects()
             project_id = request.args['project_id']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             get_notes = 'SELECT n.note, n.timestamp, u.name, n.id, n.attachment, n.internal FROM ' \
                             'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
@@ -1206,7 +1220,7 @@ def project_notes():
         if 'internal' in request.form:
             internal = 1
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id, internal) values(%s, %s, %s, %s, %s)'
         cur.execute(query, (note, timestamp, user_id, project_id, str(internal)))
 
@@ -1219,13 +1233,13 @@ def project_notes():
                 flash('Failed', 'danger')
                 return redirect('/erp/project_notes?project_id='+str(project_id))
 
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             query = 'UPDATE notes_and_comments SET attachment="note_'+str(note_id)+'.'+filetype+'" WHERE id='+str(note_id)
             cur.execute(query)
-            mysql.connection.commit()
+            connection.commit()
             
 
-        mysql.connection.commit()
+        connection.commit()
         flash('Note Added', 'success')
         return redirect('/erp/project_notes?project_id='+str(project_id))
 
@@ -1234,14 +1248,14 @@ def add_work_order_note():
     work_order_id = request.form['work_order_id']
     note = request.form['note']
     query = 'INSERT into work_order_notes (work_order_id, note, posted_by, posted_at, posted_by_email) values(%s,%s,%s,%s,%s)'
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     IST = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(IST)
     timestamp = current_time.strftime('%d-%m-%Y at %H:%M')
     values = (work_order_id, note, session['name'], timestamp, session['email'])
     cur.execute(query, values)
     flash('Note added!', 'success')
-    mysql.connection.commit()
+    connection.commit()
 
     return redirect(redirect_url())
 
@@ -1249,9 +1263,9 @@ def add_work_order_note():
 def delete_work_order_note():
     id = request.args['id']
     query = 'DELETE FROM work_order_notes WHERE id='+str(id)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
     flash('Note deleted', 'danger')
 
     return redirect(redirect_url())
@@ -1268,9 +1282,9 @@ def lock_wo():
     id = request.args['id']
     query = 'UPDATE work_orders SET locked=1 WHERE id='+str(id)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
     flash('work order locked', 'danger')
 
     return redirect(redirect_url())
@@ -1287,9 +1301,9 @@ def unlock_wo():
     id = request.args['id']
     query = 'UPDATE work_orders SET locked=0 WHERE id='+str(id)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' locked work order with id' + str(id))
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
     flash('work order unlocked', 'success')
 
     return redirect(redirect_url())
@@ -1338,7 +1352,7 @@ def enter_material():
         loading_unloading = request.form['loading_unloading']
 
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         vendor_query = 'SELECT name from vendors WHERE id='+str(vendor)
         cur.execute(vendor_query)
@@ -1373,7 +1387,7 @@ def enter_material():
         values = (material, description, vendor, project, po_no, invoice_no, invoice_date, quantity, unit, rate, gst,
                   total_amount, difference_cost, photo_date, transportation, loading_unloading, timestamp, created_at_datetime)
         cur.execute(query, values)
-        mysql.connection.commit()
+        connection.commit()
         flash('Material was inserted successfully', 'success')
         return redirect('/erp/enter_material')
 
@@ -1387,7 +1401,7 @@ def view_inventory():
     if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','QS Engineer','QS Head','QS Info','Project Manager','Finance']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     projects = get_projects()
     procurements = None
     project = None
@@ -1430,7 +1444,7 @@ def debit_note():
     if request.method == 'GET':
         projects = get_projects()
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         contractors_query = 'SELECT id, name, trade FROM contractors'
         cur.execute(contractors_query)
         contractors = cur.fetchall()
@@ -1448,7 +1462,7 @@ def debit_note():
         current_time = datetime.now(IST)
         timestamp = current_time.strftime('%d %m %Y at %H %M')
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         contractor_query = 'SELECT name, code, pan from contractors WHERE id='+str(contractor)
         cur.execute(contractor_query)
         res = cur.fetchone()
@@ -1464,7 +1478,7 @@ def debit_note():
         bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on, approval_2_notes, amount) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         values = (project, res[0], res[1], res[2], trade, stage, str(value).strip(), timestamp, note.replace('"','""').replace("'","''"),str(value).strip())
         cur.execute(bill_query, values)
-        mysql.connection.commit()
+        connection.commit()
         flash('Debit note created successfully', 'success')
         return redirect(request.referrer)
 
@@ -1481,7 +1495,7 @@ def edit_procurement():
         if 'procurement_id' in request.args:
             procurement_id = request.args['procurement_id']
             procurement_query = 'SELECT * from procurement WHERE id=' + str(procurement_id) 
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute(procurement_query)
             result = cur.fetchone()
             return render_template('edit_procurement.html', data=result, materials=materials)
@@ -1508,7 +1522,7 @@ def edit_procurement():
         loading_unloading = request.form['loading_unloading']
 
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
             project) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
@@ -1529,7 +1543,7 @@ def edit_procurement():
     
 
         cur.execute(query, values)
-        mysql.connection.commit()
+        connection.commit()
         flash('Procurement was updated successfully', 'success')
         return redirect('/erp/view_inventory?project_id='+project+'&material=All')
 
@@ -1557,7 +1571,7 @@ def shifting_entry():
             flash('Shifting entry failed. Cannot shift to same project', 'danger')
             return redirect(request.referrer)
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         from_project_name = ''
         from_project_name_query = 'SELECT project_name FROM projects WHERE project_id='+str(from_project)
@@ -1635,7 +1649,7 @@ def shifting_entry():
             values = (material, description+" from "+from_project_name+' on '+str(shifting_date), to_project, quantity, unit, positive_diff, timestamp, created_at_datetime)
             cur.execute(addition_query, values)
 
-            mysql.connection.commit()
+            connection.commit()
             flash('Shifting entry successful. Material Shifted!', 'success')
             return redirect(request.referrer)
 
@@ -1672,7 +1686,7 @@ def create_user():
         if password != c_password:
             flash('Passwords did not match. Operation failed', 'danger')
             return redirect(request.referrer)
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         password = hashlib.sha256(password.encode()).hexdigest()
 
         check_if_user_exists = 'SELECT user_id from App_users WHERE email="' + str(email) + '"'
@@ -1687,7 +1701,7 @@ def create_user():
             values = (name, role, email, phone, password)
             cur.execute(new_user_query, values)
             flash('User created successfully', 'success')
-        mysql.connection.commit()
+        connection.commit()
         return redirect('/erp/view_users')
 
 
@@ -1702,7 +1716,7 @@ def edit_user():
         return redirect(request.referrer)
     if request.method == 'GET':
         user_id = request.args['user_id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         view_user_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE user_id=' + str(user_id)
         cur.execute(view_user_query)
         result = cur.fetchone()
@@ -1725,17 +1739,17 @@ def edit_user():
             if password != c_password:
                 flash('Passwords did not match. Operation failed', 'danger')
                 return redirect(request.referrer)
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             password = hashlib.sha256(password.encode()).hexdigest()
             values = (name, role, phone, email, password)
             update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s, password=%s WHERE user_id=' + str(
                 user_id)
             cur.execute(update_query, values)
             flash('User details and password updated', 'success')
-            mysql.connection.commit()
+            connection.commit()
             return redirect('/erp/view_users')
         else:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             if str(role) == '':
                 values = (name, phone, email)
                 update_query = 'UPDATE App_users set name=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
@@ -1745,7 +1759,7 @@ def edit_user():
                 update_query = 'UPDATE App_users set name=%s, role=%s, phone=%s, email=%s WHERE user_id=' + str(user_id)
                 cur.execute(update_query, values)
             flash('User updated', 'success')
-            mysql.connection.commit()
+            connection.commit()
             return redirect('/erp/view_users')
 
 
@@ -1765,7 +1779,7 @@ def delete_user():
         return redirect(request.referrer)
 
     user_id = request.args['user_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
 
     user_query = 'SELECT email from App_users WHERE user_id=' + str(user_id)
     cur.execute(user_query)
@@ -1774,7 +1788,7 @@ def delete_user():
     
     delete_user_query = 'DELETE from App_users WHERE user_id=' + str(user_id)
     cur.execute(delete_user_query)
-    mysql.connection.commit()
+    connection.commit()
     flash('User deleted', 'danger')
     return redirect('/erp/view_users')
 
@@ -1790,7 +1804,7 @@ def view_users():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     view_users_query = 'SELECT user_id, email, name, role, phone FROM App_users'
     cur.execute(view_users_query)
     result = cur.fetchall()
@@ -1802,7 +1816,7 @@ def add_trade():
     if session['role'] not in ['Super Admin']:
         return 'You do not have permission to view this page'
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         trades_query = 'SELECT DISTINCT trade from labour_stages WHERE stage=""'
         cur.execute(trades_query)
         result = cur.fetchall()
@@ -1811,11 +1825,11 @@ def add_trade():
             trades.append(i[0])
         return render_template('add_trade.html',trades=trades)
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         trade = request.form['trade']
         trades_query = 'INSERT into labour_stages (trade) values ("'+str(trade)+'")'
         cur.execute(trades_query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Trade added!', 'success')
         return redirect('/erp/add_trade')
 
@@ -1828,7 +1842,7 @@ def contractor_registration():
         return redirect('/erp/login')
 
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         trades_query = 'SELECT DISTINCT trade from labour_stages'
         cur.execute(trades_query)
         result = cur.fetchall()
@@ -1858,7 +1872,7 @@ def contractor_registration():
         values = list(request.form.values())
         values[2] = str(request.form.getlist('trade')).replace("'","")
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         check_if_code_exists = 'SELECT id FROM contractors WHERE code="'+request.form['code']+'"'
         cur.execute(check_if_code_exists)
@@ -1882,7 +1896,7 @@ def contractor_registration():
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
-        mysql.connection.commit()
+        connection.commit()
         flash('Contractor registered', 'success')
         return redirect('/erp/view_contractors')
 
@@ -1894,7 +1908,7 @@ def view_contractors():
         session['last_route'] = '/erp/view_contractors'
         return redirect('/erp/login')
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     contractors_query = 'SELECT id, name, code, pan, phone_number, address, trade, aadhar FROM contractors'
     cur.execute(contractors_query)
     result = cur.fetchall()
@@ -1909,7 +1923,7 @@ def edit_contractor():
         return redirect('/erp/login')
     if request.method == 'GET':
         if 'contractor_id' in request.args:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             contractor_query = 'SELECT * from contractors WHERE id=' + request.args['contractor_id']
             cur.execute(contractor_query)
             contractor_details = cur.fetchone()
@@ -1939,7 +1953,7 @@ def edit_contractor():
             return render_template('edit_contractor.html', trades=trades, contractor_details=contractor_details[1:],
                                    contractor_id=request.args['contractor_id'])
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         column_names = list(request.form.keys())
 
@@ -1954,7 +1968,7 @@ def edit_contractor():
         update_vendor_query = 'UPDATE contractors SET ' + update_string + ' WHERE id=' + str(
             request.form['contractor_id'])
         cur.execute(update_vendor_query)
-        mysql.connection.commit()
+        connection.commit()
 
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
@@ -1978,7 +1992,7 @@ def delete_contractor():
         return redirect('/erp/login')
     if request.method == 'GET':
         if 'contractor_id' in request.args:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             contractor_query = 'SELECT name from contractors WHERE id=' + str(request.args['contractor_id'])
             cur.execute(contractor_query)
             res = cur.fetchone()
@@ -1987,7 +2001,7 @@ def delete_contractor():
             contractor_query = 'DELETE from contractors WHERE id=' + request.args['contractor_id']
             cur.execute(contractor_query)
             make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted contractor with id ' + str(request.args['contractor_id']))
-            mysql.connection.commit()
+            connection.commit()
             flash('Contractor deleted', 'danger')
             return redirect('/erp/view_contractors')
 
@@ -2009,7 +2023,7 @@ def vendor_registration():
         values[2] = str(request.form.getlist('location')).replace("'","")
         values[7] = str(request.form.getlist('material_type')).replace("'","")
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         check_query = 'SELECT id from vendors WHERE code="'+request.form['code']+'"'
         cur.execute(check_query)
@@ -2021,7 +2035,7 @@ def vendor_registration():
         new_vendor_query = 'INSERT into vendors' + str(tuple(column_names)).replace("'", "") + 'values ' + str(
             tuple(values))
         cur.execute(new_vendor_query)
-        mysql.connection.commit()
+        connection.commit()
 
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
@@ -2050,7 +2064,7 @@ def view_vendors():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     vendors_query = 'SELECT id, name, code, contact_no FROM vendors ORDER by code'
     cur.execute(vendors_query)
     result = cur.fetchall()
@@ -2070,7 +2084,7 @@ def view_vendor_details():
         return redirect(request.referrer)
     vendor_details = []
     if 'vendor_id' in request.args:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         vendor_query = 'SELECT * from vendors WHERE id=' + request.args['vendor_id']
         cur.execute(vendor_query)
         vendor_details = cur.fetchone()
@@ -2088,14 +2102,14 @@ def edit_vendor():
         return redirect(request.referrer)
     if request.method == 'GET':
         if 'vendor_id' in request.args:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             vendor_query = 'SELECT * from vendors WHERE id=' + request.args['vendor_id']
             cur.execute(vendor_query)
             vendor_details = cur.fetchone()
             return render_template('edit_vendor.html', vendor_details=vendor_details[1:],
                                    vendor_id=request.args['vendor_id'], materials=materials)
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         
 
 
@@ -2115,7 +2129,7 @@ def edit_vendor():
             request.form['vendor_id'])
         
         cur.execute(update_vendor_query)
-        mysql.connection.commit()
+        connection.commit()
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
             if file.filename == '':
@@ -2143,7 +2157,7 @@ def delete_vendor():
         return redirect(request.referrer)
     if request.method == 'GET':
         if 'vendor_id' in request.args:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             vendor_query = 'SELECT name from vendors WHERE id=' + str(request.args['vendor_id'])
             cur.execute(vendor_query)
             res = cur.fetchone()
@@ -2152,13 +2166,13 @@ def delete_vendor():
             vendor_query = 'DELETE from vendors WHERE id=' + request.args['vendor_id']
             cur.execute(vendor_query)
             make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted vendor with id ' + str(request.args['vendor_id']))
-            mysql.connection.commit()
+            connection.commit()
             flash('Vendor deleted', 'danger')
             return redirect('/erp/view_vendors')
 
 
 def get_vendors():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     vendors_query = 'SELECT id, name, code FROM vendors'
     cur.execute(vendors_query)
     result = cur.fetchall()
@@ -2170,7 +2184,7 @@ def get_vendors():
 @app.route('/get_vendors_for_material', methods=['POST'])
 def get_vendors_for_material():
     material_selected = request.form['material_selected']
-    cur = mysql.connection.cursor() 
+    cur = connection.cursor() 
     material_selected = material_selected.replace('"','')
     query = "SELECT id, name from vendors WHERE material_type LIKE '%" + material_selected + "%'"
     cur.execute(query)
@@ -2192,7 +2206,7 @@ def kyp_material():
         material_quantity_data[i] = ''
 
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         projects = get_projects()
 
         project = None
@@ -2211,7 +2225,7 @@ def kyp_material():
         return render_template('kyp_material.html', projects=projects, project_id=project_id, project=project,
                                material_quantity_data=material_quantity_data)
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         project_id = request.form['project_id']
         delete_old_quantity_chart_query = 'DELETE from kyp_material WHERE project_id=' + str(project_id)
         cur.execute(delete_old_quantity_chart_query)
@@ -2223,7 +2237,7 @@ def kyp_material():
                     project_id) + ",'" + str(i) + "','" + str(quantity_of_i) + "')"
 
                 cur.execute(material_quantity_insert_query)
-                mysql.connection.commit()
+                connection.commit()
         flash('Quantity chart updated successfully', 'success')
         return redirect('/erp/kyp_material')
 
@@ -2238,7 +2252,7 @@ def delete_wo():
         flash('You do not have permission delete', 'danger')
         return redirect(request.referrer)
     wo_id = request.args['id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     get_wo = 'SELECT w.trade, p.project_name FROM ' \
                         'work_orders w LEFT OUTER JOIN projects p on p.project_id=w.project_id ' \
                         ' WHERE w.id =' + str(wo_id)
@@ -2251,7 +2265,7 @@ def delete_wo():
     query = 'DELETE FROM work_orders WHERE id='+wo_id
     cur.execute(query)
     
-    mysql.connection.commit()
+    connection.commit()
     flash('Work order has been deleted', 'danger')
     return redirect(request.referrer)
 
@@ -2271,12 +2285,12 @@ def upload_doc():
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
-                cur = mysql.connection.cursor()
+                cur = connection.cursor()
                 query = 'UPDATE work_orders set difference_cost_sheet=%s WHERE id=%s'
                 values = (filename, work_order_id)
                 cur.execute(query, values)
 
-                mysql.connection.commit()
+                connection.commit()
                 flash("Difference cost sheet uploaded", 'success')
                 return redirect(request.referrer)
 
@@ -2290,7 +2304,7 @@ def create_work_order():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         projects = get_projects()
         floors = ['G + 1', 'G + 2', 'G + 3', 'G + 4','G + 5','G + 6']
         trades_query = 'SELECT DISTINCT trade from labour_stages'
@@ -2334,7 +2348,7 @@ def create_work_order():
             flash('Percentages do not add up to 100', 'danger')
             return redirect(request.referrer)
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         trade = request.form['trade'].strip()
 
@@ -2363,7 +2377,7 @@ def create_work_order():
                         if output != 'success':
                             flash('File upload failed', 'danger')
                             return redirect(request.referrer)
-                        cur = mysql.connection.cursor()
+                        cur = connection.cursor()
                         query = 'UPDATE work_orders set difference_cost_sheet=%s WHERE id=%s'
                         values = (filename, work_order_id)
                         cur.execute(query, values)
@@ -2375,7 +2389,7 @@ def create_work_order():
 
 
 
-            mysql.connection.commit()
+            connection.commit()
             flash('Work order created successfully', 'success')
 
             return redirect('/erp/create_work_order')
@@ -2383,7 +2397,7 @@ def create_work_order():
 @app.route('/get_milsetones', methods=['GET', 'POST'])
 def get_milsetones():
     work_order_id = request.form['work_order_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     milestones_query = 'SELECT stage, percentage from wo_milestones WHERE work_order_id='+str(work_order_id)
     cur.execute(milestones_query)
     result = cur.fetchall()
@@ -2401,7 +2415,7 @@ def create_bill():
         return redirect(request.referrer)
     if request.method == 'GET':
         projects = get_projects()
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         contractors_query = 'SELECT id, name FROM contractors'
         cur.execute(contractors_query)
         result = cur.fetchall()
@@ -2412,7 +2426,7 @@ def create_bill():
         IST = pytz.timezone('Asia/Kolkata')
         current_time = datetime.now(IST)
         timestamp = current_time.strftime('%d %m %Y at %H %M')
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         if trade == 'NT/NMR':
             quantity = request.form['quantity']
             rate = request.form['rate']
@@ -2427,7 +2441,7 @@ def create_bill():
             insert_query = 'INSERT into wo_bills (project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, contractor_pan, created_at, quantity, rate, nt_due) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s,%s ,%s,%s)'
             values = (project_id, trade, description,'', nt_nmr_bill_amount, nt_nmr_bill_amount, res[0], res[1], res[2], timestamp, quantity, rate,'1')
             cur.execute(insert_query, values)
-            mysql.connection.commit()
+            connection.commit()
             flash('Bill created successfully', 'success')
             return redirect('/erp/create_bill')
 
@@ -2475,7 +2489,7 @@ def create_bill():
             project_id, trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code,
             contractor_pan, timestamp)
             cur.execute(insert_query, values)
-            mysql.connection.commit()
+            connection.commit()
             flash('Bill created successfully', 'success')
             return redirect('/erp/create_bill')
 
@@ -2484,7 +2498,7 @@ def create_bill():
 def update_trades_for_project():
     project_id = request.form['project_id']
     trades_query = 'SELECT id, trade from work_orders WHERE signed=1 AND approved=1 AND project_id=' + str(project_id)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(trades_query)
     result = cur.fetchall()
     return jsonify(list(result))
@@ -2493,7 +2507,7 @@ def update_trades_for_project():
 def update_trades_for_contractor():
     contractor_id = request.form['contractor_id']
     trades_query = 'SELECT trade from contractors WHERE id=' + str(contractor_id)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(trades_query)
     result = cur.fetchone()
     trades = []
@@ -2513,7 +2527,7 @@ def update_trades_for_contractor():
 def update_payment_stages():
     project_id = request.form['project_id']    
     trade = request.form['trade']    
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     
     old_bills_query = 'SELECT stage FROM wo_bills WHERE project_id=' + str(project_id) + ' AND trade="' + str(
             trade) + '"'
@@ -2557,7 +2571,7 @@ def get_wo_milestones_and_percentages():
     project_id = request.form['project_id']
     contractor_id = request.form['contractor_id']
     
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
 
     get_contractor_query = 'SELECT code from contractors WHERE id='+str(contractor_id)
     cur.execute(get_contractor_query)
@@ -2593,7 +2607,7 @@ def get_standard_milestones_and_percentages():
     if str(project_id).strip() == '':
         return jsonify({'message': 'Project id field empty'})
     get_floors_for_project_query = 'SELECT no_of_floors from projects WHERE project_id=' + project_id
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(get_floors_for_project_query)
     res = cur.fetchone()
     if res is None or len(res) == 0:
@@ -2611,7 +2625,7 @@ def get_standard_milestones_and_percentages():
 
 
 def get_bills_as_json(bills_query):
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(bills_query)
     data = {}
     res = cur.fetchall()
@@ -2662,11 +2676,11 @@ def approve_nt_bill():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     bill_id = request.args['bill_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'UPDATE wo_bills SET nt_due = 0 WHERE id='+str(bill_id)
     cur.execute(query)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' approved nt bill with id ' + str(request.args['bill_id']))
-    mysql.connection.commit()
+    connection.commit()
     flash('Bill approved','success')
 
     return redirect(request.referrer)
@@ -2681,11 +2695,11 @@ def reject_nt_bill():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     bill_id = request.args['bill_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'UPDATE wo_bills SET nt_due = "-1" WHERE id='+str(bill_id)
     cur.execute(query)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' rejected nt bill with id ' + str(request.args['bill_id']))
-    mysql.connection.commit()
+    connection.commit()
     flash('Bill rejected','danger')
 
     return redirect(request.referrer)
@@ -2709,7 +2723,7 @@ def view_bills():
             coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL AND p.project_id IN ' + str(get_projects_for_current_user()) +'  order by pot.co_ordinator'
                   
             
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(coordinators_query)
         coordinators_res = cur.fetchall()
 
@@ -2768,7 +2782,7 @@ def export_bills():
                   '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
 
     data = get_bills_as_json(bills_query)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     archive_bill = 'UPDATE wo_bills SET is_archived=1 WHERE approval_2_amount != 0 AND approval_2_amount IS NOT NULL'
     cur.execute(archive_bill)
     rb = open_workbook("../static/bills.xls")
@@ -2859,7 +2873,7 @@ def export_bills():
             column = column + 1
             row = row + 1
         row = row + 1
-    mysql.connection.commit()
+    connection.commit()
     wb.save('../static/bills.xls')
 
     flash('Bills exported successfully', 'success')
@@ -2877,11 +2891,11 @@ def delete_bill():
         return redirect(request.referrer)
     if request.method == 'GET':
         if 'bill_id' in request.args:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             delete_bill_query = 'DELETE from wo_bills WHERE id=' + request.args['bill_id']
             cur.execute(delete_bill_query)
             make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted bill with id ' + str(request.args['bill_id']))
-            mysql.connection.commit()
+            connection.commit()
             flash('Bill deleted', 'danger')
             return redirect('/erp/view_bills')
 
@@ -2940,7 +2954,7 @@ def view_archived_bills():
 def update_work_order_balance(project_id, trade, difference_amount):
     get_wo_query = 'SELECT id, balance from work_orders WHERE project_id=' + str(
         project_id) + ' AND trade="' + trade + '"'
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(get_wo_query)
     res = cur.fetchone()
     if res is not None:
@@ -2952,7 +2966,7 @@ def update_work_order_balance(project_id, trade, difference_amount):
         updated_balance = balance + float(difference_amount)
         update_wo_query = 'UPDATE work_orders SET balance=' + str(updated_balance) + ' WHERE id=' + str(res[0])
         cur.execute(update_wo_query)
-        mysql.connection.commit()
+        connection.commit()
 
 
 @app.route('/save_approved_bill', methods=['POST'])
@@ -2964,7 +2978,7 @@ def save_approved_bill():
     trade = request.form['trade']
     project_id = request.form['project_id']
     difference_amount = request.form['difference_amount']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     update_bill_query = ''
     if approval_level == 'Level 1':
         update_bill_query = 'UPDATE wo_bills SET approval_1_amount = "' + str(
@@ -2979,7 +2993,7 @@ def save_approved_bill():
     cur.execute(update_bill_query)
     if float(difference_amount) > 0 and approval_level == 'Level 2':
         update_work_order_balance(project_id, trade, difference_amount)
-    mysql.connection.commit()
+    connection.commit()
     return jsonify({"message": "success"})
 
 
@@ -2990,7 +3004,7 @@ def project_contractor_info():
     contractor_code = request.args['code']
     trade = request.args['trade'].strip()
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
 
     get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code="'+contractor_code+'"'
@@ -3046,10 +3060,10 @@ def project_contractor_info():
 @app.route('/clear_nt_nmr_balance', methods=['GET'])
 def clear_nt_nmr_balance():
     bill_id = request.args['bill_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     update_old_bill = 'UPDATE wo_bills SET cleared_balance=1 WHERE id='+str(bill_id)
     cur.execute(update_old_bill)
-    mysql.connection.commit()
+    connection.commit()
     
     bill_query = 'SELECT quantity, rate, approval_2_amount, stage, project_id, contractor_name, contractor_code, contractor_pan, trade from wo_bills WHERE id='+str(bill_id)
     cur.execute(bill_query)
@@ -3068,7 +3082,7 @@ def clear_nt_nmr_balance():
 
         bills_query = 'INSERT into wo_bills (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, total_payable) values (%s,%s, %s,%s,%s,%s,%s)'
         cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, difference))
-        mysql.connection.commit()
+        connection.commit()
 
         flash('Cleared balance','success')
         return redirect(request.referrer)
@@ -3084,7 +3098,7 @@ def check_if_clear_balance_bill_due():
     work_order_id = request.form['work_order_id']
     stage = 'Clearing balance'
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     get_bill = 'SELECT id from wo_bills WHERE project_id=%s AND trade=%s AND contractor_code=%s AND stage="Clearing balance" AND total_payable=%s AND (approval_2_amount = 0 OR approval_2_amount IS NULL)'
     cur.execute(get_bill, (project_id, trade, contractor_code, balance_amnt))
     res = cur.fetchone()
@@ -3097,12 +3111,12 @@ def check_if_clear_balance_bill_due():
 def force_open_clear_balance():
     bill_id = request.form['bill_id']
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
 
     update_old_bill = 'UPDATE wo_bills SET cleared_balance=0 WHERE id='+str(bill_id)
     cur.execute(update_old_bill)
 
-    mysql.connection.commit()
+    connection.commit()
     flash('Bill reversed to clear balance')
     return jsonify({'message': 'success'})
 
@@ -3125,7 +3139,7 @@ def clear_individual_balance():
 
     bill_id = request.form['bill_id']
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
 
     update_old_bill = 'UPDATE wo_bills SET cleared_balance=1 WHERE id='+str(bill_id)
     cur.execute(update_old_bill)
@@ -3143,7 +3157,7 @@ def clear_individual_balance():
         work_order_query = 'UPDATE work_orders SET balance='+str(wo_balance)+' WHERE id=' + work_order_id
         cur.execute(work_order_query)
 
-    mysql.connection.commit()
+    connection.commit()
     return jsonify({'message': 'success'})
 
 @app.route('/clear_wo_balance', methods=['POST'])
@@ -3157,19 +3171,19 @@ def clear_wo_balance():
     work_order_id = request.form['work_order_id']
     stage = 'Clearing balance'
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     bills_query = 'INSERT into wo_bills (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, total_payable) values (%s,%s, %s,%s,%s,%s,%s)'
     cur.execute(bills_query, (project_id, trade, stage, contractor_name, contractor_code, contractor_pan, balance_amnt))
 
     work_order_query = 'UPDATE work_orders SET balance=0 WHERE id=' + work_order_id
     cur.execute(work_order_query)
 
-    mysql.connection.commit()
+    connection.commit()
     return jsonify({'message': 'success'})
 
 
 def get_work_orders_for_project(project_id):
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked from work_orders wo ' \
                    'INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
@@ -3197,7 +3211,7 @@ def view_work_order():
 
             bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
                         ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance, wo_bills.created_at, wo_bills.approved_on FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute(bills_query)
             nt_nmr_bills = cur.fetchall()
 
@@ -3218,7 +3232,7 @@ def view_unsigned_work_order():
 
         unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name, wo.verification_code FROM work_orders wo ' \
                          'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 INNER JOIN contractors c on c.id=wo.contractor_id'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(unsigned_query)
         result = cur.fetchall()
         for i in result:
@@ -3250,7 +3264,7 @@ def view_unapproved_work_order():
 
         unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name FROM work_orders wo ' \
                          'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 INNER JOIN contractors c on c.id=wo.contractor_id'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(unsigned_query)
         result = cur.fetchall()
         for i in result:
@@ -3277,7 +3291,7 @@ def view_unapproved_work_order():
 def update_slab_area():
     project_id = request.form['project_id']
     query = 'SELECT basement_slab_area, gf_slab_area, ff_slab_area, sf_slab_area, tf_slab_area, fof_slab_area, fif_slab_area, tef_slab_area from projects WHERE project_id=' + str(project_id)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(query)
     result = cur.fetchone()
     total_bua_sum = 0
@@ -3291,7 +3305,7 @@ def update_slab_area():
 def check_if_floors_updated():
     project_id = request.form['project_id']
     query = 'SELECT id, floors from work_orders WHERE project_id=' + str(project_id)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(query)
     result = cur.fetchone()
     if result is not None:
@@ -3300,7 +3314,7 @@ def check_if_floors_updated():
 
 @app.route('/view_ph_approval_indents', methods=['GET'])
 def view_ph_approval_indents():
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     indents_query = 'SELECT indents.id, ' \
                     'projects.project_id, ' \
                     'projects.project_name, ' \
@@ -3353,7 +3367,7 @@ def view_qs_approval_indents():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         current_user_role = session['role']
         indents_query = ''
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','QS Info']:
@@ -3427,7 +3441,7 @@ def view_ph_approved_indents():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         current_user_role = session['role']
         indents_query = ''
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Billing']:
@@ -3504,7 +3518,7 @@ def view_approved_indents():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         current_user_role = session['role']
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
@@ -3589,7 +3603,7 @@ def view_deleted_indents():
         return redirect('/erp/login')
 
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         current_user_role = session['role']
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
@@ -3667,7 +3681,7 @@ def view_approved_POs():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         current_user_role = session['role']
         if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
@@ -3743,10 +3757,10 @@ def approve_indent_by_qs():
         return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents set status=%s WHERE id=%s'
         cur.execute(query, ('approved_by_qs',indent_id))
-        mysql.connection.commit()
+        connection.commit()
         flash('Indent approved','success')
         return redirect('/erp/view_qs_approval_indents')    
 
@@ -3757,10 +3771,10 @@ def mark_as_billed():
         session['last_route'] = '/erp/mark_as_billed'
     if request.method == 'GET':
         indent_id = request.args['id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents set billed=1 WHERE id='+str(indent_id)
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Indent marked as billed','success')
         return redirect('/erp/view_ph_approved_indents')
 
@@ -3771,10 +3785,10 @@ def rollback_indent_to_qs():
         session['last_route'] = '/erp/rollback_indent_to_qs'
     if request.method == 'GET':
         indent_id = request.args['id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents set status=%s WHERE id=%s'
         cur.execute(query, ('approved',indent_id))
-        mysql.connection.commit()
+        connection.commit()
         flash('Indent rolled back to qs','success')
         return redirect('/erp/view_qs_approval_indents')
 
@@ -3785,10 +3799,10 @@ def rollback_indent_by_ph():
         session['last_route'] = '/erp/rollback_indent_by_ph'
     if request.method == 'GET':
         indent_id = request.args['id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents set status=%s WHERE id=%s'
         cur.execute(query, ('approved_by_qs',indent_id))
-        mysql.connection.commit()
+        connection.commit()
         flash('Indent rolled back','success')
         return redirect('/erp/view_qs_approval_indents')
 
@@ -3800,11 +3814,11 @@ def approve_indent_by_ph():
         return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         difference_cost = request.args['difference_cost']
         query = 'UPDATE indents set status="approved_by_ph" , difference_cost="'+str(difference_cost)+'" WHERE id='+str(indent_id)
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                                    ', indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
                                    ' AND indents.id=' + str(indent_id)
@@ -3831,7 +3845,7 @@ def view_indent_details():
         return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['indent_id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                         ', App_users.name, indents.timestamp, indents.purchase_order, indents.status, indents.difference_cost, indents.approval_taken, indents.difference_cost_sheet, indents.comments, indents.attachment, indents.po_number FROM indents INNER JOIN projects on indents.id=' + str(
             indent_id) + ' AND indents.project_id=projects.project_id ' \
@@ -3844,10 +3858,10 @@ def view_indent_details():
 def update_indent_comments():
     indent_id = request.form['indent_id']
     comments = request.form['comments']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'UPDATE  indents SET comments=%s WHERE id=%s'
     cur.execute(query, (comments, indent_id))
-    mysql.connection.commit()
+    connection.commit()
     flash('Comment updated', 'success')
     return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
 
@@ -3859,7 +3873,7 @@ def edit_indent():
         return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['indent_id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                         ', App_users.name, indents.timestamp, indents.purchase_order, indents.status FROM indents INNER JOIN projects on indents.id=' + str(
             indent_id) + ' AND indents.project_id=projects.project_id ' \
@@ -3873,11 +3887,11 @@ def edit_indent():
         quantity = request.form['quantity']
         unit = request.form['unit']
         purpose = request.form['purpose']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents SET material=%s, quantity=%s, unit=%s, purpose=%s WHERE id=%s'
         values = (material, quantity, unit, purpose, indent_id)
         cur.execute(query, values)
-        mysql.connection.commit()
+        connection.commit()
         flash('Indent updated','success')
         return redirect('/erp/view_indent_details?indent_id='+str(indent_id))
 
@@ -3890,10 +3904,10 @@ def delete_indent():
         return redirect('/erp/login')
     if request.method == 'GET':
         indent_id = request.args['indent_id'] 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents SET status="deleted" WHERE id='+str(indent_id)
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Indent deleted','danger')
         return redirect('/erp/view_qs_approval_indents')
 
@@ -3907,11 +3921,11 @@ def close_po_with_comments():
         indent_id = request.form['indent_id']
         comments = request.form['comments'].replace('"', '').replace("'", '')
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents set status=%s, comments=%s WHERE id=%s'
         values = ('po_uploaded',comments, indent_id)
         cur.execute(query, values)
-        mysql.connection.commit()
+        connection.commit()
         flash('Indent closed with comment successfully', 'success')
         return redirect('/erp/view_approved_indents')
 
@@ -3929,11 +3943,11 @@ def upload_po_for_indent():
         difference_cost = request.form['difference_cost']
         po_number = request.form['po_number']
         
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE indents set difference_cost=%s, po_number=%s WHERE id=%s'
         values = (difference_cost, po_number, indent_id)
         cur.execute(query, values)
-        mysql.connection.commit()
+        connection.commit()
 
         if 'difference_cost_sheet' in request.files:
             file = request.files['difference_cost_sheet']
@@ -3947,11 +3961,11 @@ def upload_po_for_indent():
                     if output != 'success':
                         flash('File upload failed', 'danger')
                         return redirect(request.referrer)
-                    cur = mysql.connection.cursor()
+                    cur = connection.cursor()
                     query = 'UPDATE indents set difference_cost_sheet=%s WHERE id=%s'
                     values = (str(indent_id) + '_dc_' + filename, indent_id)
                     cur.execute(query, values)
-                    mysql.connection.commit()
+                    connection.commit()
                     flash('Difference cost sheet Uploaded successfully', 'success')
                 
 
@@ -3969,11 +3983,11 @@ def upload_po_for_indent():
                     if output != 'success':
                         flash('File upload failed', 'danger')
                         return redirect(request.referrer)
-                    cur = mysql.connection.cursor()
+                    cur = connection.cursor()
                     query = 'UPDATE indents set status=%s, purchase_order=%s WHERE id=%s'
                     values = ('po_uploaded', str(indent_id) + '_' + filename, indent_id)
                     cur.execute(query, values)
-                    mysql.connection.commit()
+                    connection.commit()
 
                     get_indent_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                                     ', indents.timestamp, indents.created_by_user, indents.acted_by_user FROM indents INNER JOIN projects on indents.project_id=projects.project_id ' \
@@ -4003,7 +4017,7 @@ def sign_wo():
                                ' FROM work_orders wo ' \
                                'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=0 AND wo.id=' + str(
                 request.args['wo_id']) + ' INNER JOIN contractors c on c.id=wo.contractor_id'
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
             if result is None:
@@ -4034,7 +4048,7 @@ def sign_wo():
 def upload_signed_wo():
     # project_name+trade+contractor_name
     wo_id = request.form['wo_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
 
     check_if_signed_query = 'SELECT signed FROM work_orders WHERE id='+ request.form['wo_id']
     cur.execute(check_if_signed_query)
@@ -4056,7 +4070,7 @@ def upload_signed_wo():
 
     query = 'UPDATE work_orders SET signed=1, filename="'+filename+'" WHERE id=' + wo_id
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
 
 
     
@@ -4085,7 +4099,7 @@ def approve_wo():
                 request.args['wo_id']) + ' ' \
                                          'INNER JOIN contractors c on c.id=wo.contractor_id'
 
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute(work_order_query)
             result = cur.fetchone()
 
@@ -4101,10 +4115,10 @@ def approve_wo():
         return render_template('approve_wo.html', wo=result, wo_id=str(request.args['wo_id']), old_work_order_exists_for_same_trade=old_work_order_exists_for_same_trade)
     else:
         wo_id = request.form['wo_id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE work_orders SET approved=1 WHERE id=' + wo_id
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Work order approved!', 'success')
         return redirect('/erp/view_unapproved_work_order')
 
@@ -4119,10 +4133,10 @@ def archive_project():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if 'project_id' in request.args:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE projects set archived=1 WHERE project_id=' + str(request.args['project_id'])
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' archived project ' + request.args['project_name'])
         flash('Project archived', 'warning')
         return redirect(request.referrer)
@@ -4141,10 +4155,10 @@ def unarchive_project():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if 'project_id' in request.args:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE projects set archived=0 WHERE project_id=' + str(request.args['project_id'])
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unarchived project ' + request.args['project_name'])
         flash('Project unarchived', 'success')
         return redirect(request.referrer)
@@ -4163,13 +4177,13 @@ def create_project():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         sales_executives_query = 'SELECT user_id, name from App_users WHERE role="Sales Executive"'
         cur.execute(sales_executives_query)
         result = cur.fetchall()
         return render_template('create_project.html', sales_executives=result)
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         client_name = request.form['client_name']
         client_phone = request.form['client_phone']
@@ -4235,7 +4249,7 @@ def create_project():
         cur.execute(update_filename_query, (cost_sheet_filename, site_inspection_report_filename, str(project_id)))
         flash('Project created successfully', 'success')
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' created project ' + request.form['project_name'] + ' with number ' + request.form['project_number'])
-        mysql.connection.commit()
+        connection.commit()
         return redirect(request.referrer)
 
 @app.route('/edit_task', methods=['POST'])
@@ -4246,11 +4260,11 @@ def edit_task():
     end_date = request.form['end_date']
     percent = request.form['percent']
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'UPDATE Tasks set payment_percentage=%s, task_name=%s, task_start_date=%s, task_finish_date=%s WHERE task_id=%s'
     cur.execute(query, (percent, task_name, start_date, end_date, task_id))
 
-    mysql.connection.commit()
+    connection.commit()
     flash('Task has been edited', 'success')
     return redirect(request.referrer)
 
@@ -4259,7 +4273,7 @@ def mark_task_complete():
     subtask_id = request.args['id']
     task_id = request.args['task_id']
     note = request.args['note']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     
     query = 'SELECT progress, s_note from Tasks WHERE task_id='+str(task_id)
     cur.execute(query)
@@ -4274,7 +4288,7 @@ def mark_task_complete():
     update_query = 'UPDATE Tasks SET progress=%s, s_note=%s WHERE task_id=%s'
     cur.execute(update_query, (progress, s_note, task_id))
 
-    mysql.connection.commit()
+    connection.commit()
 
     flash('Sub task marked as completed', 'success')
     return redirect(request.referrer)
@@ -4284,10 +4298,10 @@ def mark_task_complete():
 def mark_task_due():
     task_id = request.args['id']
     note = request.args['note']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'UPDATE Tasks SET due=true, p_note=%s WHERE task_id=%s'
     cur.execute(query, (note, task_id))
-    mysql.connection.commit()
+    connection.commit()
 
     flash('Task marked as due', 'success')
     return redirect(request.referrer)
@@ -4296,10 +4310,10 @@ def mark_task_due():
 def mark_task_paid():
     task_id = request.args['id']
     note = request.args['note']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'UPDATE Tasks SET paid=true, p_note=%s WHERE task_id=%s'
     cur.execute(query, (note, task_id))
-    mysql.connection.commit()
+    connection.commit()
 
     flash('Task marked as paid', 'success')
     return redirect(request.referrer)
@@ -4307,7 +4321,7 @@ def mark_task_paid():
 @app.route('/client_billing', methods=['GET'])
 def client_billing():
     project_id = request.args['project_id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     project_details_query = 'SELECT project_name from projects WHERE project_id='+str(project_id)
     cur.execute(project_details_query)
     res = cur.fetchone()
@@ -4361,7 +4375,7 @@ def edit_project():
         fields_as_string = ", ".join(project_fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
             request.args['project_id'])
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
         project = projects(*result)
@@ -4381,9 +4395,9 @@ def edit_project():
         update_string = update_string[:-2]
         update_project_query = 'UPDATE projects SET ' + update_string + ' WHERE project_id=' + str(
             request.form['project_id'])
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(update_project_query)
-        mysql.connection.commit()
+        connection.commit()
         cost_sheet_filename = ''
         site_inspection_report_filename = ''
         if 'cost_sheet' in request.files:
@@ -4421,7 +4435,7 @@ def edit_project():
                     cur.execute(update_filename_query,
                                 (area_statement_filename, str(request.form['project_id'])))
 
-        mysql.connection.commit()
+        connection.commit()
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' updated project ' + request.form['project_name'] + ' with number ' + request.form['project_number'])
         flash('Project updated successfully', 'success')
         return redirect('/erp/view_project_details?project_id=' + str(request.form['project_id']))
@@ -4445,7 +4459,7 @@ def unapproved_projects():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         unapproved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=0 AND archived=0 ORDER BY project_number'
         cur.execute(unapproved_projects_query)
         result = cur.fetchall()
@@ -4458,11 +4472,11 @@ def block_project():
         session['last_route'] = '/erp/projects'
         return redirect('/erp/login')
     if request.method == 'POST':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         reason = request.form['reason']
         query = 'UPDATE projects SET blocked=1, block_reason= "'+reason.replace('"','""').replace("'","''")+'" WHERE project_id='+str(request.form['project_id'])
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         project_name = getProjectName(str(request.form['project_id']))
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' blocked project ' + project_name + ' with reason '+ reason)
         return redirect('/erp/projects')
@@ -4474,10 +4488,10 @@ def unblock_project():
         session['last_route'] = '/erp/projects'
         return redirect('/erp/login')
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'UPDATE projects SET blocked=0 WHERE project_id='+str(request.args['project_id'])
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
         project_name = getProjectName(str(request.args['project_id']))
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unblocked project ' + project_name)
         return redirect('/erp/projects')
@@ -4489,7 +4503,7 @@ def approved_projects():
         session['last_route'] = '/erp/projects'
         return redirect('/erp/login')
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         result = []
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning',
@@ -4512,7 +4526,7 @@ def archived_projects():
         session['last_route'] = '/erp/projects'
         return redirect('/erp/login')
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         result = []
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
@@ -4540,7 +4554,7 @@ def view_project_details():
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
             request.args['project_id'])
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(get_details_query)
         result = cur.fetchone()
         details = {}
@@ -4564,9 +4578,9 @@ def view_project_details():
 def approve_project():
     project_id = request.args['project_id']
     approve_project_query = 'UPDATE projects set is_approved="1" WHERE project_id=' + str(project_id)
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(approve_project_query)
-    mysql.connection.commit()
+    connection.commit()
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' approved project ' + request.args['project_name'])
     flash('Project has been approved', 'success')
     return redirect('/erp/view_project_details?project_id=' + str(project_id))
@@ -4576,7 +4590,7 @@ def approve_project():
 def projects_with_no_design_team():
     no_design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
                            'on P.project_id = PDT.project_id WHERE P.is_approved=1 AND P.archived=0 AND PDT.project_id is NULL'
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(no_design_team_query)
     result = cur.fetchall()
     return render_template('projects_with_no_design_team.html', projects=result)
@@ -4586,7 +4600,7 @@ def projects_with_no_design_team():
 def projects_with_design_team():
     design_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_design_team PDT ' \
                         'on P.project_id = PDT.project_id WHERE P.is_approved=1 AND P.archived=0 AND PDT.project_id is NOT NULL'
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(design_team_query)
     result = cur.fetchall()
     return render_template('projects_with_design_team.html', projects=result)
@@ -4596,7 +4610,7 @@ def projects_with_design_team():
 def projects_with_no_operations_team():
     no_ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
                         'on P.project_id = POT.project_id WHERE P.is_approved=1 AND P.archived=0 AND POT.project_id is NULL'
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(no_ops_team_query)
     result = cur.fetchall()
     return render_template('projects_with_no_operations_team.html', projects=result)
@@ -4606,7 +4620,7 @@ def projects_with_no_operations_team():
 def projects_with_operations_team():
     ops_team_query = 'SELECT P.project_id, P.project_name from projects P left join project_operations_team POT ' \
                      'on P.project_id = POT.project_id WHERE P.is_approved=1 AND P.archived=0 AND POT.project_id is NOT NULL'
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(ops_team_query)
     result = cur.fetchall()
     return render_template('projects_with_operations_team.html', projects=result)
@@ -4616,7 +4630,7 @@ def projects_with_operations_team():
 def assign_team():
     if request.method == 'GET':
         design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Senior Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(design_team_query)
         architects = []
         structural_designers = []
@@ -4637,7 +4651,7 @@ def assign_team():
                 senior_architects.append({'id': i[0], 'name': i[1]})
 
         operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
         project_managers = []
@@ -4667,7 +4681,7 @@ def assign_team():
         design_team_columns = column_names[:5] + [column_names[-1]]
         design_team_values = values[:5] + [values[-1]]
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         assign_design_team_query = 'INSERT into project_design_team' + str(tuple(design_team_columns)).replace("'","") + 'values ' + str(tuple(design_team_values))
         cur.execute(assign_design_team_query)
 
@@ -4677,7 +4691,7 @@ def assign_team():
         assign_operations_team_query = 'INSERT into project_operations_team' + str(tuple(operations_team_columns)).replace("'","") + 'values ' + str(tuple(operations_team_values))
         cur.execute(assign_operations_team_query)        
 
-        mysql.connection.commit()
+        connection.commit()
         flash('Team updated successfully', 'success')
         return redirect('/erp/assign_team?project_id='+column_names[-1])
 
@@ -4689,7 +4703,7 @@ def edit_team():
             return redirect('/erp/projects_with_no_design_team')
         project_id = request.args['project_id']
         design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Senior Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(design_team_query)
         architects = []
         structural_designers = []
@@ -4734,7 +4748,7 @@ def edit_team():
 
 
         operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
         project_managers = []
@@ -4768,7 +4782,7 @@ def edit_team():
                                qs_engineers=qs_engineers)
 
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         column_names = list(request.form.keys())
         values = list(request.form.values())
 
@@ -4792,7 +4806,7 @@ def edit_team():
             design_team_columns = column_names[:5] + [column_names[-1]]
             design_team_values = values[:5] + [values[-1]]
 
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             assign_design_team_query = 'INSERT into project_design_team' + str(tuple(design_team_columns)).replace("'","") + 'values ' + str(tuple(design_team_values))
             cur.execute(assign_design_team_query)
 
@@ -4835,7 +4849,7 @@ def edit_team():
                 cur.execute(access_update_query)
 
                 
-        mysql.connection.commit()
+        connection.commit()
         project_name = getProjectName(project_id)
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' updated team for project ' + project_name)
         flash('Team updated successfully', 'success')
@@ -4845,7 +4859,7 @@ def edit_team():
 def assign_design_team():
     if request.method == 'GET':
         design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Senior Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(design_team_query)
         architects = []
         structural_designers = []
@@ -4871,12 +4885,12 @@ def assign_design_team():
         column_names = list(request.form.keys())
         values = list(request.form.values())
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         assign_design_team_query = 'INSERT into project_design_team' + str(tuple(column_names)).replace("'",
                                                                                                         "") + 'values ' + str(
             tuple(values))
         cur.execute(assign_design_team_query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Design team has been assigned successfully', 'success')
         return redirect('/erp/projects_with_design_team')
 
@@ -4889,7 +4903,7 @@ def edit_design_team():
             return redirect('/erp/projects_with_no_design_team')
         project_id = request.args['project_id']
         design_team_query = 'SELECT user_id, name, role from App_users WHERE role="Architect" OR role="Senior Architect" OR role="Structural Designer" OR role="Electrical Designer" OR role="PHE Designer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(design_team_query)
         architects = []
         structural_designers = []
@@ -4925,7 +4939,7 @@ def edit_design_team():
                                phe_designers=phe_designers)
     else:
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         column_names = list(request.form.keys())
 
         update_string = ""
@@ -4938,7 +4952,7 @@ def edit_design_team():
             request.form['project_id'])
 
         cur.execute(update_project_query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Design team has been updated successfully', 'success')
         return redirect('/erp/projects_with_design_team')
 
@@ -4948,7 +4962,7 @@ def assign_operations_team():
     if request.method == 'GET':
 
         operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
         project_managers = []
@@ -4972,12 +4986,12 @@ def assign_operations_team():
         column_names = list(request.form.keys())
         values = list(request.form.values())
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         assign_operations_team_query = 'INSERT into project_operations_team' + str(tuple(column_names)).replace("'",
                                                                                                                 "") + 'values ' + str(
             tuple(values))
         cur.execute(assign_operations_team_query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Operations team has been assigned successfully', 'success')
         return redirect('/erp/projects_with_operations_team')
 
@@ -4990,7 +5004,7 @@ def edit_operations_team():
             return redirect('/erp/projects_with_no_operations_team')
         project_id = request.args['project_id']
         operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
         project_managers = []
@@ -5019,7 +5033,7 @@ def edit_operations_team():
                                project_managers=project_managers, purchase_executives=purchase_executives,
                                qs_engineers=qs_engineers)
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         column_names = list(request.form.keys())
 
         update_string = ""
@@ -5032,7 +5046,7 @@ def edit_operations_team():
             request.form['project_id'])
 
         cur.execute(update_project_query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Opeartions team has been updated successfully', 'success')
         return redirect('/erp/projects_with_operations_team')
 
@@ -5043,7 +5057,7 @@ def revised_drawings():
         projects = get_projects()
         drawings = []
         if 'project_id' in request.args:
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             reviewed_drawings_query = 'SELECT id, type, name, file, revision from revised_drawings WHERE project_id=' + str(
                 request.args['project_id'])
             cur.execute(reviewed_drawings_query)
@@ -5055,7 +5069,7 @@ def revised_drawings():
 def view_drawings_requests():
     if request.method == 'GET':
         projects = get_projects()
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         
         if 'All' not in str(get_projects_for_current_user()):
@@ -5078,11 +5092,11 @@ def view_drawings_requests():
 @app.route('/delete_drawing_request', methods=['GET','POST'])
 def delete_drawing_request():
     request_id = request.args['id']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'DELETE from drawing_requests WHERE id='+str(request_id)
     cur.execute(query)
     make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' deleted drawing request with id ' + str(request_id))
-    mysql.connection.commit()
+    connection.commit()
     flash("Drawing request has been deleted",'danger')
     return redirect('/erp/view_drawings_requests')
 
@@ -5094,7 +5108,7 @@ def upload_revised_drawing():
 
         return render_template('upload_revised_drawing.html', projects=projects, drawing_types=drawing_types)
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         project_id = request.form['project_id']
         type = request.form['drawing_type']
         name = request.form['drawing_name']
@@ -5112,7 +5126,7 @@ def upload_revised_drawing():
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
-            mysql.connection.commit()
+            connection.commit()
             flash('Revised drawing uploaded successfully', 'success')
             return redirect('/erp/revised_drawings')
 
@@ -5131,7 +5145,7 @@ def drawings():
         table_name = get_drwaings_table_name()
     session['category'] = table_name
     drawings_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'" + table_name + "'"
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     cur.execute(drawings_query)
     result = cur.fetchall()
 
@@ -5200,7 +5214,7 @@ def upload_drawing():
                     return redirect(request.referrer)
         
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         table_name = ''
         if 'category' in request.form:
             table_name = request.form['category']
@@ -5243,10 +5257,10 @@ def upload_drawing():
                     'WHERE id='+str(request.form['drawing_request_id'])
             cur.execute(query)
 
-            mysql.connection.commit()
+            connection.commit()
             return redirect('/erp/view_drawings_requests')
 
-        mysql.connection.commit()            
+        connection.commit()            
         return redirect('/erp/drawings')
 
 @app.route('/change_drawing_status', methods=['POST'])
@@ -5256,14 +5270,14 @@ def change_drawing_status():
     action = request.form['action']
     drawing_name = drawing_name.lower().replace(' ', '_')
     
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     table_name = ''
     if 'category' in session:
         table_name = session['category']
     else:
         table_name = get_drwaings_table_name()
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     check_if_drawing_exists_query = 'SELECT id FROM ' + table_name + '  WHERE project_id=' + str(project_id)
     cur.execute(check_if_drawing_exists_query)
     result = cur.fetchone()
@@ -5276,7 +5290,7 @@ def change_drawing_status():
             update_drawing_query = 'UPDATE ' + table_name + ' set ' + drawing_name + '="-1" WHERE id=' + str(
                 result[0])
             cur.execute(update_drawing_query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Drawing marked as in progress!', 'success')
         return redirect('/erp/drawings')
     else:
@@ -5285,7 +5299,7 @@ def change_drawing_status():
             cur.execute(insert_drawing_query, (str(project_id), ''))
         if action == 'not_applicable':    
             cur.execute(insert_drawing_query, (str(project_id), '-1'))
-        mysql.connection.commit()
+        connection.commit()
         flash('Drawing marked as in progress!', 'success')
         return redirect('/erp/drawings')
 
@@ -5297,14 +5311,14 @@ def mark_drawing_in_progress():
     drawing_name = request.form['drawing_name']
     drawing_name = drawing_name.lower().replace(' ', '_')
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     table_name = ''
     if 'category' in session:
         table_name = session['category']
     else:
         table_name = get_drwaings_table_name()
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     check_if_drawing_exists_query = 'SELECT id FROM ' + table_name + '  WHERE project_id=' + str(project_id)
     cur.execute(check_if_drawing_exists_query)
     result = cur.fetchone()
@@ -5312,13 +5326,13 @@ def mark_drawing_in_progress():
         update_drawing_query = 'UPDATE ' + table_name + ' set ' + drawing_name + '="0" WHERE id=' + str(
             result[0])
         cur.execute(update_drawing_query)
-        mysql.connection.commit()
+        connection.commit()
         flash('Drawing marked as in progress!', 'success')
         return redirect('/erp/drawings')
     else:
         insert_drawing_query = 'INSERT into ' + table_name + ' (project_id, ' + drawing_name + ') values (%s, %s)'
         cur.execute(insert_drawing_query, (str(project_id), '0'))
-        mysql.connection.commit()
+        connection.commit()
         flash('Drawing marked as in progress!', 'success')
         return redirect('/erp/drawings')
 
@@ -5337,7 +5351,7 @@ def API_login():
     username = request.form['username']
     password = request.form['password']
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     login_check_query = 'SELECT user_id, role, phone, password FROM App_users WHERE name="'+str(username)+'" or email="'+str(username)+'" LIMIT 1'
     cur.execute(login_check_query)
     login_result = cur.fetchone()
@@ -5357,7 +5371,7 @@ def API_login():
             API_response['api_token'] = str(uuid.uuid4())
             update_api_token_query = 'UPDATE App_users SET api_token="'+API_response['api_token']+'" WHERE user_id="'+str(API_response['user_id'])+'"'
             cur.execute(update_api_token_query)
-            mysql.connection.commit()
+            connection.commit()
             
             if API_response['role'] == 'Client':
                 get_project_for_client_query = 'SELECT project_id, project_name, project_value, completed_percentage, project_location ' \
@@ -5383,7 +5397,7 @@ def API_get_projects_for_user():
     role = request.form['role']
     api_token = request.form['api_token']
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
 
     verify_token_query = 'SELECT user_id from App_users WHERE user_id='+user_id+' AND api_token="'+api_token+'" LIMIT 1'
     cur.execute(verify_token_query)
@@ -5576,7 +5590,7 @@ def get_project_block_status():
             if 'project_id' not in request.args:
                 return jsonify({'status': 'open'})
             project_id = request.args['project_id']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             query = 'SELECT blocked, block_reason from projects WHERE project_id='+str(project_id)
             cur.execute(query)
             result = cur.fetchone()
@@ -5598,7 +5612,7 @@ def api_nt_nmr():
         project_id=request.args['project_id']
         bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
                         ' wo_bills.rate, wo_bills.approval_2_amount FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute(bills_query)
         nt_nmr_bills = cur.fetchall()
 
@@ -5613,7 +5627,7 @@ def api_view_bills():
         contractor_code = request.args['code']
         trade = request.args['trade']
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         data = {'name': '', 'code': '', 'pan': '', 'value': '', 'balance': '', 'trade': '', 'contractor_id': ''}
 
         get_contractor_query = 'SELECT id, name, code, pan from contractors WHERE code="'+contractor_code+'"'
@@ -5655,10 +5669,10 @@ def post_comment():
         current_time = datetime.now(IST)
         timestamp = current_time.strftime('%d %m %Y at %H %M')
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'INSERT into notes_and_comments(note, timestamp, user_id, project_id) values(%s, %s, %s, %s)'
         cur.execute(query, (note, timestamp, user_id, project_id))
-        mysql.connection.commit()
+        connection.commit()
         return jsonify({'message':'success', 'note_id': str(cur.lastrowid) })
 
 @app.route('/API/notes_picture_uplpoad', methods=['GET','POST'])
@@ -5675,10 +5689,10 @@ def notes_picture_uplpoad():
             if output != 'success':
                 return jsonify({'message':'failed'})
 
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             query = 'UPDATE notes_and_comments SET attachment="note_'+str(note_id)+'.'+filetype+'" WHERE id='+str(note_id)
             cur.execute(query)
-            mysql.connection.commit()
+            connection.commit()
             return jsonify({'message':'success'})
 
 @app.route('/API/mark_notifications_as_read', methods=['GET','POST'])
@@ -5688,11 +5702,11 @@ def mark_notifications_as_read():
             return 'No user'
         else:
             user_id = request.args['user_id']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             query = 'UPDATE app_notifications SET unread=0 WHERE user_id='+str(user_id)
 
             cur.execute(query)
-            mysql.connection.commit()
+            connection.commit()
             return 'success'
 
 @app.route('/API/get_POs', methods=['GET','POST'])
@@ -5702,7 +5716,7 @@ def get_POs():
             return 'No project'
         else:
             project_id = request.args['project_id']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             get_POs ='SELECT id, material, quantity, unit, purchase_order FROM indents' \
                             ' WHERE status="approved_by_ph" AND project_id =' + str(project_id)
             cur.execute(get_POs)
@@ -5726,7 +5740,7 @@ def get_notes():
             return ()
         else:
             project_id = request.args['project_id']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             get_notes = 'SELECT n.note, n.timestamp, u.name, n.id , n.attachment FROM ' \
                             'notes_and_comments n LEFT OUTER JOIN projects p on p.project_id=n.project_id ' \
                             ' LEFT OUTER JOIN App_users u on u.user_id=n.user_id' \
@@ -5768,7 +5782,7 @@ def create_indent():
         timestamp = request.form['timestamp']
         user_id = request.form['user_id']
         status = 'unapproved'
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
             project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
@@ -5795,7 +5809,7 @@ def create_indent():
             values = (project_id, material, quantity, unit, purpose, status, user_id, timestamp)
 
         cur.execute(query, values)
-        mysql.connection.commit()
+        connection.commit()
         return jsonify({'message': 'success','indent_id': cur.lastrowid})
 
 @app.route('/API/indent_file_uplpoad', methods=['GET','POST'])
@@ -5812,10 +5826,10 @@ def indent_file_uplpoad():
             if output != 'success':
                 return jsonify({'message':'failed'})
 
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             query = 'UPDATE indents SET attachment="indent_attachment_'+str(indent_id)+'.'+filetype+'" WHERE id='+str(indent_id)
             cur.execute(query)
-            mysql.connection.commit()
+            connection.commit()
             return jsonify({'message':'success'})
 
 @app.route('/API/create_drawing_request', methods=['POST'])
@@ -5828,19 +5842,19 @@ def create_drawing_request():
         timestamp = request.form['timestamp']
         user_id = request.form['user_id']
 
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         query = 'INSERT into drawing_requests(project_id, category, drawing, purpose, created_by_user, timestamp) values (%s, %s, %s, %s, %s, %s)'
         values = (project_id, category, drawing, purpose, user_id, timestamp)
         cur.execute(query, values)
-        mysql.connection.commit()
+        connection.commit()
         return jsonify({'message': 'success'})
 
 def save_notification_to_db(title, body, user_id, role, category, timestamp):
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     notification_query = 'INSERT into app_notifications(title, body, user_id, role, category, timestamp) values (%s, %s, %s, %s, %s, %s)'
     values = (title, body, user_id, role, category, timestamp)
     cur.execute(notification_query, values)
-    mysql.connection.commit()
+    connection.commit()
     return
 
 
@@ -5869,11 +5883,11 @@ def change_indent_status():
     indent_id = request.form['indent_id']
     status = request.form['status']
 
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     query = 'UPDATE indents SET status="' + status + '", acted_by_user=' + str(
         request.form['acted_by_user']) + ' WHERE id=' + str(indent_id)
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
 
     if status == 'approved':
         send_app_notification(
@@ -5906,7 +5920,7 @@ def edit_and_approve_indent():
     user_id = request.form['acted_by_user']
     unit = request.form['unit']
     purpose = request.form['purpose']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
 
     material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
             project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
@@ -5920,7 +5934,7 @@ def edit_and_approve_indent():
     query = 'UPDATE indents SET status=%s, project_id=%s, material=%s, quantity=%s, unit=%s, purpose=%s, acted_by_user=%s WHERE id=%s'
     values = (status, project_id, material, quantity, unit, purpose, user_id, indent_id)
     cur.execute(query, values)
-    mysql.connection.commit()
+    connection.commit()
     send_app_notification(
         'Indent Approved',
         request.form['notification_body'],
@@ -5934,7 +5948,7 @@ def edit_and_approve_indent():
 @app.route('/API/get_my_indents', methods=['GET'])
 def get_my_indents():
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         user_id = request.args['user_id']
         access_query = 'SELECT access, role from App_users WHERE user_id=' + str(user_id)
         cur.execute(access_query)
@@ -6006,7 +6020,7 @@ def get_my_indents():
 @app.route('/API/get_unapproved_indents', methods=['GET'])
 def get_unapproved_indents():
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         user_id = request.args['user_id']
         access_query = 'SELECT access, role from App_users WHERE user_id=' + str(user_id)
         cur.execute(access_query)
@@ -6076,7 +6090,7 @@ def get_unapproved_indents():
 @app.route('/API/get_notifications', methods=['GET'])
 def get_notifications():
     recipient = request.args['recipient']
-    cur = mysql.connection.cursor()
+    cur = connection.cursor()
     notifications_query = 'SELECT title, body, timestamp, unread from app_notifications WHERE user_id=' + str(recipient)
     cur.execute(notifications_query)
     data = []
