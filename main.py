@@ -4408,6 +4408,16 @@ def edit_project():
                     update_filename_query = 'UPDATE projects set site_inspection_report=%s WHERE project_id=%s'
                     cur.execute(update_filename_query,
                                 (site_inspection_report_filename, str(request.form['project_id'])))
+        if 'agreement' in request.files:
+            file = request.files['cost_sheet']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                agreement_filename = 'agreement_' + str(request.form['project_id']) + '_' + filename
+                output = send_to_s3(file, app.config["S3_BUCKET"], agreement_filename)
+                if output == 'success':
+                    update_filename_query = 'UPDATE projects set agreement=%s WHERE project_id=%s'
+                    cur.execute(update_filename_query,
+                                (agreement_filename, str(request.form['project_id'])))
 
         mysql.connection.commit()
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' updated project ' + request.form['project_name'] + ' with number ' + request.form['project_number'])
