@@ -4409,7 +4409,7 @@ def edit_project():
                     cur.execute(update_filename_query,
                                 (site_inspection_report_filename, str(request.form['project_id'])))
         if 'agreement' in request.files:
-            file = request.files['cost_sheet']
+            file = request.files['agreement']
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 agreement_filename = 'agreement_' + str(request.form['project_id']) + '_' + filename
