@@ -4396,6 +4396,17 @@ def edit_project():
                     update_filename_query = 'UPDATE projects set cost_sheet=%s WHERE project_id=%s'
                     cur.execute(update_filename_query,
                                 (cost_sheet_filename, str(request.form['project_id'])))
+        
+        if 'area_statement' in request.files:
+            file = request.files['area_statement']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                cost_sheet_filename = 'area_statement_' + str(request.form['project_id']) + '_' + filename
+                output = send_to_s3(file, app.config["S3_BUCKET"], cost_sheet_filename)
+                if output == 'success':
+                    update_filename_query = 'UPDATE projects set area_statement=%s WHERE project_id=%s'
+                    cur.execute(update_filename_query,
+                                (cost_sheet_filename, str(request.form['project_id'])))
 
         if 'site_inspection_report' in request.files:
             file = request.files['site_inspection_report']
