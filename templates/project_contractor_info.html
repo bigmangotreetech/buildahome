@@ -107,6 +107,7 @@
                 {% endif %}
             </td>
             <td>
+                <span class="d-none">{{i[7]}}</span>
                 {% if '0' in i[6]|string and session['role'] in ['Super Admin','QS Engineer'] %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>

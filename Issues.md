@@ -21,21 +21,27 @@ Check role
 Nallamuthu Issues
 633, 557
 
-MEP head with permissions
-
-Revert bill status options team
-
-Page to upload doc
-
-Clear balance to be there until difference is 0 but with permmission to super admin only
-
-Approve bill permission for project coordinator
-
-Additional document upload for work order
-
 421 check tally on project coordinator, civil
 
-Doc next to view work order
 
 
+Client billing (Malti)
+
+PO upload notification
+Mark date when task is marked complete 
+Check task duplication issue
+Revert task status to incomplete
+
+
+WOrk order (Divya)
+
+Clear balance button disappears when a bill due for approval is deleted
+Additional document upload for work order (Add more than one doc for a work order)
+Approve bill permission for project coordinator
+
+
+DLR DPR Report to have a new column with site engineer name
+New field for project called status with otions on hold, ongoing, handover and show this on dlr report
+Separate dlr dpr text update from pictures for reliability. Show date and time of uplaod
+Show year in dlr dpr, schedule on mobile app
 
