@@ -3015,7 +3015,7 @@ def project_contractor_info():
         data['difference_cost_sheet'] = res[3]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on, b.cleared_balance, b.id' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s AND b.nt_due != "-1"'
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'
     cur.execute(get_bills_query, (contractor_code, project_id, trade, str(data['work_order_id'])))
     bills = []
     res = cur.fetchall()
@@ -3172,7 +3172,7 @@ def clear_wo_balance():
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
     get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked from work_orders wo ' \
-                   'INNER JOIN contractors c on c.id=wo.contractor_id AND wo.project_id=' + str(
+                   'INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
     cur.execute(get_wo_query)
     res = cur.fetchall()
