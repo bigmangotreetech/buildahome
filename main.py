@@ -3172,7 +3172,7 @@ def clear_wo_balance():
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
     get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked from work_orders wo ' \
-                   'INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
+                   'INNER JOIN contractors c on c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
     cur.execute(get_wo_query)
     res = cur.fetchall()
