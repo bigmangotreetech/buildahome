@@ -35,13 +35,16 @@ Revert task status to incomplete
 
 WOrk order (Divya)
 
-Clear balance button disappears when a bill due for approval is deleted
+Clear balance button disappears when a bill due for approval is deleted -- resolved
 Additional document upload for work order (Add more than one doc for a work order)
-Approve bill permission for project coordinator
+Approve bill permission for project coordinator - given
 
 
 DLR DPR Report to have a new column with site engineer name
 New field for project called status with otions on hold, ongoing, handover and show this on dlr report
 Separate dlr dpr text update from pictures for reliability. Show date and time of uplaod
 Show year in dlr dpr, schedule on mobile app
+
+
+MEP head role to be created
 
