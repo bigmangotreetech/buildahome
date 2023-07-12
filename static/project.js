@@ -958,6 +958,13 @@ $(document).ready(function () {
         $('.create_work_order_submit').parents('form').submit()
     })
 
+    $('.force-open-to-clear-balance').each(function(index, element) {
+        if(parseInt($(element).parents('tr').find('.approved_amount').text()) == 0) return;
+        amountDifference = parseInt($(element).parents('tr').find('.billed_amount').text()) - parseInt($(element).parents('tr').find('.approved_amount').text())
+        if(amountDifference > 0) 
+            $(element).removeClass('d-none')            
+    })
+
     if($('.clear-individual-balance').length) {
         $('.clear-individual-balance').each(function(index, element) {
             if(parseInt($(element).parents('tr').find('.approved_amount').text()) == 0) return;
@@ -966,12 +973,7 @@ $(document).ready(function () {
                 $(element).removeClass('d-none')            
         })
 
-        $('.force-open-to-clear-balance').each(function(index, element) {
-            if(parseInt($(element).parents('tr').find('.approved_amount').text()) == 0) return;
-            amountDifference = parseInt($(element).parents('tr').find('.billed_amount').text()) - parseInt($(element).parents('tr').find('.approved_amount').text())
-            if(amountDifference > 0) 
-                $(element).removeClass('d-none')            
-        })
+        
 
         $('.force-open-to-clear-balance').on('click', function(){
             if(confirm('Are you sure you want to open this bill to clear balance?')) {
