@@ -2456,9 +2456,10 @@ def create_bill():
         double_quotes_escaped_stage = stage.replace('"','""')
         get_debit_note_bill = 'SELECT approval_2_amount from wo_bills WHERE project_id='+str(project_id)+' AND stage LIKE "%' + double_quotes_escaped_stage +'(Debit note)%" AND contractor_code="'+str(contractor_code)+'" AND trade != "NT/NMR"'
         cur.execute(get_debit_note_bill)
-        res = cur.fetchone()
+        res = cur.fetchall()
         if res is not None:
-            amount = float(amount) - float(res[0])
+            for debit_note_entry in res:
+                amount = float(amount) - float(debit_note_entry[0])
 
         
         total_payable = float(amount)
@@ -3014,7 +3015,7 @@ def project_contractor_info():
         data['difference_cost_sheet'] = res[3]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on, b.cleared_balance, b.id' \
-                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'
+                        ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s AND b.nt_due != "-1"'
     cur.execute(get_bills_query, (contractor_code, project_id, trade, str(data['work_order_id'])))
     bills = []
     res = cur.fetchall()
@@ -3170,7 +3171,7 @@ def clear_wo_balance():
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
-    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked from work_orders wo ' \
+    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, wo.difference_cost_sheet from work_orders wo ' \
                    'INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
     cur.execute(get_wo_query)

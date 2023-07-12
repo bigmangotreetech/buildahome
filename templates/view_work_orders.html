@@ -33,6 +33,7 @@
                 <th scope="col">Contractor Code</th>
                 <th scope="col">Trade</th>
                 <th scope="col">Value</th>
+                <th scope="col">DOC</th>
                 <th scope="col"></th>
                 {% if session['role'] == 'Super Admin' %}
                 <th scope="col"></th>
@@ -49,6 +50,15 @@
                 <td>{{i[3]}}</td>
                 <td>{{i[4]}}</td>
                 <td>{{i[5]}}</td>
+                <td>
+                    {% if i[9]|string != ''%}
+                    <div class="mb-3">
+                        <b>View difference cost sheet</b>: <a style="word-break: break-all;" target="_blank" href="/erp/files/{{data['difference_cost_sheet']}}">
+                            Open
+                        </a>
+                    </div>
+                    {% endif %}
+                </td>
                 <td>
                     
                     {% if i[7]|string == ''%}
