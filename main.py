@@ -1140,17 +1140,19 @@ def projects_with_team():
         session['last_route'] = '/erp/enter_material'
         return redirect('/erp/login')
     if request.method == 'GET':
-        query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
+        query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number LIMIT 23'
         cur = mysql.connection.cursor()
         cur.execute(query)
         projects = cur.fetchall()
         team = []
         for project in projects:
             project_map = {'Project Name': project[1]}
+            print(project[1])
             existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project[0])
             cur.execute(existing_team_query)
             res = cur.fetchone()
             if res is not None:
+                
                 pc_query = 'SELECT name from App_users WHERE user_id='+str(res[2])
                 cur.execute(pc_query)
                 user = cur.fetchone()
@@ -1393,33 +1395,82 @@ def view_inventory():
     project = None
     material = None
     material_total_quantity = None
-    if 'project_id' in request.args and 'material' in request.args:
+
+
+    project_id = 'All'
+    material = 'All'
+    vendor = 'All'
+
+    if 'project_id' in request.args:
         project_id = request.args['project_id']
+    if 'material' in request.args:
         material = request.args['material']
-        if material == 'All':
-            procurement_query = 'SELECT * from procurement WHERE project_id=' + str(
-                project_id)
-        else:
+    if 'vendor' in request.args:
+        vendor = request.args['vendor']
+
+    if project_id != 'All' or material != 'All' or vendor != 'All':
+
+        if project_id == 'All' and material == 'All':
+            procurement_query = 'SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE vendor="' + str(vendor) +'"'
+        
+        elif project_id == 'All' and vendor == 'All':
             if str(material) == 'Cement':
-                procurement_query = "SELECT * from procurement WHERE project_id=" + str(
-                    project_id) + " AND material='Cement'"
+                    procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
+                        project_id) + " AND material='Cement'"
             else:    
-                procurement_query = "SELECT * from procurement WHERE project_id=" + str(
+                procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
                     project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+        
+        elif project_id != 'All':
+                
+            if material == 'All':
+
+                if vendor == 'All':
+                    procurement_query = 'SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=' + str(
+                        project_id)
+                else:
+                    procurement_query = 'SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=' + str(
+                        project_id) + ' AND vendor="' + str(vendor) +'"'
+            else:
+                
+                if vendor == 'All':
+                    if str(material) == 'Cement':
+                        procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
+                            project_id) + " AND material='Cement'"
+                    else:    
+                        procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
+                            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%' AND vendor='" + str(vendor) +"'"
+                else: 
+                    if str(material) == 'Cement':
+                        procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
+                            project_id) + " AND material='Cement'"
+                    else:    
+                        procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
+                            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%' AND vendor='" + str(vendor) +"'"
+                    
+
+
         cur.execute(procurement_query)
         procurements = cur.fetchall()
         for i in projects:
             if str(i[0]) == str(project_id):
                 project = i[1]
 
-        material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
-        cur.execute(material_quantity_query)
-        result = cur.fetchone()
-        if result is not None:
-            material_total_quantity = result[0]
+        # material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+        #     project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+        # cur.execute(material_quantity_query)
+        # result = cur.fetchone()
+        # if result is not None:
+        #     material_total_quantity = result[0]
+
+
+    vendors_query = 'SELECT DISTINCT vendor from procurement order by vendor'
+    cur.execute(vendors_query)
+    vendors = cur.fetchall()
+
+
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project,
-                           material=material, material_total_quantity=material_total_quantity, materials=materials)
+                           material=material, materials=materials, vendors=vendors)
 
 @app.route('/debit_note', methods=['GET','POST'])
 def debit_note():

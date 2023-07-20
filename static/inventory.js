@@ -1,9 +1,23 @@
 $('#get_procurement').on('click', function(){
     const project = $("#project").val()
     const material = $("#material").val()
-    if(project.length && material.length) {
-        window.location.href = '/erp/view_inventory?project_id='+project.toString()+'&material='+material.toString()        
+    const vendor = $("#vendor").val()
+    url = ''
+    if(project.length) {
+        url = '/view_inventory?project_id='+project.toString()
+    } else {
+        url = '/view_inventory?project_id=All'
     }
+    if(material.length) {
+        url += '&material='+material.toString()        
+    }
+    if (vendor.length) {
+        url += '&vendor='+vendor.toString()
+    } else {
+        url += '&vendor='+'All'
+    }
+
+    window.location.href = url
 })
 
 

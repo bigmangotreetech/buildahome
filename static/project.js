@@ -200,11 +200,11 @@ $(document).ready(function () {
             $("#location").trigger('change')
         }
 
-        // $('.select2.select2-container').on('click', function(){
-        //     setTimeout(() => {
-        //         $(this).parents().find('.select2-search__field').get(0).focus()
-        //     }, 500)
-        // })
+        $('.select2.select2-container').on('click', function(){
+            setTimeout(() => {
+                $(this).parents().find('.select2-search__field').get(0).focus()
+            }, 500)
+        })
     }, 1000)
 
     if($('.approved_amount').length && $('.total_paid').length) {

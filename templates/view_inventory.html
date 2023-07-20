@@ -1,36 +1,76 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
+<div class="alert alert-warning d-none mt-4" id="alert-msg"></div>
+<div class="row mx-3 mt-5 mb-3 pb-2 border-bottom form-group">
     <div class="col-12">
         <h4>Inventory</h4>
     </div>
 </div>
 <div class="my-5 w-100">
     <div class="row mx-3 pb-4">
-        <div class="col-sm-12 col-md-4 pl-0 pr-2 mb-2">
-            <select name="project" id="project" class="form-control select2">
-                <option value=""></option>
-                {% for i in projects %}
-                {% if i[0]|string() == request.args['project_id']|string() %}
-                <option value="{{i[0]}}" selected>{{i[1]}}</option>
-                {% else %}
-                <option value="{{i[0]}}">{{i[1]}}</option>
-                {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-sm-12 col-md-4 pl-0 pr-2 mb-2">
-            <select name="material" id="material" class="form-control select2">
-                <option value=""></option>
-                <option value="All">All</option>
-                {% for i in materials %}
-                <option value="{{i}}">{{i}}</option>
-                {% endfor %} 
+        <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+            <div class="form-group">
+                <label for="vendor">Project</label>
+                <select name="project" id="project" class="form-control select2">
+                    <option value="">Select project</option>
+                    <option {% if request.args['project_id'] == 'All' or 'project_id' not in request.args %} selected {% endif %} value="All">All</option>
 
-            </select>
+                    {% for i in projects %}
+                    {% if i[0]|string() == request.args['project_id']|string() %}
+                    <option value="{{i[0]}}" selected>{{i[1]}}</option>
+                    {% else %}
+                    <option value="{{i[0]}}">{{i[1]}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        <button id="get_procurement" class="btn text-white bg-indigo  mb-2">Get procurement</button>
+        <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+            <div class="form-group">
+                <label for="vendor">Material</label>
+                <select name="material" id="material" class="form-control select2">
+                    <option value="">Select material</option>
+                    <option {% if request.args['material'] == 'All' or 'material' not in request.args %} selected {% endif %} value="All">All</option>
+                    {% for i in materials %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endfor %} 
+
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+            <div class="form-group">
+                <label for="vendor">Vendor</label>
+                <select name="vendor" id="vendor" class="form-control select2">
+                    <option value="">Select vendor</option>
+                    <option {% if request.args['vendor'] == 'All' or 'vendor' not in request.args %} selected {% endif %} value="All">All</option>
+                    {% for i in vendors %}
+                    <option {% if request.args['vendor'] == i[0] %} selected {% endif %} value="{{i[0]}}">{{i[0]}}</option>
+                    {% endfor %} 
+    
+                </select>
+            </div>
+            
+        </div>
+        
+        <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+            <div class="form-group">
+                <label for="start-date">Invoice start date</label>
+                <input type="text" id="start-date" class="dateInput form-control" name="start-date">
+            </div>
+            
+        </div>
+        <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+            <div class="form-group">
+                <label for="end-date">Invoice end date</label>
+                <input type="text" id="end-date" class="dateInput form-control" name="end-date">
+            </div>
+            
+        </div>
+        
     </div>
+    
+    <button id="get_procurement" class="btn text-white bg-indigo ml-3 mb-2">Get procurement</button>
     <div class="w-100 p-3 overflow-x-auto">
         {% if procurements is not none %}
         {% if request.args['project_id']|string() != 'All' %}
@@ -47,9 +87,11 @@
         </div>
         {% endif %}
         {% endif %}
-        <table class="table table-hover">
+        <small>Click on a column header to sort values by that column</small>
+        <table class="table table-hover mt-2" id="dataTable">
             <thead>
                 <tr>
+                    <th scope="col">Project</th>
                     <th scope="col">Material ID</th>
                     <th scope="col">Material</th>
                     <th scope="col">Created on</th>
@@ -76,21 +118,22 @@
             <tbody>
                 {% for i in procurements %}
                 <tr>
-                    <td>{{request.args['project_id']}}/{{i[0]}}</td>
-                    <td>{{i[1]}}</td>
-                    <td>{{i[18]}}</td>
-                    <td>{{i[2]}}</td>
-                    <td>{{i[3]}}</td>
-                    <td>{{i[5]}}</td>
-                    <td>{{i[6]}}</td>
-                    <td>{{i[7]}}</td>
-                    <td>{{i[8]}}</td>
+                    <td class="project">{{i[21]}}</td>
+                    <td class="material-id">{{i[20]}}/{{i[0]}}</td>
+                    <td class="material">{{i[1]}}</td>
+                    <td class="created on">{{i[18]}}</td>
+                    <td class="description">{{i[2]}}</td>
+                    <td class="vendor">{{i[3]}}</td>
+                    <td class="po-number">{{i[5]}}</td>
+                    <td class="invoice-number">{{i[6]}}</td>
+                    <td class="invoice-date">{{i[7]}}</td>
+                    <td class="invoice-value">{{i[8]}}</td>
                     <td class="item_quantity">{{i[9]}}</td>
-                    <td>{{i[10]}}</td>
-                    <td>{{i[11]}}</td>
-                    <td>{{i[16]}}</td>
-                    <td>{{i[17]}}</td>
-                    <td>{{i[12]}}</td>
+                    <td class="quantity">{{i[10]}}</td>
+                    <td class="unit">{{i[11]}}</td>
+                    <td class="rate">{{i[16]}}</td>
+                    <td class="transportation">{{i[17]}}</td>
+                    <td class="loading-unloading">{{i[12]}}</td>
                     <td class="item_cost">{{i[13]|int}}</td>
                     <td class="item_difference_cost">{{i[14]}}</td>
                     {% if session['role'] in ['Super Admin','COO','Purchase Head'] and 'Shifting entry' not in i[2] %}
@@ -125,6 +168,156 @@
     </div>
 </div>
 
+<script>
+    function compareDates(date1, startDate, endDate) {
+        if(startDate == '') {
+            return new Date(date1) < new Date(endDate);    
+        } else if (endDate == '') {
+            return new Date(date1) > new Date(startDate)    
+        }
+        return new Date(date1) > new Date(startDate) && new Date(date1) < new Date(endDate);
+    }
+
+    // Function to show/hide rows based on the start date
+    function filterRowsByDate() {
+        var startDate = document.getElementById('start-date').value;
+        var endDate = document.getElementById('end-date').value;
+        table = document.querySelector('.table');
+        var rows = table.getElementsByTagName('tr');
+
+        for (var i = 1; i < rows.length -1; i++) {
+            var row = rows[i];
+            var dateCell = row.getElementsByTagName('td')[8];
+            var rowDate = dateCell.textContent.trim();
+
+            if (compareDates(rowDate, startDate, endDate)) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    // Add an event listener to the start date input
+    var startDateInput = document.getElementById('start-date');
+    startDateInput.addEventListener('change', filterRowsByDate);
+
+    var endDateInput = document.getElementById('end-date');
+    endDateInput.addEventListener('change', filterRowsByDate);
+
+
+    var dateInputs = document.getElementsByClassName('dateInput');
+    for (var i = 0; i < dateInputs.length; i++) {
+        const dateInput = dateInputs[i]
+        // Event listener to change input type to "date" when focused
+        dateInput.addEventListener('focus', function () {
+            dateInput.type = 'date';
+        });
+
+        // Event listener to change input type back to "text" when blurred
+        dateInput.addEventListener('blur', function () {
+            dateInput.type = 'text';
+        });
+    }
+
+    // Function to sort the table
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.querySelector('.table');
+        switching = true;
+        console.log()
+        // Set the sorting direction to ascending
+        dir = 'asc';
+        while (switching) {
+            switching = false;
+            rows =  $('#dataTable tr:visible');
+            for (i = 1; i < (rows.length - 2); i++) {
+                shouldSwitch = false;
+                x = rows[i].querySelectorAll('td')[n];
+                y = rows[i + 1].querySelectorAll('td')[n];
+                if (dir === 'asc') {
+                    if (headerNames[n] == 'Invoice date') {
+                        if (new Date(x.innerHTML.trim()) > new Date(y.innerHTML.trim())) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+
+                    else if(numberColumns.includes(headerNames[n])) {
+                        if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML)) {
+                            shouldSwitch = true;
+                            break;
+                        }   
+                    } else {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                    
+                } else if (dir === 'desc') {
+                    if (headerNames[n] == 'Invoice date') {
+                        if (new Date(x.innerHTML.trim()) < new Date(y.innerHTML.trim())) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                    else if(numberColumns.includes(headerNames[n])) {
+                        if (parseFloat(x.innerHTML) < parseFloat(y.innerHTML)) {
+                            shouldSwitch = true;
+                            break;
+                        }   
+                    }
+                    else {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                    
+                    
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === 'asc') {
+                    dir = 'desc';
+                    switching = true;
+                }
+            }
+        }
+    }
+
+    // Add click event listeners to each th element to trigger sorting
+    var headers = document.querySelectorAll('th');
+    var headerNames = []
+    var numberColumns = ["PO number","Quantity","Rate","Transportation","Loading Unloading","GST","Total Amount","Difference cost"]
+    for (var i = 0; i < headers.length; i++) {
+        headers[i].addEventListener('click', function (index, element) {
+            $("#alert-msg").addClass('d-none')
+            if($('table tr:visible').length > 100) {
+                setTimeout(() => {
+                    $("#alert-msg").removeClass('d-none')
+                    $("#alert-msg").text('Number of rows too high to filter. Please use the date filter to narrow down you search')
+                    $("#alert-msg").get(0).scrollIntoView()
+                }, 1000)
+                return false
+            } else {
+                
+                var index = Array.from(this.parentNode.children).indexOf(this);
+                sortTable(index);
+            }
+            
+        });
+        headerNames.push(headers[i].innerHTML)
+    }
+
+    
+</script>
+
 <style>
     td {
         font-size: 11px;
@@ -136,7 +329,21 @@
     th {
         font-size: 11px;
         padding: 0.5rem;
-        border: 1px solid #dee2e6
+        border: 1px solid #dee2e6;
+        cursor: pointer;
+        color: rgb(4, 4, 87);
+        font-weight: 600;
+    }
+    .form-control {
+        height: 40px;
+        border-radius: 5px;
+        border: 1px solid rgb(148, 146, 146)
+    }
+    .form-group {
+        padding: 0px;
+    }
+    .form-group label{
+        display: block;
     }
 </style>
 

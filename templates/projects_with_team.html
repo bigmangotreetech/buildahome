@@ -1,37 +1,178 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'layout.html' %} {% block content %}
 <div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
     <div class="col-12">
         <h4>Projects with team</h4>
     </div>
 </div>
+<div class="px-5 row mx-0">
+    <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+        <div class="form-group">
+            <label for="project">Project</label>
+            <input type="text" id="project" class="form-control" name="project">
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+        <div class="form-group">
+            <label for="project-manager">Project manager</label>
+            <input type="text" id="project-manager" class="form-control" name="project-manager">
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+        <div class="form-group">
+            <label for="project-coordinator">Project Coordinator</label>
+            <input type="text" id="project-coordinator" class="form-control" name="project-coordinator">
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-2 pl-0 pr-2 mb-2">
+        <div class="form-group">
+            <label for="site-engineer">Site engineer</label>
+            <input type="text" id="site-engineer" class="form-control" name="site-engineer">
+        </div>
+    </div>
+</div>
 <div class="p-5 w-100 table-responsive">
-    <table class="table table-striped">
+    <table class="table table-striped" id="dataTable">
         <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Project Manager</th>
-            <th scope="col">Project Coordinator</th>
-            <th scope="col">Site Engineers</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-        </tr>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Project Manager</th>
+                <th scope="col">Project Coordinator</th>
+                <th scope="col">Site Engineers</th>
+            </tr>
         </thead>
         <tbody>
-        {% for project in team %}
-        <tr>
-            <td>{{project['Project Name']}}</td>
-            <td>{{project['Project Coordinator']}}</td>
-            <td>{{project['Project Manager']}}</td>
-            <td>{{project['Site engineers']}}</td>
-
-        </tr>
-        {% endfor %}
-
-
+            {% for project in team %}
+            <tr>
+                <td>{{project['Project Name']}}</td>
+                <td>{{project['Project Coordinator']}}</td>
+                <td>{{project['Project Manager']}}</td>
+                <td>{{project['Site engineers']}}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-
 </div>
+<script>
+    // Function to sort the table
+    function sortTable(n) {
+        var table,
+            rows,
+            switching,
+            i,
+            x,
+            y,
+            shouldSwitch,
+            dir,
+            switchcount = 0;
+        table = document.querySelector(".table");
+        switching = true;
+        console.log(n);
+        // Set the sorting direction to ascending
+        dir = "asc";
+        while (switching) {
+            switching = false;
+            rows = $("#dataTable tr:visible");
+            for (i = 1; i < rows.length - 2; i++) {
+                shouldSwitch = false;
+                x = rows[i].querySelectorAll("td")[n];
+                y = rows[i + 1].querySelectorAll("td")[n];
+                if (dir === "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir === "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+
+    // Add click event listeners to each th element to trigger sorting
+    var headers = document.querySelectorAll("th");
+    var headerNames = [];
+    for (var i = 0; i < headers.length; i++) {
+        headers[i].addEventListener("click", function (index, element) {
+            var index = Array.from(this.parentNode.children).indexOf(this);
+            sortTable(index);
+        });
+        headerNames.push(headers[i].innerHTML);
+    }
+
+    function filterRowsByDate() {
+        console.log('filterRowsByDate')
+        var project = document.getElementById('project').value.toLowerCase();
+        var manager = document.getElementById('project-manager').value.toLowerCase();
+        var coordinator = document.getElementById('project-coordinator').value.toLowerCase();
+        var engineer = document.getElementById('site-engineer').value.toLowerCase();
+        table = document.querySelector('.table');
+        var rows = table.getElementsByTagName('tr');
+
+        for (var i = 1; i < rows.length; i++) {
+            var row = rows[i];
+            var projectTd = row.getElementsByTagName('td')[0];
+            var managerTd = row.getElementsByTagName('td')[1];
+            var coordinatorTd = row.getElementsByTagName('td')[2];
+            var engineerTd = row.getElementsByTagName('td')[3];
+            
+
+            if (
+                projectTd.textContent.trim().toLowerCase().includes(project) &&
+                managerTd.textContent.trim().toLowerCase().includes(manager) &&
+                coordinatorTd.textContent.trim().toLowerCase().includes(coordinator) &&
+                engineerTd.textContent.trim().toLowerCase().includes(engineer) 
+            ) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    // Add an event listener to the start date input
+    document.getElementById('project').addEventListener('keyup', filterRowsByDate);
+    document.getElementById('project-manager').addEventListener('keyup', filterRowsByDate);
+    document.getElementById('project-coordinator').addEventListener('keyup', filterRowsByDate);
+    document.getElementById('site-engineer').addEventListener('keyup', filterRowsByDate);
+    
+
+
+
+
+</script>
+<style>
+    td {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 0.5rem;
+        border: 1px solid #dee2e6
+    }
+
+    th {
+        font-size: 11px;
+        padding: 0.5rem;
+        border: 1px solid #dee2e6;
+        cursor: pointer;
+        color: rgb(4, 4, 87);
+        font-weight: 600;
+    }
+    .form-group {
+        padding: 0px;
+    }
+    
+</style>
+
 {% endblock %}
