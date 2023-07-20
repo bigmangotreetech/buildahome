@@ -4,9 +4,9 @@ $('#get_procurement').on('click', function(){
     const vendor = $("#vendor").val()
     url = ''
     if(project.length) {
-        url = '/view_inventory?project_id='+project.toString()
+        url = '/erp/view_inventory?project_id='+project.toString()
     } else {
-        url = '/view_inventory?project_id=All'
+        url = '/erp/view_inventory?project_id=All'
     }
     if(material.length) {
         url += '&material='+material.toString()        
