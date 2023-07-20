@@ -936,28 +936,26 @@ def index():
     if res is not None:
         dpr_count = res[0]
 
-    current_month = current_time.strftime('%B')
+    current_month = current_time.strftime('%B') 
 
-    time_now = datetime.now()
-    total_material_spend = {}
+
+
+    spend_query = 'SELECT SUM(CAST( pr.total_amount AS UNSIGNED)) from procurement pr JOIN projects p on pr.project_id = p.project_id WHERE MONTH(invoice_date) = MONTH(DATE_SUB(curdate(), INTERVAL 0 MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL 0 MONTH))'
+    cur.execute(spend_query)
+    res = cur.fetchone()
+    if res is not None:
+        current_month__material_expenditure = res[0]
     
+    total_material_spend = {}
 
-    for i in range(0, 12, 1):
+    spend_split_query = 'SELECT p.project_name, SUM(CAST( pr.total_amount AS UNSIGNED)) as expenditure from procurement pr JOIN projects p on pr.project_id = p.project_id WHERE MONTH(invoice_date) = MONTH(DATE_SUB(curdate(), INTERVAL 0 MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL 0 MONTH)) GROUP BY pr.project_id ORDER BY expenditure DESC '
+    cur.execute(spend_split_query)
+    res = cur.fetchall()
+    if res is not None:
+        for i in res:
+            total_material_spend[i[0]] = i[1]
 
-        total_material_spend[current_month] = 0
-           
-        total_material_previous_month_spend_query = 'SELECT SUM(CAST(total_amount AS UNSIGNED)) from procurement WHERE MONTH(created_at_datetime) = MONTH(DATE_SUB(curdate(), INTERVAL '+str(i)+' MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL '+str(i)+' MONTH))'
-        cur.execute(total_material_previous_month_spend_query)
-        res = cur.fetchone()
-        if res is not None:
-            total_material_spend[current_month] = res[0]
-
-        weeks_to_sub =  4 * (i+1)
-        current_month = time_now - timedelta(weeks=weeks_to_sub)
-        current_month = current_month.strftime('%B')
-
-
-    return render_template('index.html',current_user_projects = get_projects_for_current_user(), projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
+    return render_template('index.html',current_month=current_month,current_month__material_expenditure=current_month__material_expenditure, current_user_projects = get_projects_for_current_user(), projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():

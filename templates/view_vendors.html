@@ -16,14 +16,17 @@
 
 <div class="pl-3 p-md-5 m-0 w-100 row">
     {% for vendor in vendors %}
-    <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <div class="h-100 border border-radius-10 bg-light p-3 overflow-hidden">
-            <div class="d-flex flex-wrap">
+    <div class="col-12 col-md-6 col-lg-4 mb-3 ">
+        <div class="h-100 border border-radius-10 vendor-card bg-light p-3 overflow-hidden d-flex flex-column">
+            <div class="d-flex">
                 <div class="mb-auto mr-4">
-                    <img alt="" height="80" width="80"
-                         onerror="this.src='/erp/static/profile_picture.PNG'"
-                         src="/erp/files/vendor_dp_{{vendor[0]}}" alt=""
-                         style="border-radius: 50%">
+                    <div class="img-wrapper">
+                        <img alt="" 
+                         onerror="this.src='/static/profile_picture.PNG'"
+                         src="/erp/files/vendor_dp_{{vendor[0]}}" alt="">
+                         
+                    </div>
+                    
 
                 </div>
                 <div class="my-auto">
@@ -41,4 +44,27 @@
 
     {% endfor %}
 </div>
+<style>
+    .vendor-name {
+        font-weight: 600;
+        font-size: 18px
+    }
+    div {
+        word-break: break-all;
+    }
+    .img-wrapper {
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0px 0px 15px 1px grey
+    }
+    .img-wrapper  img {
+        width: 100%;
+    }
+
+</style>
 {% endblock %}

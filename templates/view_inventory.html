@@ -159,6 +159,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <td><span class="font-weight-bold" id="total_cost"></span></td>
                     <td><span class="font-weight-bold" id="total_difference_cost"></span></td>
                 </tr>
@@ -169,6 +170,19 @@
 </div>
 
 <script>
+    function updateTotals() {
+        let total_cost = 0;
+        $('.item_cost:visible').each(function(index, element){
+            total_cost += parseFloat($(this).text().trim())
+        })
+        $("#total_cost").text(total_cost)
+
+        let total_difference_cost = 0;
+        $('.item_difference_cost:visible').each(function(index, element){
+            total_difference_cost += parseFloat($(this).text().trim())
+        })
+        $("#total_difference_cost").text(total_difference_cost)
+    }
     function compareDates(date1, startDate, endDate) {
         if(startDate == '') {
             return new Date(date1) < new Date(endDate);    
@@ -196,6 +210,7 @@
                 row.style.display = 'none';
             }
         }
+        updateTotals()
     }
 
     // Add an event listener to the start date input
