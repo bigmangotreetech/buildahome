@@ -1413,11 +1413,17 @@ def view_inventory():
         
         elif project_id == 'All' and vendor == 'All':
             if str(material) == 'Cement':
-                    procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
-                        project_id) + " AND material='Cement'"
+                    procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE AND material='Cement'"
             else:    
-                procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
-                    project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+                procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE material LIKE '%" + str(material).replace('"','').strip() + "%'"
+        
+        elif project_id == 'All' and vendor != 'All' and material != 'All':
+            if str(material) == 'Cement':
+                    procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE vendor='" + str(
+                        vendor) + "' AND material='Cement'"
+            else:    
+                procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE vendor='" + str(
+                        vendor) + "' AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
         
         elif project_id != 'All':
                 
@@ -1452,15 +1458,16 @@ def view_inventory():
         for i in projects:
             if str(i[0]) == str(project_id):
                 project = i[1]
+        
+        if project_id != 'All':
+            material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+                project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+            cur.execute(material_quantity_query)
+            result = cur.fetchone()
+            if result is not None:
+                material_total_quantity = result[0]
 
-        material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
-        cur.execute(material_quantity_query)
-        result = cur.fetchone()
-        if result is not None:
-            material_total_quantity = result[0]
-
-        print(material_total_quantity)
+            print(material_total_quantity)
 
 
     vendors_query = 'SELECT DISTINCT vendor from procurement order by vendor'
