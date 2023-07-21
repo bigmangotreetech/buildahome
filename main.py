@@ -1453,12 +1453,14 @@ def view_inventory():
             if str(i[0]) == str(project_id):
                 project = i[1]
 
-        # material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-        #     project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
-        # cur.execute(material_quantity_query)
-        # result = cur.fetchone()
-        # if result is not None:
-        #     material_total_quantity = result[0]
+        material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+        cur.execute(material_quantity_query)
+        result = cur.fetchone()
+        if result is not None:
+            material_total_quantity = result[0]
+
+        print(material_total_quantity)
 
 
     vendors_query = 'SELECT DISTINCT vendor from procurement order by vendor'
@@ -1467,7 +1469,7 @@ def view_inventory():
 
 
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project,
-                           material=material, materials=materials, vendors=vendors)
+                           material=material, materials=materials, vendors=vendors, material_total_quantity=material_total_quantity)
 
 @app.route('/debit_note', methods=['GET','POST'])
 def debit_note():
