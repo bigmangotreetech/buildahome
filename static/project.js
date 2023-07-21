@@ -637,9 +637,29 @@ $(document).ready(function () {
 
     function getWorkOrderForSelectedProject() {
         const project = $("#project").val()
+        url = '/erp/view_work_order'
         if (project.length) {
-            window.location.href = '/erp/view_work_order?project_id=' + project.toString()
+            url += '?project_id=' + project.toString()
+        } else {
+            url += '?project_id=All'
         }
+
+        const contractor = $("#contractor").val()
+        if (contractor.length) {
+            url += '&contractor_code=' + contractor.toString()
+        } else {
+            url += '&contractor=All'
+        }
+
+        const trade = $("#trade").val()
+        if (trade.length) {
+            url += '&trade=' + trade.toString()
+        } else {
+            url += '&trade=All'
+        }
+
+
+        window.location.href = url
     }
 
     $("#view_work_order").on('click', getWorkOrderForSelectedProject)

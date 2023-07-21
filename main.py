@@ -46,16 +46,16 @@ import uuid
 # Last labour stage id 412
 app = Flask(__name__)
 # Sql setup
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = '166.62.6.102'
 app.config['MYSQL_USER'] = 'buildahome'
 app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = '../static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
-app.config['S3_SECRET'] = os.environ.get('S3_SECRET')
-app.config['S3_KEY'] = os.environ.get('S3_KEY')
-app.config['S3_BUCKET'] = os.environ.get('S3_BUCKET')
-app.config['S3_LOCATION'] = os.environ.get('S3_LOCATION')
+app.config['S3_SECRET'] = os.getenv('S3_SECRET')
+app.config['S3_KEY'] = os.getenv('S3_KEY')
+app.config['S3_BUCKET'] = os.getenv('S3_BUCKET')
+app.config['S3_LOCATION'] = os.getenv('S3_LOCATION')
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 
@@ -3220,8 +3220,8 @@ def clear_wo_balance():
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
-    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked from work_orders wo ' \
-                   'INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
+    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                   ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
     cur.execute(get_wo_query)
     res = cur.fetchall()
@@ -3239,19 +3239,126 @@ def view_work_order():
         return redirect(request.referrer)
     if request.method == 'GET':
         projects = get_projects()
+        cur = mysql.connection.cursor()
+
+        trades_query = 'SELECT DISTINCT trade from labour_stages'
+        cur.execute(trades_query)
+        result = cur.fetchall()
+        trades = []
+        for i in result:
+            trades.append(i[0])
+
+        
+        contractors_query = 'SELECT code, name from contractors'
+        cur.execute(contractors_query)
+        contractors = cur.fetchall()
+        
+        
         nt_nmr_bills = None
         work_orders = []
+        nt_nmr_bills = []
+
+
+        contractor_code = 'All'
+        project_id = 'All'
+        trade = 'All'
+
         if 'project_id' in request.args:
             project_id = request.args['project_id']
-            work_orders = get_work_orders_for_project(project_id)
+        
+        if 'contractor_code' in request.args:
+            contractor_code = request.args['contractor_code']    
 
+        if 'trade' in request.args:
+            trade = request.args['trade']
+
+
+
+
+        if project_id == 'All' and contractor_code == 'All' and trade != 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.trade="' + str(trade) + '" ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            nt_nmr_bills = []
+        
+        elif project_id == 'All' and contractor_code != 'All' and trade == 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND c.code="' + str(contractor_code) + '" ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            
+            bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
+                        ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance, wo_bills.created_at, wo_bills.approved_on FROM wo_bills WHERE wo_bills.contractor_code="'+str(contractor_code)+'" AND trade="NT/NMR"'
+            cur = mysql.connection.cursor()
+            cur.execute(bills_query)
+            nt_nmr_bills = cur.fetchall()
+        
+        elif project_id == 'All' and contractor_code != 'All' and trade != 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND c.code="' + str(contractor_code) + '" AND wo.trade="' + str(trade) + '" ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            
+            nt_nmr_bills = []
+        
+        elif project_id != 'All' and contractor_code == 'All' and trade == 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            
             bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
                         ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance, wo_bills.created_at, wo_bills.approved_on FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
             cur = mysql.connection.cursor()
             cur.execute(bills_query)
             nt_nmr_bills = cur.fetchall()
 
-        return render_template('view_work_orders.html', projects=projects, work_orders=work_orders, nt_nmr_bills=nt_nmr_bills)
+        elif project_id != 'All' and contractor_code == 'All' and trade != 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' AND wo.trade="' + str(trade) + '" ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            
+            nt_nmr_bills = []
+
+        elif project_id != 'All' and contractor_code != 'All' and trade == 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' AND c.code="' + str(contractor_code) + '" ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            
+            bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
+                        ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance, wo_bills.created_at, wo_bills.approved_on FROM wo_bills WHERE project_id='+str(project_id)+' AND wo_bills.contractor_code="' + str(contractor_code) + '" AND trade="NT/NMR"'
+            cur = mysql.connection.cursor()
+            cur.execute(bills_query)
+            nt_nmr_bills = cur.fetchall()
+
+        elif project_id != 'All' and contractor_code == 'All' and trade == 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            
+            bills_query = 'SELECT wo_bills.id, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.stage, wo_bills.quantity,' \
+                        ' wo_bills.rate, wo_bills.approval_2_amount, wo_bills.cleared_balance, wo_bills.created_at, wo_bills.approved_on FROM wo_bills WHERE project_id='+str(project_id)+' AND trade="NT/NMR"'
+            cur = mysql.connection.cursor()
+            cur.execute(bills_query)
+            nt_nmr_bills = cur.fetchall()
+
+        
+        elif project_id != 'All' and contractor_code != 'All' and trade != 'All':
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+                        ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' AND wo.trade="' + str(trade) + '" AND c.code="' + str(contractor_code) + '" ORDER BY wo.trade'
+            cur.execute(get_wo_query)
+            work_orders = cur.fetchall()            
+            
+            nt_nmr_bills = []
+
+
+        return render_template('view_work_orders.html', projects=projects, work_orders=work_orders, nt_nmr_bills=nt_nmr_bills, trades=trades, contractors=contractors)
+        
+
 
 
 @app.route("/view_unsigned_work_order", methods=['GET'])
