@@ -1437,7 +1437,7 @@ def view_inventory():
                             project_id) + " AND material='Cement'"
                     else:    
                         procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
-                            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%' AND vendor='" + str(vendor) +"'"
+                            project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
                 else: 
                     if str(material) == 'Cement':
                         procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
@@ -1446,7 +1446,6 @@ def view_inventory():
                         procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=" + str(
                             project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%' AND vendor='" + str(vendor) +"'"
                     
-
 
         cur.execute(procurement_query)
         procurements = cur.fetchall()

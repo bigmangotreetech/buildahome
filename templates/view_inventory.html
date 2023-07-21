@@ -32,7 +32,7 @@
                     <option value="">Select material</option>
                     <option {% if request.args['material'] == 'All' or 'material' not in request.args %} selected {% endif %} value="All">All</option>
                     {% for i in materials %}
-                    <option value="{{i}}">{{i}}</option>
+                    <option {% if i|string() == request.args['material']|string() %} selected {% endif %} value="{{i}}">{{i}}</option>
                     {% endfor %} 
 
                 </select>
