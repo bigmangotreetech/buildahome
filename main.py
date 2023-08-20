@@ -6193,6 +6193,8 @@ def update_stock_report():
         cur.execute(query, (project_id, user_id, timestamp, material, quantity))
     
     mysql.connection.commit()
+
+    return jsonify({'message': 'success'})
     
 
 @app.route('/API/get_unapproved_indents', methods=['GET'])
