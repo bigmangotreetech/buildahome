@@ -4412,7 +4412,7 @@ def edit_task():
     percent = request.form['percent']
 
     cur = mysql.connection.cursor()
-    query = 'UPDATE Tasks set payment_percentage=%s, task_name=%s, task_start_date=%s, task_finish_date=%s WHERE task_id=%s'
+    query = 'UPDATE Tasks set payment_percentage=%s, task_name=%s, task_startDate=%s, task_finish_date=%s WHERE task_id=%s'
     cur.execute(query, (percent, task_name, start_date, end_date, task_id))
 
     mysql.connection.commit()
@@ -6176,6 +6176,24 @@ def get_my_indents():
         else:
             return jsonify([])
 
+
+@app.route('/API/update_stock_report', methods=['POST'])
+def update_stock_report():
+    project_id = request.form['project_id']
+    user_id = request.form['user_id']
+    timestamp = request.form['timestamp']
+    stock_report_entries = request.form['stock_report_entries']
+    cur = mysql.connection.cursor()
+
+    stock_report_entries = stock_report_entries.split('^')
+    for entry in stock_report_entries:
+        material = entry.split('|')[0]
+        quantity = entry.split('|')[1]
+        query = 'INSERT INTO stock_reports (project_id, user_id, timestamp, material, quantity) values(%s,%s,%s,%s,%s)'
+        cur.execute(query, (project_id, user_id, timestamp, material, quantity))
+    
+    mysql.connection.commit()
+    
 
 @app.route('/API/get_unapproved_indents', methods=['GET'])
 def get_unapproved_indents():
