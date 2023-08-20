@@ -25,7 +25,7 @@
                     <span class="text-success">Approved by bAh</span>
                 {% else %}
                     {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] %}
-                        <a onclick="return confirm('Are you sure')" href="/update_project_checklist_item?project_id={{request.args['project_id']}}&checklist_item_id={{i[0]}}">Mark as approved</a>
+                        <a onclick="return confirm('Are you sure')" href="/erp/update_project_checklist_item?project_id={{request.args['project_id']}}&checklist_item_id={{i[0]}}">Mark as approved</a>
                     {% endif %}
                 {% endif %}
             </td>
