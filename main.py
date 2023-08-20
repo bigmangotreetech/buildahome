@@ -5494,9 +5494,7 @@ def mark_drawing_in_progress():
         cur.execute(insert_drawing_query, (str(project_id), '0'))
         mysql.connection.commit()
         flash('Drawing marked as in progress!', 'success')
-<<<<<<< Updated upstream
         return redirect('/erp/drawings')
-=======
         return redirect('/drawings')
     
 @app.route('/project_checklist_categories', methods=['GET'])
@@ -5527,7 +5525,6 @@ def show_project_checklist():
     project_id = str(request.args['project_id'])
     category = request.args['category']
     cur = mysql.connection.cursor()
->>>>>>> Stashed changes
 
     items_query = 'SELECT i.id, i.item, p.bah_checked, p.client_checked FROM checklist_items i LEFT OUTER JOIN project_checklist p ON i.id=p.checklist_item_id AND project_id='+project_id+' WHERE i.category="'+category+'"'
     cur.execute(items_query)
