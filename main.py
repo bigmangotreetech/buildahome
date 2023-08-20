@@ -5494,8 +5494,64 @@ def mark_drawing_in_progress():
         cur.execute(insert_drawing_query, (str(project_id), '0'))
         mysql.connection.commit()
         flash('Drawing marked as in progress!', 'success')
+<<<<<<< Updated upstream
         return redirect('/erp/drawings')
+=======
+        return redirect('/drawings')
+    
+@app.route('/project_checklist_categories', methods=['GET'])
+def project_checklist_categories():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/project_checklist_categories'
+        return redirect('/login')
+    cur = mysql.connection.cursor()
 
+    categories_query = 'SELECT DISTINCT category FROM checklist_items'
+    cur.execute(categories_query)
+    res = cur.fetchall()
+
+    categories = []
+    for i in res:
+        categories.append(i[0])
+
+    return render_template('project_checklist_categories.html',categories=categories, project_id=request.args['project_id'])
+
+
+@app.route('/show_project_checklist', methods=['GET'])
+def show_project_checklist():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/project_checklist_categories'
+        return redirect('/login')
+    project_id = str(request.args['project_id'])
+    category = request.args['category']
+    cur = mysql.connection.cursor()
+>>>>>>> Stashed changes
+
+    items_query = 'SELECT i.id, i.item, p.bah_checked, p.client_checked FROM checklist_items i LEFT OUTER JOIN project_checklist p ON i.id=p.checklist_item_id AND project_id='+project_id+' WHERE i.category="'+category+'"'
+    cur.execute(items_query)
+    res = cur.fetchall()
+
+    data = []
+    for i in res:
+        data.append(list(i))
+
+    return render_template('show_project_checklist.html', data=data)
+
+@app.route('/update_project_checklist_item', methods=['GET'])
+def update_project_checklist_item():
+    project_id = request.args['project_id']
+    checklist_item_id = request.args['checklist_item_id']
+
+    cur = mysql.connection.cursor()
+    query = 'INSERT into project_checklist (project_id, checklist_item_id, bah_checked) values(%s, %s, %s)'
+    cur.execute(query, (project_id, checklist_item_id, 1))
+
+    mysql.connection.commit()
+    flash('Checklist updated!', 'success')
+
+    return redirect(redirect_url())
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -6279,6 +6335,76 @@ def get_notifications():
         data.append({'title': i[0], 'body': i[1], 'timestamp': i[2], 'unread': i[3]})
     return jsonify(data)
 
+
+# @app.route('/API/checklist', methods=['GET'])
+# def checklist():
+    
+#     rb = open_workbook("static/checklist.xls")
+#     rows = []
+#     sh = rb.sheet_by_index(0)
+#     for rownum in range(sh.nrows):
+#         line = sh.row_values(rownum)
+#         print(sh.row_values(rownum))
+#         cur = mysql.connection.cursor()
+
+#         query = 'INSERT into checklist_items (item, category) values(%s,%s)'
+#         cur.execute(query, (line[1],line[-1]))
+#         rows.append(sh.row_values(rownum))
+
+#     mysql.connection.commit()
+    
+#     return tuple(rows)
+
+
+@app.route('/API/get_checklist_categories', methods=['GET'])
+def get_checklist_categories():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+
+        categories_query = 'SELECT DISTINCT category FROM checklist_items'
+        cur.execute(categories_query)
+        res = cur.fetchall()
+
+        categories = []
+        for i in res:
+            categories.append(i[0])
+
+        return jsonify({'categories': categories})
+    
+
+@app.route('/API/get_checklist_items_for_category', methods=['POST'])
+def get_checklist_items_for_category():
+    if request.method == 'POST':
+        project_id = str(request.form['project_id'])
+        category = request.form['category']
+        cur = mysql.connection.cursor()
+
+        items_query = 'SELECT i.id, i.item, p.bah_checked, p.client_checked FROM checklist_items i LEFT OUTER JOIN project_checklist p ON i.id=p.checklist_item_id AND project_id='+project_id+' WHERE i.category="'+category+'"'
+        cur.execute(items_query)
+        res = cur.fetchall()
+
+        data = []
+        for i in res:
+            data.append(i)
+
+        return jsonify({'data': data})
+    
+
+@app.route('/API/update_checklist_item_by_client', methods=['POST'])
+def update_checklist_item_by_client():
+    if request.method == 'POST':
+        project_id = str(request.form['project_id'])
+        checklist_item_id = str(request.form['checklist_item_id'])
+
+        cur = mysql.connection.cursor()
+
+        query = 'UPDATE project_checklist set client_checked=1 WHERE project_id=%s AND checklist_item_id=%s'
+        cur.execute(query, (project_id, checklist_item_id))
+        mysql.connection.commit()
+
+        return jsonify({'message': 'success'})
+
+   
 
 if __name__ == '__main__':
     app.run(debug=True)

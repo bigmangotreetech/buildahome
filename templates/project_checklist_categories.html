@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-5 mt-5 mb-3 pb-2 pl-0 form-group">
+    <div class= "pl-0 col-12">
+        <h4>Checklist categories</h4>
+    </div>
+</div>
+
+<br>
+<div class="row mx-5 mb-3 pb-2 border-bottom form-group">
+    <h5>Select category to view checklist</h5>
+</div>
+
+<div class="p-5 w-100 table-responsive">
+    <table class="table table-striped">
+        <tbody>
+        {% for i in categories %}
+        <tr>
+            <td>
+                <a href="/show_project_checklist?project_id={{project_id}}&category={{i}}">{{i}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
