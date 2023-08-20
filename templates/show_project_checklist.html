@@ -22,14 +22,14 @@
             <td>{{i[1]}}</td>
             <td>
                 {%if i[2] is not none and i[2] !=0 %}
-                    <span class="text-success">Approved by bAh</span>
+                    <span class="text-success">Approved by bAh on {{i[4]}}</span>
                 {% else %}
                     {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] %}
                         <a onclick="return confirm('Are you sure')" href="/erp/update_project_checklist_item?project_id={{request.args['project_id']}}&checklist_item_id={{i[0]}}">Mark as approved</a>
                     {% endif %}
                 {% endif %}
             </td>
-            <td>{%if i[3] is not none and i[3]|string !='0' %}Approved by Client{% endif %}</td>
+            <td>{%if i[3] is not none and i[3]|string !='0' %}Approved by Client on {{i[5]}}{% endif %}</td>
         </tr>
         {% endfor %}
         </tbody>
