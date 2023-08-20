@@ -5526,7 +5526,7 @@ def show_project_checklist():
     category = request.args['category']
     cur = mysql.connection.cursor()
 
-    items_query = 'SELECT i.id, i.item, p.bah_checked, p.client_checked FROM checklist_items i LEFT OUTER JOIN project_checklist p ON i.id=p.checklist_item_id AND project_id='+project_id+' WHERE i.category="'+category+'"'
+    items_query = 'SELECT i.id, i.item, p.bah_checked, p.client_checked, p.bah_checked_on, p.client_checked_on FROM checklist_items i LEFT OUTER JOIN project_checklist p ON i.id=p.checklist_item_id AND project_id='+project_id+' WHERE i.category="'+category+'"'
     cur.execute(items_query)
     res = cur.fetchall()
 
@@ -5540,10 +5540,13 @@ def show_project_checklist():
 def update_project_checklist_item():
     project_id = request.args['project_id']
     checklist_item_id = request.args['checklist_item_id']
+    IST = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(IST)
+    timestamp = current_time.strftime('%d-%m-%Y %H:%M:%S')
 
     cur = mysql.connection.cursor()
-    query = 'INSERT into project_checklist (project_id, checklist_item_id, bah_checked) values(%s, %s, %s)'
-    cur.execute(query, (project_id, checklist_item_id, 1))
+    query = 'INSERT into project_checklist (project_id, checklist_item_id, bah_checked, bah_checked_on) values(%s, %s, %s, %s)'
+    cur.execute(query, (project_id, checklist_item_id, 1, timestamp))
 
     mysql.connection.commit()
     flash('Checklist updated!', 'success')
@@ -6376,7 +6379,7 @@ def get_checklist_items_for_category():
         category = request.form['category']
         cur = mysql.connection.cursor()
 
-        items_query = 'SELECT i.id, i.item, p.bah_checked, p.client_checked FROM checklist_items i LEFT OUTER JOIN project_checklist p ON i.id=p.checklist_item_id AND project_id='+project_id+' WHERE i.category="'+category+'"'
+        items_query = 'SELECT i.id, i.item, p.bah_checked, p.client_checked, p.bah_checked_on, p.client_checked_on FROM checklist_items i LEFT OUTER JOIN project_checklist p ON i.id=p.checklist_item_id AND project_id='+project_id+' WHERE i.category="'+category+'"'
         cur.execute(items_query)
         res = cur.fetchall()
 
@@ -6392,11 +6395,14 @@ def update_checklist_item_by_client():
     if request.method == 'POST':
         project_id = str(request.form['project_id'])
         checklist_item_id = str(request.form['checklist_item_id'])
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST)
+        timestamp = current_time.strftime('%d-%m-%Y %H:%M:%S')
 
         cur = mysql.connection.cursor()
 
-        query = 'UPDATE project_checklist set client_checked=1 WHERE project_id=%s AND checklist_item_id=%s'
-        cur.execute(query, (project_id, checklist_item_id))
+        query = 'UPDATE project_checklist set client_checked=1, client_checked_on=%s WHERE project_id=%s AND checklist_item_id=%s'
+        cur.execute(query, (timestamp, project_id, checklist_item_id))
         mysql.connection.commit()
 
         return jsonify({'message': 'success'})
