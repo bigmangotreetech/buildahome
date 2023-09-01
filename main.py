@@ -1409,6 +1409,8 @@ def view_inventory():
     if project_id != 'All' or material != 'All' or vendor != 'All':
 
         if project_id == 'All' and material == 'All':
+            print(vendor)
+            print('SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE vendor="' + str(vendor) +'"')
             procurement_query = 'SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE vendor="' + str(vendor) +'"'
         
         elif project_id == 'All' and vendor == 'All':

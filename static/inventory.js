@@ -12,7 +12,7 @@ $('#get_procurement').on('click', function(){
         url += '&material='+material.toString()        
     }
     if (vendor.length) {
-        url += '&vendor='+vendor.toString()
+        url += '&vendor='+vendor.toString().replaceAll('&',encodeURIComponent('&'))
     } else {
         url += '&vendor='+'All'
     }
