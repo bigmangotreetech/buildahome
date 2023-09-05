@@ -6443,7 +6443,7 @@ def get_project_location():
     cur.execute(query)
 
     res = cur.fetchone()
-    return str(res)
+    return str(res[0])
 
 if __name__ == '__main__':
     app.run(debug=True)
