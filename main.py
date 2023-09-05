@@ -6416,7 +6416,7 @@ def update_checklist_item_by_client():
         return jsonify({'message': 'success'})
 
    
-@app.route('/API/update_project_checklist_item_api', methods=['GET'])
+@app.route('/API/update_project_checklist_item_api', methods=['POST'])
 def update_project_checklist_item_api():
     project_id = str(request.form['project_id'])
     checklist_item_id = str(request.form['checklist_item_id'])
