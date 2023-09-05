@@ -4711,7 +4711,7 @@ def archived_projects():
 def view_project_details():
     if request.method == 'GET':
         fields = [
-            'project_name', 'project_number', 'project_location', 'package_type', 'no_of_floors', 'project_value',
+            'project_name', 'project_number', 'project_location', 'location_link', 'package_type', 'no_of_floors', 'project_value',
             'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'sf_slab_area','fof_slab_area','fif_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
             'elevation_details', 'additional_cost',
@@ -6434,6 +6434,16 @@ def update_project_checklist_item_api():
 
     return redirect(redirect_url())
 
+@app.route('/API/get_project_location', methods=['GET'])
+def get_project_location():
+    id = request.args['id']
+    cur = mysql.connection.cursor()
+
+    query = 'SELECT location_link from projects WHERE project_id='+str(id)
+    cur.execute(query)
+
+    res = cur.fetchone()
+    return str(res)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -18,7 +18,10 @@
                     {% endif %}
                 </div>
                 <div class="col-6">
-                    {% if i=='Elevation Details' or i=='Additional Cost' %}
+                    {% if i=='Location Link' %}
+                    <a href="{{details[i]}}" target="_blank">
+                        {{details[i]}}</a>
+                    {% elif i=='Elevation Details' or i=='Additional Cost' %}
                     {% for x in details[i].split(' &# ') %}
                         <div>{{x}}</div>
                     {% endfor %}

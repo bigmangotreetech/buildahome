@@ -33,7 +33,8 @@ class projects(object):
                  client_name,
                  client_phone,
                  agreement,
-                 area_statement               
+                 area_statement,
+                 location_link               
                  ):
         self.project_number = project_number
         self.project_name = project_name
@@ -66,6 +67,7 @@ class projects(object):
         self.client_phone = client_phone
         self.agreement = agreement
         self.area_statement = area_statement
+        self.location_link = location_link
         #define a defauult constructor
 
         self.package_types = {'Essential':'false','Premium':'false','Luxury':'false','Green Home':'false','Others':'false'}
