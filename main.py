@@ -1765,6 +1765,10 @@ def edit_user():
         view_user_query = 'SELECT user_id, email, name, role, phone FROM App_users WHERE user_id=' + str(user_id)
         cur.execute(view_user_query)
         result = cur.fetchone()
+
+        if 'Super Admin' in session['role']:
+            if 'Super Admin' not in roles and str(user_id) == str(session['user_id']):
+                roles.insert(0,'Super Admin')
         return render_template('edit_user.html', user=result, roles=roles)
     else:
         required_fields = ['name', 'role', 'email', 'phone', 'password', 'confirm_password']
@@ -5580,6 +5584,8 @@ def API_login():
     else:
         API_response['user_id'] = login_result[0]
         API_response['role'] = login_result[1]
+        if API_response['role'] == 'Super Admin':
+            API_response['role'] = 'Admin'
         API_response['phone'] = login_result[2]
 
         # If password matches the phone number or the password set on ERP

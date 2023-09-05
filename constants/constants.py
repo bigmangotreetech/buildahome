@@ -23,7 +23,8 @@ roles = [
             'Finance',
             'Planning',
             'Purchase Info',
-            'Client'
+            'Client',
+            'Technical Info'
         ]
 
 # WIP
