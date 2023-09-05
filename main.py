@@ -5551,8 +5551,8 @@ def update_project_checklist_item():
     timestamp = current_time.strftime('%d-%m-%Y %H:%M:%S')
 
     cur = mysql.connection.cursor()
-    query = 'INSERT into project_checklist (project_id, checklist_item_id, bah_checked, bah_checked_on) values(%s, %s, %s, %s)'
-    cur.execute(query, (project_id, checklist_item_id, 1, timestamp))
+    query = 'INSERT into project_checklist (project_id, checklist_item_id, bah_checked, bah_checked_on, checked_by) values(%s, %s, %s, %s, %s)'
+    cur.execute(query, (project_id, checklist_item_id, 1, timestamp, session['user_id']))
 
     mysql.connection.commit()
     flash('Checklist updated!', 'success')
@@ -6416,6 +6416,24 @@ def update_checklist_item_by_client():
         return jsonify({'message': 'success'})
 
    
+@app.route('/API/update_project_checklist_item_api', methods=['GET'])
+def update_project_checklist_item_api():
+    project_id = str(request.form['project_id'])
+    checklist_item_id = str(request.form['checklist_item_id'])
+    user_id = request.form['user_id']
+    IST = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(IST)
+    timestamp = current_time.strftime('%d-%m-%Y %H:%M:%S')
+
+    cur = mysql.connection.cursor()
+    query = 'INSERT into project_checklist (project_id, checklist_item_id, bah_checked, bah_checked_on, checked_by) values(%s, %s, %s, %s, %s)'
+    cur.execute(query, (project_id, checklist_item_id, 1, timestamp, user_id))
+
+    mysql.connection.commit()
+    flash('Checklist updated!', 'success')
+
+    return redirect(redirect_url())
+
 
 if __name__ == '__main__':
     app.run(debug=True)
