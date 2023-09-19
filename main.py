@@ -184,7 +184,7 @@ def get_projects_for_current_user(user_id = '', role = ''):
             projects.append(0)
         return tuple(projects)
     elif role == 'QS Info':
-        query = 'SELECT project_id from project_operations_team WHERE qs_engineer=' + str(user_id)
+        query = 'SELECT project_id from project_operations_team WHERE qs_info=' + str(user_id)
         cur.execute(query)
         result = cur.fetchall()
         projects = []
