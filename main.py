@@ -4944,6 +4944,7 @@ def edit_team():
             existing_team['Project Manager'] = res[3]
             existing_team['Purchase Executive'] = res[4]
             existing_team['QS Engineer'] = res[5]
+            existing_team['QS Info'] = res[6]
 
 
         return render_template('edit_team.html', existing_team=existing_team,
