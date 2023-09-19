@@ -4823,6 +4823,7 @@ def assign_team():
         project_managers = []
         purchase_executives = []
         qs_engineers = []
+        qs_infos = []
         result = cur.fetchall()
         for i in result:
             if i[2] == 'Project Coordinator':
@@ -4833,12 +4834,14 @@ def assign_team():
                 purchase_executives.append({'id': i[0], 'name': i[1]})
             if i[2] == 'QS Engineer':
                 qs_engineers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'QS Info':
+                qs_infos.append({'id': i[0], 'name': i[1]})
 
         return render_template('assign_team.html', co_ordinators=co_ordinators,
                                        project_managers=project_managers, purchase_executives=purchase_executives,
                                        qs_engineers=qs_engineers,  senior_architects=senior_architects, architects=architects,
                                        structural_designers=structural_designers, electrical_designers=electrical_designers,
-                                       phe_designers=phe_designers)
+                                       phe_designers=phe_designers, qs_infos=qs_infos)
     else:
 
         column_names = list(request.form.keys())
@@ -4920,6 +4923,7 @@ def edit_team():
         project_managers = []
         purchase_executives = []
         qs_engineers = []
+        qs_infos = []
         result = cur.fetchall()
         for i in result:
             if i[2] == 'Project Coordinator':
@@ -4930,6 +4934,8 @@ def edit_team():
                 purchase_executives.append({'id': i[0], 'name': i[1]})
             if i[2] == 'QS Engineer':
                 qs_engineers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'QS Info':
+                qs_infos.append({'id': i[0], 'name': i[1]})
         existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project_id)
         cur.execute(existing_team_query)
         res = cur.fetchone()
@@ -4945,7 +4951,7 @@ def edit_team():
                                structural_designers=structural_designers, electrical_designers=electrical_designers,
                                phe_designers=phe_designers, co_ordinators=co_ordinators,
                                project_managers=project_managers, purchase_executives=purchase_executives,
-                               qs_engineers=qs_engineers)
+                               qs_engineers=qs_engineers, qs_infos=qs_infos)
 
     else:
         cur = mysql.connection.cursor()
@@ -5134,6 +5140,7 @@ def assign_operations_team():
         project_managers = []
         purchase_executives = []
         qs_engineers = []
+        qs_infos = []
         result = cur.fetchall()
         for i in result:
             if i[2] == 'Project Coordinator':
@@ -5144,10 +5151,12 @@ def assign_operations_team():
                 purchase_executives.append({'id': i[0], 'name': i[1]})
             if i[2] == 'QS Engineer':
                 qs_engineers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'QS Info':
+                qs_infos.append({'id': i[0], 'name': i[1]})
 
         return render_template('assign_operations_team.html', co_ordinators=co_ordinators,
                                project_managers=project_managers, purchase_executives=purchase_executives,
-                               qs_engineers=qs_engineers)
+                               qs_engineers=qs_engineers, qs_infos=qs_infos)
     else:
         column_names = list(request.form.keys())
         values = list(request.form.values())
@@ -5176,6 +5185,7 @@ def edit_operations_team():
         project_managers = []
         purchase_executives = []
         qs_engineers = []
+        qs_infos = []
         result = cur.fetchall()
         for i in result:
             if i[2] == 'Project Coordinator':
@@ -5186,6 +5196,9 @@ def edit_operations_team():
                 purchase_executives.append({'id': i[0], 'name': i[1]})
             if i[2] == 'QS Engineer':
                 qs_engineers.append({'id': i[0], 'name': i[1]})
+            if i[2] == 'QS Info':
+                qs_infos.append({'id': i[0], 'name': i[1]})
+
         existing_team_query = 'SELECT * FROM project_operations_team WHERE project_id=' + str(project_id)
         cur.execute(existing_team_query)
         res = cur.fetchone()
@@ -5197,7 +5210,7 @@ def edit_operations_team():
         }
         return render_template('edit_operations_team.html', existing_team=existing_team, co_ordinators=co_ordinators,
                                project_managers=project_managers, purchase_executives=purchase_executives,
-                               qs_engineers=qs_engineers)
+                               qs_engineers=qs_engineers, qs_infos=qs_infos)
     else:
         cur = mysql.connection.cursor()
         column_names = list(request.form.keys())

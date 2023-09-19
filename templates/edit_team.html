@@ -162,10 +162,28 @@
                         <label for="">Select QS Engineer</label>
                     </div>
                     <div class="col-6">
-                        <select name="qs_engineer" id=qs_engineer" class="form-control select2">
+                        <select name="qs_engineer" id="qs_engineer" class="form-control select2">
                             <option value=""></option>
                             {% for i in qs_engineers %}
                             {% if i['id']|string == existing_team['QS Engineer']|string %}
+                            <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
+                            {% else %}
+                            <option value="{{i['id']}}">{{i['name']}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="">Select QS Info</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="qs_info" id="qs_info" class="form-control select2">
+                            <option value=""></option>
+                            {% for i in qs_infos %}
+                            {% if i['id']|string == existing_team['QS Info']|string %}
                             <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
                             {% else %}
                             <option value="{{i['id']}}">{{i['name']}}</option>
