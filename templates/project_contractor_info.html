@@ -32,6 +32,7 @@
         <form class="p-3 bg-light mb-2 col-12" action="/erp/upload_doc" method="post" enctype="multipart/form-data">
             Upload difference of cost sheet <br>
             <input type="hidden" name="wo_id" value="{{data['work_order_id']}}">
+            <input type="hidden" name="locked" value="{{data['locked']}}">
             <input type="file" name="difference_cost_sheet" required>
             <button type="submit" class="btn bg-indigo text-white my-2">Submit</button>
         </form>
