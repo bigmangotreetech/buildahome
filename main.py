@@ -3077,7 +3077,7 @@ def project_contractor_info():
         data['code'] = res[2]
         data['pan'] = res[3]
 
-    get_wo_query = 'SELECT id, value, balance, difference_cost_sheet from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
+    get_wo_query = 'SELECT id, value, balance, difference_cost_sheet, locked from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
     cur.execute(get_wo_query, (trade, project_id, contractor_id))
     res = cur.fetchone()
     if res is not None:
@@ -3086,6 +3086,7 @@ def project_contractor_info():
         data['trade'] = trade
         data['work_order_id'] = res[0]
         data['difference_cost_sheet'] = res[3]
+        data['locked'] = res[4]
 
     get_bills_query = 'SELECT w.stage, w.percentage, b.amount, b.approval_2_amount, b.trade, b.approved_on, b.cleared_balance, b.id' \
                         ' FROM wo_milestones w LEFT OUTER JOIN wo_bills b ON b.stage=w.stage AND b.contractor_code=%s AND b.project_id=%s AND trade=%s WHERE w.work_order_id=%s'

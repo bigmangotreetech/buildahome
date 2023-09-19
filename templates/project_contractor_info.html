@@ -108,19 +108,19 @@
             </td>
             <td>
                 <span class="d-none">{{i[7]}}</span>
-                {% if '0' in i[6]|string and session['role'] in ['Super Admin','QS Engineer'] %}
+                {% if '0' in i[6]|string and session['role'] in ['Super Admin','QS Engineer'] and data['locked']|string != '1' %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
-                {% elif '1' in i[6]|string and session['role'] in ['Super Admin'] %}
+                {% elif '1' in i[6]|string and session['role'] in ['Super Admin'] and data['locked']|string != '1' %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="force-open-to-clear-balance btn text-primary d-none">Open to Clear balance</span>
                 {% endif %}
             </td>
+            <td>
             {% if session['role'] in ['Super Admin'] and 'Debit note' in i[0] %}
-                <td>
                     <a href="/erp/delete_bill?bill_id={{i[7]}}" onclick="return window.confirm('Are you sure?');" class="btn text-danger">Delete</a>
-                </td>            
             {% endif %}
+            </td>            
 
         </tr>
         {% endfor %}
