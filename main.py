@@ -183,6 +183,16 @@ def get_projects_for_current_user(user_id = '', role = ''):
         if len(projects) == 1:
             projects.append(0)
         return tuple(projects)
+    elif role == 'QS Info':
+        query = 'SELECT project_id from project_operations_team WHERE qs_engineer=' + str(user_id)
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+        for i in result:
+            projects.append(i[0])
+        if len(projects) == 1:
+            projects.append(0)
+        return tuple(projects)
     elif role == 'Architect':
         query = 'SELECT project_id from project_design_team WHERE architect=' + str(user_id)
         cur.execute(query)
@@ -3527,7 +3537,7 @@ def view_qs_approval_indents():
         cur = mysql.connection.cursor()
         current_user_role = session['role']
         indents_query = ''
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','QS Info']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -3543,7 +3553,8 @@ def view_qs_approval_indents():
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
 
-        elif current_user_role in ['QS Engineer','Purchase Executive']:
+
+        elif current_user_role in ['QS Engineer','Purchase Executive','QS Info']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
