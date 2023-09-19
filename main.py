@@ -4816,7 +4816,7 @@ def assign_team():
             if i[2] == 'Senior Architect':
                 senior_architects.append({'id': i[0], 'name': i[1]})
 
-        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer" OR role="QS Info"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
@@ -4916,7 +4916,7 @@ def edit_team():
             existing_team['Senior Architect'] = res[6]
 
 
-        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer" OR role="QS Info"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
@@ -5133,7 +5133,7 @@ def edit_design_team():
 def assign_operations_team():
     if request.method == 'GET':
 
-        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer" OR role="QS Info"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
@@ -5178,7 +5178,7 @@ def edit_operations_team():
             flash('Missing fields', 'danger')
             return redirect('/erp/projects_with_no_operations_team')
         project_id = request.args['project_id']
-        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer"'
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer" OR role="QS Info"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
