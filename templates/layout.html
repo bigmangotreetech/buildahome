@@ -107,10 +107,16 @@
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Engineer','QS Head','QS Info'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase Info','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Material</div>
+<<<<<<< Updated upstream
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] %}
     <a href="/erp/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
+=======
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase Info','QS Info'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Info'] %}
+    <a href="/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
+>>>>>>> Stashed changes
         <ion-icon name="add-circle-outline"></ion-icon>
         <span class="my-auto">Vendor Registration</span>
     </a>
@@ -131,7 +137,12 @@
         <span class="my-auto">Shifting Entry</span>
     </a>
     {% endif %}
+<<<<<<< Updated upstream
     <a href="/erp/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
+=======
+    {% endif %}
+    <a href="/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
+>>>>>>> Stashed changes
         <ion-icon name="server-outline"></ion-icon>
         <span class="my-auto">View inventory</span>
     </a>
@@ -144,8 +155,8 @@
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info'] %}
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] %}
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] %}
     <div class="nav-section-header">Indents</div>
     <a href="/erp/view_qs_approval_indents" class='nav-link clickable {% if "/view_qs_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>
         <ion-icon name="chatbox-outline"></ion-icon>

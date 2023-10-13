@@ -124,7 +124,7 @@ def get_projects():
     cur = mysql.connection.cursor()
     projects = []
     if len(get_projects_for_current_user()) > 0:
-        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning','Finance']:
+        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning','Finance','Purchase Info']:
             query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                     'AND project_id IN ' + str(get_projects_for_current_user())+ ' ORDER BY project_number'
             cur.execute(query)
@@ -141,7 +141,7 @@ def get_projects_for_current_user(user_id = '', role = ''):
         user_id = session['user_id']
         role = session['role']
         cur = mysql.connection.cursor()
-    if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','Finance']:
+    if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','Finance','Purchase Info']:
         return ('All')
     elif role == 'Project Coordinator':
         query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(user_id)
@@ -895,7 +895,7 @@ def index():
     indents_query = ''
     approved_pos_count = 0
     
-    if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Billing']:
+    if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Billing','Purchase Info']:
         indents_query = 'SELECT indents.id, ' \
                         'projects.project_id, ' \
                         'projects.project_name, ' \
@@ -1392,9 +1392,9 @@ def enter_material():
 def view_inventory():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/view_inventory'
-        return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','QS Engineer','QS Head','QS Info','Project Manager','Finance']:
+        session['last_route'] = '/view_inventory'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','Purchase Info','QS Engineer','QS Head','QS Info','Project Manager','Finance']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     cur = mysql.connection.cursor()
@@ -3529,16 +3529,16 @@ def view_ph_approval_indents():
 def view_qs_approval_indents():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/view_approved_indents'
-        return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head', 'QS Info']:
+        session['last_route'] = '/view_approved_indents'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head', 'QS Info','Purchase Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
         indents_query = ''
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','QS Info','Purchase Info']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -3604,16 +3604,16 @@ def view_qs_approval_indents():
 def view_ph_approved_indents():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/view_approved_indents'
-        return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head','Billing']:
+        session['last_route'] = '/view_approved_indents'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head','Billing','Purchase Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
         indents_query = ''
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Billing']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Billing','Purchase Info']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -3681,15 +3681,15 @@ def view_ph_approved_indents():
 def view_approved_indents():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/view_approved_indents'
-        return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head','QS Info']:
+        session['last_route'] = '/view_approved_indents'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head','QS Info','Purchase Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head','Purchase Info']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved_by_qs"' \
                             ' AND indents.project_id=projects.project_id ' \
@@ -3774,7 +3774,7 @@ def view_deleted_indents():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head','Purchase Info']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="deleted" AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
@@ -3844,15 +3844,15 @@ def view_deleted_indents():
 def view_approved_POs():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/erp/view_approved_POs'
-        return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head']:
+        session['last_route'] = '/view_approved_POs'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head','Purchase Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head','Purchase Info']:
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="po_uploaded" AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
