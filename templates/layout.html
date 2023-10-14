@@ -109,14 +109,8 @@
 
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase Info','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Material</div>
-<<<<<<< Updated upstream
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] %}
     <a href="/erp/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
-=======
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase Info','QS Info'] %}
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Info'] %}
-    <a href="/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
->>>>>>> Stashed changes
         <ion-icon name="add-circle-outline"></ion-icon>
         <span class="my-auto">Vendor Registration</span>
     </a>
