@@ -109,9 +109,14 @@
 
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase Info','QS Engineer','QS Head','QS Info'] %}
     <div class="nav-section-header">Material</div>
+<<<<<<< Updated upstream
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] %}
+    <a href="/erp/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
+=======
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase Info','QS Info'] %}
     {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Info'] %}
     <a href="/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
+>>>>>>> Stashed changes
         <ion-icon name="add-circle-outline"></ion-icon>
         <span class="my-auto">Vendor Registration</span>
     </a>
@@ -132,8 +137,7 @@
         <span class="my-auto">Shifting Entry</span>
     </a>
     {% endif %}
-    {% endif %}
-    <a href="/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
+    <a href="/erp/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
         <ion-icon name="server-outline"></ion-icon>
         <span class="my-auto">View inventory</span>
     </a>
