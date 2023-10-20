@@ -1921,6 +1921,7 @@ def contractor_registration():
         trades.append('Elevation Flooring')
         trades.append('Painting 1')
         trades.append('Painting 2')
+        trades.append('Interior 1')
 
         for i in result:
             trades.append(i[0])
@@ -2006,6 +2007,7 @@ def edit_contractor():
             trades.append('Elevation Flooring')
             trades.append('Painting 1')
             trades.append('Painting 2')
+            trades.append('Interior 1')
             
             for i in result:
                 trades.append(i[0])
