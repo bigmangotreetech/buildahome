@@ -124,7 +124,7 @@ def get_projects():
     cur = mysql.connection.cursor()
     projects = []
     if len(get_projects_for_current_user()) > 0:
-        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning','Finance','Purchase Info']:
+        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Purchase Head', 'Site Engineer', 'Design Head','QS Info', 'Billing', 'Planning','Finance','Purchase Info','Technical Info']:
             query = 'SELECT project_id, project_name from projects WHERE is_approved=1 AND archived=0 ' \
                     'AND project_id IN ' + str(get_projects_for_current_user())+ ' ORDER BY project_number'
             cur.execute(query)
@@ -141,7 +141,7 @@ def get_projects_for_current_user(user_id = '', role = ''):
         user_id = session['user_id']
         role = session['role']
         cur = mysql.connection.cursor()
-    if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','Finance','Purchase Info']:
+    if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','Finance','Technical Info']:
         return ('All')
     elif role == 'Project Coordinator':
         query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(user_id)

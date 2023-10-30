@@ -116,8 +116,8 @@
                         <div class="pb-2">{{project[4]}}</div>
                     </div>
                 </div>                
-                {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] %}
-                <a href="/erp/edit_team?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn">
+                {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing','Technical Info'] %}
+                <a href="/edit_team?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn">
                     <ion-icon name="people-outline"></ion-icon>
                     <span class="my-auto ml-2">Team</span></a>
                 <!-- <a href="/erp/client_billing?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn">
