@@ -3540,7 +3540,7 @@ def view_qs_approval_indents():
         cur = mysql.connection.cursor()
         current_user_role = session['role']
         indents_query = ''
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','QS Info','Purchase Info']:
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Purchase Info']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
