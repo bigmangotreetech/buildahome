@@ -71,6 +71,11 @@
     </div>
     
     <button id="get_procurement" class="btn text-white bg-indigo ml-3 mb-2">Get procurement</button>
+    {% if session['role'] == 'Super Admin' %}
+    <button class="btn btn-dark bg-indigo text-white ml-3 mb-2 export-btn"
+        onclick="exportTableToCSV()">Export
+    </button>
+    {% endif %}
     <div class="w-100 p-3 overflow-x-auto">
         {% if procurements is not none %}
         {% if request.args['project_id']|string() != 'All' %}
@@ -331,8 +336,39 @@
     }
 
     
-</script>
 
+    function exportTableToCSV() {
+        $('.export-btn').attr('disabled',true)
+        const table = document.getElementById('dataTable');
+        const rows = table.querySelectorAll('tr');
+        const csvData = [];
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cols = row.querySelectorAll('th, td');
+            const rowData = [];
+
+            for (let j = 0; j < cols.length; j++) {
+                rowData.push(cols[j].innerText);
+            }
+
+            csvData.push(rowData.join(','));
+        }
+
+        const csvContent = 'data:text/csv;charset=utf-8,' + csvData.join('\n');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', (new Date().getTime().toString()+'.csv'));
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => {
+            $('.export-btn').attr('disabled',false)
+        },1000)
+    }
+</script>
 <style>
     td {
         font-size: 11px;
