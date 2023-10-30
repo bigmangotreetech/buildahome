@@ -1415,6 +1415,27 @@ def view_inventory():
         material = request.args['material']
     if 'vendor' in request.args:
         vendor = request.args['vendor']
+        
+    if project_id == 'All' and material == 'All':
+            print(vendor)
+            print('SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE vendor="' + str(vendor) +'"')
+            procurement_query = 'SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE vendor="' + str(vendor) +'"'
+        
+    elif project_id == 'All' and vendor == 'All':
+        if str(material) == 'Cement':
+                procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE material='Cement'"
+        else:    
+            procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE material LIKE '%" + str(material).replace('"','').strip() + "%'"
+
+    elif project_id == 'All' and material != 'All' and vendor != 'All':
+
+        if str(material) == 'Cement':
+                procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE material='Cement' AND vendor='" + str(vendor) +"'"
+        else:    
+            procurement_query = "SELECT * from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE material LIKE '%" + str(material).replace('"','').strip() + "%' AND vendor='" + str(vendor) +"'"
+        
+        
+
 
     if project_id != 'All' or material != 'All' or vendor != 'All':
 
