@@ -1549,6 +1549,19 @@ def debit_note():
         if wo_res is None:
             flash('Work order not created for this trade','danger')
             return redirect(request.referrer)    
+        
+
+        double_quotes_escaped_stage = stage.replace('"','""')
+
+        check_if_bill_raised_query = 'SELECT id from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%"'
+        print(check_if_bill_raised_query)
+        cur.execute(check_if_bill_raised_query)
+        check_if_bill_raised_query_res = cur.fetchone()
+        print(check_if_bill_raised_query_res)
+        if check_if_bill_raised_query_res is not None:
+            flash('A bil has been already raised for this stage. Cannot create debit note','danger')
+            return redirect(request.referrer)   
+        
 
         
         bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on, approval_2_notes, amount) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
@@ -3597,8 +3610,20 @@ def view_qs_approval_indents():
         cur.execute(indents_query)
         data = []
         result = cur.fetchall()
+
+        teams = {}
         for i in result:
             i = list(i)
+            
+            pos_query = 'SELECT u.name, u.email FROM App_users u LEFT OUTER JOIN project_operations_team pos ON u.user_id=pos.qs_info WHERE project_id='+str(i[1])
+            cur.execute(pos_query)
+
+            pos_res = cur.fetchone()
+            if pos_res[0] not in teams.keys():
+                teams[pos_res[0]] = []
+            
+            teams[pos_res[0]].append(i)
+
             if len(str(i[8]).strip()) > 0:
                 i[8] = str(i[8]).strip()
                 timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
@@ -3620,7 +3645,7 @@ def view_qs_approval_indents():
                 else:
                     i[8] = str(int(difference_in_hours)) + ' hours'
             data.append(i)
-        return render_template('qs_approval_indents.html', result=data)
+        return render_template('qs_approval_indents.html', result=data, teams=teams)
 
 
 @app.route('/view_ph_approved_indents', methods=['GET'])

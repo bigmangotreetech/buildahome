@@ -5,6 +5,8 @@
         <h4>Indents for QS</h4>
     </div>
 </div>
+{% for key in teams %}
+        <div class="my-3 pl-5 h5">QS info: {{key}}</div>
 <div class="p-5 w-100 table-responsive">
     <table class="table table-striped">
         <thead>
@@ -18,20 +20,23 @@
         </tr>
         </thead>
         <tbody>
-        {% for i in result %}
-        <tr class="bill-{{i['bill_id']}}">
-            <td>{{i[0]}}</td>
-            <td>{{i[2]}}</td>
-            <td>{{i[3]}}</td>
-            <td>{{i[4]}} {{i[5]}}</td>
-            <td>{{i[7]}}</td>
-            <td>{{i[8]}}</td>
-            <td><a href="/erp/view_indent_details?indent_id={{i[0]}}">
-                <i class="fa fa-external-link"></i>
-            </a></td>
+        
+        
+            {% for i in teams[key] %}
+            <tr class="bill-{{i['bill_id']}}">
+                <td>{{i[0]}}</td>
+                <td>{{i[2]}}</td>
+                <td>{{i[3]}}</td>
+                <td>{{i[4]}} {{i[5]}}</td>
+                <td>{{i[7]}}</td>
+                <td>{{i[8]}}</td>
+                <td><a href="/view_indent_details?indent_id={{i[0]}}">
+                    <i class="fa fa-external-link"></i>
+                </a></td>
 
-        </tr>
-        {% endfor %}
+            </tr>
+            {% endfor %}
+        
 
 
         </tbody>
@@ -39,4 +44,5 @@
 
 
 </div>
+{% endfor %}
 {% endblock %}
