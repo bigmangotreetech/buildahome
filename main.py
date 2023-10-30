@@ -4300,7 +4300,7 @@ def archive_project():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/archive_project'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing']:
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Technical Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if 'project_id' in request.args:
@@ -4322,7 +4322,7 @@ def unarchive_project():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/unarchive_project'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing']:
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Technical Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if 'project_id' in request.args:
@@ -4539,7 +4539,7 @@ def edit_project():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/erp/edit_project'
         return redirect('/erp/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Planning']:
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Planning','Technical Info']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if request.method == 'GET':
