@@ -3619,32 +3619,33 @@ def view_qs_approval_indents():
             cur.execute(pos_query)
 
             pos_res = cur.fetchone()
-            if pos_res[0] not in teams.keys():
-                teams[pos_res[0]] = []
-            
-            teams[pos_res[0]].append(i)
+            if pos_res is not None:
+                if pos_res[0] not in teams.keys():
+                    teams[pos_res[0]] = []
+                
+                teams[pos_res[0]].append(i)
 
-            if len(str(i[8]).strip()) > 0:
-                i[8] = str(i[8]).strip()
-                timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                IST = pytz.timezone('Asia/Kolkata')
-                current_time = datetime.now(IST)
-                time_since_creation = current_time - timestamp
-                difference_in_seconds = time_since_creation.total_seconds()
-                difference_in_hours = difference_in_seconds // 3600
-                if difference_in_hours >= 24:
-                    difference_in_days = int(difference_in_hours // 24)
-                    if difference_in_days >= 365:
-                        years = int(difference_in_days // 365)
-                        days = int(difference_in_days % 365)
-                        difference_in_days = str(years) + ' year(s), ' + str(days)
-                    
-                    hours_remaining = difference_in_hours % 24
-                    i[8] = str(difference_in_days) + ' days, ' + str(
-                        int(hours_remaining)) + 'hours'
-                else:
-                    i[8] = str(int(difference_in_hours)) + ' hours'
-            data.append(i)
+                if len(str(i[8]).strip()) > 0:
+                    i[8] = str(i[8]).strip()
+                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                    IST = pytz.timezone('Asia/Kolkata')
+                    current_time = datetime.now(IST)
+                    time_since_creation = current_time - timestamp
+                    difference_in_seconds = time_since_creation.total_seconds()
+                    difference_in_hours = difference_in_seconds // 3600
+                    if difference_in_hours >= 24:
+                        difference_in_days = int(difference_in_hours // 24)
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
+                        
+                        hours_remaining = difference_in_hours % 24
+                        i[8] = str(difference_in_days) + ' days, ' + str(
+                            int(hours_remaining)) + 'hours'
+                    else:
+                        i[8] = str(int(difference_in_hours)) + ' hours'
+                data.append(i)
         return render_template('qs_approval_indents.html', result=data, teams=teams)
 
 
