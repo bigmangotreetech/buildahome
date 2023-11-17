@@ -1556,12 +1556,13 @@ def debit_note():
         check_if_bill_can_be_raiseed_query = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%" AND stage NOT LIKE "%Debit note%" AND stage NOT LIKE "%Clearing balance%" '
         cur.execute(check_if_bill_can_be_raiseed_query)
         res = cur.fetchone()
-        if res is not None and res[0] is not None:
+        if res is not None:
             
             check_remaining_amount = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%" AND stage LIKE "%Debit note%" AND stage NOT LIKE "%Clearing balance%"'
             cur.execute(check_remaining_amount)
             remaining_res = cur.fetchone()
-            if remaining_res is not None and remaining_res[0] is not None:
+            if remaining_res is not None:
+                return str(remaining_res) + ' ' + check_remaining_amount
                 if int(res[0]) - int(remaining_res[0]) < 0:
                     flash('Cannot create debit note. Amount creating negative balance','danger')
                     return redirect(request.referrer)   
