@@ -948,8 +948,6 @@ def index():
 
     current_month = current_time.strftime('%B') 
 
-
-
     spend_query = 'SELECT SUM(CAST( pr.total_amount AS UNSIGNED)) from procurement pr JOIN projects p on pr.project_id = p.project_id WHERE MONTH(invoice_date) = MONTH(DATE_SUB(curdate(), INTERVAL 0 MONTH)) and YEAR(created_at_datetime) = YEAR(DATE_SUB(curdate(), INTERVAL 0 MONTH))'
     cur.execute(spend_query)
     res = cur.fetchone()
@@ -965,7 +963,9 @@ def index():
         for i in res:
             total_material_spend[i[0]] = i[1]
 
-    return render_template('index.html',current_month=current_month,current_month__material_expenditure=current_month__material_expenditure, current_user_projects = get_projects_for_current_user(), projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
+    indents_status = get_qs_approval_indents_numbers()
+
+    return render_template('index.html',indents_status=indents_status,current_month=current_month,current_month__material_expenditure=current_month__material_expenditure, current_user_projects = get_projects_for_current_user(), projects=projects, vendor_count=vendor_count, contractor_count=contractor_count, work_orders_count=work_orders_count, approved_pos_count=approved_pos_count, dpr_count=dpr_count, total_material_spend=total_material_spend)
 
 @app.route('/profile', methods=['GET','POST'])
 def profile():
@@ -3659,6 +3659,71 @@ def view_qs_approval_indents():
                         i[8] = str(int(difference_in_hours)) + ' hours'
                 data.append(i)
         return render_template('qs_approval_indents.html', result=data, teams=teams)
+
+def get_qs_approval_indents_numbers():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/view_approved_indents'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Executive', 'Purchase Head', 'QS Info','Purchase Info']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        current_user_role = session['role']
+        indents_query = ''
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Purchase Info']:
+            indents_query = 'SELECT indents.id, ' \
+                            'projects.project_id, ' \
+                            'projects.project_name, ' \
+                            'indents.material, ' \
+                            'indents.quantity, ' \
+                            'indents.unit, ' \
+                            'indents.purpose, ' \
+                            'App_users.name, ' \
+                            'indents.timestamp FROM indents ' \
+                            'INNER JOIN projects on ' \
+                            'indents.status="approved" AND ' \
+                            'indents.project_id=projects.project_id ' \
+                            'LEFT OUTER JOIN App_users on ' \
+                            'indents.created_by_user=App_users.user_id'
+
+
+        elif current_user_role in ['QS Engineer','Purchase Executive','QS Info']:
+            indents_query = 'SELECT indents.id, ' \
+                            'projects.project_id, ' \
+                            'projects.project_name, ' \
+                            'indents.material, ' \
+                            'indents.quantity, ' \
+                            'indents.unit, ' \
+                            'indents.purpose, ' \
+                            'App_users.name, ' \
+                            'indents.timestamp FROM indents ' \
+                            'INNER JOIN projects on ' \
+                            'indents.status="approved" AND ' \
+                            'indents.project_id=projects.project_id AND ' \
+                            'indents.project_id IN ' + str(get_projects_for_current_user()) +' '\
+                            'LEFT OUTER JOIN App_users on ' \
+                            'indents.created_by_user=App_users.user_id'
+        cur.execute(indents_query)
+        data = []
+        result = cur.fetchall()
+
+        teams = {}
+        for i in result:
+            i = list(i)
+            
+            pos_query = 'SELECT u.name, u.email FROM App_users u LEFT OUTER JOIN project_operations_team pos ON u.user_id=pos.qs_info WHERE project_id='+str(i[1])
+            cur.execute(pos_query)
+
+            pos_res = cur.fetchone()
+            if pos_res is not None:
+                if pos_res[0] not in teams.keys():
+                    teams[pos_res[0]] = 0
+                
+                teams[pos_res[0]] = teams[pos_res[0]] + 1 
+
+        return teams
 
 
 @app.route('/view_ph_approved_indents', methods=['GET'])
