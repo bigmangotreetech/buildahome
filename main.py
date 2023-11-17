@@ -1541,7 +1541,7 @@ def debit_note():
         cur = mysql.connection.cursor()
         contractor_query = 'SELECT name, code, pan from contractors WHERE id='+str(contractor)
         cur.execute(contractor_query)
-        res = cur.fetchone()
+        c_res = cur.fetchone()
 
         get_wo_query = 'SELECT id from work_orders WHERE trade=%s AND project_id=%s AND contractor_id=%s'
         cur.execute(get_wo_query, (trade, project, contractor))
@@ -1577,7 +1577,7 @@ def debit_note():
 
         
         bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on, approval_2_notes, amount) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-        values = (project, res[0], res[1], res[2], trade, stage, str(value).strip(), timestamp, note.replace('"','""').replace("'","''"),str(value).strip())
+        values = (project, c_res[0], c_res[1], c_res[2], trade, stage, str(value).strip(), timestamp, note.replace('"','""').replace("'","''"),str(value).strip())
         cur.execute(bill_query, values)
         mysql.connection.commit()
         flash('Debit note created successfully', 'success')
