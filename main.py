@@ -1553,14 +1553,25 @@ def debit_note():
 
         double_quotes_escaped_stage = stage.replace('"','""')
 
-        check_if_bill_raised_query = 'SELECT id from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%"'
-        print(check_if_bill_raised_query)
-        cur.execute(check_if_bill_raised_query)
-        check_if_bill_raised_query_res = cur.fetchone()
-        print(check_if_bill_raised_query_res)
-        if check_if_bill_raised_query_res is not None:
-            flash('A bil has been already raised for this stage. Cannot create debit note','danger')
+        check_if_bill_can_be_raiseed_query = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%"'
+        res = check_if_bill_can_be_raiseed_query.fetchone()
+        if res is not None:
+            double_quotes_escaped_stage_with_debit_note = double_quotes_escaped_stage + ' (Debit note)'
+            check_remaining_amount = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%"'
+            cur.execute(check_remaining_amount)
+            remaining_res = cur.fetchone()
+            if remaining_res is not None:
+                if int(res[0]) - int(remaining_res[0]) > 0:
+                    flash('Cannot create debit note. Amount creating negative balance','danger')
             return redirect(request.referrer)   
+
+        # check_if_bill_raised_query = 'SELECT id from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%"'
+        # cur.execute(check_if_bill_raised_query)
+        # check_if_bill_raised_query_res = cur.fetchone()
+        # print(check_if_bill_raised_query_res)
+        # if check_if_bill_raised_query_res is not None:
+        #     flash('A bill has been already raised for this stage. Cannot create debit note','danger')
+        #     return redirect(request.referrer)   
         
 
         
