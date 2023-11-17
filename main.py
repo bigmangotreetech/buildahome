@@ -1530,7 +1530,7 @@ def debit_note():
         project = request.form['project']
         contractor = request.form['contractor']
         trade = request.form['trade'].strip()
-        stage = request.form['stage'] + '(Debit note)'
+        stage = request.form['stage']   
         value = request.form['value']
         note = request.form['note']
 
@@ -1562,7 +1562,6 @@ def debit_note():
             cur.execute(check_remaining_amount)
             remaining_res = cur.fetchone()
             if remaining_res is not None:
-                return str(res[0]) + ' ' + str(remaining_res[0]) + ' ' + check_if_bill_can_be_raiseed_query
                 if int(str(res[0])) - int(str(remaining_res[0])) < 0:
                     flash('Cannot create debit note. Amount creating negative balance','danger')
                     return redirect(request.referrer)   
