@@ -1553,12 +1553,12 @@ def debit_note():
 
         double_quotes_escaped_stage = stage.replace('"','""')
 
-        check_if_bill_can_be_raiseed_query = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%"'
+        check_if_bill_can_be_raiseed_query = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%" AND stage NOT LIKE "%Debit note%" AND stage NOT LIKE "%Clearing balance%" '
         cur.execute(check_if_bill_can_be_raiseed_query)
         res = cur.fetchone()
         if res is not None:
             
-            check_remaining_amount = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%" AND stage LIKE "%Debit note%"'
+            check_remaining_amount = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%" AND stage LIKE "%Debit note%" AND stage NOT LIKE "%Clearing balance%"'
             cur.execute(check_remaining_amount)
             remaining_res = cur.fetchone()
             if remaining_res is not None:
