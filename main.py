@@ -1557,7 +1557,7 @@ def debit_note():
         cur.execute(check_if_bill_can_be_raiseed_query)
         res = cur.fetchone()
         if res is not None:
-            double_quotes_escaped_stage_with_debit_note = double_quotes_escaped_stage + ' (Debit note)'
+            double_quotes_escaped_stage_with_debit_note = stage + ' (Debit note)'
             check_remaining_amount = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage_with_debit_note +'%"'
             cur.execute(check_remaining_amount)
             remaining_res = cur.fetchone()
