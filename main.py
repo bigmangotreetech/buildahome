@@ -1562,7 +1562,7 @@ def debit_note():
             cur.execute(check_remaining_amount)
             remaining_res = cur.fetchone()
             if remaining_res is not None:
-                if int(res[0]) - int(remaining_res[0]) > 0:
+                if int(res[0]) - int(remaining_res[0]) < 0:
                     flash('Cannot create debit note. Amount creating negative balance','danger')
                     return redirect(request.referrer)   
 
