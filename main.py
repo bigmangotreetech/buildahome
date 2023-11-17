@@ -1556,12 +1556,12 @@ def debit_note():
         check_if_bill_can_be_raiseed_query = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%" AND stage NOT LIKE "%Debit note%" AND stage NOT LIKE "%Clearing balance%"'
         cur.execute(check_if_bill_can_be_raiseed_query)
         res = cur.fetchone()
-        if res is not None:
+        if res is not None and res[0] is not None:
             
             check_remaining_amount = 'SELECT SUM(approval_2_amount) from wo_bills WHERE project_id='+str(project)+' AND trade="'+str(trade)+'" AND stage LIKE "%' + double_quotes_escaped_stage +'%" AND stage LIKE "%Debit note%" AND stage NOT LIKE "%Clearing balance%"'
             cur.execute(check_remaining_amount)
             remaining_res = cur.fetchone()
-            if remaining_res is not None:
+            if remaining_res is not None and remaining_res[0] is not None:
                 if float(str(res[0])) - float(str(remaining_res[0])) < 0:
                     flash('Cannot create debit note. Amount creating negative balance','danger')
                     return redirect(request.referrer)   
@@ -3293,7 +3293,7 @@ def clear_wo_balance():
 
 def get_work_orders_for_project(project_id):
     cur = mysql.connection.cursor()
-    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+    get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                    ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(
         request.args['project_id']) + ' ORDER BY wo.trade'
     cur.execute(get_wo_query)
@@ -3349,14 +3349,14 @@ def view_work_order():
 
 
         if project_id == 'All' and contractor_code == 'All' and trade != 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.trade="' + str(trade) + '" ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
             nt_nmr_bills = []
         
         elif project_id == 'All' and contractor_code != 'All' and trade == 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND c.code="' + str(contractor_code) + '" ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
@@ -3368,7 +3368,7 @@ def view_work_order():
             nt_nmr_bills = cur.fetchall()
         
         elif project_id == 'All' and contractor_code != 'All' and trade != 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND c.code="' + str(contractor_code) + '" AND wo.trade="' + str(trade) + '" ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
@@ -3376,7 +3376,7 @@ def view_work_order():
             nt_nmr_bills = []
         
         elif project_id != 'All' and contractor_code == 'All' and trade == 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
@@ -3388,7 +3388,7 @@ def view_work_order():
             nt_nmr_bills = cur.fetchall()
 
         elif project_id != 'All' and contractor_code == 'All' and trade != 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' AND wo.trade="' + str(trade) + '" ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
@@ -3396,7 +3396,7 @@ def view_work_order():
             nt_nmr_bills = []
 
         elif project_id != 'All' and contractor_code != 'All' and trade == 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' AND c.code="' + str(contractor_code) + '" ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
@@ -3408,7 +3408,7 @@ def view_work_order():
             nt_nmr_bills = cur.fetchall()
 
         elif project_id != 'All' and contractor_code == 'All' and trade == 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
@@ -3421,7 +3421,7 @@ def view_work_order():
 
         
         elif project_id != 'All' and contractor_code != 'All' and trade != 'All':
-            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name from work_orders wo ' \
+            get_wo_query = 'SELECT wo.id, c.name, c.pan, c.code, wo.trade,  wo.value, wo.balance, wo.filename, wo.locked, p.project_name, wo.difference_cost_sheet from work_orders wo ' \
                         ' JOIN projects p on p.project_id=wo.project_id INNER JOIN contractors c on wo.approved=1 AND c.id=wo.contractor_id AND wo.project_id=' + str(project_id) + ' AND wo.trade="' + str(trade) + '" AND c.code="' + str(contractor_code) + '" ORDER BY wo.trade'
             cur.execute(get_wo_query)
             work_orders = cur.fetchall()            
