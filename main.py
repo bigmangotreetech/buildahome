@@ -3699,6 +3699,8 @@ def get_qs_approval_indents_numbers():
                             'indents.project_id IN ' + str(get_projects_for_current_user()) +' '\
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
+        else: return {}
+    
         cur.execute(indents_query)
         data = []
         result = cur.fetchall()
