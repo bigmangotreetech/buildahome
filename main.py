@@ -1531,6 +1531,7 @@ def debit_note():
         contractor = request.form['contractor']
         trade = request.form['trade'].strip()
         stage = request.form['stage']   
+        stage_to_insert = request.form['stage'] + ' (Debit note)'
         value = request.form['value']
         note = request.form['note']
 
@@ -1577,7 +1578,7 @@ def debit_note():
 
         
         bill_query = 'INSERT into wo_bills (project_id, contractor_name, contractor_code, contractor_pan, trade, stage, approval_2_amount, approved_on, approval_2_notes, amount) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-        values = (project, c_res[0], c_res[1], c_res[2], trade, stage, str(value).strip(), timestamp, note.replace('"','""').replace("'","''"),str(value).strip())
+        values = (project, c_res[0], c_res[1], c_res[2], trade, stage_to_insert, '0', timestamp, note.replace('"','""').replace("'","''"),str(value).strip())
         cur.execute(bill_query, values)
         mysql.connection.commit()
         flash('Debit note created successfully', 'success')
