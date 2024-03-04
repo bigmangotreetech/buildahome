@@ -1,0 +1,291 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-3 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="col-12">
+        <h4>KRA</h4>
+    </div>
+</div>
+
+<!-- 
+
+
+    YTD to be auto populated
+
+    Add notes after dekay
+
+    Delay 
+
+        Select project field with multple field
+
+    
+
+    Submitting report card should have approval 1 from project manager (NAllamutu)
+
+
+
+ -->
+<div class="my-5 w-100 row mx-0 px-5">
+
+    <div class="col-md-6 bg-white py-2">
+        {% if approved == 1  %}
+        <div class=" text-success my-4 h5">
+            <i class="fa fa-check"></i>
+            Approved</div>
+        {% endif %}
+        {% if session['role'] not in data.keys() %}
+
+        <div class="row mx-0 mb-3 form-group">
+            <div class="col-6  d-flex flex-column">
+                <label for="Coordinator" class="my-auto">Select coordinator</label>
+            </div>
+            <div class="col-6">
+                <select name="coordinator" id="coordinator" class="form-control select2">
+                    <option value="">Select coordinator</option>
+                    {% for i in users %}
+                    {% if request.args['coordinator'] == i[0]|string %}
+                    <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
+                    {% else %}
+                    <option value="{{i[0]}}">{{i[1]}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="row mx-0 mb-3 form-group">
+            <div class="col-6  d-flex flex-column">
+                <label for="Category" class="my-auto">Category</label>
+            </div>
+            <div class="col-6">
+                <select name="Category" id="category" class="form-control select2">
+                    <option value="">Select category</option>
+                    {% for i in data.keys() %}
+                    {% if request.args['category'] == i %}
+                    <option value="{{i}}" selected="true">{{i}}</option>
+                    {% else %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        {% endif %}
+
+        <div class="row mx-0 mb-3 form-group">
+            <div class="col-6  d-flex flex-column">
+                <label for="Category" class="my-auto">Month</label>
+            </div>
+            <div class="col-6">
+                <select name="month" id="month" class="form-control select2">
+                    <option value="">Select month</option>
+                    {% for i in months %}
+                    {% if current_month == i|string %}
+                    <option value="{{i}}" selected="true">{{months[i]}}</option>
+                    {% else %}
+                    <option value="{{i}}">{{months[i]}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row mx-0 mb-3 form-group">
+            <div class="col-6  d-flex flex-column">
+                <label for="year" class="my-auto">Year</label>
+            </div>
+            <div class="col-6">
+                <select name="year" id="year" class="form-control select2">
+                    <option value="">Select year</option>
+                    {% for i in years %}
+                    {% if current_year == i|string %}
+                    <option value="{{i}}" selected="true">{{i}}</option>
+                    {% else %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+
+
+
+        {% if request.args['category'] in data %}
+        <form action="/kra" method="post">
+            <input type="hidden" name="month" value="{{current_month}}">
+            <input type="hidden" name="year" value="{{current_year}}">
+            {% if session['role'] not in data.keys() %}
+            <input type="hidden" name="category" value="{{request.args['category']}}">
+            <input type="hidden" name="coordinator" value="{{request.args['coordinator']}}">
+            {% else %}
+            <input type="hidden" name="category" value="{{session['role']}}">
+            <input type="hidden" name="coordinator" value="{{session['user_id']}}">
+            {% endif %}
+
+            {% for key in data[request.args['category']] %}
+
+            <div class="row mx-0 mb-3 form-group">
+                <div class="col-6  d-flex flex-column">
+                    <label class='label' for="{{key}}" class=" my-auto">{{key}}</label>
+                </div>
+                <div class="col-3">
+                    {% if request.args['category'] in prefilled_data %}
+                    <input type="number" name="{{key}}" min='0' max="{{data[request.args['category']][key]}}" step="1"
+                        class="form-control limit" value="{{prefilled_data[request.args['category']][key]}}" required>
+                    {% else %}
+                    <input type="number" name="{{key}}" min='0' max="{{data[request.args['category']][key]}}" step="1"
+                        class="form-control limit" required>
+                    {% endif %}
+                </div>
+                <div class="col-3">
+                    / {{data[request.args['category']][key]}}
+                </div>
+            </div>
+
+            {% endfor %}
+
+            <textarea name="notes" id="" class="form-control" rows="5">{{notes}}</textarea>
+            {% if 'month' in request.args and 'year' in request.args %}
+            <div class="text-right pt-3">
+                <button class="bg-indigo text-white btn">Update</button>
+            </div>
+            {% endif %}
+
+        </form>
+
+        
+
+        
+
+
+        {% endif %}
+    </div>
+    {% if 'month' in request.args and 'year' in request.args %}
+    <div class="col-lg-6 px-5">
+        <canvas id="initChart"></canvas>
+    </div>
+    {% endif %}
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // function generateRandomLightColors(n) {
+    //     const colors = [];
+    //     const letters = '89ABCDEF'; // Restricting to lighter hexadecimal values
+
+    //     for (let i = 0; i < n; i++) {
+    //         let color = '#';
+    //         for (let j = 0; j < 6; j++) {
+    //             color += letters[Math.floor(Math.random() * letters.length)];
+    //         }
+    //         // colors.push(color);
+
+
+    //         if ((i + 1) % 3 == 1) {
+    //             colors.push('#dc3545')
+    //         } else if ((i + 1) % 3 == 0) {
+    //             colors.push('#ffffff')
+    //         } else {
+    //             colors.push('#73bb76')
+    //         }
+
+    //     }
+
+    //     return colors;
+    // }
+
+
+    // labels = []
+    // for (const label of document.getElementsByClassName('label')) {
+    //     labels.push(label.innerHTML)
+    //     labels.push(`${label.innerHTML} in {{ months[current_month|int] }}`)
+    //     labels.push(``)
+    // }
+
+    // limits = []
+    // for (const number of document.getElementsByClassName('limit')) {
+    //     limits.push(number.getAttribute('max'))
+    //     limits.push(number.value == '' ? '0' : number.value)
+    //     limits.push(0)
+    // }
+
+
+
+    // colors = generateRandomLightColors(limits.length);
+
+    // data = {
+    //     labels: labels,
+    //     datasets: [{
+    //         data: limits,
+    //         backgroundColor: colors,
+
+    //         borderWidth: 1
+    //     }]
+    // };
+
+    // // Get the canvas element
+    // ctx = document.getElementById('initChart').getContext('2d');
+
+    // // Create the pie chart
+    // const initChart = new Chart(ctx, {
+    //     type: 'bar',
+    //     data: data,
+    //     options: {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //         plugins: {
+    //             legend: {
+    //                 display: false,
+
+    //             }
+    //         },
+    //         scales: {
+    //             x: {
+    //                 display: false // Hide x-axis
+    //             },
+
+    //         }
+
+
+    //     }
+    // });
+
+    // inputFields = document.getElementsByClassName('limit')
+    // for (const inputField of inputFields) {
+    //     inputField.addEventListener('change', function () {
+    //         limits = []
+    //         for (const number of document.getElementsByClassName('limit')) {
+    //             limits.push(number.getAttribute('max'))
+    //             limits.push(number.value)
+    //             limits.push(0)
+    //         }
+    //         const data = {
+    //             labels: labels,
+    //             datasets: [{
+    //                 data: limits,
+    //                 backgroundColor: colors,
+    //                 borderWidth: 1
+    //             }]
+    //         };
+    //         initChart.data = data
+    //         initChart.options.animation = false;
+    //         console.log('data', data)
+    //         initChart.update()
+    //     })
+    // }
+
+
+
+</script>
+
+
+
+<style>
+
+
+</style>
+
+{% endblock %}

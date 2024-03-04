@@ -25,10 +25,17 @@
                 <div class="mb-2 fs-12"><b>Address</b>: {{contractor[5]}}</div>
             </div>
             <div class="d-flex mt-3 justify-content-end">
-                <a href="/erp/view_work_order?project_id=All&trade=All&contractor_code={{contractor[2]}}" class="text-success">Show supplies</a>
-                <a href="/erp/edit_contractor?contractor_id={{contractor[0]}}" class="ml-4">Edit</a>
+                <a href="/view_work_order?project_id=All&trade=All&contractor_code={{contractor[2]}}" class="text-success">Show supplies</a>
+
+                {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']  or (session['role'] == 'Custom' and 'Edit contractor' in session['permission'])  %}
+                <a href="/edit_contractor?contractor_id={{contractor[0]}}" class="ml-4">Edit</a>
+                {% endif %}
+                
+                {% if session['role'] in ['Super Admin','COO','QS Head']  or (session['role'] == 'Custom' and 'Delete contractor' in session['permission'])  %}
                 <a onclick="return confirm('Are you sure you want to delete?');"
-                   href="/erp/delete_contractor?contractor_id={{contractor[0]}}" class="text-danger ml-4">Delete</a>
+                   href="/delete_contractor?contractor_id={{contractor[0]}}" class="text-danger ml-4">Delete</a>
+                {% endif %}
+                
             </div>
         </div>
     </div>

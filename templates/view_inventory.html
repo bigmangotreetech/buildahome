@@ -71,7 +71,7 @@
     </div>
     
     <button id="get_procurement" class="btn text-white bg-indigo ml-3 mb-2">Get procurement</button>
-    {% if session['role'] == 'Super Admin' %}
+    {% if session['role'] == 'Super Admin' or (session['role'] == 'Custom' and 'Export view inventory' in session['permission']) %}
     <button class="btn btn-dark bg-indigo text-white ml-3 mb-2 export-btn"
         onclick="exportTableToCSV()">Export
     </button>
@@ -143,7 +143,7 @@
                     <td class="item_difference_cost">{{i[14]}}</td>
                     {% if session['role'] in ['Super Admin','COO','Purchase Head'] and 'Shifting entry' not in i[2] %}
                     <td>
-                        <a href="/erp/edit_procurement?procurement_id={{i[0]}}">Edit</a>
+                        <a href="/edit_procurement?procurement_id={{i[0]}}">Edit</a>
                     </td>
                     {% endif %}
                 </tr>
@@ -242,62 +242,38 @@
 
     // Function to sort the table
     function sortTable(n) {
-        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        table = document.querySelector('.table');
-        switching = true;
-        console.log()
-        // Set the sorting direction to ascending
-        dir = 'asc';
+    var table = document.querySelector('.table');
+    var rows = $('#dataTable tr:visible');
+    var switching = true;
+    var dir = 'asc';
+    var switchcount = 0;
+
+    table.style.opacity = '0.3';
+
+    // Split rows into batches of 40
+    for (var batchStart = 1; batchStart < rows.length - 1; batchStart += 10) {
+        
+        var batchEnd = Math.min(batchStart + 10, rows.length - 1);
+        console.log(batchStart)
+        // Apply sorting to each batch
         while (switching) {
             switching = false;
-            rows =  $('#dataTable tr:visible');
-            for (i = 1; i < (rows.length - 2); i++) {
-                shouldSwitch = false;
-                x = rows[i].querySelectorAll('td')[n];
-                y = rows[i + 1].querySelectorAll('td')[n];
-                if (dir === 'asc') {
-                    if (headerNames[n] == 'Invoice date') {
-                        if (new Date(x.innerHTML.trim()) > new Date(y.innerHTML.trim())) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
 
-                    else if(numberColumns.includes(headerNames[n])) {
-                        if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML)) {
-                            shouldSwitch = true;
-                            break;
-                        }   
-                    } else {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                    
-                } else if (dir === 'desc') {
-                    if (headerNames[n] == 'Invoice date') {
-                        if (new Date(x.innerHTML.trim()) < new Date(y.innerHTML.trim())) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                    else if(numberColumns.includes(headerNames[n])) {
-                        if (parseFloat(x.innerHTML) < parseFloat(y.innerHTML)) {
-                            shouldSwitch = true;
-                            break;
-                        }   
-                    }
-                    else {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                    
-                    
+            for (var i = batchStart; i < batchEnd - 1; i++) {
+                var shouldSwitch = false;
+                console.log(i)
+                var x = rows[i].querySelectorAll('td')[n];
+                var y = rows[i + 1].querySelectorAll('td')[n];
+
+                var valX = getValue(x.innerHTML.trim());
+                var valY = getValue(y.innerHTML.trim());
+
+                if ((dir === 'asc' && valX > valY) || (dir === 'desc' && valX < valY)) {
+                    shouldSwitch = true;
+                    break;
                 }
             }
+
             if (shouldSwitch) {
                 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
@@ -311,6 +287,21 @@
         }
     }
 
+    table.style.opacity = '1';
+
+    function getValue(value) {
+        if (headerNames[n] === 'Invoice date') {
+            return new Date(value).getTime();
+        } else if (numberColumns.includes(headerNames[n])) {
+            return parseFloat(value.replaceAll(',', ''));
+        } else {
+            return value.toLowerCase();
+        }
+    }
+}
+
+
+    
     // Add click event listeners to each th element to trigger sorting
     var headers = document.querySelectorAll('th');
     var headerNames = []
@@ -318,7 +309,7 @@
     for (var i = 0; i < headers.length; i++) {
         headers[i].addEventListener('click', function (index, element) {
             $("#alert-msg").addClass('d-none')
-            if($('table tr:visible').length > 100) {
+            if($('table tr:visible').length > 500) {
                 setTimeout(() => {
                     $("#alert-msg").removeClass('d-none')
                     $("#alert-msg").text('Number of rows too high to filter. Please use the date filter to narrow down you search')

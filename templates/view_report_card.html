@@ -1,0 +1,132 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-3 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="col-12">
+        <h4>View report card</h4>
+    </div>
+</div>
+
+<div class="my-5 w-100 row mx-0 px-5">
+    <div class=" mx-0 w-100 bg-white py-2">
+
+
+        <div class="row mx-0 mb-3 form-group">
+            <div class="col-4  d-flex flex-column">
+                <label for="Coordinator" class="my-auto">Select coordinator</label>
+            </div>
+            <div class="col-4">
+                <select name="coordinator" id="coordinator" class="form-control select2">
+                    <option value="">Select coordinator</option>
+                    {% for i in users %}
+                    {% if request.args['coordinator'] == i[0]|string %}
+                    <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
+                    {% else %}
+                    <option value="{{i[0]}}">{{i[1]}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="w-100 bg-white card-container mx-0 overflow-auto">
+        <div class="report-card w-100 border-dark border" role="button" >
+            <!-- <h4 class="text-center border-dark border-bottom p-3">Report card for {{month}}</h4> -->
+            <div class="w-100">
+                <div class="w-100 h3 p-4 text-center"> Report card</div>
+                <div class="mx-0 flex-fill">
+                    <div class=" p-0 border w-100 coord-name d-flex flex-column justify-content-center category-header px-2">{{i}}</div>
+                    <div class="category-and-rating row mx-0 p-0">
+
+
+
+                    </div>
+                    <div class="category-and-rating w-100 row mx-0 p-0">
+                        
+
+                        <div class="p-2 border col-3 category-header"></div>
+                        <div class="col-9 row mx-0 px-0">
+                        {% for month in months_data %}
+                            <div class="col-4 border category-header">{{month}}</div>
+                        {% endfor %}
+                        </div>
+
+                    </div>
+
+
+                </div>
+                {% for i in months_data[current_month_text] %}
+                <div class="mx-0 flex-fill">
+                    <div class=" p-0 border w-100 coord-name d-flex flex-column justify-content-center category-header px-2">{{i}}</div>
+                    <div class="category-and-rating row mx-0 p-0">
+
+
+
+                    </div>
+                    <div class="category-and-rating w-100 row mx-0 p-0">
+                        {% for item in months_data[current_month_text][i] %}
+
+                        <div class="p-2 border col-3 d-flex flex-column justify-content-center">{{item}}</div>
+                        <div class="col-9 row mx-0 px-0">
+                        {% for month in months_data %}
+                            {% if item == 'Handover for next month' or i == 'Delay' %}
+                            <div class="p-2 border col-4">
+
+                                {% for p in months_data[month][i][item] %}
+                                <a href="/view_project_details?project_id={{p[0]}}" target="_blank">{{p[1]}}</a>,
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="col-4 border d-flex flex-column justify-content-center">{{months_data[month][i][item]}}</div>
+                            {% endif %}
+                            
+                        {% endfor %}
+                        </div>
+
+                        {% endfor %}
+                        <div class="py-3 opacity-0">-</div>
+
+                    </div>
+
+
+                </div>
+
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+<style>
+    .opacity-0 {
+        opacity: 0;
+    }
+    .report-card {
+        background-color: rgb(221, 242, 255);
+    }
+    .coord-name {
+        width: 150px;
+    }
+    .category-and-rating {
+        width: 400px;
+    }
+    .card-container {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: auto;
+    }
+    .category-header {
+        font-size: 20px;
+    }
+</style>
+
+{% endblock %}

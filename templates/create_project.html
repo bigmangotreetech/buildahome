@@ -3,7 +3,7 @@
 <div class="my-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form name="myForm" action="/erp/create_project" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <form name="myForm" action="/create_project" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                 <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
                     <div class="col-12">
                         <h4>Create project</h4>
@@ -34,6 +34,7 @@
                     </div>
                     <div class="col-6">
                         <input name="client_name" id="client_name" class="form-control" required>
+                        <span name="client_name_error" class="d-none" id="client_name_error">Please Enter Client Name</span> 
                     </div>
                 </div>
                 <div class="row mx-0 mb-3 form-group">
@@ -42,6 +43,7 @@
                     </div>
                     <div class="col-6">
                         <input name="client_phone" id="client_phone" class="form-control" required>
+                        <span name="client_phone_error" class="d-none" id="client_phone_error">Please Enter Client Pame</span> 
                     </div>
                 </div>
 

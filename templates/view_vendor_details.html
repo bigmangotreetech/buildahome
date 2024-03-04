@@ -15,7 +15,7 @@
                 <div class="col-6">
                     <div class="mb-2">
                         <img alt="" height="150" width="150"
-                             src="/erp/files/vendor_dp_{{request.args['vendor_id']}}" alt=""
+                             src="/files/vendor_dp_{{request.args['vendor_id']}}" alt=""
                              onerror="this.src='./static/profile_picture.PNG'"
                              style="border-radius: 50%">
                     </div>
@@ -104,10 +104,15 @@
             <div class="row mx-0 mb-3 form-group">
 
                 <div class="ml-auto">
-                    <a href="/erp/view_inventory?project=All&material=All&vendor={{vendor_details[0]}}" class="btn btn-success mr-2">Show all supplies</a>
+                    <a href="/view_inventory?project=All&material=All&vendor={{vendor_details[0]}}" class="btn btn-success mr-2">Show all supplies</a>
 
-                    <a href="/erp/edit_vendor?vendor_id={{request.args['vendor_id']}}" class="btn btn-info mr-2">Edit</a>
+                    {% if session['role'] in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']  or (session['role'] == 'Custom' and 'Edit vnedor' in session['permission'])  %}
+                    <a href="/edit_vendor?vendor_id={{request.args['vendor_id']}}" class="btn btn-info mr-2">Edit</a>
+                    {% endif %}
+
+                    {% if session['role'] in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']  or (session['role'] == 'Custom' and 'Delete vendor' in session['permission'])  %}
                     <a onclick='return confirm("Are you sure you want to delete this vendor")' href="/delete_vendor?vendor_id={{request.args['vendor_id']}}" class="btn btn-danger">Delete</a>
+                    {% endif %}
                 </div>
             </div>
 

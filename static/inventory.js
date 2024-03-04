@@ -4,9 +4,9 @@ $('#get_procurement').on('click', function(){
     const vendor = $("#vendor").val()
     url = ''
     if(project.length) {
-        url = '/erp/view_inventory?project_id='+project.toString()
+        url = '/view_inventory?project_id='+project.toString()
     } else {
-        url = '/erp/view_inventory?project_id=All'
+        url = '/view_inventory?project_id=All'
     }
     if(material.length) {
         url += '&material='+material.toString()        
@@ -25,7 +25,7 @@ $('#get_procurement').on('click', function(){
 $("#update_kyp_material").on('click', function(){
     const project = $("#project").val()
     if (project.length) {
-        window.location.href = '/erp/kyp_material?project_id='+project.toString()        
+        window.location.href = '/kyp_material?project_id='+project.toString()        
     }
 })
 

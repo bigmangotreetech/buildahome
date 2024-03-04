@@ -23,7 +23,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
           rel="stylesheet">
 
-    <link href="../lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
     <link href="../lib/animate/animate.min.css" rel="stylesheet">
 
 
@@ -41,17 +43,17 @@
     <img src="{{ url_for('static', filename='logo.png') }}" alt="" class="mr-3" width="80">
     <h6 class="text-white my-auto">buildAhome</h6>
     <div class="ml-auto d-none d-md-block my-auto">
-        <a href="/erp" class="btn text-white h6 mb-0 mr-2">HOME</a>
+        <a href="/" class="btn text-white h6 mb-0 mr-2">HOME</a>
     </div>
     <div class="d-none d-md-block my-auto">
         <div class="dropdown">
             <div class="profile-circle dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="{{session['profile_picture']}}" class="h-100 w-100" onerror="this.src='/erp/static/profile_picture.PNG'">
+                <img src="{{session['profile_picture']}}" class="h-100 w-100" onerror="this.src='/static/profile_picture.PNG'">
             </div>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <div class=" my-2 border-bottom border-light dropdown-item">{{session['name']}}</div>
-                <a href="/erp/logout" class="my-2 dropdown-item fs-12 fw-500">Logout</a>
-                <a href="/erp/profile" class="my-2 dropdown-item fs-12 fw-500">Profile</a>
+                <a href="/logout" class="my-2 dropdown-item fs-12 fw-500">Logout</a>
+                <a href="/profile" class="my-2 dropdown-item fs-12 fw-500">Profile</a>
             </div>
         </div>
     </div>
@@ -60,257 +62,311 @@
 <div class="position-fixed sidebar p-3 bg-indigo">
 
     <div class="nav-section-header">Project</div>
-    {% if session['role'] in ['Super Admin','COO','Sales Executive','Billing','Planning'] %}
-    <a href='/erp/create_project' class='nav-link clickable {% if "create_project" in request.path %} active {% endif %}'>
+    <!-- <div class="text-white">{{session['permission']}}</div> -->
+    {% if session['role'] in ['Super Admin','COO','Sales Executive','Billing','Planning'] or (session['role'] == 'Custom' and 'Create project' in session['permission']) %}
+    <a href='/create_project' class='nav-link clickable {% if "create_project" in request.path %} active {% endif %}'>
         <ion-icon name="add-circle-outline"></ion-icon>
         <span class="my-auto">Create project</span>
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','Billing'] %}
-    <a href="/erp/unapproved_projects" class='nav-link clickable {% if "unapproved_projects" in request.path %} active {% endif %}'>
+    {% if session['role'] in ['Super Admin','Billing']  or (session['role'] == 'Custom' and 'Unapproved projects' in session['permission'])  %}
+    <a href="/unapproved_projects" class='nav-link clickable {% if "unapproved_projects" in request.path %} active {% endif %}'>
         <ion-icon name="browsers-outline"></ion-icon>
         <span class="my-auto">Unapproved projects</span>
     </a>
     {% endif %}
 
-    <a href="/erp/archived_projects" class='nav-link clickable  {% if "archived_projects" in request.path %} active {% endif %}'>
+    <a href="/archived_projects" class='nav-link clickable  {% if "archived_projects" in request.path %} active {% endif %}'>
         <ion-icon name="calendar-outline"></ion-icon>
         <span class="my-auto">Archived Projects</span>
     </a>
-    <a href="/erp/projects" class='nav-link clickable  {% if "/projects" in request.path and "/projects_" not in request.path %} active {% endif %}'>
+    <a href="/projects" class='nav-link clickable  {% if "/projects" in request.path and "/projects_" not in request.path %} active {% endif %}'>
         <ion-icon name="checkbox-outline"></ion-icon>
         <span class="my-auto">Projects</span>
     </a>
 
-    <a href="/erp/projects_with_team" class='nav-link clickable  {% if "/projects_with_team" in request.path  %} active {% endif %}'>
+    <a href="/projects_with_team" class='nav-link clickable  {% if "/projects_with_team" in request.path  %} active {% endif %}'>
         <ion-icon name="checkbox-outline"></ion-icon>
         <span class="my-auto">Projects with team</span>
     </a>
 
-    {% if session['role'] in ['Super Admin','COO','Billing'] %}
+    {% if session['role'] in ['Super Admin','COO','Billing']  or (session['role'] == 'Custom' and 'Create user' in session['permission'])  %}
     <div class="nav-section-header ">Users</div>
-    <a href="/erp/create_user" class='nav-link clickable {% if "/create_user" in request.path%} active {% endif %}'>
+    <a href="/create_user" class='nav-link clickable {% if "/create_user" in request.path%} active {% endif %}'>
         <ion-icon name="person-add-outline"></ion-icon>
         <span class="my-auto">Create user</span>
     </a>
-    <a href="/erp/view_users" class='nav-link clickable {% if "/view_users" in request.path%} active {% endif %}'>
+    {% endif %}
+    {% if session['role'] in ['Super Admin','COO','Billing']  or (session['role'] == 'Custom' and 'View user' in session['permission'])  %}
+    <a href="/view_users" class='nav-link clickable {% if "/view_users" in request.path%} active {% endif %}'>
         <ion-icon name="people-outline"></ion-icon>
         <span class="my-auto">View users</span>
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin'] %}
-    <a href="/erp/expenses" class='nav-link clickable {% if "/expenses" in request.path %} active {% endif %}'>
+
+    {% if session['role'] in ['Super Admin'] and session['email'] != 'divyafernandes7@gmail.com' or (session['role'] == 'Custom' and 'Expenses' in session['permission']) %}
+    <a href="/expenses" class='nav-link clickable {% if "/expenses" in request.path %} active {% endif %}'>
         <ion-icon name="logo-usd"></ion-icon>
         <span class="my-auto">Expenses</span>
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase Info','QS Engineer','QS Head','QS Info'] %}
+
+    
     <div class="nav-section-header">Material</div>
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] %}
-    <a href="/erp/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] or (session['role'] == 'Custom' and 'Vendor registration' in session['permission']) %}
+    <a href="/vendor_registration" class='nav-link clickable  {% if "/vendor_registration" in request.path %} active {% endif %}'>
         <ion-icon name="add-circle-outline"></ion-icon>
         <span class="my-auto">Vendor Registration</span>
     </a>
-    <a  href="/erp/view_vendors" class='nav-link clickable {% if "/view_vendors" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] or (session['role'] == 'Custom' and 'View vendors' in session['permission']) %}
+    <a  href="/view_vendors" class='nav-link clickable {% if "/view_vendors" in request.path %} active {% endif %}'>
         <ion-icon name="list-outline"></ion-icon>
         <span class="my-auto">View Vendors</span>
     </a>
-    <a href="/erp/kyp_material" class='nav-link clickable {% if "/kyp_material" in request.path %} active {% endif %}'>
+    {% endif %}
+    
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] or (session['role'] == 'Custom' and 'KYP for material' in session['permission']) %}
+    <a href="/kyp_material" class='nav-link clickable {% if "/kyp_material" in request.path %} active {% endif %}'>
         <ion-icon name="shield-checkmark-outline"></ion-icon>
         <span class="my-auto">KYP For material</span>
     </a>
-    <a href="/erp/enter_material" class='nav-link clickable {% if "/enter_material" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] or (session['role'] == 'Custom' and 'Enter material' in session['permission']) %}
+    <a href="/enter_material" class='nav-link clickable {% if "/enter_material" in request.path %} active {% endif %}'>
         <ion-icon name="document-text-outline"></ion-icon>
         <span class="my-auto">Enter Material</span>
     </a>
-    <a href="/erp/shifting_entry" class='nav-link clickable {% if "/shifting_entry" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info'] or (session['role'] == 'Custom' and 'Shifting entry' in session['permission']) %}
+    <a href="/shifting_entry" class='nav-link clickable {% if "/shifting_entry" in request.path %} active {% endif %}'>
         <ion-icon name="swap-horizontal-outline"></ion-icon>
         <span class="my-auto">Shifting Entry</span>
     </a>
     {% endif %}
-    <a href="/erp/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
+    
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info','Project Manager','Finance','Billing','QS Head'] or (session['role'] == 'Custom' and 'View inventory' in session['permission']) %}
+    <a href="/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
         <ion-icon name="server-outline"></ion-icon>
         <span class="my-auto">View inventory</span>
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Project Manager','Finance','Billing'] %}
-    <a href="/erp/view_inventory" class='nav-link clickable {% if "/view_inventory" in request.path %} active {% endif %}'>
-        <ion-icon name="server-outline"></ion-icon>
-        <span class="my-auto">View inventory</span>
-    </a>
-    {% endif %}
-
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] %}
-    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] %}
     <div class="nav-section-header">Indents</div>
-    <a href="/erp/view_qs_approval_indents" class='nav-link clickable {% if "/view_qs_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] or (session['role'] == 'Custom' and 'Indents for QS' in session['permission']) %}
+    <a href="/view_qs_approval_indents" class='nav-link clickable {% if "/view_qs_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>
         <ion-icon name="chatbox-outline"></ion-icon>
         <span class="my-auto">Indents for QS</span>
     </a>
-    <a href='/erp/view_approved_indents' class='nav-link clickable  {% if "/view_approved_indents" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Head','Purchase Info'] or (session['role'] == 'Custom' and 'Indents for QS Head' in session['permission']) %}
+    <a href="/view_qs_head_approval_indents" class='nav-link clickable {% if "/view_qs_head_approval_indents" in request.path or "/indent_details" in request.path %} active {% endif %}'>
+        <ion-icon name="chatbox-outline"></ion-icon>
+        <span class="my-auto">Indents for QS Head</span>
+    </a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] or (session['role'] == 'Custom' and 'Indents for Purchase' in session['permission']) %}
+    <a href='/view_approved_indents' class='nav-link clickable  {% if "/view_approved_indents" in request.path %} active {% endif %}'>
         <ion-icon name="chatbox-ellipses-outline"></ion-icon>
         <span class="my-auto">Indents for Purchase</span>
     </a>
-    <a href="/erp/view_approved_POs" class='nav-link clickable {% if "/view_approved_POs" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] or (session['role'] == 'Custom' and 'Unapproved POs' in session['permission']) %}
+    <a href="/view_unapproved_POs" class='nav-link clickable {% if "/view_unapproved_POs" in request.path %} active {% endif %}'>
         <ion-icon name="chatbubble-outline"></ion-icon>
         <span class="my-auto">Unapproved POs</span>
     </a>
     {% endif %}
-    <a href="/erp/view_ph_approved_indents" class='nav-link clickable  {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] or (session['role'] == 'Custom' and 'Approved POs' in session['permission']) %}
+    <a href="/view_ph_approved_indents" class='nav-link clickable  {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>
         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
         <span class="my-auto">Approved POs</span>
     </a>
-    <a href="/erp/view_deleted_indents" class='nav-link clickable  {% if "/view_deleted_indents" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info'] or (session['role'] == 'Custom' and 'Deleted indents' in session['permission']) %}
+    <a href="/view_deleted_indents" class='nav-link clickable  {% if "/view_deleted_indents" in request.path %} active {% endif %}'>
         <ion-icon name="trash-outline"></ion-icon>
         <span class="my-auto">Deleted Indents</span>
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Billing','Project Manager'] %}
-    <a href="/erp/view_ph_approved_indents" class='nav-link clickable  {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>
-        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-        <span class="my-auto">Approved POs</span>
-    </a>
-    {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
 
     <div class="nav-section-header">Work orders</div>
 
-    {% if session['role'] in ['Super Admin'] %}
-    <a href="/erp/add_trade" class='nav-link clickable {% if "/add_trade" in request.path %} active {% endif %}'>
+    {% if session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Add custom trade' in session['permission']) %}
+    <a href="/add_trade" class='nav-link clickable {% if "/add_trade" in request.path %} active {% endif %}'>
         <ion-icon name="add"></ion-icon>
         <span class="my-auto">Add custom trade</span>
     </a>
     {% endif %}
 
-    <a href="/erp/contractor_registration" class='nav-link clickable {% if "/contractor_registration" in request.path %} active {% endif %}'>
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']  or (session['role'] == 'Custom' and 'Contractor registration' in session['permission']) %}
+    <a href="/contractor_registration" class='nav-link clickable {% if "/contractor_registration" in request.path %} active {% endif %}'>
         <ion-icon name="person-add"></ion-icon>
         <span class="my-auto">Contractor Registration</span>
     </a>
-    <a href="/erp/view_contractors" class='nav-link clickable {% if "/view_contractors" in request.path  or "/edit_contractor" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']  or (session['role'] == 'Custom' and 'View contractors' in session['permission']) %}
+    <a href="/view_contractors" class='nav-link clickable {% if "/view_contractors" in request.path  or "/edit_contractor" in request.path %} active {% endif %}'>
         <ion-icon name="list-circle"></ion-icon>
         <span>View Contractors</span>
     </a>
-    <a href="/erp/create_work_order"  class='nav-link clickable  {% if "/create_work_order" in request.path %} active {% endif %}'>
+    {% endif %}
+    
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']  or (session['role'] == 'Custom' and 'Create work orders' in session['permission']) %}
+    <a href="/create_work_order"  class='nav-link clickable  {% if "/create_work_order" in request.path %} active {% endif %}'>
         <ion-icon name="add"></ion-icon>
         <span class="my-auto">Create work order</span>
     </a>
-    <a href="/erp/view_unsigned_work_order"
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']  or (session['role'] == 'Custom' and 'Unsigned work orders' in session['permission']) %}
+    <a href="/view_unsigned_work_order"
        class='nav-link {% if "/view_unsigned_work_order" in request.path %} active {% endif %}'>
        <ion-icon name="bag-outline"></ion-icon>
        <span class="my-auto">Unsigned work order</span>
     </a>
+    {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] %}
-    <a href="/erp/view_unapproved_work_order"
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] or (session['role'] == 'Custom' and 'Unapproved work orders' in session['permission']) %}
+    <a href="/view_unapproved_work_order"
        class='nav-link {% if "/view_unapproved_work_order" in request.path %} active {% endif %}'>
        <ion-icon name="bag-check-outline"></ion-icon>
        <span class="my-auto">Unapproved work order</span></a>
     {% endif %}
-
-    <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path or "/project_contractor_info" in request.path %} active {% endif %}'>
+    
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager','Finance','Billing']  or (session['role'] == 'Custom' and 'View work order' in session['permission']) %}
+    <a href="/view_work_order" class='nav-link {% if "/view_work_order" in request.path or "/project_contractor_info" in request.path %} active {% endif %}'>
         <ion-icon name="glasses-outline"></ion-icon>
         <span>View work order</span></a>
+    {% endif %}
 
-    <a href="/erp/debit_note" class='nav-link {% if "/debit_note" in request.path or "/debit_note" in request.path %} active {% endif %}'>
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer']  or (session['role'] == 'Custom' and 'Debit note' in session['permission']) %}
+    <a href="/debit_note" class='nav-link {% if "/debit_note" in request.path or "/debit_note" in request.path %} active {% endif %}'>
         <ion-icon name="bag-remove-outline"></ion-icon>
         <span class="my-auto">Debit note</span>
     </a>
     {% endif %}
 
-    {% if session['role'] in ['Project Manager','Finance','Billing'] %}
-    <a href="/erp/view_work_order" class='nav-link {% if "/view_work_order" in request.path or "/project_contractor_info" in request.path %} active {% endif %}'>
-        <ion-icon name="glasses-outline"></ion-icon>
-        <span>View work order</span></a>
-    {% endif %}
-
-    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager'] %}
     <div class="nav-section-header">Bills</div>
 
-    {% if session['role'] not in ['Project Manager'] %}
-    <a href="/erp/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] or (session['role'] == 'Custom' and 'Create bill' in session['permission']) %}
+    <a href="/create_bill" class='nav-link {% if "/create_bill" in request.path %} active {% endif %}'>
         <ion-icon name="document-text-outline"></ion-icon>
         <span class="my-auto">Create bill</span></a>
     {% endif %}
 
-    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager','Project Coordinator'] %}
-    <a href="/erp/view_nt_due_bills" class='nav-link {% if "/view_nt_due_bills" in request.path %} active {% endif %}'>
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager','Project Coordinator'] or (session['role'] == 'Custom' and 'Unapproved NT bills' in session['permission']) %}
+    <a href="/view_nt_due_bills" class='nav-link {% if "/view_nt_due_bills" in request.path %} active {% endif %}'>
         <ion-icon name="stop-circle-outline"></ion-icon>
         <span class="my-auto">Unapproved NT bills</span></a>
-    <a href="/erp/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer','Project Manager','Project Coordinator'] or (session['role'] == 'Custom' and 'Unapproved bills' in session['permission']) %}
+    <a href="/view_bills" class='nav-link {% if "/view_bills" in request.path %} active {% endif %}'>
         <ion-icon name="ellipse-outline"></ion-icon>
         <span class="my-auto">Unapproved bills</span></a>
     {% endif %}
 
-    {% if session['role'] not in ['Project Manager'] %}
-    <a href="/erp/view_approved_bills"
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] or (session['role'] == 'Custom' and 'Approved bills' in session['permission']) %}
+    <a href="/view_approved_bills"
        class='nav-link {% if "/view_approved_bills" in request.path %} active {% endif %}'>
        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
        <span class="my-auto">Approved bills</span></a>
-    <a href="/erp/view_archived_bills"
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','QS Head','QS Engineer'] or (session['role'] == 'Custom' and 'Archived bills' in session['permission']) %}
+    <a href="/view_archived_bills"
        class='nav-link {% if "/view_archived_bills" in request.path %} active {% endif %}'>
        <ion-icon name="folder-open-outline"></ion-icon>
        <span class="my-auto">Archived bills</span></a>
     {% endif %}
+
+    
+
+    <div class="nav-section-header">Design team</div>
+    {% if session['role'] in ['Super Admin','COO','Design Head','Senior Architect','Architect','Structural Designer',
+    'Electrical
+    Engineer','Electrical Designer', 'PHE Designer'] or (session['role'] == 'Custom' and 'Drawings' in session['permission']) %}
+    <a href="/drawings" class='nav-link {% if "/drawings" in request.path %} active {% endif %}'>
+        <ion-icon name="images-outline"></ion-icon>
+        <span class="my-auto">Drawings</span></a>
     {% endif %}
 
     {% if session['role'] in ['Super Admin','COO','Design Head','Senior Architect','Architect','Structural Designer',
     'Electrical
-    Engineer','Electrical Designer', 'PHE Designer'] %}
-    <div class="nav-section-header">Design team</div>
-    <a href="/erp/drawings" class='nav-link {% if "/drawings" in request.path %} active {% endif %}'>
-        <ion-icon name="images-outline"></ion-icon>
-        <span class="my-auto">Drawings</span></a>
-    <a href="/erp/revised_drawings" class='nav-link {% if "/revised_drawings" in request.path %} active {% endif %}'>
+    Engineer','Electrical Designer', 'PHE Designer'] or (session['role'] == 'Custom' and 'Revised drawings' in session['permission']) %}
+    <a href="/revised_drawings" class='nav-link {% if "/revised_drawings" in request.path %} active {% endif %}'>
         <ion-icon name="images"></ion-icon>
         <span class="my-auto">Revised
             Drawings</span></a>
-        <a href="/erp/view_drawings_requests" class='nav-link {% if "/view_drawings_requests" in request.path %} active {% endif %}'>
-            <ion-icon name="terminal-outline"></ion-icon>
-            <span class="my-auto">Drawing requests</span></a>
-        
-<!--    {% if session['role'] in ['Super Admin','COO','Design Head'] %}-->
-<!--    <a href="/erp/projects_with_design_team"-->
-<!--       class='nav-link {% if "/projects_with_design_team" in request.path %} active {% endif %}'>Assigned projects</a>-->
-<!--    {% endif %}-->
-<!--    {% if session['role'] in ['Super Admin','COO','Design Head'] %}-->
-<!--    <a href="/erp/projects_with_no_design_team"-->
-<!--       class='nav-link {% if "/projects_with_no_design_team" in request.path %} active {% endif %}'>Unassigned-->
-<!--        project</a>-->
-<!--    {% endif %}-->
+    {% endif %}
 
+    {% if session['role'] in ['Super Admin','COO','Design Head','Senior Architect','Architect','Structural Designer',
+    'Electrical
+    Engineer','Electrical Designer', 'PHE Designer'] or (session['role'] == 'Custom' and 'Drawing requests' in session['permission']) %}
+    <a href="/view_drawings_requests" class='nav-link {% if "/view_drawings_requests" in request.path %} active {% endif %}'>
+        <ion-icon name="terminal-outline"></ion-icon>
+        <span class="my-auto">Drawing requests</span></a>
     {% endif %}
 
     <div class="nav-section-header">Account</div>
-    <a href="/erp/profile" class='nav-link {% if "/profile" in request.path %} active {% endif %}'>
+    <a href="/profile" class='nav-link {% if "/profile" in request.path %} active {% endif %}'>
         <ion-icon name="person-circle-outline"></ion-icon>
         <span class="my-auto">Profile</span></a>
-    <a href="/erp/logout" class="nav-link">
+    <a href="/logout" class="nav-link">
         <ion-icon name="log-out-outline"></ion-icon>
         <span class="my-auto">Logout</span></a>
 
 
-    {% if session['role'] in ['Super Admin','COO', 'Planning'] %}
+    {% if session['role'] in ['Super Admin','COO', 'Planning', 'Custom'] %}
     <div class="nav-section-header">System</div>
-    <a href="/erp/reports" class='nav-link {% if "/reports" in request.path %} active {% endif %}'>
+
+    {% if session['role'] in ['Super Admin','COO', 'Planning']  or (session['role'] == 'Custom' and 'Reports' in session['permission']) %}
+    <a href="/reports" class='nav-link {% if "/reports" in request.path %} active {% endif %}'>
         <ion-icon name="bar-chart-outline"></ion-icon>
         <span class="my-auto">Reports</span></a>
-    <a href="/erp/audit_log" class='nav-link {% if "/audit_log" in request.path %} active {% endif %}'>
+    {% endif %}
+    {% if session['role'] in ['Super Admin','COO', 'Planning']  or (session['role'] == 'Custom' and 'Audit log' in session['permission']) %}
+    <a href="/audit_log" class='nav-link {% if "/audit_log" in request.path %} active {% endif %}'>
         <ion-icon name="alarm-outline"></ion-icon>
         <span class="my-auto">Audit log</span></a>
     {% endif %}
 
+    {% if session['role'] in ['Super Admin','COO','Billing','Planning','QC','Safety','Social']%}
+    <a href="/kra" class='nav-link {% if "/kra" in request.path %} active {% endif %}'>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <span class="my-auto">KRA</span></a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Project Manager','Project Coordinator']%}
+    <a href="/report_card" class='nav-link {% if "/report_card" in request.path %} active {% endif %}'>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <span class="my-auto">Report card</span></a>
+    {% endif %}
+
+    {% endif %}
+
 <!--    {% if session['role'] in ['Super Admin','COO','Planning'] %}-->
 <!--    <div class="nav-section-header">Operations team</div>-->
-<!--    <a href="/erp/projects_with_operations_team"-->
+<!--    <a href="/projects_with_operations_team"-->
 <!--       class='nav-link {% if "/projects_with_operations_team" in request.path %} active {% endif %}'>Assigned-->
 <!--        projects</a>-->
-<!--    <a href="/erp/projects_with_no_operations_team"-->
+<!--    <a href="/projects_with_no_operations_team"-->
 <!--       class='nav-link {% if "/projects_with_no_operations_team" in request.path %} active {% endif %}'>Unassigned-->
 <!--        project</a>-->
 <!--    {% endif %}-->

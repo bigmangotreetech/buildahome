@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-3 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="col-12">
+        <h4>KRA table</h4>
+    </div>
+</div>
+
+<div class="my-5 w-100 row mx-0 px-5">
+
+    <div class="row mx-0 w-100 bg-white py-2">
+
+
+        <div class="col-6 row mx-0 mb-3 form-group">
+            <div class=" d-flex flex-column">
+                <label for="Category" class="my-auto">Month</label>
+            </div>
+            <div class="col-6">
+                <select name="month" id="month" class="form-control select2">
+                    <option value="">Select month</option>
+                    {% for i in months %}
+                    {% if current_month == i|string %}
+                    <option value="{{i}}" selected="true">{{months[i]}}</option>
+                    {% else %}
+                    <option value="{{i}}">{{months[i]}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-6 row mx-0 mb-3 form-group">
+            <div class="d-flex flex-column">
+                <label for="year" class="my-auto">Year</label>
+            </div>
+            <div class="col-6">
+                <select name="year" id="year" class="form-control select2">
+                    <option value="">Select year</option>
+                    {% for i in years %}
+                    {% if current_year == i|string %}
+                    <option value="{{i}}" selected="true">{{i}}</option>
+                    {% else %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="w-100 bg-white">
+        {% for user in users %}
+        <div class="bg-white p-3 my-2 h5 border" data-toggle="collapse" data-target="#user-{{user[0]}}">{{user[1]}} 
+            {% if user[0] in report %}
+            <button class="btn ml-5">Show KRA</button>
+            {% endif %}
+
+        </div>
+        <div class="collapse" role="button" id="user-{{user[0]}}">
+            {% if user[0] in report %}
+            <div class="w-100">
+            {% for i in report[user[0]] %}
+            <div class="row mx-0 flex-fill">
+                <div class=" p-0 border col-4 d-flex flex-column justify-content-center px-4">{{i}}</div>
+                <div class="col-6 p-0">
+                    {% for item in report[user[0]][i] %}
+                    <div class="p-2 border">{{item}}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-2 p-0">
+                    {% for item in report[user[0]][i] %}
+                    <div class="p-2 border">{{report[user[0]][i][item]}}</div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+            
+            {% endfor %}
+            </div>
+            
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    
+
+</div>
+
+
+
+
+
+<style>
+
+
+</style>
+
+{% endblock %}

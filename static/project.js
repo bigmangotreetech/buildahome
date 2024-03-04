@@ -1,11 +1,20 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {   
 
+    if(window.location.href.includes('scrollDown')) {
+        $('.main-wrapper')[0].scrollTo(0, $('.main-wrapper')[0].scrollHeight)
+
+    }
+
+    $('.add-new-sub-task-btn').on('click', function(){
+        $("#subTaskModal .task_id").val($(this).attr('data-task-id'))
+    })
+
     $("#generate_material_report").on('click', function(){
         if($(this).text().trim() == 'Generating') return;
         $(this).text('Generating')
         $.ajax({
-            url: '/erp/material_report',
+            url: '/material_report',
             type: "GET",
         
             success: function (data) {
@@ -18,7 +27,7 @@ $(document).ready(function () {
         if($(this).text().trim() == 'Generating') return;
         $(this).text('Generating')
         $.ajax({
-            url: '/erp/trade_report',
+            url: '/trade_report',
             type: "GET",
         
             success: function (data) {
@@ -27,10 +36,60 @@ $(document).ready(function () {
         });
     })
 
+    $('#get_insight').on('click', function(){
+        const month = $("#month").val()
+        const year = $("#year").val()
+        window.location.href = `${window.location.pathname}?month=${month}&year=${year}`
+    })
+
+    if(window.location.href.includes('kra')) {
+        $('#category').on('change', function(){
+            if ($('#category').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '' || $('#coordinator').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?category=${$('#category').val()}&month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
+        })
+        $('#month').on('change', function(){
+            if ($('#category').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '' || $('#coordinator').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?category=${$('#category').val()}&month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
+        })
+        $('#year').on('change', function(){
+            if ($('#category').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '' || $('#coordinator').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?category=${$('#category').val()}&month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
+        })
+        $('#coordinator').on('change', function(){
+            if ($('#category').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '' || $('#coordinator').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?category=${$('#category').val()}&month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
+        })
+    }
+    if(window.location.href.includes('view_report_card')) {
+
+        
+        $('#coordinator').on('change', function(){
+            if ($('#coordinator').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?coordinator=${$('#coordinator').val()}`
+        })
+       
+    } else if(window.location.href.includes('report_card')) {
+
+        $('#month').on('change', function(){
+            if ($('#coordinator').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
+        })
+        $('#year').on('change', function(){
+            if ($('#coordinator').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
+        })
+        $('#coordinator').on('change', function(){
+            if ($('#coordinator').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
+        })
+       
+    }
+    
+
     $('#get_expenses').on('click', function(){
         const project = $("#project").val()
         if(project.length) {
-            window.location.href = '/erp/expenses?project_id='+project.toString()       
+            window.location.href = '/expenses?project_id='+project.toString()       
         }
     })
 
@@ -244,7 +303,7 @@ $(document).ready(function () {
             trade =  $('.trade').text()
             work_order_id = $('.work_order_id').text()
             $.ajax({
-                url: '/erp/check_if_clear_balance_bill_due',
+                url: '/check_if_clear_balance_bill_due',
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -270,7 +329,7 @@ $(document).ready(function () {
         console.log(window.location.href.includes('exported=true'))
         setTimeout(() => {
             if(window.location.href.includes('exported=true')) {
-                window.location.href = '/erp/static/bills.xls'
+                window.location.href = '/static/bills.xls'
             }
         }, 2000)
     }
@@ -279,7 +338,7 @@ $(document).ready(function () {
         let indentStatus = $(".indent-status").text().trim()
         if(indentStatus == 'approved') $('.view_qs_approval_indents_nav_btn').addClass('active')
         if(indentStatus == 'approved_by_qs') $('.view_approved_indents_nav_btn').addClass('active')
-        if(indentStatus == 'po_uploaded') $('.view_approved_POs_nav_btn').addClass('active')
+        if(indentStatus == 'po_uploaded') $('.view_unapproved_POs_nav_btn').addClass('active')
         if(indentStatus == 'approved_by_ph') $('.view_ph_approved_indents_nav_btn').addClass('active')
 
     }
@@ -313,7 +372,7 @@ $(document).ready(function () {
     $('#get_notes').on('click', function(){
         const project = $("#project").val()
         if(project.length)
-            window.location.href = '/erp/project_notes?project_id='+project.toString()
+            window.location.href = '/project_notes?project_id='+project.toString()
     })
 
     $('.mobile-menu-icon').on('click', function () {
@@ -339,7 +398,7 @@ $(document).ready(function () {
         $(".vendor-select").append($("<option></option>"))
         const material_selected = $(this).val().trim()
         $.ajax({
-                url: '/erp/get_vendors_for_material',
+                url: '/get_vendors_for_material',
                 type: "POST",
                 dataType: 'json',
                 data: { 'material_selected': material_selected },
@@ -366,7 +425,7 @@ $(document).ready(function () {
             $(".select_trade_for_bill select").empty()
             $(".select_trade_for_bill select").append($("<option></option>"))
             $.ajax({
-                url: '/erp/update_trades_for_project',
+                url: '/update_trades_for_project',
                 type: "POST",
                 dataType: 'json',
                 data: { 'project_id': project_id },
@@ -426,7 +485,7 @@ $(document).ready(function () {
             project_id = $("#project").val()
             trade = $('#trade').text()
             $.ajax({
-                url: '/erp/update_payment_stages',
+                url: '/update_payment_stages',
                 type: "POST",
                 dataType: 'json',
                 data: { 'project_id': project_id, 'work_order_id_for_trade': work_order_id_for_trade, 'trade': trade },
@@ -592,7 +651,7 @@ $(document).ready(function () {
         const difference_amount = parseFloat(amount) - parseFloat(approved_amount)
 
         $.ajax({
-            url: '/erp/save_approved_bill',
+            url: '/save_approved_bill',
             type: "POST",
             dataType: 'json',
             data: {
@@ -637,7 +696,7 @@ $(document).ready(function () {
 
     function getWorkOrderForSelectedProject() {
         const project = $("#project").val()
-        url = '/erp/view_work_order'
+        url = '/view_work_order'
         if (project.length) {
             url += '?project_id=' + project.toString()
         } else {
@@ -667,7 +726,7 @@ $(document).ready(function () {
     function getRevisedDrawingsForSelectedProject() {
         const project = $("#project").val()
         if (project.length) {
-            window.location.href = '/erp/revised_drawings?project_id=' + project.toString()
+            window.location.href = '/revised_drawings?project_id=' + project.toString()
         }
     }
 
@@ -677,7 +736,7 @@ $(document).ready(function () {
 
     function updateSlabArea(project_id) {
         $.ajax({
-            url: '/erp/update_slab_area',
+            url: '/update_slab_area',
             type: "POST",
             dataType: 'json',
             data: {
@@ -839,7 +898,7 @@ $(document).ready(function () {
         if (selected_trade && selected_trade.trim() === '' || project_id.trim() === '') return false;
         $('.milestones_section').find('.milestones_and_percentages_item').remove()
         $.ajax({
-            url: '/erp/get_wo_milestones_and_percentages',
+            url: '/get_wo_milestones_and_percentages',
             type: "POST",
             dataType: 'json',
             data: {
@@ -886,7 +945,7 @@ $(document).ready(function () {
         if (selected_trade && selected_trade.trim() === '' || project_id.trim() === '') return false;
         $('.milestones_section').find('.milestones_and_percentages_item').remove()
         $.ajax({
-            url: '/erp/get_standard_milestones_and_percentages',
+            url: '/get_standard_milestones_and_percentages',
             type: "POST",
             dataType: 'json',
             data: {
@@ -929,7 +988,7 @@ $(document).ready(function () {
             $(".work-order-trade-select select").empty()
             $(".work-order-trade-select select").append($("<option></option>"))
             $.ajax({
-                url: '/erp/update_trades_for_contractor',
+                url: '/update_trades_for_contractor',
                 type: "POST",
                 dataType: 'json',
                 data: { 'contractor_id': contractor_id },
@@ -999,7 +1058,7 @@ $(document).ready(function () {
             if(confirm('Are you sure you want to open this bill to clear balance?')) {
                 bill_id = $(this).parents('tr').find('.bill_id').text().trim()
                 $.ajax({
-                    url: '/erp/force_open_clear_balance',
+                    url: '/force_open_clear_balance',
                     type: "POST",
                     dataType: 'json',
                     data: {
@@ -1026,7 +1085,7 @@ $(document).ready(function () {
             trade =  $('.trade').text()
             work_order_id = $('.work_order_id').text()
             $.ajax({
-                url: '/erp/clear_individual_balance',
+                url: '/clear_individual_balance',
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -1058,7 +1117,7 @@ $(document).ready(function () {
             trade =  $('.trade').text()
             work_order_id = $('.work_order_id').text()
             $.ajax({
-                url: '/erp/clear_wo_balance',
+                url: '/clear_wo_balance',
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -1143,6 +1202,24 @@ function validateForm() {
                     document.getElementById("project_name_error").setAttribute("class", "d-none");
                 }
                 break;
+            case ("client_name"):
+                    if (x[i].value == "") {
+                        document.getElementById("client_name_error").setAttribute("class", "error");
+                        isValid = false;
+                    }
+                    else {
+                        document.getElementById("client_name_error").setAttribute("class", "d-none");
+                    }
+                    break;
+            case ("client_phone"):
+                    if (x[i].value == "") {
+                        document.getElementById("client_phone_error").setAttribute("class", "error");
+                        isValid = false;
+                    }
+                    else {
+                        document.getElementById("client_phone_error").setAttribute("class", "d-none");
+                    }
+                    break;
             case ("project_location"):
                 if (x[i].value == "") {
                     document.getElementById("project_location_error").setAttribute("class", "error");
@@ -1224,33 +1301,33 @@ function validateForm() {
                     document.getElementById("project_value_error").setAttribute("class", "d-none");
                 }
                 break;
-            case ("cost_sheet"):
-                if (x[i].files.length == 0) {
-                    document.getElementById("cost_sheet_error").setAttribute("class", "error");
-                    isValid = false;
-                }
-                else {
-                    document.getElementById("cost_sheet_error").setAttribute("class", "d-none");
-                }
-                break;
-            case ("site_inspection_report"):
-                if (x[i].files.length == 0) {
-                    document.getElementById("site_inspection_report_error").setAttribute("class", "error");
-                    isValid = false;
-                }
-                else {
-                    document.getElementById("site_inspection_report_error").setAttribute("class", "d-none");
-                }
-                break;
-            case ("agreement"):
-                    if (x[i].files.length == 0) {
-                        document.getElementById("agreement_error").setAttribute("class", "error");
-                        isValid = false;
-                    }
-                    else {
-                        document.getElementById("agreement_error").setAttribute("class", "d-none");
-                    }
-                    break;
+            // case ("cost_sheet"):
+            //     if (x[i].files.length == 0) {
+            //         document.getElementById("cost_sheet_error").setAttribute("class", "error");
+            //         isValid = false;
+            //     }
+            //     else {
+            //         document.getElementById("cost_sheet_error").setAttribute("class", "d-none");
+            //     }
+            //     break;
+            // case ("site_inspection_report"):
+            //     if (x[i].files.length == 0) {
+            //         document.getElementById("site_inspection_report_error").setAttribute("class", "error");
+            //         isValid = false;
+            //     }
+            //     else {
+            //         document.getElementById("site_inspection_report_error").setAttribute("class", "d-none");
+            //     }
+            //     break;
+            // case ("agreement"):
+            //         if (x[i].files.length == 0) {
+            //             document.getElementById("agreement_error").setAttribute("class", "error");
+            //             isValid = false;
+            //         }
+            //         else {
+            //             document.getElementById("agreement_error").setAttribute("class", "d-none");
+            //         }
+            //         break;
             case ("shr_oht"):
                 if (x[i].value == "") {
                     document.getElementById("shr_oht_error").setAttribute("class", "error");
@@ -1260,42 +1337,42 @@ function validateForm() {
                     document.getElementById("shr_oht_error").setAttribute("class", "d-none");
                 }
                 break;
-            case ("gf_slab_area"):
-                if (floor_options.includes(no_of_floors) && x[i].value == "") {
-                    document.getElementById("gf_slab_area_error").setAttribute("class", "error");
-                    isValid = false;
-                }
-                else {
-                    document.getElementById("gf_slab_area_error").setAttribute("class", "d-none");
-                }
-                break;
-            case ("ff_slab_area"):
-                if (floor_options.includes(no_of_floors) && x[i].value == "") {
-                    document.getElementById("ff_slab_area_error").setAttribute("class", "error");
-                    isValid = false;
-                }
-                else {
-                    document.getElementById("ff_slab_area_error").setAttribute("class", "d-none");
-                }
-                break;
-            case ("sf_slab_area"):
-                if (floor_options.includes(no_of_floors) && x[i].value == "") {
-                    document.getElementById("sf_slab_area_error").setAttribute("class", "error");
-                    isValid = false;
-                }
-                else {
-                    document.getElementById("sf_slab_area_error").setAttribute("class", "d-none");
-                }
-                break;
-            case ("tf_slab_area"):
-                if (floor_options.includes(no_of_floors) && x[i].value == "") {
-                    document.getElementById("tf_slab_area_error").setAttribute("class", "error");
-                    isValid = false;
-                }
-                else {
-                    document.getElementById("tf_slab_area_error").setAttribute("class", "d-none");
-                }
-                break;
+            // case ("gf_slab_area"):
+            //     if (floor_options.includes(no_of_floors) && x[i].value == "") {
+            //         document.getElementById("gf_slab_area_error").setAttribute("class", "error");
+            //         isValid = false;
+            //     }
+            //     else {
+            //         document.getElementById("gf_slab_area_error").setAttribute("class", "d-none");
+            //     }
+            //     break;
+            // case ("ff_slab_area"):
+            //     if (floor_options.includes(no_of_floors) && x[i].value == "") {
+            //         document.getElementById("ff_slab_area_error").setAttribute("class", "error");
+            //         isValid = false;
+            //     }
+            //     else {
+            //         document.getElementById("ff_slab_area_error").setAttribute("class", "d-none");
+            //     }
+            //     break;
+            // case ("sf_slab_area"):
+            //     if (floor_options.includes(no_of_floors) && x[i].value == "") {
+            //         document.getElementById("sf_slab_area_error").setAttribute("class", "error");
+            //         isValid = false;
+            //     }
+            //     else {
+            //         document.getElementById("sf_slab_area_error").setAttribute("class", "d-none");
+            //     }
+            //     break;
+            // case ("tf_slab_area"):
+            //     if (floor_options.includes(no_of_floors) && x[i].value == "") {
+            //         document.getElementById("tf_slab_area_error").setAttribute("class", "error");
+            //         isValid = false;
+            //     }
+            //     else {
+            //         document.getElementById("tf_slab_area_error").setAttribute("class", "d-none");
+            //     }
+            //     break;
 
         }
         document.getElementById('create_project_submit').disabled = isValid;

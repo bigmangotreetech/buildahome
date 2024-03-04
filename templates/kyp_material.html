@@ -15,7 +15,7 @@
     </div>
 
     {% if project is not none %}
-    <form class="my-3 w-100" action="/erp/kyp_material" method="post">
+    <form class="my-3 w-100" action="/kyp_material" method="post">
         <div class="mx-auto mt-4 col-sm-10 col-md-8 p-3 bg-light">Total material quantities for project {{project}}</div>
         <input type="hidden" name="project_id" value="{{project_id}}">
         <div class="row m-3 justify-content-center mt-4 ">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                {% if session['role'] in ['Super Admin','COO','Purchase Head','QS Info'] %}
+                {% if session['role'] in ['Super Admin','COO','Purchase Head','QS Info']  or (session['role'] == 'Custom' and 'Update KYP for material' in session['permission'])  %}
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
                         <button class="btn btn-dark btn-block bg-indigo text-white">Submit</button>

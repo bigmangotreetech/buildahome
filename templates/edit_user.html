@@ -3,7 +3,7 @@
 <div class="my-5 w-100">
     <div class="row mx-3 justify-content-center">
         <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form action="/erp/edit_user"  method="post"  enctype="multipart/form-data">
+            <form action="/edit_user"  method="post"  enctype="multipart/form-data">
 
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
@@ -53,6 +53,26 @@
                     </div>
                 </div>
 
+                {% if user[3] == 'Site Engineer' or user[3] == 'Project Coordinator' or user[3] == 'Custom' or user[3] == 'Billing' %}
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="projects">Projects assigned</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="projects" id="projects" class="form-control select2" multiple required>
+                            <option value=""></option>
+                            {% for i in projects %}
+                            {% if i[0]|string  in user[5] %}
+                            <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
+                            {% else %}
+                            <option value="{{i[0]}}">{{i[1]}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
+
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="password">Password</label>
@@ -70,6 +90,25 @@
                         <input type="password" name="confirm_password" id="confirm_password" class="form-control">
                     </div>
                 </div>
+                
+                
+
+                {% if user[3]|string() == 'Custom' %}
+                <div class="row mx-0 mb-3 form-group">
+                <div class="col-12 mb-4">
+                    <label for="confirm_password">Permissions</label>
+                </div>
+                {% for permission in permissions %}
+                <div class="col-6">
+                    <label class="container">{{permission}}
+                        <input type="checkbox" {% if user[6] != None and permission in user[6].split(',') %} checked {% endif %} value="{{permission}}" name="permissions">
+                        <span class="checkmark"></span>
+                      </label>
+                    
+                </div>
+                {% endfor %}
+                </div>
+                {% endif %}
 
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
@@ -81,5 +120,74 @@
         </div>
     </div>
 </div>
+<style>
+    /* Customize the label (the container) */
+    .container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+        background-color: #002849;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+        left: 9px;
+        top: 3px;
+        width: 7px;
+        height: 16px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+</style>
 
 {% endblock %}

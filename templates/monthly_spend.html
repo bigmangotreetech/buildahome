@@ -1,0 +1,118 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="col-12">
+        <h4>Monthly insights</h4>
+    </div>
+</div>
+
+<div class="row mx-0 pb-4">
+    <div class="col-sm-12 col-md-4 pl-5 mb-2">
+        <select name="month" id="month" class="form-control select2">
+            {% for i in months %}
+            {% if i|string() == selected_month|string() %}
+            <option value="{{i}}" selected>{{months[i]}}</option>
+            {% else %}
+            <option value="{{i}}">{{months[i]}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-sm-12 col-md-4 pl-5 mb-2">
+        <select name="year" id="year" class="form-control select2">
+            {% for i in years %}
+            {% if i|string() == selected_year|string() %}
+            <option value="{{i}}" selected>{{i}}</option>
+            {% else %}
+            <option value="{{i}}">{{i}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+   
+    <button id="get_insight" class="btn text-white bg-indigo  mb-2">Get insights</button>
+    <button id="export_insight" onclick="exportTableToCSV()" class="export-btn btn ml-2 text-white bg-indigo  mb-2">Export</button>
+</div>
+
+{% for key in data %}
+<div class="p-2 mt-4 bg-info text-white border border-white  w-50 btn text-left mx-5 " data-toggle="collapse" data-target="#{{key|replace(' ', '_')}}"><i class="fa fa-chevron-down mr-2" style="font-size: 10px;"></i> <span class='team'>{{key}}</span></div>
+<div class="px-5 pb-5 w-100 table-responsive collapse" id="{{key|replace(' ', '_')}}">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Project</th>
+                <th scope="col">Material spend</th>
+                <th scope="col">Work order spend</th>
+                <th scope="col">Work order NT</th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            {% for i in data[key] %}
+            <tr class="bill-{{i['bill_id']}}">
+                <td>{{i['name']}}</td>
+                <td>{{i['material_spend']}}</td>
+                <td>{{i['wo_spend']}}</td>
+                <td>{{i['wo_nt']}}</td>
+
+            </tr>
+            {% endfor %}
+
+
+
+        </tbody>
+    </table>
+
+
+</div>
+{% endfor %}
+
+<script>
+    function exportTableToCSV() {
+        $('.export-btn').attr('disabled',true)
+        const tables = document.getElementsByClassName('table')
+        const teams = document.getElementsByClassName('team')
+        const csvData = [];
+        let team_index = 0
+
+        
+
+        for(const table of tables) {
+            
+            csvData.push(teams[team_index].innerHTML);
+            team_index++;
+            const rows = table.querySelectorAll('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cols = row.querySelectorAll('th, td');
+                const rowData = [];
+
+                for (let j = 0; j < cols.length; j++) {
+                    rowData.push(cols[j].innerText);
+                }
+
+                csvData.push(rowData.join(','));
+            }
+            csvData.push('')
+        }
+        
+
+        const csvContent = 'data:text/csv;charset=utf-8,' + csvData.join('\n');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', (new Date().getTime().toString()+'.csv'));
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => {
+            $('.export-btn').attr('disabled',false)
+        },1000)
+    }
+</script>
+{% endblock %}
+

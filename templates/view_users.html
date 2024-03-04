@@ -25,11 +25,15 @@
             <td>{{user[3]}}</td>
             <td>{{user[4]}}</td>
             <td>
-                <a href="/erp/edit_user?user_id={{user[0]}}" class="btn text-primary">Edit</a>
+                {% if session['role'] in ['Super Admin','COO','Billing']  or (session['role'] == 'Custom' and 'Edit user' in session['permission'])  %}
+                <a href="/edit_user?user_id={{user[0]}}" class="btn text-primary">Edit</a>
+                {% endif %}
             </td>
             <td>
-                <a href="/erp/delete_user?user_id={{user[0]}}" class="btn text-danger"
+                {% if session['role'] in ['Super Admin','COO','Billing']  or (session['role'] == 'Custom' and 'Delete user' in session['permission'])  %}
+                <a href="/delete_user?user_id={{user[0]}}" class="btn text-danger"
                    onclick="return confirm('Are you sure you want to delete this user')">Delete</a>
+                   {% endif %}
             </td>
         </tr>
         {% endfor %}
