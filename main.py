@@ -54,6 +54,7 @@ app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
+
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 
@@ -2796,8 +2797,8 @@ def delete_wo():
     if session['role'] not in ['Super Admin','Custom']:
         flash('You do not have permission delete', 'danger')
         return redirect(request.referrer)
-    if session['role'] == 'Custom' and ('Delete unsigned work orders' not in session['permission'] or 'Delete  work orders' not in session['permission']):
-        flash('You do not have permission delete', 'danger')
+    if session['role'] == 'Custom' and ('Delete unsigned work orders' not in session['permission'] or 'Delete work orders' not in session['permission']):
+        flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
 
     
