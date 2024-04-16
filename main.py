@@ -46,12 +46,6 @@ import uuid
 # Last labour stage id 412
 app = Flask(__name__)
 
-S3_BUCKET='erpbuildahome'
-S3_KEY='AKIAQEFDTNRRNANPNES2'
-S3_LOCATION='https://erpbuildahome.s3.ap-south-1.amazonaws.com/'	
-S3_SECRET='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'
-GIT='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'
-GIT_PAT='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'
 
 # Sql setup
 app.config['MYSQL_HOST'] = 'bah.cpawi80eylqb.ap-south-1.rds.amazonaws.com'
@@ -60,10 +54,6 @@ app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
-app.config['S3_SECRET'] = S3_SECRET
-app.config['S3_KEY'] = S3_KEY
-app.config['S3_BUCKET'] = S3_BUCKET
-app.config['S3_LOCATION'] = S3_LOCATION
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 
