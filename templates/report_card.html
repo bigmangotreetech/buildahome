@@ -6,8 +6,11 @@
     </div>
 </div>
 <div class="my-5 w-100 row mx-0 px-5">
-
+    {% if rc_id != 0 and approved == 3  %}
+    <div class="col-md-6 col-lg-6 bg-light py-2">
+    {% else %}
     <div class="col-md-6 col-lg-6 bg-white py-2">
+    {% endif %}
         {% if approved == 1  %}
         <div class=" text-success my-4 h5">
             <i class="fa fa-check"></i>
@@ -15,9 +18,12 @@
         {% endif %}
         
         
-        {% if session['role'] in ['Super Admin','Project Manager'] %}
+        {% if session['role'] not in ['Super Admin','Project Manager','Planning','Billing'] %}
 
-        <div class="row mx-0 mb-3 form-group">
+        <div class="row mx-0 mb-3 d-none form-group">
+            {% else %}
+            <div class="row mx-0 mb-3  form-group">
+            {% endif %}
             <div class="col-6  d-flex flex-column">
                 <label for="Coordinator" class="my-auto">Select coordinator</label>
             </div>
@@ -25,7 +31,7 @@
                 <select name="coordinator" id="coordinator" class="form-control select2">
                     <option value="">Select coordinator</option>
                     {% for i in users %}
-                    {% if request.args['coordinator'] == i[0]|string %}
+                    {% if request.args['coordinator'] == i[0]|string or session['user_id']|string == i[0]|string %}
                     <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
                     {% else %}
                     <option value="{{i[0]}}">{{i[1]}}</option>
@@ -34,7 +40,6 @@
                 </select>
             </div>
         </div>
-        {% endif %}
        
 
         <div class="row mx-0 mb-3 form-group">
@@ -117,7 +122,7 @@
                             {% if key in prefilled_data and item in prefilled_data[key] %}
                             
                             <textarea rows="2" name="{{item}}"
-                                class="form-control limit" value="{{prefilled_data[key][item]}}"> {{prefilled_data[key][item]}} </textarea>
+                                class="form-control limit" value="{{prefilled_data[key][item]}}">{{prefilled_data[key][item]}}</textarea>
                             {% else %}
                             <textarea rows="2" name="{{item}}"
                                 class="form-control limit" ></textarea>
@@ -146,14 +151,34 @@
 
             {% endfor %}
             <textarea name="notes" id="" class="form-control" placeholder="Notes" rows="5">{{notes}}</textarea>
-            {% if 'month' in request.args  and approved == 0 and 'year' in request.args %}
+            {% if 'month' in request.args  and approved !=  3 and 'year' in request.args %}
             <div class="text-right pr-4 pt-3">
                 <button class="bg-indigo text-white btn">Update</button>
             </div>
             {% endif %}
         </form>
-        {% if rc_id != 0 and approved == 0 and session['role'] in ['Super Admin','Project Manager'] %}
+        {% if rc_id != 0 and approved == 0  %}
+        
+        <div class="mb-2 mt-3 text-success h4">Due for billing approval</div>
+        
+        
+        {% endif %}
+
+        {% if rc_id != 0 and approved == 1 %}
+        
+        <div class="mb-2 mt-3 text-success h4">Due for planning approval</div>
+
+        {% endif %}
+
+        {% if rc_id != 0 and approved == 2 %}
+        <div class="mb-2 mt-3 text-success h4">Due for project manager approval</div>
+
+        {% endif %}
+
+        {% if rc_id != 0 and approved == 0 and session['role'] in ['Super Admin','Billing'] %}
+        
         <form action="/approve_report_card" method="post">
+            <input type="hidden" name="approval" value="1">
             <input type="hidden" name="id" value="{{rc_id}}">
             <div class="text-right  pr-4 mr-4 pt-3">
                 <button class="bg-indigo text-white btn">Approve</button>
@@ -162,13 +187,31 @@
         
         {% endif %}
 
-        {% if rc_id != 0 and approved == 1 and session['role'] in ['Super Admin','Project Manager'] %}
-        <form action="/unapprove_report_card" method="post">
+        {% if rc_id != 0 and approved == 1 and session['role'] in ['Super Admin','Planning'] %}
+        
+        <form action="/approve_report_card" method="post">
+            <input type="hidden" name="approval" value="2">
             <input type="hidden" name="id" value="{{rc_id}}">
-            <div class="text-right mr-4  pr-4 pt-3">
-                <button class="btn-secondary btn">Unapprove</button>
+            <div class="text-right  pr-4 mr-4 pt-3">
+                <button class="bg-indigo text-white btn">Approve</button>
             </div>
         </form>
+        
+        {% endif %}
+
+        {% if rc_id != 0 and approved == 2 and session['role'] in ['Super Admin','Project Manager'] %}
+        <form action="/approve_report_card" method="post">
+            <input type="hidden" name="approval" value="3">
+            <input type="hidden" name="id" value="{{rc_id}}">
+            <div class="text-right mr-4  pr-4 pt-3">
+                <button class="btn-secondary btn">Approve</button>
+            </div>
+        </form>
+        {% endif %}
+
+        {% if rc_id != 0 and approved == 3  %}
+        <div class="mb-2 mt-3 text-success h4 pl-4">Approved by Billing, Planning and Project manager</div>
+
         {% endif %}
 
         

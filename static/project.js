@@ -42,7 +42,17 @@ $(document).ready(function () {
         window.location.href = `${window.location.pathname}?month=${month}&year=${year}`
     })
 
-    if(window.location.href.includes('kra')) {
+    if(window.location.href.includes('view_kra')) {
+        $('#month').on('change', function(){
+            if ($('#month').val().trim() == '' || $('#year').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?month=${$('#month').val()}&year=${$('#year').val()}`
+        })
+        $('#year').on('change', function(){
+            if ($('#month').val().trim() == '' || $('#year').val().trim() == '') return;
+            window.location.href = `${window.location.pathname}?month=${$('#month').val()}&year=${$('#year').val()}`
+        })
+        
+    } else if(window.location.href.includes('kra')) {
         $('#category').on('change', function(){
             if ($('#category').val().trim() == '' || $('#month').val().trim() == '' || $('#year').val().trim() == '' || $('#coordinator').val().trim() == '') return;
             window.location.href = `${window.location.pathname}?category=${$('#category').val()}&month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
@@ -60,7 +70,7 @@ $(document).ready(function () {
             window.location.href = `${window.location.pathname}?category=${$('#category').val()}&month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
         })
     }
-    if(window.location.href.includes('view_report_card')) {
+    if(window.location.href.includes('view_report_card') || window.location.href.includes('calendar') ) {
 
         
         $('#coordinator').on('change', function(){
@@ -112,6 +122,50 @@ $(document).ready(function () {
         }
         
     })
+
+    $('#city').on('change',function(){
+        if($(this).val() == 'Other Cities') {
+            $('#city_text_field').removeClass('d-none')
+        } else {
+            $('#city_text_field').addClass('d-none')
+        }
+    })
+
+    $('.slab-area-in-sqft').on('keyup', function(){
+        const value = parseFloat($(this).val().trim())
+        const cost_per_sqft = parseFloat($(this).attr('data-cost'))
+
+        $(this).parents('.floor-element').find('.total-cost-for-floor').val(value * cost_per_sqft)
+
+        project_value = 0
+        $('.total-cost-for-floor').each(function(index, element){
+            if($(element).val().trim() != '') {
+                project_value += parseFloat($(element).val().trim())
+            }
+        })
+
+        if($('#additional_cost').val().trim() != '') {
+            project_value += parseFloat($('#additional_cost').val().trim())
+        }
+
+        $('#project_value').val(project_value)
+    })
+
+    $('#additional_cost').on('keyup', function(){
+
+        project_value = 0
+        $('.total-cost-for-floor').each(function(index, element){
+            if($(element).val().trim() != '') {
+                project_value += parseFloat($(element).val().trim())
+            }
+        })
+
+        if($('#additional_cost').val().trim() != '') {
+            project_value += parseFloat($('#additional_cost').val().trim())
+        }
+
+        $('#project_value').val(project_value)
+    })
     
 
     $('.edit-task').on('click', function () {
@@ -120,6 +174,14 @@ $(document).ready(function () {
         $("#EditTaskModal .task-start-date").val($(this).parents('.task-card').find('.task-start-date').text().trim())
         $("#EditTaskModal .task-end-date").val($(this).parents('.task-card').find('.task-end-date').text().trim())
         $("#EditTaskModal .task-percent").val($(this).parents('.task-card').find('.task-percent').text().trim())
+    })
+
+    $('.edit-sub-task').on('click', function () {
+        $("#EditSubTaskModal .task_id").val($(this).parents('.task-card').find('.task_id').text().trim())
+        $("#EditSubTaskModal .sub-task-name").val($(this).attr('data-sub-task-name').trim())
+        $("#EditSubTaskModal .sub-task-start-date").val($(this).attr('data-sub-task-start-date').trim())
+        $("#EditSubTaskModal .sub-task-end-date").val($(this).attr('data-sub-task-end-date').trim())
+        $("#EditSubTaskModal .index").val($(this).attr('data-sub-task-index').trim())
     })
 
     function initSearchProject() {

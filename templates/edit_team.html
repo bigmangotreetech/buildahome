@@ -123,24 +123,6 @@
 
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
-                        <label for="">Select Project Manager</label>
-                    </div>
-                    <div class="col-6">
-                        <select name="project_manager" id=project_manager" class="form-control select2">
-                            <option value=""></option>
-                            {% for i in project_managers %}
-                            {% if i['id']|string == existing_team['Project Manager']|string %}
-                            <option value="{{i['id']}}" selected="true">{{i['name']}}</option>
-                            {% else %}
-                            <option value="{{i['id']}}">{{i['name']}}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-6">
                         <label for="">Select Purchase Executive</label>
                     </div>
                     <div class="col-6">

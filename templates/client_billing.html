@@ -56,9 +56,10 @@
           </button>
         </div>
         <div class="modal-body">
-  
-          <!-- Task Form -->
-          <form action="/add_new_sub_task" method="post">
+            
+
+        <!-- Task Form -->
+        <form action="/add_new_sub_task" method="post">
             <div class="form-group">
               <label for="taskName">Sub task Name:</label>
               <input type="text" class="form-control" id="taskName" name="taskName" required>
@@ -77,8 +78,9 @@
                 <input type="date" class="form-control" id="endDate" name="endDate" required>
               </div>
             </div>
-  
+            {% if session['role'] != 'View client billing' %}
             <button type="submit" class="btn btn-primary">Submit</button>
+            {% endif %}
           </form>
   
         </div>
@@ -96,6 +98,25 @@
 
             <p><b>Project tasks:</b></p>
             <div class="'mx-4 mt-2">
+                <div class="bg-light p-3 mx-4 mb-4 col-md-6">
+                    <p>Block or unblock project</p>
+                    {% if blocked|string == '1' %}
+                    {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
+                <a href="/unblock_project?project_id={{request.args['project_id']}}" class="btn btn-success">Unblock project</a>
+                {% endif %}
+                {% else %}
+                <form action="/block_project" method="POST">
+            
+                    <div class="form-group">
+                        <label for="reason">Reason for blocking:</label>
+                        <input type="text" class="form-control" id="reason" placeholder="Enter reason to block project" name="reason" required>
+                    </div>
+                    <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
+                    <button type="submit" class="btn btn-danger">Block project</button>
+                </form>
+                {% endif %}
+                </div>
+    
                 <form action="/update_advance_payment" class="bg-light p-3 mx-4 col-md-6" method="post">
                     <div class="form-group">
                         <label for="outstanding">Advance payment made:</label>
@@ -110,8 +131,15 @@
                         <label for="outstanding">Project completion percentage:</label>
                         <input type="number" min="0" max="100" step="1" class="form-control" name="completed_percentage" value="{{project_percentage}}">
                     </div>
+
+                    <div class="form-group">
+                        <label for="hand_over_date">Project hand over date:</label>
+                        <input type="date" class="form-control" name="hand_over_date" value="{{hand_over_date}}">
+                    </div>
                     <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
+                    {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
                     <button class='btn bg-indigo text-white'>Update</button>
+                    {% endif %}
                 </form>
             </div>
             <div class="row mx-4 mt-2">
@@ -139,17 +167,30 @@
                                         <i class="fa fa-check text-white"></i>
                                     </a>
                                     {% else %}
+                                    {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
                                     <btn onclick="set_url('/mark_task_complete?id={{loop.index - 1}}&task_id={{task_id}}',this);"
                                         data-toggle="modal" data-target="#SchedulerModal"
                                         class="btn btn-primary p-1 px-2 my-auto">
                                         <i class="fa fa-check text-white"></i>
                                     </btn>
 
+                                    {% else %}
+                                    <btn 
+                                        class="btn btn-primary p-1 px-2 my-auto">
+                                        <i class="fa fa-check text-white"></i>
+                                    </btn>
                                     {% endif %}
-                                    <span class="my-auto ml-2">{{sub_task['name']}}</span>
+                                    {% endif %}
+                                    
+                                    <span class="my-auto ml-2">{{sub_task['name']}}</span> 
+                                    {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
+                                    <i data-sub-task-index="{{sub_task['index']}}" data-sub-task-name="{{sub_task['name']}}" data-sub-task-start-date="{{sub_task['start_date']}}" data-sub-task-end-date="{{sub_task['end_date']}}" class="fa fa-pencil my-auto ml-2 px-2 btn edit-sub-task" data-toggle="modal" data-target="#EditSubTaskModal"></i>
+                                    {% endif %}
                                 </p>
                                 {% endfor %}
+                                {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
                                 <div class="btn btn-info add-new-sub-task-btn mr-auto my-3" data-task-id="{{task_id}}" data-toggle="modal" data-target="#subTaskModal">+ Add sub task</div>
+                                {% endif %}
                                 <br>
                                 <small>Start date: <span
                                         class="task-start-date">{{task['start_date']}}</span></small><br>
@@ -157,6 +198,7 @@
                             </div>
                             <div class="p-3 d-flex justify-content-between">
                                 <div class="my-auto ">
+                                    {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
                                     {% set task_id = task['id'] %}
                                     {% if task['paid']|int == 0 and task['due']|int == 0 %}
                                     <btn onclick="set_url('/mark_task_due?id={{task_id}}', this);"
@@ -172,15 +214,19 @@
                                         data-toggle="modal" data-target="#SchedulerModal"
                                         class='btn btn-block btn-warning'>Mark as Due</btn>
                                     {% endif %}
-
+                                    {% endif %}
                                     
 
                                 </div>
+                                {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
+
                                 <button class="my-auto btn btn-secondary text-white edit-task" data-toggle="modal"
                                     data-target="#EditTaskModal">
                                     <i class="fa fa-pencil"></i>
                                 </button>
+                                {% endif %}
                             </div>
+                            {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
                             {% if task['is_non_tender'] == 0 %}
                             <a href="/mark_task_as_nt?id={{task_id}}" class="text-primary btn mt-3">Mark task as NT</a>
                             {% else %}
@@ -188,14 +234,16 @@
                             {% endif %}
 
                             <a href="/delete_task?id={{task_id}}"  onclick="return window.confirm('Are you sure?');" class="text-danger btn mt-3">Delete task</a>
-                            
+                            {% endif %}
+
 
                         </div>
                     </div>
                     {% endfor %}
-
+                    {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
+                            
                     <div class="btn btn-primary mb-auto mt-3" data-toggle="modal" data-target="#taskModal">Add task</div>
-
+                    {% endif %}
                     <a onclick="return window.confirm('Are you sure?');" href=""
                         class="mt-4 btn btn-danger text-white d-none"><i class="fa fa-trash mr-2"></i>Delete</a>
                 </div>
@@ -253,6 +301,42 @@
                             <div class="pt-4 col-6">
                                 <label for="">End date</label>
                                 <input class="task-end-date form-control" name="end_date" type="date" required>
+                            </div>
+                        </div>
+
+                        <button  type="submit" class="btn btn-success float-right mt-3"
+                            >Update</button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div id="EditSubTaskModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+
+                    <form method="post" action="/edit_sub_task" class="modal-body">
+                        <h5 class="modal-title p-2"><b>Edit sub task</b>
+                            <button type="button float-right" class="close" data-dismiss="modal">&times;</button>
+                        </h5>
+                        <div class="row m-0">
+                            <input type="hidden" class="task_id" name="task_id">
+                            <input type="hidden" class="index" name="index">
+                            <div class="col-12 pt-4">
+                                <label for="">Task name</label>
+                                <input class="sub-task-name form-control" name="name" required>
+                            </div>
+                            <div class="pt-4 col-6">
+                                <label for="">Start date</label>
+                                <input class="sub-task-start-date form-control" name="start_date" type="date" required>
+                            </div>
+                            <div class="pt-4 col-6">
+                                <label for="">End date</label>
+                                <input class="sub-task-end-date form-control" name="end_date" type="date" required>
                             </div>
                         </div>
 

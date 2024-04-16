@@ -51,7 +51,7 @@
                     <td class="total_payable border-right">{{i['total_payable']|int}}</td>
                     <td class="approval_1  border-right">
                         <div class="w-100 d-flex">
-                            {% if i['approval_1_amount'] == '' and session['role'] in ['Super Admin','COO','QS Head','Project Manager','Project Coordinator'] %}
+                            {% if i['approval_1_amount'] == '' and session['role'] in ['Super Admin','COO','QS Head','Project Manager','Project Coordinator'] or (session['role'] == 'Custom' and 'Work order approval 1' in session['permission']) %}
                             <button class="approval_1_btn btn py-0 bg-white" data-project-id="{{project}}"
                                 data-project-name="{{data[coordinator_id]['projects'][project]['project_name']}}"
                                 data-bill-id="{{i['bill_id']}}" data-toggle="modal" data-target="#approvalModal"><i
@@ -68,7 +68,7 @@
                     </td>
                     <td class="approval_2 ">
                         <div class="d-flex w-100">
-                            {% if i['approval_2_amount'] == '' and session['role'] in ['Super Admin'] %}
+                            {% if i['approval_2_amount'] == '' and session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Work order approval 2' in session['permission']) %}
                             <button class="approval_2_btn btn py-0 bg-white" data-project-id="{{project}}"
                                 data-project-name="{{data[coordinator_id]['projects'][project]['project_name']}}"
                                 data-bill-id="{{i['bill_id']}}" data-toggle="modal" data-target="#approvalModal"><i

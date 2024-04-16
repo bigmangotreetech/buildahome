@@ -1,0 +1,185 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-8 col-12 bg-light rounded p-3">
+            <form action="/new_sales_client" method="post">
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h4>Create proposal</h4>
+                    </div>
+                </div>
+
+                <br><br>
+                
+
+                {% if 'step' not in request.args %}
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h5>Client basic information</h5>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="client_name">Client name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="client_name" id="client_name" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="client_phone">Client phone</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="client_phone" id="client_phone" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="site_location">Site location</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="site_location" id="site_location" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="requirement">Requirement</label>
+                    </div>
+                    <div class="col-6">
+                        <textarea name="requirement" rows="4" id="requirement" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                {% elif request.args['step'] == 'city' %}
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h5>Select city</h5>
+                    </div>
+                </div>
+                <input type="hidden" name="step" value="{{request.args['step']}}">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="city">City</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="city" id="city" class="form-control select2">
+                            {% for i in cities %}
+                            <option value='{{i}}'>{{i}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group d-none" id="city_text_field">
+                    <div class="col-6">
+                        <label for="city_text">Enter city</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="city_text" id="city_text" class="form-control" />
+                    </div>
+                </div>
+                {% elif request.args['step'] == 'package' %}
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h5>Select package</h5>
+                    </div>
+                </div>
+                <input type="hidden" name="step" value="{{request.args['step']}}">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="package">Select package</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="package" id="package" class="form-control select2">
+                            {% for i in packages %}
+                            <option value='{{i}}'>{{i}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% elif request.args['step'] == 'floors' %}
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h5>Number of floors</h5>
+                    </div>
+                </div>
+                <input type="hidden" name="step" value="{{request.args['step']}}">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="floors">Enter total number of floors</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="floors" type="number" min="1" max="5" id="floors" class="form-control" />
+                    </div>
+                </div>
+                {% elif request.args['step'] == 'commercials' %}
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h5>Commercials</h5>
+                    </div>
+                </div>
+                <p>City: {{city}}</p>
+                <p>Selected package: {{selected_package}}</p>
+                <p>Cost per sqft for selected package: {{cost_per_sqft}}</p>
+                <input type="hidden" name="step" value="{{request.args['step']}}">
+                <div class="row mx-0 mb-3 form-group font-weight-bold" >
+                    <div class="col-4 border-right">
+                        <p>Floor name</p>
+                    </div>
+                    <div class="col-3  border-right">
+                        <p>Area in Sqft</p>
+                    </div>
+                    <div class="col-3">
+                        <p>Total cost for floor</p>
+                    </div>
+                </div>
+                {% for i in floors_list %}
+                <div class="row mx-0 mb-3 form-group floor-element" >
+                    <div class="col-4 border-right">
+                        <label for="">Enter {{i}} slab area</label>
+                    </div>
+                    <div class="col-3 border-right">
+                        <input name="{{i}}" type="number" min="1" id="" data-cost="{{cost_per_sqft}}" class="form-control slab-area-in-sqft" />
+                    </div>
+                    <div class="col-3">
+                        <input name="" type="number" min="1" id="" readonly class="form-control total-cost-for-floor" />
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-4">
+                        <label for="additional_cost">Additional cost</label>
+                    </div>
+                    <div class="col-3">
+                        <input name="additional_cost" type="number" id="additional_cost" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-4">
+                        <label for="project_value">Enter project value</label>
+                    </div>
+                    <div class="col-3">
+                        <input name="project_value" readonly type="number" id="project_value" class="form-control" />
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-dark btn-block bg-indigo text-white">Next</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

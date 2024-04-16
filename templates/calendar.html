@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row mx-3 mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="col-12">
+        <h4>Calendar</h4>
+    </div>
+</div>
+
+<div class="mx-3">
+
+    <div class="row mx-0 mb-3 pl-0 col-6 form-group">
+        <div class="col-6 pl-0 d-flex flex-column">
+            <label for="Coordinator" class="my-auto">Select coordinator</label>
+            <select name="coordinator" id="coordinator" class="form-control select2">
+                <option value="All">All</option>
+                {% for i in users %}
+                {% if request.args['coordinator'] == i[0]|string or session['user_id']|string == i[0]|string %}
+                <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
+                {% else %}
+                <option value="{{i[0]}}">{{i[1]}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <table class="table">
+
+            {% for month in month_year_list %}
+                <th class="h4">{{month}}</th>
+            {% endfor %}
+        <tbody>
+            <tr>
+
+            {% for m in month_year_list %}
+                    {% if month_year_dict[m]|length > 0 %}
+                    <td data-month="{{m}}">
+                        {% for p in month_year_dict[m] %}
+                        {% if p['handed_over'] == 1 %}
+                        <div class="p-2 project alert alert-success">
+                            <a data-m='{{m}}' href="/client_billing?project_id={{p['project_id']}}">{{p['project_name']}}</a>
+                        </div>
+                        {% elif p['delay'] < 0 %}
+                        <div class="p-2 project alert alert-primary">
+                            <a href="/client_billing?project_id={{p['project_id']}}">{{p['project_name']}}</a>
+                        </div>
+                        
+                        {% else %}
+                        <div class="p-2 project alert alert-danger">
+                            <a href="/client_billing?project_id={{p['project_id']}}">{{p['project_name']}}</a>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+<style>
+.project, th {
+    min-width: 250px;
+}
+.table td {
+    vertical-align: top;
+}
+
+</style>
+
+{% endblock %}

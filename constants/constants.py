@@ -18,6 +18,8 @@ roles = [
             'Electrical Designer',
             'PHE Designer',
             'Site Engineer',
+            'Sales Head',
+            'Sales Manager',
             'Sales Executive',
             'Billing',
             'Finance',
@@ -27,7 +29,9 @@ roles = [
             'Technical Info',
             'QC',
             'Safety',
-            'Socal'
+            'Socal',
+            'Material management',
+            'Assistant project coordinator'
         ]
 
 permissions = [
@@ -39,7 +43,9 @@ permissions = [
     'Approve project',
     'Create project',
     'Delete project',
+    'View client billing',
     'Client billing',
+    'Update Client billing',
     'Checklist',
     'View archived projects',
     'Create user',
@@ -62,6 +68,7 @@ permissions = [
     'Indents for Purchase',
     'Unapproved POs',
     'Approved POs',
+    'Delete indents',
     'Deleted indents',
     'Add custom trade',
     'Contractor registration',
@@ -84,7 +91,19 @@ permissions = [
     'Reports',
     'Audit log',
     'View receipts and agreements',
-    'Add receipt or agreement'
+    'Add receipt or agreement',
+    'Mark indent as billed',
+    'Edit inventory',
+    'Approve work orders',
+    'Delete work orders',
+    'Delete unsigned work orders',
+    'Clear balance for work orders',
+    'Lock/unlock work orders',
+    'Work order approval 1',
+    'Work order approval 2',
+    'Delete bill',
+    'Export/Download bills'
+    
 ]
 
 # WIP

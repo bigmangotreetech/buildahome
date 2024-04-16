@@ -26,12 +26,18 @@
                         <label for="{{i}}">{{i}}</label>
                     </div>
                     <div class="col-6">
+                        {% if session['role'] in ['Super Admin','COO','QS Head'] or (session['role'] == 'Custom' and 'Update KYP for material' in session['permission'])  %}
                         <input type="number" name="{{i}}" id="{{i}}" class="form-control"
                                value="{{material_quantity_data[i]}}">
+                        {% else %}
+                        <input readonly type="number" name="{{i}}" id="{{i}}" class="form-control"
+                               value="{{material_quantity_data[i]}}">
+                        {% endif %}
+
                     </div>
                 </div>
                 {% endfor %}
-                {% if session['role'] in ['Super Admin','COO','Purchase Head','QS Info']  or (session['role'] == 'Custom' and 'Update KYP for material' in session['permission'])  %}
+                {% if session['role'] in ['Super Admin','COO','QS Head'] or (session['role'] == 'Custom' and 'Update KYP for material' in session['permission'])  %}
                 <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
                         <button class="btn btn-dark btn-block bg-indigo text-white">Submit</button>

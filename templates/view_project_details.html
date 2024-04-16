@@ -48,6 +48,13 @@
                             <a href="/unarchive_project?project_id={{request.args['project_id']}}&&project_name={{details[0]}}" class="btn btn-secondary mr-2">Unarchive</a>
                         {% endif %}
                     {% endif %}
+                    {% if session['role'] in ['Super Admin','COO','Billing','Technical Info','Planning']  or (session['role'] == 'Custom' and 'Hand over project' in session['permission'])  %}
+                        {% if handed_over=='0' %}
+                            <a href="/hand_over_project?project_id={{request.args['project_id']}}&&project_name={{details[0]}}" class="btn btn-success mr-2">Hand over</a>
+                        {% else %}
+                            <a href="/reverse_hand_over_project?project_id={{request.args['project_id']}}&&project_name={{details[0]}}" class="btn btn-warning mr-2">Reverse hand over</a>
+                        {% endif %}
+                    {% endif %}
 
                     {% if session['role'] in ['Super Admin','COO','Billing','Technical Info']  or (session['role'] == 'Custom' and 'Edit project' in session['permission'])  %}
                         <a href="/edit_project?project_id={{request.args['project_id']}}" class="btn btn-info mr-2">Edit</a>

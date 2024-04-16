@@ -138,7 +138,7 @@
                     <ion-icon name="document-outline"></ion-icon>
                     <span class="my-auto ml-2">Checklist</span></a>
                 {% endif %}
-                {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Client billing' in session['permission']) %}
+                {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and ('Client billing' in session['permission'] or 'View client billing' in session['permission'])) %}
                 <a href="/client_billing?project_id={{project[0]}}" class="d-block mt-4 ml-3 pb-2 d-flex team-btn">
                     <ion-icon name="document-outline"></ion-icon>
                     <span class="my-auto ml-2">Billing</span></a>

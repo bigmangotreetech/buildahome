@@ -1,56 +1,71 @@
+
+
+
 {% extends 'layout.html' %}
 {% block content %}
 <div class="row mx-5 mt-5 mb-3 pb-2 border-bottom form-group">
     <div class="col-12">
-        <h4>Approved bills</h4>
+        <h4>Approved Bills</h4>
     </div>
 </div>
 <div class="p-5 w-100 table-responsive">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Created on</th>
-            <th scope="col">Contractor Name</th>
-            <th scope="col">Contractor PAN</th>
-            <th scope="col">Contractor Code</th>
-            <th scope="col">Trade</th>
-            <th scope="col">Payment Stage</th>
-            <th scope="col">Total Payable</th>
-            <th scope="col">Approved amount</th>
-        </tr>
-        </thead>
-        <tbody>
 
-        {% for project in data %}
-        <tr class="bg-white">
-            <td class="border border-white"></td>
-        </tr>
-        <tr class="h5 mt-4 mb-2 border border-white bg-white">
-            <td>{{data[project]['project_name']}}</td>
-        </tr>
-        {% for i in data[project]['bills'] %}
+    {% for coordinator_id in data %}
+    {% if data[coordinator_id]['projects']|length %}
+    <div class="p-2 mt-4 mb-2 border border-white bg-light w-100 btn text-left" data-toggle="collapse"
+        data-target="#{{coordinator_id}}">
+        <i class="fa fa-chevron-down mr-2" style="font-size: 10px;"></i>
+        {{data[coordinator_id]['coordinator_name']}}
+    </div>
+    <div class="w-100 collapse" id="{{coordinator_id}}">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Created on</th>
+                    <th scope="col">Contractor Name</th>
+                    <th scope="col">Contractor PAN</th>
+                    <th scope="col">Contractor Code</th>
+                    <th scope="col">Trade</th>
+                    <th scope="col">Payment Stage</th>
+                    <th scope="col">Total Payable</th>
+                    <th scope="col">Approved amount</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in data[coordinator_id]['projects'] %}
+                
+                {% if data[coordinator_id]['projects'][project]['bills']|length %}
+                <tr class="h5 mt-4 mb-2 border border-white bg-white">
+                    <td>{{data[coordinator_id]['projects'][project]['project_name']}}</td>
+                </tr>
+                {% endif %}
+                {% for i in data[coordinator_id]['projects'][project]['bills'] %}
+                <tr class="bill-{{i['bill_id']}}">
+                    <td class="created_at border-right">{{i['created_at']}}</td>
+                    <td class="contractor_name border-right">{{i['contractor_name']}}</td>
+                    <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
+                    <td class="contractor_code border-right">{{i['contractor_code']}}</td>
+                    <td class="trade border-right">{{i['trade']}}</td>
+                    <td class="stage border-right">{{i['stage']}}</td>
+                    <td class="total_payable border-right">{{i['total_payable']|int}}</td>
+                    <td class=" border-right">{{i['approval_2_amount']|int}}</td>
+                    
+                    
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% endfor %}
 
-        <tr class="bill-{{i['bill_id']}}">
-            <td class="created_at border-right">{{i['created_at']}}</td>
-            <td class="contractor_name border-right">{{i['contractor_name']}}</td>
-            <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
-            <td class="contractor_code border-right">{{i['contractor_code']}}</td>
-            <td class="trade border-right">{{i['trade']}}</td>
-            <td class="stage border-right">{{i['stage']}}</td>
-            <td class="total_payable border-right">{{i['total_payable']|int}}</td>
-            <td class="approval_2 ">{{i['approval_2_amount']|int}}</td>
-        </tr>
-        {% endfor %}
-        {% endfor %}
-
-
-        </tbody>
-    </table>
 
     <div class="d-flex justify-content-end">
-        {% if session['role'] == 'Super Admin' %}
+        {% if session['role'] == 'Super Admin' or (session['role'] == 'Custom' and 'Export/Download bills' in session['permission']) %}
          <a class="btn btn-dark bg-indigo text-white"
-           href="/export_bills?first_bill_id={{first_bill_id}}"
+           href="/export_bills"
            onclick="return confirm('Are you sure you want to export these bills?')">Export
         </a>
         {% endif %}
@@ -58,5 +73,109 @@
     </div>
 
 
+
+
+
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="approvalModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approvalModalLabel">Approve bill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Project Name</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold project_name"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Contractor Name</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold contractor_name"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Contractor PAN</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold contractor_pan"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Contractor Code</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold contractor_code"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Trade</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold trade"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Payment stage</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold payment_stage"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Total payable</label>
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold total_payable"></label>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Amount approved</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="amount_approved" type="number" id="amount_approved" class="form-control">
+                        <small class="invalid-message text-danger mt-1"></small>
+                    </div>
+                </div>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label>Notes</label> <small>(Optional)</small>
+                    </div>
+                    <div class="col-6">
+                        <input name="notes" id="notes" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="project_id" class="project_id">
+            <input type="hidden" name="bill_id" class="bill_id">
+            <input type="hidden" class="approval_level">
+            <div class="modal-footer">
+                <div class="d-flex w-100 justify-content-between">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-dark bg-indigo text-white approve_bill_btn">Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

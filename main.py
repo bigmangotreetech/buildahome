@@ -26,7 +26,7 @@ import random
 import json
 import uuid
 
-
+#ssh -i "buildahomeaws1.pem" ubuntu@ec2-13-233-196-224.ap-south-1.compute.amazonaws.com
 
 # Debit note
 
@@ -169,26 +169,64 @@ def get_projects_for_current_user(user_id = '', role = ''):
         if result[0] == "All":
             return ('All')
         return tuple(result[0].split(','))
-    elif role == 'Project Coordinator':
+    elif role == 'Project Coordinator' or role == 'Assistant project coordinator':
         query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(user_id)
         cur.execute(query)
         result = cur.fetchall()
+
+        query = 'SELECT access from App_users WHERE user_id=' + str(user_id)
+        cur.execute(query)
+        result2 = cur.fetchone()
+
+        print('Project Coordinator',result)
         projects = []
         for i in result:
             projects.append(i[0])
         if len(projects) == 1:
             projects.append(0)
+        for p in result2[0].split(','):
+            projects.append(p)
         return tuple(projects)
     elif role == 'Project Manager':
-        query = 'SELECT project_id from project_operations_team WHERE project_manager=' + str(user_id)
-        cur.execute(query)
-        result = cur.fetchall()
         projects = []
-        for i in result:
-            projects.append(i[0])
+        coords = 'SELECT user_id from App_users WHERE reports_to='+ str(user_id)
+        cur.execute(coords)
+        res = cur.fetchall()
+        for i in res:
+            coord_id = i[0]
+            projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+            cur.execute(projects_query)
+            pr_result = cur.fetchall()
+            for j in pr_result:
+                projects.append(j[0])
+
+            assistant_coords = 'SELECT user_id from App_users WHERE reports_to='+ str(coord_id)
+            cur.execute(assistant_coords)
+            assistant_coords_res = cur.fetchall()
+            for c in assistant_coords_res:
+                coord_id = c[0]
+                projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+                cur.execute(projects_query)
+                pr_result1 = cur.fetchall()
+                for k in pr_result1:
+                    projects.append(k[0])
+            
+                query = 'SELECT access from App_users WHERE user_id=' + str(coord_id)
+                cur.execute(query)
+                result2 = cur.fetchone()
+                print('result2', result2)
+
+                for p in result2[0].split(','):
+                    projects.append(p)
+
+
+            
         if len(projects) == 1:
             projects.append(0)
+        if len(projects) == 0:
+            return ((0,0))
         return tuple(projects)
+
     elif role == 'Purchase Executive':
         query = 'SELECT project_id from project_operations_team WHERE purchase_executive=' + str(user_id)
         cur.execute(query)
@@ -1639,6 +1677,8 @@ def view_inventory():
     project = None
     material = None
     material_total_quantity = None
+    material_quantity_data_dict = {}
+
 
 
     project_id = 'All'
@@ -1728,15 +1768,33 @@ def view_inventory():
             if result is not None:
                 material_total_quantity = result[0]
 
-        if project_id != 'All':
-            material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
-                project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
-            cur.execute(material_quantity_query)
-            result = cur.fetchone()
-            if result is not None:
-                material_total_quantity = result[0]
+        if project_id != 'All' and material == 'All':
 
-        print(material_total_quantity)
+            if vendor == 'All':
+                material_quantity_query = 'SELECT DISTINCT material from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=' + str(
+                    project_id)
+            else:
+                material_quantity_query = 'SELECT DISTINCT material from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.project_id=' + str(
+                    project_id) + ' AND vendor="' + str(vendor) +'"'
+            
+            cur.execute(material_quantity_query)
+            result = cur.fetchall()
+            if result is not None:
+                for i in result:
+                    material = i[0]
+                    material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+                        project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+                    cur.execute(material_quantity_query)
+                    result = cur.fetchone()
+                    if result is not None:
+                        material_quantity_data_dict[material] = result[0]
+
+
+
+            
+
+
+
 
 
     vendors_query = 'SELECT DISTINCT vendor from procurement order by vendor'
@@ -1745,7 +1803,7 @@ def view_inventory():
 
 
     return render_template('view_inventory.html', projects=projects, procurements=procurements, project=project,
-                           material=material, materials=materials, vendors=vendors, material_total_quantity=material_total_quantity)
+                           material=material, materials=materials, vendors=vendors, material_total_quantity=material_total_quantity, material_quantity_data_dict=material_quantity_data_dict)
 
 @app.route('/fix_query', methods=['GET'])
 def fix_query():
@@ -2089,22 +2147,51 @@ def edit_user():
     if request.method == 'GET':
         user_id = request.args['user_id']
         cur = mysql.connection.cursor()
-        view_user_query = 'SELECT user_id, email, name, role, phone, access, permission FROM App_users WHERE user_id=' + str(user_id)
+        view_user_query = 'SELECT user_id, email, name, role, phone, access, permission, reports_to FROM App_users WHERE user_id=' + str(user_id)
         cur.execute(view_user_query)
         result = cur.fetchone()
 
+
+        assigned_coordinators = []
+        if result is not None and (result[3] == "Project Coordinator" or result[3] == "Project Manager" or result[3] == 'Sales Manager'):
+            assigned_coordinators_query = 'SELECT user_id FROM App_users WHERE reports_to='+str(result[0])
+            cur.execute(assigned_coordinators_query)
+            assigned_coordinators_res = cur.fetchall()
+            if assigned_coordinators_res is not None:
+                for i in assigned_coordinators_res:
+                    assigned_coordinators.append(i[0]) 
 
 
         projects = get_projects()
 
         if 'Super Admin' in session['role']:
-            roles.append('Custom')
+            if 'Custom' not in roles:
+                roles.append('Custom')
             projects = list(projects)
             projects.insert(0, ('All','All'))
             projects = tuple(projects)
             if 'Super Admin' not in roles and str(user_id) == str(session['user_id']):
                 roles.insert(0,'Super Admin')
-        return render_template('edit_user.html', user=result, roles=roles, projects=projects, permissions=permissions)
+
+        project_coordinators = []
+
+        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator"'
+        cur.execute(users_query)
+        project_coordinators = cur.fetchall()
+
+        assistant_project_coordinators = []
+
+        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Assistant project coordinator"'
+        cur.execute(users_query)
+        assistant_project_coordinators = cur.fetchall()
+
+        sales_executives = []
+
+        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Sales Executive"'
+        cur.execute(users_query)
+        sales_executives = cur.fetchall()
+            
+        return render_template('edit_user.html', sales_executives=sales_executives, user=result, roles=roles, projects=projects, permissions=permissions, project_coordinators=project_coordinators, assistant_project_coordinators=assistant_project_coordinators, assigned_coordinators=assigned_coordinators)
     else:
         
         required_fields = ['name', 'role', 'email', 'phone', 'password', 'confirm_password']
@@ -2128,6 +2215,28 @@ def edit_user():
             update_user_query = 'UPDATE App_users SET access="'+access+'" WHERE user_id='+str(user_id)
             cur = mysql.connection.cursor()
             cur.execute(update_user_query)
+
+
+        cur = mysql.connection.cursor()
+                
+        print(request.form.getlist('coordinators'))
+        coordinators = request.form.getlist('coordinators')
+        assigned_coordinators_query = 'SELECT user_id FROM App_users WHERE reports_to='+str(user_id)
+        cur.execute(assigned_coordinators_query)
+        assigned_coordinators_res = cur.fetchall()
+        print(assigned_coordinators_res)
+        if assigned_coordinators_res is not None:
+            for i in assigned_coordinators_res:
+                update_user_query = 'UPDATE App_users SET reports_to=0 WHERE user_id='+str(i[0])
+                cur.execute(update_user_query)
+
+        if 'coordinators' in request.form:
+            
+            for i in coordinators:
+                update_user_query = 'UPDATE App_users SET reports_to='+str(user_id)+' WHERE user_id='+str(i)
+                cur = mysql.connection.cursor()
+                cur.execute(update_user_query)
+
             
         if len(request.form.getlist('permissions')) > 0:
             update_user_query = 'UPDATE App_users SET permission="'+','.join(request.form.getlist('permissions'))+'" WHERE user_id='+str(user_id)
@@ -2569,21 +2678,20 @@ def edit_vendor():
         update_string = update_string[:-2]
         update_vendor_query = 'UPDATE vendors SET ' + update_string + ' WHERE id=' + str(
             request.form['vendor_id'])
+
         
         cur.execute(update_vendor_query)
         mysql.connection.commit()
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
-            if file.filename == '':
-                flash('No selected file', 'danger ')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
+            if file.filename != '' and file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 picture_filename = 'vendor_dp_' + str(request.form['vendor_id'])
                 output = send_to_s3(file, app.config["S3_BUCKET"], picture_filename)
                 if output != 'success':
                     flash('File upload failed', 'danger')
                     return redirect(request.referrer)
+        
         flash('Vendor updated successfully', 'success')
         return redirect('/view_vendor_details?vendor_id=' + request.form['vendor_id'])
 
@@ -2640,7 +2748,7 @@ def kyp_material():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/kyp_material'
         return redirect('/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info','Custom']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','Purchase info','QS Info','Custom','QS Head','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'KYP for material' not in session['permission']:
@@ -2695,9 +2803,14 @@ def delete_wo():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/create_work_order'
         return redirect('/login')
-    if session['role'] not in ['Super Admin']:
+    if session['role'] not in ['Super Admin','Custom']:
         flash('You do not have permission delete', 'danger')
         return redirect(request.referrer)
+    if session['role'] == 'Custom' and ('Delete unsigned work orders' not in session['permission'] or 'Delete  work orders' not in session['permission']):
+        flash('You do not have permission delete', 'danger')
+        return redirect(request.referrer)
+
+    
     wo_id = request.args['id']
     cur = mysql.connection.cursor()
     get_wo = 'SELECT w.trade, p.project_name FROM ' \
@@ -3185,10 +3298,10 @@ def view_bills():
 
     if request.method == 'GET':
 
-        if session['role'] in ['Super Admin', 'COO', 'QS Head','QS Engineer']:
+        if session['role'] in ['Super Admin', 'COO', 'QS Head','QS Engineer'] or 'All' in str(get_projects_for_current_user()):
             coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id INNER JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
 
-        elif session['role'] in ['Project Manager','Project Coordinator']:
+        elif session['role'] in ['Project Manager','Project Coordinator','Assistant project coordinator','Custom']:
             coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL AND p.project_id IN ' + str(get_projects_for_current_user()) +'  order by pot.co_ordinator'
                   
             
@@ -3356,9 +3469,13 @@ def delete_bill():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/delete_bill'
         return redirect('/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','Custom']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
+    if session['role'] == 'Custom' and 'Delete bill' not in session['permission']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
     if request.method == 'GET':
         if 'bill_id' in request.args:
             cur = mysql.connection.cursor()
@@ -3384,20 +3501,78 @@ def view_approved_bills():
         return redirect(request.referrer)
 
     if request.method == 'GET':
-        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
+        if session['role'] in ['Super Admin', 'COO', 'QS Head','QS Engineer'] or 'All' in str(get_projects_for_current_user()):
+            coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id INNER JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
+
+        elif session['role'] in ['Project Manager','Project Coordinator','Assistant project coordinator','Custom']:
+            coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL AND p.project_id IN ' + str(get_projects_for_current_user()) +'  order by pot.co_ordinator'
+                  
+            
+        cur = mysql.connection.cursor()
+        cur.execute(coordinators_query)
+        coordinators_res = cur.fetchall()
+
+        data = {}
+
+        for p in coordinators_res:
+            coordinator_id = p[1]
+            coordinator_name = p[2]
+            if coordinator_id not in data:
+                data[coordinator_id] = {'coordinator_name': coordinator_name, 'projects': {}}            
+
+            project_id = p[0]
+            if project_id not in data[coordinator_id]['projects']:
+                data[coordinator_id]['projects'][project_id] = {'project_name': p[3]}
+
+            # bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
+            #             'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
+            #             'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
+            #             ' FROM wo_bills WHERE project_id='+ str(p[0]) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL) AND nt_due != 1 AND nt_due != -1'
+
+            bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                       'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                       'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                       'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
                       ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
-                      '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL)'
-        data = get_bills_as_json(bills_query)
-        first_bill_id = 0
-        for project in data:
-            for i in data[project]['bills']:
-                first_bill_id = i['bill_id']
-                break
-            break
-        return render_template('view_approved_bills.html', data=data, first_bill_id=first_bill_id)
+                      '(wo_bills.approval_2_amount != 0 AND wo_bills.approval_2_amount IS NOT NULL) WHERE projects.project_id='+ str(p[0])
+
+            cur.execute(bills_query)
+            res = cur.fetchall()
+
+            
+            bills = []
+            for i in res:
+                bills.append({
+                    'trade': i[0],
+                    'stage': i[1],
+                    'payment_percentage': i[2],
+                    'amount': i[3],
+                    'total_payable': i[6],
+                    'contractor_name': i[5],
+                    'contractor_code': i[6],
+                    'contractor_pan': i[7],
+                    'approval_1_status': i[8],
+                    'approval_1_amount': i[9],
+                    'approval_1_notes': i[10],
+                    'approval_2_status': i[13],
+                    'approval_2_amount': i[14],
+                    'approval_2_notes': i[12],
+                    'bill_id': i[14],
+                    'created_at': i[17]
+                
+                })
+            data[coordinator_id]['projects'][project_id]['bills'] = bills
+       
+
+        
+        # data = get_bills_as_json(bills_query)
+        # first_bill_id = 0
+        # for project in data:
+        #     for i in data[project]['bills']:
+        #         first_bill_id = i['bill_id']
+        #         break
+        #     break
+        return render_template('view_approved_bills.html', data=data, first_bill_id=1)
 
 
 @app.route('/view_archived_bills', methods=['GET'])
@@ -3850,7 +4025,7 @@ def view_unapproved_work_order():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_unapproved_work_order'
         return redirect('/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Custom']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Custom','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'Unapproved work orders' not in session['permission']:
@@ -3865,6 +4040,9 @@ def view_unapproved_work_order():
         cur = mysql.connection.cursor()
         cur.execute(unsigned_query)
         result = cur.fetchall()
+
+
+        user_projects = get_projects_for_current_user()
         for i in result:
             value = 0
             if i[4].strip() != '':
@@ -3872,6 +4050,9 @@ def view_unapproved_work_order():
                     value =  str(int(float(i[4].strip().replace(',',''))))
                 except:
                     value = i[4].strip().replace(',','')
+            if session['role'] in ['Project Manager','Project Coordinator','Assistant project coordinator']:
+                if int(i[2]) not in user_projects:
+                    continue
             work_orders.append({
                 'project_name': i[0],
                 'project_number': i[1],
@@ -3959,9 +4140,9 @@ def view_ph_approval_indents():
 def view_qs_approval_indents():
     if 'email' not in session:
         flash('You need to login to continue', 'danger')
-        session['last_route'] = '/view_approved_indents'
+        session['last_route'] = '/view_qs_approval_indents'
         return redirect('/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'Indents for QS' not in session['permission']:
@@ -3972,7 +4153,7 @@ def view_qs_approval_indents():
         cur = mysql.connection.cursor()
         current_user_role = session['role']
         indents_query = ''
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Purchase Info']  or 'All' in get_projects_for_current_user():
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Purchase Executive','Purchase Info']  or 'All' in get_projects_for_current_user():
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -3989,7 +4170,7 @@ def view_qs_approval_indents():
                             'indents.created_by_user=App_users.user_id'
 
 
-        elif current_user_role in ['QS Engineer','Purchase Executive','QS Info','Custom']:
+        elif current_user_role in ['QS Engineer','Purchase Executive','QS Info','Custom','Project Manager']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -4055,7 +4236,7 @@ def view_qs_head_approval_indents():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_approved_indents'
         return redirect('/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Head','Purchase Info','Custom']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Head','Purchase Info','Custom','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'Indents for QS Head' not in session['permission']:
@@ -4083,7 +4264,7 @@ def view_qs_head_approval_indents():
                             'indents.created_by_user=App_users.user_id'
 
 
-        elif current_user_role in ['QS Engineer','Purchase Executive','QS Info','Custom']:
+        elif current_user_role in ['QS Engineer','Purchase Executive','QS Info','Custom','Project Manager']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -4118,25 +4299,28 @@ def view_qs_head_approval_indents():
                 teams[pos_res[0]].append(i)
 
                 if len(str(i[8]).strip()) > 0:
-                    i[8] = str(i[8]).strip()
-                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                    IST = pytz.timezone('Asia/Kolkata')
-                    current_time = datetime.now(IST)
-                    time_since_creation = current_time - timestamp
-                    difference_in_seconds = time_since_creation.total_seconds()
-                    difference_in_hours = difference_in_seconds // 3600
-                    if difference_in_hours >= 24:
-                        difference_in_days = int(difference_in_hours // 24)
-                        if difference_in_days >= 365:
-                            years = int(difference_in_days // 365)
-                            days = int(difference_in_days % 365)
-                            difference_in_days = str(years) + ' year(s), ' + str(days)
-                        
-                        hours_remaining = difference_in_hours % 24
-                        i[8] = str(difference_in_days) + ' days, ' + str(
-                            int(hours_remaining)) + 'hours'
-                    else:
-                        i[8] = str(int(difference_in_hours)) + ' hours'
+                    try:
+                        i[8] = str(i[8]).strip()
+                        timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                        IST = pytz.timezone('Asia/Kolkata')
+                        current_time = datetime.now(IST)
+                        time_since_creation = current_time - timestamp
+                        difference_in_seconds = time_since_creation.total_seconds()
+                        difference_in_hours = difference_in_seconds // 3600
+                        if difference_in_hours >= 24:
+                            difference_in_days = int(difference_in_hours // 24)
+                            if difference_in_days >= 365:
+                                years = int(difference_in_days // 365)
+                                days = int(difference_in_days % 365)
+                                difference_in_days = str(years) + ' year(s), ' + str(days)
+                            
+                            hours_remaining = difference_in_hours % 24
+                            i[8] = str(difference_in_days) + ' days, ' + str(
+                                int(hours_remaining)) + 'hours'
+                        else:
+                            i[8] = str(int(difference_in_hours)) + ' hours'
+                    except:
+                        pass
                 data.append(i)
         return render_template('qs_approval_indents.html', result=data, teams=teams)
 
@@ -4208,7 +4392,7 @@ def view_ph_approved_indents():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_approved_indents'
         return redirect('/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'Approved POs' not in session['permission']:
@@ -4234,7 +4418,7 @@ def view_ph_approved_indents():
                             'indents.project_id=projects.project_id ' \
                             'LEFT OUTER JOIN App_users on ' \
                             'indents.created_by_user=App_users.user_id'
-        elif current_user_role in ['Purchase Executive','Custom']:
+        elif current_user_role in ['Purchase Executive','Custom','Project Manager']:
             indents_query = 'SELECT indents.id, ' \
                             'projects.project_id, ' \
                             'projects.project_name, ' \
@@ -4261,24 +4445,27 @@ def view_ph_approved_indents():
                 projects[i[2]] = []
         
             if len(str(i[8]).strip()) > 0:
-                i[8] = str(i[8]).strip()
-                timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                IST = pytz.timezone('Asia/Kolkata')
-                current_time = datetime.now(IST)
-                time_since_creation = current_time - timestamp
-                difference_in_seconds = time_since_creation.total_seconds()
-                difference_in_hours = difference_in_seconds // 3600
-                if difference_in_hours >= 24:
-                    difference_in_days = int(difference_in_hours // 24)
-                    if difference_in_days >= 365:
-                        years = int(difference_in_days // 365)
-                        days = int(difference_in_days % 365)
-                        difference_in_days = str(years) + ' year(s), ' + str(days)
-                    hours_remaining = difference_in_hours % 24
-                    i[8] = str(difference_in_days) + ' days, ' + str(
-                        int(hours_remaining)) + 'hours'
-                else:
-                    i[8] = str(int(difference_in_hours)) + ' hours'
+                try:
+                    i[8] = str(i[8]).strip()
+                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                    IST = pytz.timezone('Asia/Kolkata')
+                    current_time = datetime.now(IST)
+                    time_since_creation = current_time - timestamp
+                    difference_in_seconds = time_since_creation.total_seconds()
+                    difference_in_hours = difference_in_seconds // 3600
+                    if difference_in_hours >= 24:
+                        difference_in_days = int(difference_in_hours // 24)
+                        if difference_in_days >= 365:
+                            years = int(difference_in_days // 365)
+                            days = int(difference_in_days % 365)
+                            difference_in_days = str(years) + ' year(s), ' + str(days)
+                        hours_remaining = difference_in_hours % 24
+                        i[8] = str(difference_in_days) + ' days, ' + str(
+                            int(hours_remaining)) + 'hours'
+                    else:
+                        i[8] = str(int(difference_in_hours)) + ' hours'
+                except:
+                    pass
             projects[i[2]].append(i)
             data.append(i)
         return render_template('ph_approval_indents.html', result=data, projects=projects)
@@ -4289,7 +4476,7 @@ def view_approved_indents():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_approved_indents'
         return redirect('/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'Indents for Purchase' not in session['permission']:
@@ -4314,28 +4501,31 @@ def view_approved_indents():
                 if i[2] not in projects.keys():
                     projects[i[2]] = []
                 if len(str(i[8]).strip()) > 0:
-                    i[8] = str(i[8]).strip()
-                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                    IST = pytz.timezone('Asia/Kolkata') 
-                    current_time = datetime.now(IST)
-                    time_since_creation = current_time - timestamp
-                    difference_in_seconds = time_since_creation.total_seconds()
-                    difference_in_hours = difference_in_seconds // 3600
-                    if difference_in_hours >= 24:
-                        difference_in_days = int(difference_in_hours // 24)
-                        if difference_in_days >= 365:
-                            years = int(difference_in_days // 365)
-                            days = int(difference_in_days % 365)
-                            difference_in_days = str(years) + ' year(s), ' + str(days)
-                        hours_remaining = difference_in_hours % 24
-                        i[8] = str(difference_in_days) + ' days, ' + str(
-                            int(hours_remaining)) + 'hours'
-                    else:
-                        i[8] = str(int(difference_in_hours)) + ' hours'
+                    try:
+                        i[8] = str(i[8]).strip()
+                        timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                        IST = pytz.timezone('Asia/Kolkata') 
+                        current_time = datetime.now(IST)
+                        time_since_creation = current_time - timestamp
+                        difference_in_seconds = time_since_creation.total_seconds()
+                        difference_in_hours = difference_in_seconds // 3600
+                        if difference_in_hours >= 24:
+                            difference_in_days = int(difference_in_hours // 24)
+                            if difference_in_days >= 365:
+                                years = int(difference_in_days // 365)
+                                days = int(difference_in_days % 365)
+                                difference_in_days = str(years) + ' year(s), ' + str(days)
+                            hours_remaining = difference_in_hours % 24
+                            i[8] = str(difference_in_days) + ' days, ' + str(
+                                int(hours_remaining)) + 'hours'
+                        else:
+                            i[8] = str(int(difference_in_hours)) + ' hours'
+                    except:
+                        pass
                 projects[i[2]].append(i)
                 data.append(i)
             return render_template('approved_indents.html', result=data, projects=projects)
-        elif current_user_role in ['Purchase Executive','Custom']:
+        elif current_user_role in ['Purchase Executive','Custom','Project Manager']:
             access_tuple = get_projects_for_current_user()
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="approved_by_qs" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
@@ -4350,24 +4540,27 @@ def view_approved_indents():
                 if i[2] not in projects.keys():
                     projects[i[2]] = []
                 if len(str(i[8]).strip()) > 0:
-                    i[8] = str(i[8]).strip()
-                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                    IST = pytz.timezone('Asia/Kolkata')
-                    current_time = datetime.now(IST)
-                    time_since_creation = current_time - timestamp
-                    difference_in_seconds = time_since_creation.total_seconds()
-                    difference_in_hours = difference_in_seconds // 3600
-                    if difference_in_hours >= 24:
-                        difference_in_days = int(difference_in_hours // 24)
-                        if difference_in_days >= 365:
-                            years = int(difference_in_days // 365)
-                            days = int(difference_in_days % 365)
-                            difference_in_days = str(years) + ' year(s), ' + str(days)
-                        hours_remaining = difference_in_hours % 24
-                        i[8] = str(difference_in_days) + ' days, ' + str(
-                            int(hours_remaining)) + 'hours'
-                    else:
-                        i[8] = str(int(difference_in_hours)) + ' hours'
+                    try:
+                        i[8] = str(i[8]).strip()
+                        timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                        IST = pytz.timezone('Asia/Kolkata')
+                        current_time = datetime.now(IST)
+                        time_since_creation = current_time - timestamp
+                        difference_in_seconds = time_since_creation.total_seconds()
+                        difference_in_hours = difference_in_seconds // 3600
+                        if difference_in_hours >= 24:
+                            difference_in_days = int(difference_in_hours // 24)
+                            if difference_in_days >= 365:
+                                years = int(difference_in_days // 365)
+                                days = int(difference_in_days % 365)
+                                difference_in_days = str(years) + ' year(s), ' + str(days)
+                            hours_remaining = difference_in_hours % 24
+                            i[8] = str(difference_in_days) + ' days, ' + str(
+                                int(hours_remaining)) + 'hours'
+                        else:
+                            i[8] = str(int(difference_in_hours)) + ' hours'
+                    except:
+                        pass
                 projects[i[2]].append(i)
                 data.append(i)
             return render_template('approved_indents.html', result=data, projects=projects)
@@ -4380,7 +4573,7 @@ def view_deleted_indents():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_approved_indents'
         return redirect('/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'Deleted indents' not in session['permission']:
@@ -4390,7 +4583,7 @@ def view_deleted_indents():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         current_user_role = session['role']
-        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head','Purchase Info'] or 'All' in get_projects_for_current_user():
+        if current_user_role in ['Super Admin', 'COO', 'QS Head', 'QS Engineer', 'Purchase Head','Purchase Info','Project Manager'] or 'All' in get_projects_for_current_user():
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp FROM indents INNER JOIN projects on indents.status="deleted" AND indents.project_id=projects.project_id ' \
                             ' LEFT OUTER JOIN App_users on indents.created_by_user=App_users.user_id'
@@ -4462,7 +4655,7 @@ def view_unapproved_POs():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_unapproved_POs'
         return redirect('/login')
-    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom']:
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom','Project Manager']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'Unapproved POs' not in session['permission']:
@@ -4483,27 +4676,30 @@ def view_unapproved_POs():
             for i in result:
                 i = list(i)
                 if len(str(i[8]).strip()) > 0:
-                    i[8] = str(i[8]).strip()
-                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                    IST = pytz.timezone('Asia/Kolkata')
-                    current_time = datetime.now(IST)
-                    time_since_creation = current_time - timestamp
-                    difference_in_seconds = time_since_creation.total_seconds()
-                    difference_in_hours = difference_in_seconds // 3600
-                    if difference_in_hours >= 24:
-                        difference_in_days = int(difference_in_hours // 24)
-                        if difference_in_days >= 365:
-                            years = int(difference_in_days // 365)
-                            days = int(difference_in_days % 365)
-                            difference_in_days = str(years) + ' year(s), ' + str(days)
-                        hours_remaining = difference_in_hours % 24
-                        i[8] = str(difference_in_days) + ' days, ' + str(
-                            int(hours_remaining)) + 'hours'
-                    else:
-                        i[8] = str(int(difference_in_hours)) + ' hours'
+                    try:
+                        i[8] = str(i[8]).strip()
+                        timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                        IST = pytz.timezone('Asia/Kolkata')
+                        current_time = datetime.now(IST)
+                        time_since_creation = current_time - timestamp
+                        difference_in_seconds = time_since_creation.total_seconds()
+                        difference_in_hours = difference_in_seconds // 3600
+                        if difference_in_hours >= 24:
+                            difference_in_days = int(difference_in_hours // 24)
+                            if difference_in_days >= 365:
+                                years = int(difference_in_days // 365)
+                                days = int(difference_in_days % 365)
+                                difference_in_days = str(years) + ' year(s), ' + str(days)
+                            hours_remaining = difference_in_hours % 24
+                            i[8] = str(difference_in_days) + ' days, ' + str(
+                                int(hours_remaining)) + 'hours'
+                        else:
+                            i[8] = str(int(difference_in_hours)) + ' hours'
+                    except:
+                        pass
                 data.append(i)
             return render_template('approved_pos.html', result=data)
-        elif current_user_role in ['Purchase Executive','Custom']:
+        elif current_user_role in ['Purchase Executive','Custom','Project Manager']:
             access_tuple = get_projects_for_current_user()
             indents_query = 'SELECT indents.id, projects.project_id, projects.project_name, indents.material, indents.quantity, indents.unit, indents.purpose' \
                             ', App_users.name, indents.timestamp, indents.purchase_order, indents.po_number FROM indents INNER JOIN projects on indents.status="po_uploaded" AND indents.project_id=projects.project_id AND indents.project_id IN ' + str(
@@ -4515,24 +4711,27 @@ def view_unapproved_POs():
             for i in result:
                 i = list(i)
                 if len(str(i[8]).strip()) > 0:
-                    i[8] = str(i[8]).strip()
-                    timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
-                    IST = pytz.timezone('Asia/Kolkata')
-                    current_time = datetime.now(IST)
-                    time_since_creation = current_time - timestamp
-                    difference_in_seconds = time_since_creation.total_seconds()
-                    difference_in_hours = difference_in_seconds // 3600
-                    if difference_in_hours >= 24:
-                        difference_in_days = int(difference_in_hours // 24)
-                        if difference_in_days >= 365:
-                            years = int(difference_in_days // 365)
-                            days = int(difference_in_days % 365)
-                            difference_in_days = str(years) + ' year(s), ' + str(days)
-                        hours_remaining = difference_in_hours % 24
-                        i[8] = str(difference_in_days) + ' days, ' + str(
-                            int(hours_remaining)) + 'hours'
-                    else:
-                        i[8] = str(int(difference_in_hours)) + ' hours'
+                    try:
+                        i[8] = str(i[8]).strip()
+                        timestamp = datetime.strptime(i[8] + ' 2022 +0530', '%A %d %B %H:%M %Y %z')
+                        IST = pytz.timezone('Asia/Kolkata')
+                        current_time = datetime.now(IST)
+                        time_since_creation = current_time - timestamp
+                        difference_in_seconds = time_since_creation.total_seconds()
+                        difference_in_hours = difference_in_seconds // 3600
+                        if difference_in_hours >= 24:
+                            difference_in_days = int(difference_in_hours // 24)
+                            if difference_in_days >= 365:
+                                years = int(difference_in_days // 365)
+                                days = int(difference_in_days % 365)
+                                difference_in_days = str(years) + ' year(s), ' + str(days)
+                            hours_remaining = difference_in_hours % 24
+                            i[8] = str(difference_in_days) + ' days, ' + str(
+                                int(hours_remaining)) + 'hours'
+                        else:
+                            i[8] = str(int(difference_in_hours)) + ' hours'
+                    except:
+                        pass
                 data.append(i)
             return render_template('approved_pos.html', result=data)
         else:
@@ -4927,6 +5126,49 @@ def approve_wo():
         return redirect('/view_unapproved_work_order')
 
 
+@app.route('/hand_over_project', methods=['GET'])
+def hand_over_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/hand_over_project'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Technical Info','Planning']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set handed_over=1 WHERE project_id=' + str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' handed over project ' + request.args['project_name'])
+        flash('Project handed over', 'warning')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+@app.route('/reverse_hand_over_project', methods=['GET'])
+def reverse_hand_over_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/reverse_hand_over_project'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Technical Info']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set handed_over=0 WHERE project_id=' + str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' reversed action hand over project ' + request.args['project_name'])
+        flash('Project marked as not handed over', 'warning')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+
 @app.route('/archive_project', methods=['GET'])
 def archive_project():
     if 'email' not in session:
@@ -5075,13 +5317,16 @@ def View_receipt_and_agreement():
     project_id = request.args['project_id']
     cur = mysql.connection.cursor()
 
-    get_drawings_for_projects = 'SELECT pdf FROM Docs WHERE project_id='+str(project_id)+' AND (folder="RECEIPTS" OR folder="AGREEMENTS")'
+    get_drawings_for_projects = 'SELECT * FROM Docs WHERE project_id='+str(project_id)+' AND (folder="RECEIPTS" OR folder="AGREEMENTS")'
     cur.execute(get_drawings_for_projects)
     res = cur.fetchall()
+
+    print(res)
 
 
 
     return render_template('View_receipt_and_agreement.html', documents = res)
+
 
 @app.route('/report_card', methods=['GET','POST'])
 def report_card():
@@ -5149,6 +5394,8 @@ def report_card():
         rc_id = 0
         projects = []
 
+        average_revenue = 0
+
         if 'month' in request.args and 'year' in request.args and 'coordinator' in request.args:
             current_month = request.args['month']
             current_year = request.args['year']
@@ -5158,30 +5405,42 @@ def report_card():
 
             res = cur.fetchone()
             if res is not None:
-                prefilled_data = json.loads(res[0])
+                try:
+                    prefilled_data = json.loads(res[0])
+                except:
+                    pass
                 approved = res[1]
                 notes = res[2]
                 rc_id = res[3]
     
             projects_q = 'SELECT p.project_id, p.project_name FROM project_operations_team pot JOIN projects p ON pot.project_id=p.project_id WHERE co_ordinator='+ request.args['coordinator']
 
-            # projects_query = 'SELECT project_id, project_name FROM projects WHERE is_approved=0 AND archived=0'
             cur.execute(projects_q)
             res = cur.fetchall()
-            projects = res 
+            projects = res
+
+            print(prefilled_data)
+            if 'Revenue' in prefilled_data and prefilled_data['Revenue']['Achieved'] != 0 and prefilled_data['Revenue']['Achieved'] != '' and prefilled_data['Projects']['Total No of Projects'] != 0 and prefilled_data['Projects']['Total No of Projects'] != '':
+                average_revenue = int(int(prefilled_data['Revenue']['Achieved']) / int(prefilled_data['Projects']['Total No of Projects']))
             
-        
+
+            access_query = 'SELECT access FROM App_users WHERE user_id='+request.args['coordinator']
+            cur.execute(access_query) 
+            res = cur.fetchone()
+            if res is not None and res[0] != '':
+                access_pq = 'SELECT project_id, project_name FROM projects WHERE project_id IN ('+str(res[0])+')'
+                cur.execute(access_pq)
+                p_res = cur.fetchall()
+                projects = list(projects) + list(p_res)
+
         if approved == '' or approved is None:
             approved = 0
 
 
-        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator"'
+        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator" || role = "Assistant project coordinator"'
         cur.execute(users_query)
         users = cur.fetchall()
 
-        average_revenue = 0
-        if 'Revenue' in prefilled_data and prefilled_data['Revenue']['Achieved'] != 0 and prefilled_data['Revenue']['Achieved'] != '':
-            average_revenue = int(int(prefilled_data['Revenue']['Achieved']) / len(res))
 
         months = {
             1: 'January',
@@ -5303,9 +5562,19 @@ def view_report_card():
         current_month_text = datetime.strptime(str(current_month) , '%m').strftime('%B')
         print(current_month_text)
 
-        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator"'
-        cur.execute(users_query)
-        users = cur.fetchall()
+        if session['role'] == 'Project Manager':
+            coords = 'SELECT user_id, name from App_users WHERE reports_to='+ str(session['user_id'])
+            cur.execute(coords)
+            users = cur.fetchall()
+        else:
+
+            users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator" or role = "Assistant project coordinator"'
+            cur.execute(users_query)
+            users = cur.fetchall()
+
+        projects = []
+
+        
 
         for m in range(int(current_month), int(current_month) - 3, -1):
             mo = m
@@ -5316,7 +5585,7 @@ def view_report_card():
                 month_in_text = datetime.strptime(str(mo) , '%m').strftime('%B')
                 months_data[month_in_text] = data
                 
-                query = 'SELECT data, approved, notes, id FROM report_Card WHERE approved=1 AND month="'+str(mo)+'" AND year="'+current_year+'" AND coordinator='+str(request.args['coordinator'])
+                query = 'SELECT data, approved, notes, id FROM report_Card WHERE approved=3 AND month="'+str(mo)+'" AND year="'+current_year+'" AND coordinator='+str(request.args['coordinator'])
                 cur.execute(query)
 
                 res = cur.fetchone()
@@ -5343,6 +5612,15 @@ def view_report_card():
                                     
                     months_data[month_in_text] = prefilled_data
 
+        if 'coordinator' in request.args:
+        
+            projects_query = 'SELECT p.project_id, p.project_name from project_operations_team pot JOIN projects p ON p.project_id=pot.project_id WHERE pot.co_ordinator=' +str(request.args['coordinator'])
+            cur.execute(projects_query)
+            pr_result = cur.fetchall()
+            for j in pr_result:
+                projects.append([j[0], j[1]])
+
+
         months = {
             1: 'January',
             2: 'February',
@@ -5360,7 +5638,7 @@ def view_report_card():
 
         years = [2024]
 
-        return render_template('view_report_card.html', current_month_text=current_month_text, users=users, months_data=months_data, data=data, months=months, prefilled_data=prefilled_data, years=years, current_month=current_month, current_year=current_year)
+        return render_template('view_report_card.html', projects=projects, current_month_text=current_month_text, users=users, months_data=months_data, data=data, months=months, prefilled_data=prefilled_data, years=years, current_month=current_month, current_year=current_year)
 
 @app.route('/view_kra', methods=['GET','POST'])
 def view_kra():
@@ -5398,7 +5676,7 @@ def view_kra():
                 'AMC low works': 10,
             },
             'Billing': {
-                'Target achieved': 40,
+                'Target achieved': 60,
             },
             'Social': {
                 'Videos': 20,
@@ -5430,13 +5708,18 @@ def view_kra():
         kra_id = 0
         notes = ''
 
-        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator"'
-        cur.execute(users_query)
-        users = cur.fetchall()
+        if session['role'] == 'Project Manager':
+            coords = 'SELECT user_id, name from App_users WHERE reports_to='+ str(session['user_id'])
+            cur.execute(coords)
+            users = cur.fetchall()
+        else:
+
+            users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator" or role = "Assistant project coordinator"'
+            cur.execute(users_query)
+            users = cur.fetchall()
 
         report = {}
 
-        print(current_month)
 
 
         for user in users:
@@ -5446,7 +5729,6 @@ def view_kra():
 
             res = cur.fetchone()
             if res is not None:
-                print(user)
                 report[user[0]] = json.loads(res[0])
 
         months = {
@@ -5471,6 +5753,9 @@ def view_kra():
 
         return render_template('view_kra.html', report=report, users=users, data=data, months=months, prefilled_data=prefilled_data, years=years, current_month=current_month, current_year=current_year)
 
+
+
+
 @app.route('/kra', methods=['GET','POST'])
 def kra():
     if 'email' not in session:
@@ -5478,8 +5763,6 @@ def kra():
         session['last_route'] = '/edit_project'
         return redirect('/login')
 
-    if session['role'] not in ['Super Admin','COO','Project Manager','Project Coordinator']:
-        flash('You do not have permission to view that page', 'danger')
     
     
 
@@ -5508,7 +5791,7 @@ def kra():
                 'App proficiency': 30
             },
             'Billing': {
-                'Target achieved': 40,
+                'Target achieved': 60,
             },
             'Social': {
                 'Videos': 20,
@@ -5548,7 +5831,8 @@ def kra():
             
 
             res = cur.fetchone()
-            if res is not None:
+            print(res)
+            if res is not None and res[0] != '':
                 prefilled_data = json.loads(res[0])
                 approved = res[1]
                 kra_id = res[2]
@@ -5556,7 +5840,7 @@ def kra():
                     notes = res[3]
 
         
-        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator"'
+        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator" OR role = "Assistant project coordinator"'
         cur.execute(users_query)
         users = cur.fetchall()
 
@@ -5584,81 +5868,106 @@ def kra():
 
         return render_template('kra.html', notes=notes, approved=approved, kra_id=kra_id, users=users, data=data, months=months, prefilled_data=prefilled_data, years=years, current_month=current_month, current_year=current_year)
     else:
-        data = {
-            'QC': {
-                'Quality of concrete': 0,
-                'Quality of civil work': 0,
-                'Quality of finishing work': 0,
-                'Housekeeping': 0,
-                'Overall quality of projects': 0
-            },
-            'Safety': {
-                'Debry maintenance': 0,
-                'Lift pit & height safety': 0,
-                'buildAhome board maintenance': 0,
-                'Overall safety of projects': 0
-            },
-            'Planning': {
-                'Projects handed over': 0,
-                'Projects started': 0,
-                'Delayed projects': 0,
-                'Projects stopped': 0,
-                'Number of site visits': 20,
-                'AMC low works': 10,
-                'App proficiency': 30
-            },
-            'Billing': {
-                'Target achieved': 0,
-                'Number of site visits': 0,
-                'AMC low works': 0,
-            },
-            'Social': {
-                'Videos': 0,
-                'Reviews': 0,
-                'Order reference': 0,
-                'Interior references': 0
-            },
-            'Material management': {
-                'Cement storage': 10,
-                'Steel storage and wastage': 10,
-                'Overall material storage': 10,
-                'Debirs maintenance': 10,
-                'Finishing material wastage': 10
-            }
-        }
-        notes = request.form['notes']
-        category = request.form['category']
-        for key in data[category]:
-            for form_field in request.form.keys():
-                if key == form_field:
-                    data[category][key] = request.form[form_field]
-
         month = request.form['month']
         year = request.form['year']
         coordinator = request.form['coordinator']
+        print(coordinator)
+
 
         cur = mysql.connection.cursor()
-        query = 'SELECT id FROM KRA WHERE month="'+month+'" AND year="'+year+'" AND coordinator='+coordinator
+        query = 'SELECT id, rating FROM KRA WHERE month="'+month+'" AND year="'+year+'" AND coordinator='+coordinator
         cur.execute(query)
         res = cur.fetchone()
-        print('res',res)
-        if res is not None:
+        notes = request.form['notes'].replace("'","''").strip().replace('\n', '').replace('\r', '')
+        
+        if res is not None and res[1] != '':
+            print('Updating')
+            data = json.loads(res[1])
+            category = request.form['category']
+            for key in data[category]:
+                for form_field in request.form.keys():
+                    if key == form_field:
+                        print(key, form_field)
+                        data[category][key] = request.form[form_field]
+            data[category]['notes'] = notes
+
             update_query = "UPDATE KRA SET rating='"+str(json.dumps(data))+"', notes='"+notes+"' WHERE id="+str(res[0])
             cur.execute(update_query)
             mysql.connection.commit()
+            flash('KRA Updated', 'success')
         else:
+            print('Creating new kra')
+
+
+            data = {
+                'QC': {
+                    'Quality of concrete': 0,
+                    'Quality of civil work': 0,
+                    'Quality of finishing work': 0,
+                    'Housekeeping': 0,
+                    'Overall quality of projects': 0
+                },
+                'Safety': {
+                    'Debry maintenance': 0,
+                    'Lift pit & height safety': 0,
+                    'buildAhome board maintenance': 0,
+                    'Overall safety of projects': 0
+                },
+                'Planning': {
+                    'Projects handed over': 0,
+                    'Projects started': 0,
+                    'Delayed projects': 0,
+                    'Projects stopped': 0,
+                    'Number of site visits': 20,
+                    'AMC low works': 10,
+                    'App proficiency': 30
+                },
+                'Billing': {
+                    'Target achieved': 0,
+                    'Number of site visits': 0,
+                    'AMC low works': 0,
+                },
+                'Social': {
+                    'Videos': 0,
+                    'Reviews': 0,
+                    'Order reference': 0,
+                    'Interior references': 0
+                },
+                'Material management': {
+                    'Cement storage': 10,
+                    'Steel storage and wastage': 10,
+                    'Overall material storage': 10,
+                    'Debirs maintenance': 10,
+                    'Finishing material wastage': 10
+                }
+            }
+
+            category = request.form['category']
+            for key in data[category]:
+                for form_field in request.form.keys():
+                    if key == form_field:
+                        print(key, form_field)
+                        data[category][key] = request.form[form_field]
+            data[category]['notes'] = notes
+
             new_query = "INSERT INTO KRA (rating, month, year, coordinator, notes) values('"+str(json.dumps(data))+"', '"+month+"', '"+year+"',"+coordinator+",'"+notes+"')"
             cur.execute(new_query)
             mysql.connection.commit()
 
-        flash('KRA Updated', 'success')
+            flash('KRA Created', 'success')
+        
+
+
+        
+        
         return redirect(request.referrer)
         
 @app.route('/approve_report_card', methods=['POST'])
 def approve_report_card():
     id = request.form['id']
+    approval = request.form['approval']
     cur = mysql.connection.cursor()
-    query = 'UPDATE report_Card SET approved=1 WHERE id='+id
+    query = 'UPDATE report_Card SET approved='+approval+' WHERE id='+id
     cur.execute(query)
     mysql.connection.commit()
 
@@ -5708,15 +6017,16 @@ def upload_receipt_or_agreement():
         
         if file and allowed_file(file.filename):
             filetype = file.filename.split('.')[-1]
-            output = send_to_s3(file, app.config["S3_BUCKET"], str(current_time) + '_'+ file.filename+'.'+filetype)
+            output = send_to_s3(file, app.config["S3_BUCKET"], str(timestamp) + '_'+ file.filename)
             if output != 'success':
                 return jsonify({'message':'failed'})
 
             cur = mysql.connection.cursor()
             if document_type == 'receipt':
-                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(current_time) + '_'+ file.filename +'", "'+file.filename+'", "'+timestamp+'", "RECEIPTS")'
+                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(timestamp) + '_'+ file.filename +'", "'+file.filename+'", "'+timestamp+'", "RECEIPTS")'
             elif document_type == 'agreement':
-                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(current_time) + '_'+ file.filename +'", "'+file.filename+'", "'+timestamp+'", "AGREEMENTS")'
+                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(timestamp) + '_'+ file.filename +'", "'+file.filename+'", "'+timestamp+'", "AGREEMENTS")'
+
 
             cur.execute(sql)
             mysql.connection.commit()
@@ -5737,6 +6047,42 @@ def edit_task():
     cur = mysql.connection.cursor()
     query = 'UPDATE Tasks set payment_percentage=%s, task_name=%s, task_start_date=%s, task_finish_date=%s WHERE task_id=%s'
     cur.execute(query, (percent, task_name, start_date, end_date, task_id))
+
+    mysql.connection.commit()
+    flash('Task has been edited', 'success')
+    return redirect(request.referrer)
+
+@app.route('/edit_sub_task', methods=['POST'])
+def edit_sub_task():
+    task_id = request.form['task_id']
+    task_name = request.form['name']
+    start_date = request.form['start_date']
+    end_date = request.form['end_date']
+    index = request.form['index']
+
+    cur = mysql.connection.cursor()
+    query = 'SELECT sub_tasks FROM Tasks WHERE task_id='+str(task_id)
+    cur.execute(query)
+    res = cur.fetchone()
+    sub_tasks = res[0]
+
+
+    print('-------------------------')
+    print(sub_tasks.split('^'))
+    print('-------------------------')
+
+    sub_tasks = sub_tasks.split('^')
+    print(sub_tasks[int(index)])
+
+
+
+    sub_tasks[int(index)] = task_name+ '|' + start_date + '|' + end_date
+
+    sub_tasks = "^".join(sub_tasks) 
+
+    query = "UPDATE Tasks SET sub_tasks='"+sub_tasks+"' WHERE task_id="+str(task_id)
+    cur.execute(query)
+
 
     mysql.connection.commit()
     flash('Task has been edited', 'success')
@@ -5885,21 +6231,248 @@ def update_advance_payment():
     nt_amount = request.form['nt_amount']
     project_id = request.form['project_id']
     percentage = request.form['completed_percentage']
+    hand_over_date = request.form['hand_over_date']
     
     cur = mysql.connection.cursor()
-    query = 'UPDATE projects SET advance_payment="'+amount+'", nt_advance_payment="'+nt_amount+'", completed_percentage="'+percentage+'"  WHERE project_id='+project_id
+    query = 'UPDATE projects SET hand_over_date="'+hand_over_date+'", advance_payment="'+amount+'", nt_advance_payment="'+nt_amount+'", completed_percentage="'+percentage+'"  WHERE project_id='+project_id
     cur.execute(query)
     mysql.connection.commit()
     
 
     return redirect(request.referrer)
 
+@app.route('/testing', methods=['GET','POST'])
+def testing():
+    cur = mysql.connection.cursor()
+    projects_q = 'CREATE TABLE SalesClients ( \
+        id INT AUTO_INCREMENT PRIMARY KEY, \
+        name VARCHAR(255) NOT NULL, \
+        phone VARCHAR(20), \
+        email VARCHAR(255), \
+        site_location VARCHAR(255), \
+        city VARCHAR(100), \
+        package VARCHAR(50), \
+        sales_exec INTEGER \
+    );'
+
+    cur.execute(projects_q)
+
+    
+    mysql.connection.commit()
+
+
+
+    return jsonify({'data': ''})
+
+def months_between_dates(date_str1, date_str2):
+    # Parse date strings into datetime objects
+    date1 = datetime.strptime(date_str1, "%B %Y")
+    date2 = datetime.strptime(date_str2, "%B %Y")
+
+    # Calculate the difference in months
+    diff_in_months = (date2.year - date1.year) * 12 + date2.month - date1.month
+
+    return int(diff_in_months)
+
+@app.route('/calendar', methods=['GET'])
+def calendar():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/calendar'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    if 'coordinator' in request.args and str(request.args['coordinator']) != 'All':
+        query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(request.args['coordinator'])
+        cur.execute(query)
+        result = cur.fetchall()
+        projects = []
+
+        for i in result:
+            projects.append(i[0])
+
+        if len(projects) == 0:
+            projects = [0,0]
+
+            
+        projects_q = 'SELECT p.project_id, p.project_name, p.hand_over_date, p.handed_over FROM projects p WHERE p.is_approved=1 AND p.archived = 0 AND p.project_id IN '+str(tuple(projects))
+        
+        if len(projects) == 1:
+            projects_q = 'SELECT p.project_id, p.project_name, p.hand_over_date, p.handed_over FROM projects p WHERE p.is_approved=1 AND p.archived = 0 AND p.project_id IN ('+str(projects[0])+')'
+    else:
+        projects_q = 'SELECT p.project_id, p.project_name, p.hand_over_date, p.handed_over FROM projects p WHERE p.is_approved=1 AND p.archived = 0'
+    cur.execute(projects_q)
+    projects = cur.fetchall()    
+
+    ist = pytz.timezone('Asia/Kolkata')
+
+    # Get current date and time in IST
+    current_time = datetime.now(ist)
+
+    # Calculate start and end dates
+    start_date = current_time - timedelta(days=30*12)  # 6 months before
+    end_date = current_time + timedelta(days=30*18)   # 18 months after
+
+    month_year_list = []
+
+    # Generate month and year for each month in the range
+    while start_date <= end_date:
+        month_year = start_date.strftime("%B %Y")
+        month_year_list.append(month_year)
+        start_date += timedelta(days=30)  # Assuming each month has 30 days for simplicity
+
+
+    month_year_dict = {}
+    for m in month_year_list:
+        month_year_dict[m] = []
+        
+    for p in projects:
+        if p[2] is not None and p[2] != '':
+            print(p[1],p[2])
+            parsed_date = datetime.strptime(p[2], "%Y-%m-%d")
+            formatted_date = parsed_date.strftime("%B %Y")
+            print(formatted_date)
+
+            if formatted_date in month_year_list:
+                month_year_dict[formatted_date].append({
+                    'project_id': p[0],
+                    'project_name': p[1],
+                    'handed_over': p[3],
+                    'hand_over_date': formatted_date,
+                    'delay': months_between_dates(formatted_date, current_time.strftime("%B %Y"))
+                })
+
+    users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator"'
+    cur.execute(users_query)
+    users = cur.fetchall()
+
+
+
+    return render_template('calendar.html',month_year_dict=month_year_dict, month_year_list=month_year_list, users=users)
+
+
+@app.route('/sales_clients', methods=['GET'])
+def sales_clients():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/client_list'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    sql = 'SELECT * FROM SalesClients'
+
+    cur.execute(sql)
+    res = cur.fetchall()
+    
+
+    return render_template('sales_clients.html', client=res)
+
+@app.route('/new_sales_client', methods=['GET','POST'])
+def new_sales_client():
+    cities = {
+        'Bengaluru': {
+            'Essential': 1620, 'Premium': 1770, 'Premium+': 1999, 'Luxury': 2235, 'Luxury+': 2450, 'Freedom': 2099, 'Freedom+': 2250, 'The one+': 2999, 'Ecofriendly': 1800, 'Ecofriendly+': 1950
+        },
+        'Mysuru': {
+           'Premium': 1820, 'Premium+': 1999, 'Luxury': 2250, 'Luxury+': 2460, 'Freedom+': 2280, 'The one+': 2999, 'Ecofriendly': 1830, 'Ecofriendly+': 1980
+        },
+        'Hubli': {
+            'Premium': 2170, 'Premium+': 2399, 'Luxury': 2620, 'Luxury+': 2799, 'Freedom': 2499, 'Freedom+': 2650, 'The one+': 3399, 'Ecofriendly': 2200
+        },
+        'Dharwad': {
+            'Premium': 2170, 'Premium+': 2399, 'Luxury': 2620, 'Luxury+': 2799, 'Freedom': 2499, 'Freedom+': 2650, 'The one+': 3399, 'Ecofriendly': 2200
+        },
+        'Davangere': {
+            'Premium': 2170, 'Premium+': 2399, 'Luxury': 2620, 'Luxury+': 2799, 'Freedom': 2499, 'Freedom+': 2650, 'The one+': 3399, 'Ecofriendly': 2200
+        },
+        'Mangalore': {
+            'Premium': 2470, 'Premium+': 2699, 'Luxury': 2935, 'Luxury+': 3150, 'Freedom': 2799, 'Freedom+': 2950, 'The one+': 3699, 'Ecofriendly': 2500
+        },
+        'Shivamogga': {
+            'Premium': 2170, 'Premium+': 2399, 'Luxury': 2620, 'Luxury+': 2799, 'Freedom': 2499, 'Freedom+': 2650, 'The one+': 3399, 'Ecofriendly': 2200
+        },
+        'Chitradurga': {
+            'Premium': 2170, 'Premium+': 2399, 'Luxury': 2620, 'Luxury+': 2799, 'Freedom': 2499, 'Freedom+': 2650, 'The one+': 3399, 'Ecofriendly': 2200
+        },
+        'Chennai': {
+            'Premium': 2170, 'Premium+': 2399, 'Luxury': 2620, 'Luxury+': 2799, 'Freedom': 2499, 'Freedom+': 2650, 'The one+': 3399, 'Ecofriendly': 2200
+        },
+        'Other Cities':  {
+            'Premium': 2170, 'Premium+': 2399, 'Luxury': 2620, 'Luxury+': 2799, 'Freedom': 2499, 'Freedom+': 2650, 'The one+': 3399, 'Ecofriendly': 2200, 'Ecofriendly+': 2350
+        },
+
+    }
+    if request.method == 'GET':
+
+        packages = []
+        selected_package = ''
+        cost_per_sqft = 0
+        floors_list = []
+        city= ''
+        if 'step' in request.args:
+            if request.args['step'] == 'package':
+                city = session['city']
+
+                packages = cities[city]
+
+            if request.args['step'] == 'commercials':
+                city = session['city']
+                selected_package = session['package']
+                cost_per_sqft = cities[city][selected_package]
+                floors = session['floors']
+
+                if int(floors) > 0:
+                    floors_list.append('Ground floor')
+                if int(floors) > 1:
+                    floors_list.append('First floor')
+                if int(floors) > 2:
+                    floors_list.append('Second floor')
+                if int(floors) > 3:
+                    floors_list.append('Third floor')
+                if int(floors) > 4:
+                    floors_list.append('Fourth floor')
+
+
+            
+        
+        return render_template('new_sales_client.html',city=city, floors_list=floors_list, cities=cities, packages=packages, selected_package=selected_package, cost_per_sqft=cost_per_sqft)
+    else:
+        if 'step' not in request.form:
+            client_name = request.form['client_name']
+            client_phone = request.form['client_phone']
+            site_location = request.form['site_location']
+            requirement = request.form['requirement']
+
+            return redirect('/new_sales_client?step=city')
+        elif request.form['step'] == 'city':
+            city = request.form['city']
+            session['city'] = city
+            
+            return redirect('/new_sales_client?step=package')
+
+        elif request.form['step'] == 'package':
+            package = request.form['package']
+            session['package'] = package
+            
+            return redirect('/new_sales_client?step=floors')
+
+        elif request.form['step'] == 'floors':
+            floors = request.form['floors']
+            session['floors'] = floors
+            
+            return redirect('/new_sales_client?step=commercials')
+
+
 
 @app.route('/client_billing', methods=['GET'])
 def client_billing():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/client_billing'
+        return redirect('/login')
     project_id = request.args['project_id']
     cur = mysql.connection.cursor()
-    project_details_query = 'SELECT project_name, advance_payment, nt_advance_payment, completed_percentage from projects WHERE project_id='+str(project_id)
+    project_details_query = 'SELECT project_name, advance_payment, nt_advance_payment, completed_percentage, blocked, hand_over_date from projects WHERE project_id='+str(project_id)
     cur.execute(project_details_query)
     res = cur.fetchone()
     if res is None:
@@ -5908,6 +6481,8 @@ def client_billing():
     advance_payment = res[1]
     nt_advance_payment = res[2]
     project_percentage = res[3]
+    blocked = res[4]
+    hand_over_date = res[5]
     
     tasks_query = 'SELECT * from Tasks WHERE project_id='+str(project_id)+' ORDER BY task_id'
     cur.execute(tasks_query)
@@ -5935,13 +6510,27 @@ def client_billing():
                     sub_task_item = sub_task_list[j]
                     task_name = sub_task_item.split('|')
                     if len(task_name[0]) > 0:
-                        task_item['sub_tasks'].append({
+                        sub_task_data = {
+                            'index': j,
                             'name': task_name[0],
                             'is_complete': len(i[10].strip()) > 0 and  str(j) in i[10].strip()
-                        })
+                        }
+                        if len(task_name) > 1:
+                            sub_task_data['start_date'] = task_name[1]
+                        else:
+                            sub_task_data['start_date'] = ''
+
+                        if len(task_name) > 2:
+                            sub_task_data['end_date'] = task_name[2]
+                        else:
+                            sub_task_data['end_date'] = ''
+                            
+                        task_item['sub_tasks'].append(sub_task_data)
+                        
+                            
             tasks.append(task_item)
 
-    return render_template('client_billing.html', project_name=project_name, tasks=tasks, advance_payment=advance_payment, nt_advance_payment=nt_advance_payment, project_percentage=project_percentage)
+    return render_template('client_billing.html', hand_over_date=hand_over_date, blocked=blocked, project_name=project_name, tasks=tasks, advance_payment=advance_payment, nt_advance_payment=nt_advance_payment, project_percentage=project_percentage)
 
 @app.route('/edit_project', methods=['GET', 'POST'])
 def edit_project():
@@ -6074,7 +6663,7 @@ def block_project():
         mysql.connection.commit()
         project_name = getProjectName(str(request.form['project_id']))
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' blocked project ' + project_name + ' with reason '+ reason)
-        return redirect('/projects')
+        return redirect(request.referrer)
 
 @app.route('/unblock_project', methods=['GET'])
 def unblock_project():
@@ -6089,7 +6678,7 @@ def unblock_project():
         mysql.connection.commit()
         project_name = getProjectName(str(request.args['project_id']))
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unblocked project ' + project_name)
-        return redirect('/projects')
+        return redirect(request.referrer)
 
 @app.route('/projects', methods=['GET'])
 def approved_projects():
@@ -6144,7 +6733,7 @@ def view_project_details():
             'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'sf_slab_area','fof_slab_area','fif_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
             'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name', 'client_phone','agreement','area_statement'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name', 'client_phone','agreement','area_statement', 'handed_over'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
@@ -6165,8 +6754,8 @@ def view_project_details():
                 details[fields_name_to_show] = sales_executive_query_result[0]
             else:
                 details[fields_name_to_show] = result[i]
-        return render_template('view_project_details.html', details=details, approved=str(result[-7]),
-                               archived=str(result[-6]))
+        return render_template('view_project_details.html', details=details, approved=str(result[-8]),
+                               archived=str(result[-7]), handed_over=str(result[-1]))
 
 
 @app.route('/approve_project', methods=['GET'])
@@ -6345,7 +6934,7 @@ def edit_team():
             existing_team['Senior Architect'] = res[6]
 
 
-        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer" OR role="QS Info"'
+        operations_team_query = 'SELECT user_id, name, role from App_users WHERE role="Project Coordinator" OR role="Assistant project coordinator" OR role="Project Manager" OR role="Purchase Executive" OR role="QS Engineer" OR role="QS Info"'
         cur = mysql.connection.cursor()
         cur.execute(operations_team_query)
         co_ordinators = []
@@ -6355,7 +6944,7 @@ def edit_team():
         qs_infos = []
         result = cur.fetchall()
         for i in result:
-            if i[2] == 'Project Coordinator':
+            if i[2] == 'Project Coordinator' or i[2] == 'Assistant project coordinator':
                 co_ordinators.append({'id': i[0], 'name': i[1]})
             if i[2] == 'Project Manager':
                 project_managers.append({'id': i[0], 'name': i[1]})
@@ -7070,6 +7659,8 @@ def API_login():
         API_response['role'] = login_result[1]
         if API_response['role'] == 'Super Admin':
             API_response['role'] = 'Admin'
+        if API_response['role'] == 'Assistant project coordinator':
+            API_response['role'] = 'Project Coordinator'
         API_response['phone'] = login_result[2]
 
         # If password matches the phone number or the password set on ERP

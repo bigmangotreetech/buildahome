@@ -29,8 +29,6 @@
         </div>
     </div>
 
-
-
     <div class="w-100 bg-white card-container mx-0 overflow-auto">
         <div class="report-card w-100 border-dark border" role="button" >
             <!-- <h4 class="text-center border-dark border-bottom p-3">Report card for {{month}}</h4> -->
@@ -67,6 +65,7 @@
                     </div>
                     <div class="category-and-rating w-100 row mx-0 p-0">
                         {% for item in months_data[current_month_text][i] %}
+                        
 
                         <div class="p-2 border col-3 d-flex flex-column justify-content-center">{{item}}</div>
                         <div class="col-9 row mx-0 px-0">
@@ -79,8 +78,18 @@
                                 {% endfor %}
                             </div>
                             {% else %}
-                            <div class="col-4 border d-flex flex-column justify-content-center">{{months_data[month][i][item]}}</div>
+                            <div class="col-4 border d-flex flex-column justify-content-center">{{months_data[month][i][item]}} 
+
+                            {% if i == 'Revenue' and (item == 'Achieved' or item == 'Achieved Tender')  and months_data[month][i]['Target']|int != 0%}
+                            ({{ (months_data[month][i][item]|int /  months_data[month][i]['Target']|int * 100)|int }}%)
                             {% endif %}
+
+                            </div>
+                            {% endif %}
+
+                            
+                            
+
                             
                         {% endfor %}
                         </div>
@@ -89,6 +98,15 @@
                         <div class="py-3 opacity-0">-</div>
 
                     </div>
+                    
+                    {% if i == 'Projects' %}
+                    <div class="p-3">
+                        <div>Projects being handled</div>
+                        {% for p in projects %}
+                        <a href="/view_project_details?project_id={{p[0]}}" target="_blank">{{p[1]}}</a>,
+                        {% endfor %}
+                    </div>
+                    {% endif %}
 
 
                 </div>
@@ -111,7 +129,7 @@
         opacity: 0;
     }
     .report-card {
-        background-color: rgb(221, 242, 255);
+        background-color: rgb(233, 247, 255);
     }
     .coord-name {
         width: 150px;

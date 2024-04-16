@@ -32,7 +32,6 @@
             <i class="fa fa-check"></i>
             Approved</div>
         {% endif %}
-        {% if session['role'] not in data.keys() %}
 
         <div class="row mx-0 mb-3 form-group">
             <div class="col-6  d-flex flex-column">
@@ -52,9 +51,12 @@
             </div>
         </div>
 
-
-
-        <div class="row mx-0 mb-3 form-group">
+        
+        {% if session['role'].strip() in data.keys() %}
+        <div class="row mx-0 mb-3 form-group  d-none ">
+        {% else %} 
+        <div class="row mx-0 mb-3 form-group  ">
+        {% endif %} 
             <div class="col-6  d-flex flex-column">
                 <label for="Category" class="my-auto">Category</label>
             </div>
@@ -62,7 +64,7 @@
                 <select name="Category" id="category" class="form-control select2">
                     <option value="">Select category</option>
                     {% for i in data.keys() %}
-                    {% if request.args['category'] == i %}
+                    {% if request.args['category'] == i or session['role'].strip() == i %}
                     <option value="{{i}}" selected="true">{{i}}</option>
                     {% else %}
                     <option value="{{i}}">{{i}}</option>
@@ -72,7 +74,7 @@
             </div>
         </div>
 
-        {% endif %}
+       
 
         <div class="row mx-0 mb-3 form-group">
             <div class="col-6  d-flex flex-column">
@@ -112,18 +114,13 @@
         
 
 
-
         {% if request.args['category'] in data %}
         <form action="/kra" method="post">
             <input type="hidden" name="month" value="{{current_month}}">
             <input type="hidden" name="year" value="{{current_year}}">
-            {% if session['role'] not in data.keys() %}
             <input type="hidden" name="category" value="{{request.args['category']}}">
             <input type="hidden" name="coordinator" value="{{request.args['coordinator']}}">
-            {% else %}
-            <input type="hidden" name="category" value="{{session['role']}}">
-            <input type="hidden" name="coordinator" value="{{session['user_id']}}">
-            {% endif %}
+            
 
             {% for key in data[request.args['category']] %}
 
@@ -147,7 +144,9 @@
 
             {% endfor %}
 
-            <textarea name="notes" id="" class="form-control" rows="5">{{notes}}</textarea>
+            <textarea name="notes" id="" class="form-control" rows="5">{% if 'notes' in prefilled_data[request.args['category']] %}
+                {{prefilled_data[request.args['category']]['notes']}}
+                {% endif %}</textarea>
             {% if 'month' in request.args and 'year' in request.args %}
             <div class="text-right pt-3">
                 <button class="bg-indigo text-white btn">Update</button>

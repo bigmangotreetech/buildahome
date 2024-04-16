@@ -7,7 +7,7 @@
 </div>
 <div class="w-100 text-right">
     {% if session['role'] in ['Super Admin', 'Billing','Planning','Technical Info'] or session['role'] == 'Custom' and 'Add receipt or agreement' in session['permission']: %}
-    <a href="/upload_receipt_or_agreement" class="bg-indigo btn text-white">Add new</a>
+    <a href="/upload_receipt_or_agreement?project_id={{request.args['project_id']}}" class="bg-indigo btn text-white">Add new</a>
     {% endif %}
 </div>
 <div class="p-5 w-100 table-responsive">

@@ -27,12 +27,12 @@
             <td>{{wo['value']}}</td>
             <td>{{wo['contractor_name']}}</td>
             <td>
-                {% if session['role'] in ['Super Admin','COO'] %}
+                {% if session['role'] in ['Super Admin','COO']  or (session['role'] == 'Custom' and 'Approve work orders' in session['permission']) %}
                 <a href="/approve_wo?wo_id={{wo['id']}}">Approve</a>
                 {% endif %}
             </td>
             <td>
-                {% if session['role'] in ['Super Admin','COO','QS Head'] %}
+                {% if session['role'] in ['Super Admin','COO','QS Head']   or (session['role'] == 'Custom' and 'Delete work orders' in session['permission']) %}
                 <a class='text-danger' href="/delete_wo?id={{wo['id']}}"
                     onclick="return confirm('Are you sure you want to delete this work order')"
                 >

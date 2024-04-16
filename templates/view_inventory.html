@@ -106,7 +106,9 @@
                     <th scope="col">Invoice number</th>
                     <th scope="col" style="min-width: 100px">Invoice date</th>
                     <th scope="col">Invoice value</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col">Total Quantity</th>
+                    <th scope="col">Used Quantity</th>
+                    <th scope="col">Balance Quantity</th>
                     <th scope="col">Unit</th>
                     <th scope="col">Rate</th>
                     <th scope="col">Transportation</th>
@@ -133,7 +135,13 @@
                     <td class="invoice-number">{{i[6]}}</td>
                     <td class="invoice-date">{{i[7]}}</td>
                     <td class="invoice-value">{{i[8]}}</td>
+                    <td class="total_quantity">
+                        {% if i[1] in material_quantity_data_dict %}
+                        {{material_quantity_data_dict[i[1]]}}
+                        {% endif %}
+                    </td>
                     <td class="item_quantity">{{i[9]}}</td>
+                    <td class="balance_quantity"></td>
                     <td class="quantity">{{i[10]}}</td>
                     <td class="unit">{{i[11]}}</td>
                     <td class="rate">{{i[16]}}</td>
@@ -141,7 +149,7 @@
                     <td class="loading-unloading">{{i[12]}}</td>
                     <td class="item_cost">{{i[13]|int}}</td>
                     <td class="item_difference_cost">{{i[14]}}</td>
-                    {% if session['role'] in ['Super Admin','COO','Purchase Head'] and 'Shifting entry' not in i[2] %}
+                    {% if session['role'] in ['Super Admin','COO','Purchase Head'] or (session['role'] == 'Custom' and 'Edit inventory' in session['permission']) %}
                     <td>
                         <a href="/edit_procurement?procurement_id={{i[0]}}">Edit</a>
                     </td>
@@ -149,6 +157,8 @@
                 </tr>
                 {% endfor %}
                 <tr>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -190,11 +200,11 @@
     }
     function compareDates(date1, startDate, endDate) {
         if(startDate == '') {
-            return new Date(date1) < new Date(endDate);    
+            return new Date(date1) <= new Date(endDate);    
         } else if (endDate == '') {
-            return new Date(date1) > new Date(startDate)    
+            return new Date(date1) >= new Date(startDate)    
         }
-        return new Date(date1) > new Date(startDate) && new Date(date1) < new Date(endDate);
+        return new Date(date1) >= new Date(startDate) && new Date(date1) <= new Date(endDate);
     }
 
     // Function to show/hide rows based on the start date
@@ -331,7 +341,7 @@
     function exportTableToCSV() {
         $('.export-btn').attr('disabled',true)
         const table = document.getElementById('dataTable');
-        const rows = table.querySelectorAll('tr');
+        const rows = $('tr:visible');
         const csvData = [];
 
         for (let i = 0; i < rows.length; i++) {

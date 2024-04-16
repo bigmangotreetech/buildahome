@@ -52,8 +52,67 @@
                         <input name="phone" id="phone" value="{{user[4]}}" class="form-control" required>
                     </div>
                 </div>
+                {% if user[3] == 'Project Coordinator' %}
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="coordinators">Assistant coordinators under {{user[2]}}</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="coordinators" id="coordinators" class="form-control select2" multiple >
+                            <option value=""></option>
+                            {% for p in assistant_project_coordinators %}
+                            {% if p[0] in assigned_coordinators %}
+                            <option value="{{p[0]}}" selected="true">{{p[1]}}</option>
+                            {% else %}
+                            <option value="{{p[0]}}">{{p[1]}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
 
-                {% if user[3] == 'Site Engineer' or user[3] == 'Project Coordinator' or user[3] == 'Custom' or user[3] == 'Billing' %}
+                {% if user[3] == 'Project Manager' %}
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="coordinators">Coordinators under {{user[2]}}</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="coordinators" id="coordinators" class="form-control select2" multiple>
+                            <option value=""></option>
+                            {% for p in project_coordinators %}
+                            {% if p[0] in assigned_coordinators %}
+                            <option value="{{p[0]}}" selected="true">{{p[1]}}</option>
+                            {% else %}
+                            <option value="{{p[0]}}">{{p[1]}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if user[3] == 'Sales Manager' %}
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="coordinators">Executives under {{user[2]}}</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="coordinators" id="coordinators" class="form-control select2" multiple>
+                            <option value=""></option>
+                            {% for p in sales_executives %}
+                            {% if p[0] in assigned_coordinators %}
+                            <option value="{{p[0]}}" selected="true">{{p[1]}}</option>
+                            {% else %}
+                            <option value="{{p[0]}}">{{p[1]}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if user[3] == 'Site Engineer' or user[3] == 'Project Coordinator' or user[3] == 'Custom' or user[3] == 'Billing' or user[3] == 'Assistant project coordinator' %}
                 <div class="row mx-0 mb-3 form-group">
                     <div class="col-6">
                         <label for="projects">Projects assigned</label>
