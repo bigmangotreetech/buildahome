@@ -29,7 +29,7 @@ import uuid
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+from dotenv import load_dotenv
 
 # ssh -i "buildahomeaws1.pem" ubuntu@ec2-13-233-196-224.ap-south-1.compute.amazonaws.com
 
@@ -51,17 +51,17 @@ from email.mime.text import MIMEText
 # Last labour stage id 412
 app = Flask(__name__)
 
-S3_BUCKET='erpbuildahome'
-S3_KEY='AKIAQEFDTNRRNANPNES2'
-S3_LOCATION='https://erpbuildahome.s3.ap-south-1.amazonaws.com/'	
-S3_SECRET='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'
-GIT='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'
-GIT_PAT='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'
+S3_BUCKET=os.getenv('S3_BUCKET')
+S3_KEY=os.getenv('S3_KEY')
+S3_LOCATION=os.getenv('S3_LOCATION')	
+S3_SECRET=os.getenv('S3_SECRET')
+GIT=os.getenv('GIT')
+GIT_PAT=os.getenv('GIT_PAT')
 
 # Sql setup
 app.config['MYSQL_HOST'] = 'bah.cpawi80eylqb.ap-south-1.rds.amazonaws.com'
 app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_PASSWORD'] = 'build*2019'
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
