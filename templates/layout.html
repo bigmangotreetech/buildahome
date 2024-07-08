@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
           rel="stylesheet">
 
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
     <link href="../lib/animate/animate.min.css" rel="stylesheet">
@@ -331,6 +331,34 @@
     <a href="/logout" class="nav-link">
         <ion-icon name="log-out-outline"></ion-icon>
         <span class="my-auto">Logout</span></a>
+
+    <div class="nav-section-header">Sales</div>
+
+    {% if session['role'] in ['Super Admin']  or (session['role'] == 'Custom' and 'Create proposal cities' in session['permission']) %}
+    <a href="/proposal_setup" class='nav-link {% if "/proposal_setup" in request.path %} active {% endif %}'>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <span class="my-auto">Proposal setup</span></a>
+    {% endif %}
+
+    
+
+    {% if session['role'] in ['Super Admin','Sales Executive']  or (session['role'] == 'Custom' and 'Create proposals' in session['permission']) %}
+    <a href="/create_proposal" class='nav-link {% if "/create_proposal" in request.path %} active {% endif %}'>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <span class="my-auto">Create Proposal </span></a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','Sales Executive','Sales Manager']  or (session['role'] == 'Custom' and 'Create proposal cities' in session['permission']) %}
+    <a href="/unapproved_proposals" class='nav-link {% if "/unapproved_proposals" in request.path %} active {% endif %}'>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <span class="my-auto">Unapproved proposals</span></a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','Sales Executive','Sales Manager']  or (session['role'] == 'Custom' and 'Create proposal cities' in session['permission']) %}
+    <a href="/approved_proposals" class='nav-link {% if "/approved_proposals" in request.path %} active {% endif %}'>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <span class="my-auto">Approved proposals</span></a>
+    {% endif %}
 
 
     <div class="nav-section-header">System</div>

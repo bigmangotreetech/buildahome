@@ -23,11 +23,13 @@
         <tbody>
         {% for i in documents %}
         <tr>
-            <td>{{i[0]}}</td>
+            <td>{{i[1]}}</td>
             <td>{{i[3]}}</td>
             <td>{{i[5]}}</td>
             <td>
-                <a href="/files/{{i[4]}}" target="_blank">View</a>
+                <a href="/files/{{i[3]}}" target="_blank">View</a>
+                <a href="/delete_receipt_or_agreement?id={{i[1]}}" target="_blank" class="ml-2 text-danger" onclick="return confirm('Are you sure')">Delete</a>
+                
             </td>
             
         </tr>

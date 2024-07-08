@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-10 col-12 bg-light rounded p-3">
+            <div class="row w-100 mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="col-12 d-flex justify-content-between">
+                    <h4>Teams</h4>
+                    <a href="/create_team" class="btn bg-indigo text-white">Create new team</a>
+        
+                </div>
+            </div>
+
+                
+                <br><br>
+                {% for team in teams %}
+                    <div class="py-2">
+                        <a href="/view_team?id={{team[0]}}">{{team[1]}}</a>
+                    </div>
+                {% endfor %}
+                
+
+            
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}

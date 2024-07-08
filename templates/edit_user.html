@@ -112,16 +112,52 @@
                 </div>
                 {% endif %}
 
-                {% if user[3] == 'Site Engineer' or user[3] == 'Project Coordinator' or user[3] == 'Custom' or user[3] == 'Billing' or user[3] == 'Assistant project coordinator' %}
+                {% if user[3] == 'Custom' %}
                 <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label class="container"> Assign teams
+                            {% if user[8] is not none and user[8] != '' %}
+                            <input type="checkbox" value="assign_team" id="assign_team" name="assign_team" checked>
+                            {% else %}
+                            <input type="checkbox" value="assign_team" id="assign_team" name="assign_team">
+                            {% endif %}
+                            <span class="checkmark"></span>
+                        </label>
+                        
+                    </div>
+                </div>
+                
+                {% endif %}
+
+                {% if user[3] == 'Site Engineer' or user[3] == 'Project Coordinator' or user[3] == 'Custom' or user[3] == 'Billing' or user[3] == 'Assistant project coordinator' %}
+                <div class="assign_projects row mx-0 mb-3 form-group  {% if user[8] is not none and user[8] != '' %} d-none {% endif %}">
                     <div class="col-6">
                         <label for="projects">Projects assigned</label>
                     </div>
                     <div class="col-6">
-                        <select name="projects" id="projects" class="form-control select2" multiple required>
+                        <select name="projects" id="projects" class="form-control select2" multiple>
                             <option value=""></option>
                             {% for i in projects %}
                             {% if i[0]|string  in user[5] %}
+                            <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
+                            {% else %}
+                            <option value="{{i[0]}}">{{i[1]}}</option>
+                            {% endif %}
+                            {% endfor %}
+
+                            <option value="Clear">Clear</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="assign_teams row mx-0 mb-3 form-group {% if user[8] is none or user[8] == '' %} d-none {% endif %}">
+                    <div class="col-6">
+                        <label for="teams">Teams assigned</label>
+                    </div>
+                    <div class="col-6">
+                        <select name="teams" id="teams" class="form-control select2" multiple>
+                            <option value=""></option>
+                            {% for i in teams %}
+                            {% if user[8] is not none and i[0]|string  in user[8] %}
                             <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
                             {% else %}
                             <option value="{{i[0]}}">{{i[1]}}</option>
@@ -162,7 +198,7 @@
                     <label class="container">{{permission}}
                         <input type="checkbox" {% if user[6] != None and permission in user[6].split(',') %} checked {% endif %} value="{{permission}}" name="permissions">
                         <span class="checkmark"></span>
-                      </label>
+                    </label>
                     
                 </div>
                 {% endfor %}
@@ -248,5 +284,18 @@
     }
 
 </style>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $("#projects").on('change',function(){
+        if ($("#projects").val().includes('Clear')) {
+            console.log('')
+            $("#projects").val('').trigger('change')
+        }
+    })
+</script>
 
 {% endblock %}

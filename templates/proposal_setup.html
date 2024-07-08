@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5">
+
+    {% if session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Create proposal cities' in
+    session['permission']) %}
+    <a href="/proposal_cities"
+        class='nav-link bg-indigo btn mb-3 {% if "/proposal_cities" in request.path %} active {% endif %}'>
+        <span class="my-auto">Proposal cities</span></a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Create proposal packages' in
+    session['permission']) %}
+    <a href="/proposal_packages" class='nav-link bg-indigo btn mb-3  {% if "/proposal_packages" in request.path %} active {% endif %}'>
+        <span class="my-auto">Proposal packages</span></a>
+    {% endif %}
+
+
+
+    {% if session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Create proposal cities' in
+    session['permission']) %}
+    <a href="/proposal_additions" class='nav-link bg-indigo btn mb-3  {% if "/proposal_additions" in request.path %} active {% endif %}'>
+        <span class="my-auto">Proposal additions</span></a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Create proposal configurations' in
+    session['permission']) %}
+    <a href="/proposal_configurations"
+        class='nav-link bg-indigo btn mb-3  {% if "/proposal_configurations" in request.path %} active {% endif %}'>
+        <span class="my-auto">Proposal configurations</span></a>
+    {% endif %}
+</div>
+
+{% endblock %}

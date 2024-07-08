@@ -5,16 +5,33 @@
         <h4>Unapproved Bills</h4>
     </div>
 </div>
+
+<div class="row mx-0 mb-3 px-5 col-6 form-group">
+    <div class="col-6 pl-0 d-flex flex-column">
+        <label for="Coordinator" class="my-auto">Select coordinator</label>
+        <select name="coordinator" id="coordinator" class="form-control select2">
+            <option value=""></option>
+
+            {% for i in users %}
+            {% if request.args['coordinator'] == i[0]|string or session['user_id']|string == i[0]|string %}
+            <option value="{{i[0]}}" selected="true">{{i[1]}}</option>
+            {% else %}
+            <option value="{{i[0]}}">{{i[1]}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+</div>
 <div class="p-5 w-100 table-responsive">
 
     {% for coordinator_id in data %}
     {% if data[coordinator_id]['projects']|length %}
-    <div class="p-2 mt-4 mb-2 border border-white bg-light w-100 btn text-left" data-toggle="collapse"
+    <div class="p-2 mt-4 border border-white bg-light w-100 btn text-left" data-toggle="collapse"
         data-target="#{{coordinator_id}}">
         <i class="fa fa-chevron-down mr-2" style="font-size: 10px;"></i>
-        {{data[coordinator_id]['coordinator_name']}}
+        Bills for {{data[coordinator_id]['coordinator_name']}}
     </div>
-    <div class="w-100 collapse" id="{{coordinator_id}}">
+    <div class="w-100 " id="{{coordinator_id}}">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -41,58 +58,58 @@
                 </tr>
                 {% endif %}
                 {% for i in data[coordinator_id]['projects'][project]['bills'] %}
-                <tr class="bill-{{i['bill_id']}}">
-                    <td class="created_at border-right">{{i['created_at']}}</td>
-                    <td class="contractor_name border-right">{{i['contractor_name']}}</td>
-                    <td class="contractor_pan border-right">{{i['contractor_pan']}}</td>
-                    <td class="contractor_code border-right">{{i['contractor_code']}}</td>
-                    <td class="trade border-right">{{i['trade']}}</td>
-                    <td class="stage border-right">{{i['stage']}}</td>
-                    <td class="total_payable border-right">{{i['total_payable']|int}}</td>
+                <tr class="bill-{{i[columns.index('bill_id')]}}">
+                    <td class="created_at border-right">{{i[columns.index('created_at')]}}</td>
+                    <td class="contractor_name border-right">{{i[columns.index('contractor_name')]}}</td>
+                    <td class="contractor_pan border-right">{{i[columns.index('contractor_pan')]}}</td>
+                    <td class="contractor_code border-right">{{i[columns.index('contractor_code')]}}</td>
+                    <td class="trade border-right">{{i[columns.index('trade')]}}</td>
+                    <td class="stage border-right">{{i[columns.index('stage')]}}</td>
+                    <td class="total_payable border-right">{{i[columns.index('total_payable')]|int}}</td>
                     <td class="approval_1  border-right">
                         <div class="w-100 d-flex">
-                            {% if i['approval_1_amount'] == '' and session['role'] in ['Super Admin','COO','QS Head','Project Manager','Project Coordinator'] or (session['role'] == 'Custom' and 'Work order approval 1' in session['permission']) %}
+                            {% if i[columns.index('approval_1_amount')] == '' and (session['role'] in ['Super Admin','COO','QS Head','Project Manager','Project Coordinator'] or (session['role'] == 'Custom' and 'Work order approval 1' in session['permission'])) %}
                             <button class="approval_1_btn btn py-0 bg-white" data-project-id="{{project}}"
                                 data-project-name="{{data[coordinator_id]['projects'][project]['project_name']}}"
-                                data-bill-id="{{i['bill_id']}}" data-toggle="modal" data-target="#approvalModal"><i
+                                data-bill-id="{{i[columns.index('bill_id')]}}" data-toggle="modal" data-target="#approvalModal"><i
                                     class="fa fa-pencil"></i></button>
                             {% else %}
-                            {{i['approval_1_amount']|int}}
+                            {{i[columns.index('approval_1_amount')]|int}}
                             {% endif %}
-                            {% if i['approval_1_notes'] != '' %}
+                            {% if i[columns.index('approval_1_notes')] != '' %}
                             <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary"
                                 data-toggle="popover" data-trigger="focus" data-placement="top" title="Notes"
-                                data-content="{{i['approval_1_notes']}}"><i class="fa fa-info-circle"></i></button>
+                                data-content="{{i[columns.index('approval_1_notes')]}}"><i class="fa fa-info-circle"></i></button>
                             {% endif %}
                         </div>
                     </td>
                     <td class="approval_2 ">
                         <div class="d-flex w-100">
-                            {% if i['approval_2_amount'] == '' and session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Work order approval 2' in session['permission']) %}
+                            {% if i[columns.index('approval_2_amount')] == '' and (session['role'] in ['Super Admin'] or (session['role'] == 'Custom' and 'Work order approval 2' in session['permission'])) %}
                             <button class="approval_2_btn btn py-0 bg-white" data-project-id="{{project}}"
                                 data-project-name="{{data[coordinator_id]['projects'][project]['project_name']}}"
-                                data-bill-id="{{i['bill_id']}}" data-toggle="modal" data-target="#approvalModal"><i
+                                data-bill-id="{{i[columns.index('bill_id')]}}" data-toggle="modal" data-target="#approvalModal"><i
                                     class="fa fa-pencil"></i></button>
-                            {% if i['approval_1_amount'] != '' %}
+                            {% if i[columns.index('approval_1_amount')] != '' %}
                             <button class="copy_from_approval_1_btn btn btn-dark bg-indigo text-white ml-2 py-0"
                                 data-project-id="{{project}}"
                                 data-project-name="{{data[coordinator_id]['projects'][project]['project_name']}}"
-                                data-bill-id="{{i['bill_id']}}" data-toggle="popover-hover" data-trigger="hover"
+                                data-bill-id="{{i[columns.index('bill_id')]}}" data-toggle="popover-hover" data-trigger="hover"
                                 data-placement="top" data-content="Approve proposed amount in approval 1"><i
                                     class="fa fa-thumbs-up"></i></button>
                             {% endif %}
                             {% else %}
-                            {{i['approval_2_amount']|int}}
+                            {{i[columns.index('approval_2_amount')]|int}}
                             {% endif %}
-                            {% if i['approval_2_notes'] != '' %}
+                            {% if i[columns.index('approval_2_notes')] != '' %}
                             <button type="button" class="btn p-0 ml-auto mb-auto approval-info text-secondary"
                                 data-toggle="popover" data-trigger="focus" data-placement="top" title="Notes"
-                                data-content="{{i['approval_2_notes']}}"><i class="fa fa-info-circle"></i></button>
+                                data-content="{{i[columns.index('approval_2_notes')]}}"><i class="fa fa-info-circle"></i></button>
                             {% endif %}
                         </div>
                     </td>
                     <td>
-                        <button class="btn text-danger delete_bill" data-delete-url="/delete_bill?bill_id={{i['bill_id']}}"
+                        <button class="btn text-danger delete_bill" data-delete-url="/delete_bill?bill_id={{i[columns.index('bill_id')]}}"
 >Delete</button>
                     </td>
                 </tr>

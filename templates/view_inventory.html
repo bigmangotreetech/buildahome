@@ -250,8 +250,79 @@
         });
     }
 
-    // Function to sort the table
     function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.querySelector('.table');
+        switching = true;
+        console.log()
+        // Set the sorting direction to ascending
+        dir = 'asc';
+        while (switching) {
+            switching = false;
+            rows =  $('#dataTable tr:visible');
+            console.log(rows.length)
+            for (i = 1; i < (rows.length - 2); i++) {
+                shouldSwitch = false;
+                x = rows[i].querySelectorAll('td')[n];
+                y = rows[i + 1].querySelectorAll('td')[n];
+                if (dir === 'asc') {
+                    if (headerNames[n] == 'Invoice date') {
+                        if (new Date(x.innerHTML.trim()) > new Date(y.innerHTML.trim())) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+
+                    else if(numberColumns.includes(headerNames[n])) {
+                        if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML)) {
+                            shouldSwitch = true;
+                            break;
+                        }   
+                    } else {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                    
+                } else if (dir === 'desc') {
+                    if (headerNames[n] == 'Invoice date') {
+                        if (new Date(x.innerHTML.trim()) < new Date(y.innerHTML.trim())) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                    else if(numberColumns.includes(headerNames[n])) {
+                        if (parseFloat(x.innerHTML) < parseFloat(y.innerHTML)) {
+                            shouldSwitch = true;
+                            break;
+                        }   
+                    }
+                    else {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                    
+                    
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === 'asc') {
+                    dir = 'desc';
+                    switching = true;
+                }
+            }
+        }
+    }
+
+    // Function to sort the table
+    function sortTable1(n) {
     var table = document.querySelector('.table');
     var rows = $('#dataTable tr:visible');
     var switching = true;
@@ -281,7 +352,7 @@
                 if ((dir === 'asc' && valX > valY) || (dir === 'desc' && valX < valY)) {
                     shouldSwitch = true;
                     break;
-                }
+                }Ta
             }
 
             if (shouldSwitch) {

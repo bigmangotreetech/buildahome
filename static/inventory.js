@@ -17,6 +17,7 @@ $('#get_procurement').on('click', function(){
         url += '&vendor='+'All'
     }
 
+    url = url.replace('+', encodeURIComponent('+'))
     window.location.href = url
 })
 

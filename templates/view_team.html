@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-10 col-12 bg-light rounded p-3">
+            <div class="row w-100 mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="col-12 d-flex justify-content-between">
+                    <h4>{{team_name}}</h4>
+                    
+                </div>
+            </div>
+
+                <form action="/update_projects_in_team" method="POST">
+                    <input type="hidden" name="team_id" value="{{request.args['id']}}">
+                    <div class="row mx-0 mb-3 form-group">
+                        <div class="col-6">
+                            <label for="projects">Add projects</label>
+                        </div>
+                        <div class="col-6">
+                            <select name="projects" id="projects" multiple class="form-control select2">
+                                {% for i in all_projects %}
+                                {% if i[0] in assigned_project_ids %}
+                                <option value='{{i[0]}}' selected>{{i[1]}}</option>
+                                {% else %}
+                                <option value='{{i[0]}}'>{{i[1]}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn text-white bg-indigo">Update</button>
+                </form>
+                <br><br>
+                {% for project in projects %}
+                    <div class="py-2">
+                        > <a href="/view_project_details?project_id={{project[0]}}">{{project[1]}}</a>
+                    </div>
+                {% endfor %}
+                
+
+            
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}

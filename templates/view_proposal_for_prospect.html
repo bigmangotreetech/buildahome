@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class=" mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="w-100">
+        <h4>Proposals {% if proposals|length %} for {{proposals[0][3]}} {% endif %}</h4>
+    </div>
+</div>
+<div class="my-5 w-100 p-3">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date time</th>
+                <th>City</th>
+                <th>Package</th>
+                <td>Status</td>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in proposals %}
+            <tr>
+                <td>{{i[4]}}</td>
+                <td>{{i[0]}}</td>
+                <td>{{i[1]}}</td>
+                <td>
+                {% if i[6] == 0 %}
+                <span class="text-primary">Unapproved</span>
+                {% elif i[6] == -1 %}
+                <span class="text-danger">Rejected</span>
+                {% else %}
+                <span class="text-success">Approved</span>
+                {% endif %}
+                </td>
+                <td>
+                    <a href="/view_proposal?id={{i[5]}}" target="_blank">View </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

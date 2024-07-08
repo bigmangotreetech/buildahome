@@ -92,6 +92,7 @@
     <div class="card my-5">
         <div class="card-header text-white bg-secondary ">
             <b>{{project_name}}</b>
+            <br> Coordinator: {{project_coordinator}}
 
         </div>
         <div class="card-body">
@@ -185,6 +186,8 @@
                                     <span class="my-auto ml-2">{{sub_task['name']}}</span> 
                                     {% if session['role'] in ['Super Admin','COO','Design Head','Planning','Billing'] or (session['role'] == 'Custom' and 'Update Client billing' in session['permission']) %}
                                     <i data-sub-task-index="{{sub_task['index']}}" data-sub-task-name="{{sub_task['name']}}" data-sub-task-start-date="{{sub_task['start_date']}}" data-sub-task-end-date="{{sub_task['end_date']}}" class="fa fa-pencil my-auto ml-2 px-2 btn edit-sub-task" data-toggle="modal" data-target="#EditSubTaskModal"></i>
+                                    <a onclick="return confirm('Are you sure')" href="/delete_sub_task?task_id={{task_id}}&sub_task_id={{sub_task['index']}}"><i  class="fa fa-trash text-danger my-auto ml-2 px-2 btn "></i></a>
+                                    
                                     {% endif %}
                                 </p>
                                 {% endfor %}

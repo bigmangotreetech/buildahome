@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class=" mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="w-100">
+        <h4>Approved proposal</h4>
+    </div>
+</div>
+<div class="my-5 w-100 p-3">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Client name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Site location</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in prospects %}
+            <tr>
+                <td>{{i[0]}}</td>
+                <td>{{i[1]}}</td>
+                <td>{{i[2]}}</td>
+                <td>{{i[3]}}</td>
+                <td>
+                    <a href="/view_proposal_for_prospect?id={{i[4]}}">View proposals</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

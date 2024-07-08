@@ -1,6 +1,18 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {   
 
+
+    $('#assign_team').on('change', function(){
+        if ($('#assign_team:checked').length) {
+            $('.assign_projects').addClass('d-none')
+            $('.assign_teams').removeClass('d-none')
+            $('#teams').select2()
+        } else {
+            $('.assign_teams').addClass('d-none')
+            $('.assign_projects').removeClass('d-none')
+            $('#projects').select2()
+        }
+    })
     if(window.location.href.includes('scrollDown')) {
         $('.main-wrapper')[0].scrollTo(0, $('.main-wrapper')[0].scrollHeight)
 
@@ -70,11 +82,12 @@ $(document).ready(function () {
             window.location.href = `${window.location.pathname}?category=${$('#category').val()}&month=${$('#month').val()}&year=${$('#year').val()}&coordinator=${$('#coordinator').val()}`
         })
     }
-    if(window.location.href.includes('view_report_card') || window.location.href.includes('calendar') ) {
+    if(window.location.href.includes('view_report_card') || window.location.href.includes('calendar') || window.location.href.includes('/view_bills') ) {
 
         
         $('#coordinator').on('change', function(){
             if ($('#coordinator').val().trim() == '') return;
+            $('body').css('opacity','0.5')
             window.location.href = `${window.location.pathname}?coordinator=${$('#coordinator').val()}`
         })
        
@@ -131,12 +144,23 @@ $(document).ready(function () {
         }
     })
 
-    $('.slab-area-in-sqft').on('keyup', function(){
-        const value = parseFloat($(this).val().trim())
-        const cost_per_sqft = parseFloat($(this).attr('data-cost'))
+    $('#additions').on('change', calcValue)
 
-        $(this).parents('.floor-element').find('.total-cost-for-floor').val(value * cost_per_sqft)
+    $('#shr_and_oht').on('keyup', calcValue)
 
+    $('#discount').on('keyup', calcValue)
+
+    $('.slab-area-in-sqft').on('keyup', calcValue)
+
+    function calcValue() {
+        if($(this).attr('id') != 'additions') {
+            const value = parseFloat($(this).val().trim())
+            const cost_per_sqft = parseFloat($(this).attr('data-cost'))
+    
+            $(this).parents('tr').find('.total-cost-for-floor').val(value * cost_per_sqft)
+        
+        }
+        
         project_value = 0
         $('.total-cost-for-floor').each(function(index, element){
             if($(element).val().trim() != '') {
@@ -144,28 +168,26 @@ $(document).ready(function () {
             }
         })
 
-        if($('#additional_cost').val().trim() != '') {
-            project_value += parseFloat($('#additional_cost').val().trim())
+        if($('#shr_and_oht').val().trim() != '') {
+            let shr_and_oht = parseFloat($('#shr_and_oht').val().trim())
+            project_value = project_value + shr_and_oht * parseFloat($('.cost_per_sqft_for_plan').text().trim())
         }
 
-        $('#project_value').val(project_value)
-    })
-
-    $('#additional_cost').on('keyup', function(){
-
-        project_value = 0
-        $('.total-cost-for-floor').each(function(index, element){
-            if($(element).val().trim() != '') {
-                project_value += parseFloat($(element).val().trim())
+        if($('#additions').val().length) {
+            for(let i=0; i< $('#additions').val().length; i++) {
+                project_value += parseFloat($('#additions').val()[i])
             }
-        })
-
-        if($('#additional_cost').val().trim() != '') {
-            project_value += parseFloat($('#additional_cost').val().trim())
         }
 
+        $('#sub_total').val(project_value)
+
+        if($('#discount').val().trim() != '') {
+            let discount = parseFloat($('#discount').val().trim())
+            if(parseFloat($('#discount').val().trim()) > 100) discount = 100;
+            project_value = project_value - project_value * (discount / 100)
+        }
         $('#project_value').val(project_value)
-    })
+    }
     
 
     $('.edit-task').on('click', function () {
@@ -321,11 +343,11 @@ $(document).ready(function () {
             $("#location").trigger('change')
         }
 
-        $('.select2.select2-container').on('click', function(){
-            setTimeout(() => {
-                $(this).parents().find('.select2-search__field').get(0).focus()
-            }, 500)
-        })
+        // $('.select2.select2-container').on('click', function(){
+        //     setTimeout(() => {
+        //         $(this).parents().find('.select2-search__field').get(0).focus()
+        //     }, 500)
+        // })
     }, 1000)
 
     if($('.approved_amount').length && $('.total_paid').length) {
@@ -396,6 +418,8 @@ $(document).ready(function () {
         }, 2000)
     }
 
+ 
+    
     if(window.location.href.includes('view_indent_details')) { 
         let indentStatus = $(".indent-status").text().trim()
         if(indentStatus == 'approved') $('.view_qs_approval_indents_nav_btn').addClass('active')
@@ -1100,13 +1124,14 @@ $(document).ready(function () {
     })
 
     $('.force-open-to-clear-balance').each(function(index, element) {
+        console.log('force-open-to-clear-balance')
         if(parseInt($(element).parents('tr').find('.approved_amount').text()) == 0) return;
         amountDifference = parseInt($(element).parents('tr').find('.billed_amount').text()) - parseInt($(element).parents('tr').find('.approved_amount').text())
         if(amountDifference > 0) 
             $(element).removeClass('d-none')            
     })
 
-    if($('.clear-individual-balance').length) {
+    if($('.clear-individual-balance').length || true) {
         $('.clear-individual-balance').each(function(index, element) {
             if(parseInt($(element).parents('tr').find('.approved_amount').text()) == 0) return;
             amountDifference = parseInt($(element).parents('tr').find('.billed_amount').text()) - parseInt($(element).parents('tr').find('.approved_amount').text())

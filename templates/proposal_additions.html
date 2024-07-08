@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class=" mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="w-100">
+        <h4>Additons for proposal creation</h4>
+    </div>
+</div>
+<div class="my-5 w-100 p-3">
+    <h5 class="pb-2 border-bottom border-dark col-3 pl-0">Existing additons</h5>
+    <table class="table table-responsive bg-light w-25 table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cost</th>
+                <th></th>
+            </tr>
+            <tbody>
+                {% for i in proposal_additions %}
+                <tr>
+                    <td>{{i[1]}}</td>
+                    <td>{{i[2]}}</td>
+
+                    <td>
+                        {% if session['role'] in ['Super Admin','COO'] %}
+                        <a onclick="return confirm('Are you sure?')" href="/delete_proposal_addition?id={{i[0]}}" class="text-danger">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </thead>
+    </table>
+    
+    <div class="w-100 py-3 overflow-x-auto">
+        <form action="/add_proposal_additions" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
+
+            <div class="row mx-0 mb-3 form-group p-0">
+                <div class="col-12 col-md-6 col-lg-4 p-0">
+                    <label for="proposal_addition">Additonal item name</label>
+                    <input type="text" name="proposal_addition" class="form-control" required>
+                </div>
+                
+            </div>
+            <div class="row mx-0 mb-3 form-group p-0">
+                <div class="col-12 col-md-6 col-lg-4 p-0">
+                    <label for="cost">Cost</label>
+                    <input type="text" name="cost" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="row mx-0 mb-3 form-group  p-0">
+
+            <div class="row mx-0 mb-5">
+                <div class="col-6 p-0">
+                    <button class="btn btn-dark bg-indigo text-white">Submit</button>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>
+
+
+{% endblock %}

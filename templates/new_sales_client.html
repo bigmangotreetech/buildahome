@@ -1,9 +1,58 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="my-5 w-100">
+
+<style>
+    .table .form-control {
+        border: none;
+        padding: 0px;
+        background: transparent;
+    }
+    .table label {
+        margin-bottom: 0px;
+    }
+    .table {
+        font-size: 12px;
+    }
+    .table th {
+        padding:  0.75rem 8px;
+    }
+    .table td {
+        padding: 4px 8px;
+    }
+    .step-indicator {
+        height: 40px;
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        border-radius: 50%;
+        border: 1px solid rgb(123, 123, 123);
+        font-size: 20px;
+        text-align: center;
+        z-index: 1;
+        background-color: rgb(247, 247, 247);
+    }
+
+    .step-indicator.active {
+        background-color: rgb(0, 2, 91);
+        color: white;
+
+    }
+
+
+    .line {
+        z-index: 1;
+        height: 3px;
+        background-color: rgb(183, 182, 182);
+        width: 100%;
+        top: 50%;
+        left: 0px;
+    }
+</style>
+<div class="my-5 w-100" >
     <div class="row mx-3 justify-content-center">
-        <div class="col-md-8 col-12 bg-light rounded p-3">
-            <form action="/new_sales_client" method="post">
+        <div class="col-md-8 col-12 bg-white rounded p-3">
+            <form action="/create_proposal" method="post">
                 <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
                     <div class="col-12">
                         <h4>Create proposal</h4>
@@ -14,68 +63,109 @@
                 
 
                 {% if 'step' not in request.args %}
-                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="d-flex mb-4 col-6 px-0 justify-content-between position-relative w-100">
+                    <div class="line position-absolute"></div>
+                    <div class="step-indicator active">1</div>
+                    <div class="step-indicator">2</div>
+                    <div class="step-indicator">3</div>
+                    <div class="step-indicator">4</div>
+                    <div class="step-indicator ">5</div>
+                </div>
+                <hr>
+                <div class="row mx-0 mb-4 pb-2  border-bottom form-group">
                     <div class="col-12">
                         <h5>Client basic information</h5>
                     </div>
                 </div>
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 bg-light form-group">
                     <div class="col-6">
                         <label for="client_name">Client name</label>
                     </div>
                     <div class="col-6">
-                        <input name="client_name" id="client_name" class="form-control" required/>
+                        <input name="client_name" value="{{client_name}}" id="client_name" class="form-control" required/>
                     </div>
                 </div>
 
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 bg-light form-group">
                     <div class="col-6">
                         <label for="client_phone">Client phone</label>
                     </div>
                     <div class="col-6">
-                        <input name="client_phone" id="client_phone" class="form-control" required/>
+                        <input name="client_phone" value="{{client_phone}}" id="client_phone" class="form-control" required/>
                     </div>
                 </div>
 
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 bg-light form-group">
+                    <div class="col-6">
+                        <label for="client_email">Client email</label>
+                    </div>
+                    <div class="col-6">
+                        <input tyep="email" name="client_email" value="{{client_email}}" id="client_email" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 bg-light form-group">
                     <div class="col-6">
                         <label for="site_location">Site location</label>
                     </div>
                     <div class="col-6">
-                        <input name="site_location" id="site_location" class="form-control" required/>
+                        <input name="site_location" value="{{site_location}}" id="site_location" class="form-control" required/>
                     </div>
                 </div>
 
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 bg-light form-group">
+                    <div class="col-6">
+                        <label for="distance_from_city_center">Distance from city center in KM</label> <br>
+                        <small>(Majestic, Palace, Koyambedu etc)</small>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="distance_from_city_center" value="{{distance_from_city_center}}" id="distance_from_city_center" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="row mx-0 mb-3 bg-light form-group">
                     <div class="col-6">
                         <label for="requirement">Requirement</label>
                     </div>
                     <div class="col-6">
-                        <textarea name="requirement" rows="4" id="requirement" class="form-control"></textarea>
+                        <textarea name="requirement" rows="4" id="requirement" class="form-control">{{requirement}}</textarea>
                     </div>
                 </div>
 
+                <div class="d-flex justify-content-end mx-0 my-5 px-4">
+                    <button type="submit" class="btn btn-dark px-5 bg-indigo text-white">Next</button>
+                </div>
+
                 {% elif request.args['step'] == 'city' %}
-                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="d-flex mb-4 col-6 px-0 justify-content-between position-relative w-100">
+                    <div class="line position-absolute"></div>
+                    <div class="step-indicator active">1</div>
+                    <div class="step-indicator active">2</div>
+                    <div class="step-indicator">3</div>
+                    <div class="step-indicator">4</div>
+                    <div class="step-indicator ">5</div>
+                </div>
+                <hr>
+                <div class="row mx-0 mb-4 pb-2 bg-light border-bottom form-group">
                     <div class="col-12">
                         <h5>Select city</h5>
                     </div>
                 </div>
                 <input type="hidden" name="step" value="{{request.args['step']}}">
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 bg-light form-group">
                     <div class="col-6">
                         <label for="city">City</label>
                     </div>
                     <div class="col-6">
                         <select name="city" id="city" class="form-control select2">
                             {% for i in cities %}
-                            <option value='{{i}}'>{{i}}</option>
+                            <option {% if city == i[0] %} selected {% endif %} value='{{i[0]}}'>{{i[0]}}</option>
                             {% endfor %}
                         </select>
                     </div>
                 </div>
 
-                <div class="row mx-0 mb-3 form-group d-none" id="city_text_field">
+                <div class="row mx-0 mb-3 bg-light form-group d-none" id="city_text_field">
                     <div class="col-6">
                         <label for="city_text">Enter city</label>
                     </div>
@@ -83,103 +173,185 @@
                         <input name="city_text" id="city_text" class="form-control" />
                     </div>
                 </div>
+
+                <div class="d-flex justify-content-between mx-0 my-5 px-4">
+                    <a href="/create_proposal" class="btn border-dark text-dark px-5">Back</a>
+                    <button type="submit" class="btn btn-dark px-5 bg-indigo text-white">Next</button>
+                </div>
                 {% elif request.args['step'] == 'package' %}
-                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="d-flex mb-4 col-6 px-0 justify-content-between position-relative w-100">
+                    <div class="line position-absolute"></div>
+                    <div class="step-indicator active">1</div>
+                    <div class="step-indicator active">2</div>
+                    <div class="step-indicator active">3</div>
+                    <div class="step-indicator">4</div>
+                    <div class="step-indicator ">5</div>
+                </div>
+                <div class="row mx-0 mb-4 pb-2 bg-light border-bottom form-group">
                     <div class="col-12">
                         <h5>Select package</h5>
                     </div>
                 </div>
                 <input type="hidden" name="step" value="{{request.args['step']}}">
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 bg-light form-group">
                     <div class="col-6">
                         <label for="package">Select package</label>
                     </div>
                     <div class="col-6">
                         <select name="package" id="package" class="form-control select2">
                             {% for i in packages %}
-                            <option value='{{i}}'>{{i}}</option>
+                            <option {% if selected_package == i[0] %} selected {% endif %} value='{{i[0]}}'>{{i[0]}}</option>
                             {% endfor %}
                         </select>
                     </div>
                 </div>
+                <div class="d-flex justify-content-between mx-0 my-5 px-4">
+                    <a href="/create_proposal?step=city" class="btn border-dark text-dark px-5">Back</a>
+                    <button type="submit" class="btn btn-dark px-5 bg-indigo text-white">Next</button>
+                </div>
                 {% elif request.args['step'] == 'floors' %}
-                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                <div class="d-flex mb-4 col-6 px-0 justify-content-between position-relative w-100">
+                    <div class="line position-absolute"></div>
+                    <div class="step-indicator active">1</div>
+                    <div class="step-indicator active">2</div>
+                    <div class="step-indicator active">3</div>
+                    <div class="step-indicator active">4</div>
+                    <div class="step-indicator ">5</div>
+                </div>
+                <div class="row mx-0 mb-4 bg-light pb-2 border-bottom form-group">
                     <div class="col-12">
                         <h5>Number of floors</h5>
                     </div>
                 </div>
                 <input type="hidden" name="step" value="{{request.args['step']}}">
-                <div class="row mx-0 mb-3 form-group">
+                <div class="row mx-0 mb-3 bg-light form-group">
                     <div class="col-6">
-                        <label for="floors">Enter total number of floors</label>
+                        <label for="floors">Enter total number of floors</label> <br>
+                        <small>(Ground/Basement to be considered as a floor too)</small>
                     </div>
                     <div class="col-6">
-                        <input name="floors" type="number" min="1" max="5" id="floors" class="form-control" />
+                        <input name="floors" value="{{floors}}" type="number" min="1" max="5" required id="floors" class="form-control" />
                     </div>
+                </div>
+                <div class="d-flex justify-content-between mx-0 my-5 px-4">
+                    <a href="/create_proposal?step=package" class="btn border-dark text-dark px-5">Back</a>
+                    <button type="submit" class="btn btn-dark px-5 bg-indigo text-white">Next</button>
                 </div>
                 {% elif request.args['step'] == 'commercials' %}
-                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
-                    <div class="col-12">
-                        <h5>Commercials</h5>
-                    </div>
+                <div class="d-flex mb-4 col-6 px-0 justify-content-between position-relative w-100">
+                    <div class="line position-absolute"></div>
+                    <div class="step-indicator active">1</div>
+                    <div class="step-indicator active">2</div>
+                    <div class="step-indicator active">3</div>
+                    <div class="step-indicator active">4</div>
+                    <div class="step-indicator active">5</div>
                 </div>
-                <p>City: {{city}}</p>
-                <p>Selected package: {{selected_package}}</p>
-                <p>Cost per sqft for selected package: {{cost_per_sqft}}</p>
-                <input type="hidden" name="step" value="{{request.args['step']}}">
-                <div class="row mx-0 mb-3 form-group font-weight-bold" >
-                    <div class="col-4 border-right">
-                        <p>Floor name</p>
-                    </div>
-                    <div class="col-3  border-right">
-                        <p>Area in Sqft</p>
-                    </div>
-                    <div class="col-3">
-                        <p>Total cost for floor</p>
-                    </div>
-                </div>
-                {% for i in floors_list %}
-                <div class="row mx-0 mb-3 form-group floor-element" >
-                    <div class="col-4 border-right">
-                        <label for="">Enter {{i}} slab area</label>
-                    </div>
-                    <div class="col-3 border-right">
-                        <input name="{{i}}" type="number" min="1" id="" data-cost="{{cost_per_sqft}}" class="form-control slab-area-in-sqft" />
-                    </div>
-                    <div class="col-3">
-                        <input name="" type="number" min="1" id="" readonly class="form-control total-cost-for-floor" />
-                    </div>
-                </div>
-                {% endfor %}
+                <div>
 
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-4">
-                        <label for="additional_cost">Additional cost</label>
+                    <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                        <div class="col-12">
+                            <h5>Commercials</h5>
+                        </div>
                     </div>
-                    <div class="col-3">
-                        <input name="additional_cost" type="number" id="additional_cost" class="form-control" />
+                    <p>Client: <span id="client_name">{{client_name}}</span></p>
+                    <p>City: {{city}}</p>
+                    <p>Selected package: {{selected_package}}</p>
+                    <p>Cost per sqft for selected package: <span class="cost_per_sqft_for_plan">{{cost_per_sqft}}</span></p>
+                    <input type="hidden" name="step" value="{{request.args['step']}}">
+                    <div class="row mx-0">
+                        <table  id="toImage" class="table table-striped col-7  px-0">
+                            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+                                rel="stylesheet">
+    
+                            <thead>
+                                <tr style="background-color: rgb(227, 242, 253);">
+                                    <th>Floor name</th>
+                                    <th>Area in sqft</th>
+                                    <th>Total cost for floor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in floors_list %}
+                                <tr class="floor-element">
+                                    <td><label for="">Enter {{i}} slab area</label></td>
+                                    <td><input name="{{i}}" type="number" min="1" id="" data-cost="{{cost_per_sqft}}" class="form-control slab-area-in-sqft" /></td>
+                                    <td><input name="" type="number" min="1" id="" readonly class="form-control total-cost-for-floor" /></td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td><label for="shr_and_oht">SHR and OHT</label></td>
+                                    <td><input name="shr_and_oht" type="number" id="shr_and_oht" class="form-control" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="additions">Additions</label></td>
+                                    <td><select name="additions" id="additions" multiple class="form-control select2">
+                                        {% for i in proposal_additions %}
+                                        <option value='{{i[2]}}'>{{i[1]}} - ₹{{i[2]}}</option>
+                                        {% endfor %}
+                                    </select></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="sub_total">Subtotal</label></td>
+                                    <td><input name="sub_total"  type="number" id="sub_total" class="form-control" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="discount">Discount in %</label></td>
+                                    <td><input name="discount" min="0" max="3" type="number" id="discount" class="form-control" /></td>
+                                    <td></td>
+                                </tr>
+                                
+                                
+                                <tr>
+                                    <td><label for="project_value">Total project value</label></td>
+                                    <td><input name="project_value" readonly type="number" id="project_value" class="form-control" /></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
 
-                <div class="row mx-0 mb-3 form-group">
-                    <div class="col-4">
-                        <label for="project_value">Enter project value</label>
-                    </div>
-                    <div class="col-3">
-                        <input name="project_value" readonly type="number" id="project_value" class="form-control" />
-                    </div>
                 </div>
+                
+
+                <div id="iframe2">
+                    <canvas id="annexure_canvas" width="800px" height="600px" class="d-none"></canvas>
+                </div>
+                <iframe src="" class="my-3 w-100 proposal-iframe d-none" height="600px" frameborder="0"></iframe>
+
+                
+                <div class="d-flex justify-content-between mx-0 my-5 px-4">
+                    <a href="/create_proposal?step=floors" class="btn border-dark text-dark px-5">Back</a>
+                    <button type="button" class="btn btn-dark preview-proposal ml-auto bg-indigo text-white" data-file="{{proposal_pdf}}">Preview proposal</button>
+                    <button onclick="return confirm('Are you sure you want to submit this proposal for approval')" type="button" disabled class="btn ml-2 btn-success submit-for-approval">Submit for approval</button>
+                </div>
+                
                 {% endif %}
 
-                <div class="row justify-content-center mx-0 my-5">
+                <!-- <div class="row justify-content-center mx-0 my-5">
                     <div class="col-6">
                         <button type="submit" class="btn btn-dark btn-block bg-indigo text-white">Next</button>
                     </div>
-                </div>
+                </div> -->
             </form>
+
+            
+
 
         </div>
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.js" integrity="sha512-zPMZ/3MBK+R1rv6KcBFcf7rGwLnKS+xtB2OnWkAxgC6anqxlDhl/wMWtDbiYI4rgi/NrCJdXrmNGB8pIq+slJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://unpkg.com/pdf-lib@1.4.0"></script>
+<script src="https://unpkg.com/downloadjs@1.4.7"></script>
+<script src="/static/draw_proposal.js"></script>
 {% endblock %}

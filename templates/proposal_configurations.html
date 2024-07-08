@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class=" mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="w-100">
+        <h4>Proposal configurations</h4>
+    </div>
+</div>
+<div class="my-5 w-100 p-3">
+    <h5 class="pb-2 border-bottom border-dark col-3 pl-0">Existing configurations:</h5>
+    <table class="table table-responsive bg-light col-6 px-0 table-striped">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Package name</th>
+                <th>Price per sqft</th>
+                <th>Proposal</th>
+
+                <th></th>
+            </tr>
+            <tbody>
+                {% for i in proposal_configurations %}
+                <tr>
+                    <td>{{i[1]}}</td>
+                    <td>{{i[2]}}</td>
+                    <td>{{i[3]}}</td>
+                    <td>
+                        <a href="/files/{{i[4]}}" target="_blank">View proposal</a>
+                    </td>
+                    <td>
+                        {% if session['role'] in ['Super Admin','COO'] %}
+                        <a onclick="return confirm('Are you sure?')" href="/delete_proposal_configurations?id={{i[0]}}" class="text-danger">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </thead>
+    </table>
+    
+    <div class="w-100 py-3 overflow-x-auto">
+        <h5 class="pb-2 border-bottom border-dark mt-5 pl-0 col-3">Create new configuration</h5>
+
+        <form class="bg-white p-3 col-12 col-lg-4" action="/add_proposal_configurations" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="project_id" value="{{request.args['project_id']}}">
+
+            <div class=" mx-0 mb-3 form-group p-0">
+                <div class="pl-0 pr-2 mb-4">
+                    <label for="price">Select City</label>
+                    <select name="proposal_city" id="city" class="form-control select2" required>
+                        <option value=""></option>
+                        {% for i in proposal_cities %}
+                        <option value="{{i[1]}}">{{i[1]}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="pl-0 pr-2 mb-4">
+                    <label for="price">Select package</label>
+                    <select name="proposal_type" id="package" class="form-control select2" required>
+                        <option value=""></option>
+                        {% for i in proposal_types %}
+                        <option value="{{i[1]}}">{{i[1]}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="p-0 mb-4">
+                    <label for="price">Price per sqft</label>
+                    <input type="number" name="price_per_sqft" class="form-control" required>
+                </div>
+
+                <div class="p-0">
+                    <label for="proposal_pdf">Attach proposal pdf</label>
+                    <input type="file" name="proposal_pdf" class="form-control" required>
+                </div>
+                
+            </div>
+            
+            <div class="row mx-0 mb-3 form-group  p-0">
+
+            <div class="row mx-0 mb-5">
+                <div class="col-6 p-0">
+                    <button class="btn btn-dark bg-indigo text-white">Submit</button>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>
+
+
+{% endblock %}

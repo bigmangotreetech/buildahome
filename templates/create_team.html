@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="my-5 w-100">
+    <div class="row mx-3 justify-content-center">
+        <div class="col-md-10 col-12 bg-light rounded p-3">
+            <form action="/create_team" method="post">
+                <div class="row mx-0 mb-4 pb-2 border-bottom form-group">
+                    <div class="col-12">
+                        <h4>Create team</h4>
+                    </div>
+                </div>
+
+                <br><br>
+                <div class="row mx-0 mb-3 form-group">
+                    <div class="col-6">
+                        <label for="name">Team name</label>
+                    </div>
+                    <div class="col-6">
+                        <input name="name" id="name" class="form-control" required/>
+                    </div>
+                </div>                
+
+
+                <div class="row justify-content-center mx-0 my-5">
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-dark btn-block bg-indigo text-white">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+            
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -62,7 +62,7 @@
             <div class="note">{{i[2]}}</div>
             <div class="w-100 text-right fs-12 mt-2">
                 {{i[3]}} on {{i[4]}}
-                {% if i[5] == session['email'] and session['role'] == 'Super Admin' %}
+                {% if i[5] == session['email'] or session['role'] == 'Super Admin' %}
                     <a href="/delete_work_order_note?id={{i[0]}}" onclick="return window.confirm('Are you sure?');" class="ml-2 text-danger">Delete</a>
                 {% endif %}
             </div>
@@ -109,16 +109,18 @@
             </td>
             <td>
                 <span class="d-none">{{i[7]}}</span>
-                {% if '0' in i[6]|string and session['role'] in ['Super Admin','QS Engineer'] and data['locked']|string != '1' %}
+                {% if '0' in i[6]|string and data['locked']|string != '1' %}
+                {% if session['role'] in ['Super Admin','QS Engineer'] or (session['role'] == 'Custom' and 'Clear balance for work orders' in session['permission']) %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
+                {% endif %}    
                 {% elif '1' in i[6]|string and session['role'] in ['Super Admin'] and data['locked']|string != '1' %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="force-open-to-clear-balance btn text-primary d-none">Open to Clear balance</span>
                 {% endif %}
             </td>
             <td>
-            {% if session['role'] in ['Super Admin'] and 'Debit note' in i[0] %}
+            {% if session['role'] in ['Super Admin'] and 'Debit note' in i[0] or (session['role'] == 'Custom' and 'Delete debit note' in session['permission'] and 'Debit note' in i[0]) %}
                     <a href="/delete_bill?bill_id={{i[7]}}" onclick="return window.confirm('Are you sure?');" class="btn text-danger">Delete</a>
             {% endif %}
             </td>            

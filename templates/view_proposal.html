@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class=" mt-5 mb-3 pb-2 border-bottom form-group">
+    <div class="w-100">
+        <h4>Proposal {% if proposals|length %} sent to {{proposal[3]}} {% endif %}</h4>
+    </div>
+</div>
+<div class="my-5 w-100 p-3 bg-white container">
+    <div class="mb-3 h4">Proposal created on {{proposal[4]}}</div>
+    <iframe src="https://erpbuildahome.s3.ap-south-1.amazonaws.com/{{proposal[2]}}#toolbar=0" class="my-3 w-100 proposal-iframe" height="600px" frameborder="0"></iframe>
+
+    <div class="d-flex w-100">
+        <div class="ml-auto">
+            <div class="mt-4">Proposal created by {{proposal[7]}}</div>
+            <div class="mt-2">City {{proposal[0]}}</div>
+            <div class="mt-2">Package {{proposal[1]}}</div>
+            <div class="mt-2">Proposal status: 
+                {% if proposal[6] == 0 %}
+                <span class="text-primary">Unapproved</span>
+                {% elif proposal[6] == -1 %}
+                <span class="text-danger">Rejected</span>
+                {% else %}
+                <span class="text-success">Approved</span>
+                {% endif %}
+                
+                
+
+            </div>
+            <div class="mt-4">
+                {% if session['role'] in ['Super Admin','Sales Manager'] %}
+                {% if proposal[6] == 0 %}
+                <a onclick="return confirm('Are you sure?')" href="/reject_proposal?id={{proposal[5]}}" class="btn btn-danger">Reject</a>
+                <a onclick="return confirm('Are you sure?')" href="/approve_proposal?id={{proposal[5]}}" class="btn btn-success">Approve</a>
+                {% else %}
+                <a onclick="return confirm('Are you sure?')" href="/rollback_proposal_to_unapproved?id={{proposal[5]}}" class="btn btn-primary">Roll back to unapproved</a>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+
+{% endblock %}

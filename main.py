@@ -26,7 +26,12 @@ import random
 import json
 import uuid
 
-#ssh -i "buildahomeaws1.pem" ubuntu@ec2-13-233-196-224.ap-south-1.compute.amazonaws.com
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+
+# ssh -i "buildahomeaws1.pem" ubuntu@ec2-13-233-196-224.ap-south-1.compute.amazonaws.com
 
 # Debit note
 
@@ -46,6 +51,12 @@ import uuid
 # Last labour stage id 412
 app = Flask(__name__)
 
+S3_BUCKET='erpbuildahome'
+S3_KEY='AKIAQEFDTNRRNANPNES2'
+S3_LOCATION='https://erpbuildahome.s3.ap-south-1.amazonaws.com/'	
+S3_SECRET='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'
+GIT='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'
+GIT_PAT='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'
 
 # Sql setup
 app.config['MYSQL_HOST'] = 'bah.cpawi80eylqb.ap-south-1.rds.amazonaws.com'
@@ -54,13 +65,48 @@ app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
-
+app.config['S3_SECRET'] = S3_SECRET
+app.config['S3_KEY'] = S3_KEY
+app.config['S3_BUCKET'] = S3_BUCKET
+app.config['S3_LOCATION'] = S3_LOCATION
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
+
+import smtplib
+from email.mime.text import MIMEText
+
+def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password):
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = from_email
+    msg['To'] = to_email
+    
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587
+
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()  # Upgrade the connection to secure
+        server.login(login, password)
+        server.sendmail(from_email, to_email, msg.as_string())
+
+
+# Example usage:
+# send_email(
+#     subject="Test Email",
+#     body="This is a test email sent from Python!",
+#     to_email="recipient@example.com",
+#     from_email="your_email@example.com",
+#     smtp_server="smtp.example.com",
+#     smtp_port=587,
+#     login="your_email@example.com",
+#     password="your_password"
+# )
+
 
 mysql = MySQL(app)
 try:
     connection = mysql.connection
+    print(f"Database connected: {mysql.connection}")
     # Your database operations here
 except Exception as e:
     print(f"Database connection error: {e}")
@@ -150,11 +196,24 @@ def get_projects_for_current_user(user_id = '', role = ''):
     if role in ['Super Admin', 'COO', 'QS Head', 'Purchase Head', 'Site Engineer', 'Design Head', 'Billing', 'Planning','Finance','Technical Info','Purchase Info']:
         return ('All')
     if role == 'Custom':
-        query = 'SELECT access from App_users WHERE user_id=' + str(user_id)
+        query = 'SELECT access, teams from App_users WHERE user_id=' + str(user_id)
         cur.execute(query)
         result = cur.fetchone()
         if result is None:
             return ()
+
+        if result[1] is not None and result[1] != '':
+            projects = []
+            teams = result[1].split(',')
+            for team in teams:
+                team_projects_query = 'SELECT projects FROM teams WHERE id='+str(team)
+                cur.execute(team_projects_query)
+                team_projects_query_res = cur.fetchone()
+                if team_projects_query_res is not None and team_projects_query_res[0] is not None:
+                    projects = projects + team_projects_query_res[0].split(',')
+            print('Projects', len(team_projects_query_res[0].split(',')))
+            return tuple(projects)
+
         if len(result) == 1:
             return "('"+ str(result[0]) + "')"
         if result[0] == "All":
@@ -1065,9 +1124,10 @@ def audit_log():
     logs = cur.fetchall()
     return render_template('audit_log.html',logs=logs)
 
-
-@app.route('/files/<filename>', methods=['GET'])
-def files(filename):
+@app.route('/files1', methods=['GET'])
+def files1():
+    filename = request.args['filename']
+    print(filename)
     if 'work_order_' in filename:
         wo_id = filename.replace('work_order_','').replace('.pdf','')
         cur = mysql.connection.cursor()
@@ -1078,6 +1138,22 @@ def files(filename):
             filename = res[0] 
 
     response = redirect(app.config['S3_LOCATION'] + filename)
+    return response 
+
+@app.route('/files/<filename>', methods=['GET'])
+def files(filename):
+    print(filename)
+    if 'work_order_' in filename:
+        wo_id = filename.replace('work_order_','').replace('.pdf','')
+        cur = mysql.connection.cursor()
+        query = 'SELECT filename from work_orders WHERE id='+str(wo_id)
+        cur.execute(query)
+        res = cur.fetchone()
+        if res is not None and res[0].strip() != '':
+            filename = res[0] 
+    print(filename)
+    print(filename.replace('\%20','+'))
+    response = redirect(app.config['S3_LOCATION'] + filename.replace(' ','+'))
     return response
 
 @app.route('/upload_migrated_image', methods=['GET','POST'])
@@ -1529,7 +1605,10 @@ def lock_wo():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/enter_material'
         return redirect('/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','Custom']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if session['role'] == 'Custom' and 'Lock/unlock work orders' not in session['permission']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     id = request.args['id']
@@ -1548,7 +1627,10 @@ def unlock_wo():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/enter_material'
         return redirect('/login')
-    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive']:
+    if session['role'] not in ['Super Admin', 'COO', 'Purchase Head', 'Purchase Executive','Custom']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if session['role'] == 'Custom' and 'Lock/unlock work orders' not in session['permission']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
     id = request.args['id']
@@ -1758,6 +1840,7 @@ def view_inventory():
             result = cur.fetchone()
             if result is not None:
                 material_total_quantity = result[0]
+                material_quantity_data_dict[material] = result[0]
 
         if project_id != 'All' and material == 'All':
 
@@ -2138,7 +2221,7 @@ def edit_user():
     if request.method == 'GET':
         user_id = request.args['user_id']
         cur = mysql.connection.cursor()
-        view_user_query = 'SELECT user_id, email, name, role, phone, access, permission, reports_to FROM App_users WHERE user_id=' + str(user_id)
+        view_user_query = 'SELECT user_id, email, name, role, phone, access, permission, reports_to, teams FROM App_users WHERE user_id=' + str(user_id)
         cur.execute(view_user_query)
         result = cur.fetchone()
 
@@ -2181,8 +2264,12 @@ def edit_user():
         users_query = 'SELECT user_id, name FROM App_users WHERE role = "Sales Executive"'
         cur.execute(users_query)
         sales_executives = cur.fetchall()
+
+        teams_query = 'SELECT * FROM teams'
+        cur.execute(teams_query)
+        teams = cur.fetchall()
             
-        return render_template('edit_user.html', sales_executives=sales_executives, user=result, roles=roles, projects=projects, permissions=permissions, project_coordinators=project_coordinators, assistant_project_coordinators=assistant_project_coordinators, assigned_coordinators=assigned_coordinators)
+        return render_template('edit_user.html', teams=teams, sales_executives=sales_executives, user=result, roles=roles, projects=projects, permissions=permissions, project_coordinators=project_coordinators, assistant_project_coordinators=assistant_project_coordinators, assigned_coordinators=assigned_coordinators)
     else:
         
         required_fields = ['name', 'role', 'email', 'phone', 'password', 'confirm_password']
@@ -2204,6 +2291,16 @@ def edit_user():
             print(access)
 
             update_user_query = 'UPDATE App_users SET access="'+access+'" WHERE user_id='+str(user_id)
+            cur = mysql.connection.cursor()
+            cur.execute(update_user_query)
+
+        if 'teams' in request.form:
+            
+            teams = list(request.form.getlist('teams'))
+            teams = ','.join(teams)
+            print(teams)
+
+            update_user_query = 'UPDATE App_users SET teams="'+teams+'" WHERE user_id='+str(user_id)
             cur = mysql.connection.cursor()
             cur.execute(update_user_query)
 
@@ -3217,15 +3314,22 @@ def view_nt_due_bills():
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
 
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager'] and 'All' not in str(get_projects_for_current_user()):
         flash('You do not have permission to view that page', 'danger')
-    bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
+        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
+                      'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
+                      'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
+                      'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
+                      ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
+                      '(wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) AND nt_due = 1 AND projects.project_id IN '+str(get_projects_for_current_user())
+    else:
+        bills_query = 'SELECT projects.project_id, projects.project_name, wo_bills.trade, wo_bills.stage, wo_bills.payment_percentage,' \
                       'wo_bills.amount, wo_bills.total_payable, wo_bills.contractor_name, wo_bills.contractor_code, wo_bills.contractor_pan,' \
                       'wo_bills.approval_1_status, wo_bills.approval_1_amount, wo_bills.approval_1_notes,' \
                       'wo_bills.approval_2_status, wo_bills.approval_2_amount, wo_bills.approval_2_notes, wo_bills.id, wo_bills.created_at' \
                       ' FROM wo_bills INNER JOIN projects on wo_bills.project_id = projects.project_id AND wo_bills.is_archived=0 AND ' \
                       '(wo_bills.approval_2_amount = 0 OR wo_bills.approval_2_amount IS NULL) AND nt_due = 1'
-    
+
     data = get_bills_as_json(bills_query)
     first_bill_id = 0
     for project in data:
@@ -3241,9 +3345,14 @@ def approve_nt_bill():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_bills'
         return redirect('/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager','Custom']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
+    if session['role'] == 'Custom' and 'Unapproved NT bills' not in session['permission']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
+
     bill_id = request.args['bill_id']
     cur = mysql.connection.cursor()
     query = 'UPDATE wo_bills SET nt_due = 0 WHERE id='+str(bill_id)
@@ -3260,9 +3369,13 @@ def reject_nt_bill():
         flash('You need to login to continue', 'danger')
         session['last_route'] = '/view_bills'
         return redirect('/login')
-    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager']:
+    if session['role'] not in ['Super Admin', 'COO', 'QS Head','QS Engineer','Project Manager','Custom']:
         flash('You do not have permission to view that page', 'danger')
         return redirect(request.referrer)
+    if session['role'] == 'Custom' and 'Unapproved NT bills' not in session['permission']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+        
     bill_id = request.args['bill_id']
     cur = mysql.connection.cursor()
     query = 'UPDATE wo_bills SET nt_due = "-1" WHERE id='+str(bill_id)
@@ -3272,6 +3385,36 @@ def reject_nt_bill():
     flash('Bill rejected','danger')
 
     return redirect(request.referrer)
+
+@app.route('/update_coordinators', methods=['GET','POST'])
+def update_coordinators():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/view_bills'
+
+    if session['role'] in ['Super Admin', 'COO', 'QS Head','QS Engineer'] or 'All' in str(get_projects_for_current_user()):
+        coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id INNER JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
+
+    elif session['role'] in ['Project Manager','Project Coordinator','Assistant project coordinator','Custom']:
+        coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL AND p.project_id IN ' + str(get_projects_for_current_user()) +'  order by pot.co_ordinator'
+        
+    cur = mysql.connection.cursor()
+    cur.execute(coordinators_query)
+    coordinators_res = cur.fetchall()
+
+    user_id = session['user_id']
+
+    session_query = "INSERT INTO SessionStorage (key_name, value) \
+        SELECT 'coord_res_"+str(user_id)+"', '"+str(coordinators_res)+"'  \
+        WHERE NOT EXISTS ( \
+            SELECT 1 FROM SessionStorage WHERE your_key_column = 'coord_res_"+str(user_id)+"'\
+        )"
+
+    cur.execute(session_query)
+
+    mysql.connection.commit()
+
+    return jsonify({'message': 'success'})
 
 
 @app.route('/view_bills', methods=['GET'])
@@ -3288,62 +3431,69 @@ def view_bills():
         return redirect(request.referrer)
 
     if request.method == 'GET':
-
-        if session['role'] in ['Super Admin', 'COO', 'QS Head','QS Engineer'] or 'All' in str(get_projects_for_current_user()):
-            coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id INNER JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL order by pot.co_ordinator'
-
-        elif session['role'] in ['Project Manager','Project Coordinator','Assistant project coordinator','Custom']:
-            coordinators_query = 'SELECT pot.project_id, pot.co_ordinator, u.name, p.project_name FROM project_operations_team pot JOIN App_users u ON pot.co_ordinator = u.user_id JOIN projects p on pot.project_id=p.project_id WHERE co_ordinator is not NULL AND p.project_id IN ' + str(get_projects_for_current_user()) +'  order by pot.co_ordinator'
-                  
-            
-        cur = mysql.connection.cursor()
-        cur.execute(coordinators_query)
-        coordinators_res = cur.fetchall()
+        columns = ['trade', 'stage', 'payment_percentage', 'amount', 'total_payable', 'contractor_name', 'contractor_code', 
+                            'contractor_pan', 'approval_1_status', 'approval_1_amount', 'approval_1_notes',
+                            'approval_2_status', 'approval_2_amount', 'approval_2_notes', 'bill_id', 'created_at']
 
         data = {}
 
-        for p in coordinators_res:
-            coordinator_id = p[1]
-            coordinator_name = p[2]
-            if coordinator_id not in data:
-                data[coordinator_id] = {'coordinator_name': coordinator_name, 'projects': {}}            
+        cur = mysql.connection.cursor()
 
-            project_id = p[0]
-            if project_id not in data[coordinator_id]['projects']:
-                data[coordinator_id]['projects'][project_id] = {'project_name': p[3]}
+        if 'coordinator' in request.args:
+            projects = []
 
-            bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
-                        'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
-                        'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
-                        ' FROM wo_bills WHERE project_id='+ str(p[0]) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL) AND nt_due != 1 AND nt_due != -1'
-            cur.execute(bills_query)
-            res = cur.fetchall()
+            coordinator_id = request.args['coordinator']
+
+            query = 'SELECT access, name FROM App_users WHERE user_id='+str(coordinator_id)
+            cur.execute(query)
+            res = cur.fetchone()
+            if res is not None:
+                projects = list(res[0].split(','))
             
-            bills = []
-            for i in res:
-                bills.append({
-                    'trade': i[0],
-                    'stage': i[1],
-                    'payment_percentage': i[2],
-                    'amount': i[3],
-                    'total_payable': i[4],
-                    'contractor_name': i[5],
-                    'contractor_code': i[6],
-                    'contractor_pan': i[7],
-                    'approval_1_status': i[8],
-                    'approval_1_amount': i[9],
-                    'approval_1_notes': i[10],
-                    'approval_2_status': i[11],
-                    'approval_2_amount': i[12],
-                    'approval_2_notes': i[13],
-                    'bill_id': i[14],
-                    'created_at': i[15]
-                
-                })
-            data[coordinator_id]['projects'][project_id]['bills'] = bills
-       
+            
+            assistant_coords = 'SELECT user_id from App_users WHERE reports_to='+ str(coordinator_id)
+            cur.execute(assistant_coords)
+            assistant_coords_res = cur.fetchall()
+            for c in assistant_coords_res:
+                query = 'SELECT access, name from App_users WHERE user_id=' + str(c[0])
+                cur.execute(query)
+                res2 = cur.fetchone()
+                if res2 is not None:
+                    projects = projects + res2[0].split(',')
+
+            
+            if res is not None:
+                data[coordinator_id] = {'coordinator_name': res[1], 'projects': {}}  
+                print(projects)
+                for project_id in projects:
+                    if str(project_id).strip() == '': continue
+                    if project_id not in data[coordinator_id]['projects']:
+                        project_name_query = 'SELECT project_name FROM projects WHERE project_id='+str(project_id)
+                        cur.execute(project_name_query)
+                        project_name_query_res = cur.fetchone()
+
+                        data[coordinator_id]['projects'][project_id] = {'project_name': project_name_query_res[0]}
+                        if session['role'] in ['Super Admin', 'COO', 'QS Head','QS Engineer'] or 'All' in str(get_projects_for_current_user()):
+                            bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
+                                'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
+                                'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
+                                ' FROM wo_bills WHERE project_id='+ str(project_id) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL) AND nt_due != 1 AND nt_due != -1'
+                        else:
+                            bills_query = 'SELECT trade, stage, payment_percentage, amount, total_payable, contractor_name, contractor_code, '\
+                                'contractor_pan, approval_1_status, approval_1_amount, approval_1_notes,' \
+                                'approval_2_status, approval_2_amount, approval_2_notes, id, created_at' \
+                                ' FROM wo_bills WHERE project_id='+ str(project_id) +' AND (approval_2_amount = 0 OR approval_2_amount IS NULL) AND nt_due != 1 AND nt_due != -1 AND project_id IN '+str(get_projects_for_current_user())
+                        cur.execute(bills_query)
+                        res = cur.fetchall()
+                        
+                        data[coordinator_id]['projects'][project_id]['bills'] = list(res)
+                    
         access_level = session['access_level']
-        return render_template('view_bills.html', data=data, access_level=access_level)
+
+        users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator"'
+        cur.execute(users_query)
+        users = cur.fetchall()
+        return render_template('view_bills.html', data=data, access_level=access_level, columns=columns, users=users)
 
 
 @app.route('/export_bills', methods=['GET'])
@@ -4026,8 +4176,12 @@ def view_unapproved_work_order():
     if request.method == 'GET':
         work_orders = []
 
-        unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name FROM work_orders wo ' \
-                         'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 INNER JOIN contractors c on c.id=wo.contractor_id'
+        if session['role'] in ['Super Admin', 'COO', 'QS Head', 'Purchase Head','Purchase Executive','Purchase Info']  or 'All' in get_projects_for_current_user():
+            unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name FROM work_orders wo ' \
+                            'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 INNER JOIN contractors c on c.id=wo.contractor_id'
+        else:
+            unsigned_query = 'SELECT p.project_name, p.project_number, wo.id, wo.trade, wo.value, c.name FROM work_orders wo ' \
+                            'INNER JOIN projects p on p.project_id=wo.project_id AND wo.signed=1 AND wo.approved=0 INNER JOIN contractors c on c.id=wo.contractor_id AND p.project_id IN '+ str(get_projects_for_current_user())
         cur = mysql.connection.cursor()
         cur.execute(unsigned_query)
         result = cur.fetchall()
@@ -5293,6 +5447,27 @@ def create_project():
         mysql.connection.commit()
         return redirect(request.referrer)
 
+@app.route('/delete_receipt_or_agreement', methods=['GET'])
+def delete_receipt_or_agreement():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/edit_project'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'Billing','Planning','Technical Info','Custom']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if session['role'] == 'Custom' and 'View receipts and agreements' not in session['permission']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    cur = mysql.connection.cursor()
+    query = 'DELETE FROM Docs WHERE doc_id='+str(request.args['id'])
+    cur.execute(query)
+
+    mysql.connection.commit()
+    flash('Document deleted','danger')
+    return redirect(request.referrer)
+
+
 @app.route('/View_receipt_and_agreement', methods=['GET'])
 def View_receipt_and_agreement():
     if 'email' not in session:
@@ -5304,6 +5479,7 @@ def View_receipt_and_agreement():
         return redirect(request.referrer)
     if session['role'] == 'Custom' and 'View receipts and agreements' not in session['permission']:
         flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
     
     project_id = request.args['project_id']
     cur = mysql.connection.cursor()
@@ -5419,7 +5595,10 @@ def report_card():
             cur.execute(access_query) 
             res = cur.fetchone()
             if res is not None and res[0] != '':
-                access_pq = 'SELECT project_id, project_name FROM projects WHERE project_id IN ('+str(res[0])+')'
+                access_split = res[0].split(',')
+                if '' in access_split: 
+                    access_split.remove('')
+                access_pq = 'SELECT project_id, project_name FROM projects WHERE project_id IN '+str(tuple(access_split))+''
                 cur.execute(access_pq)
                 p_res = cur.fetchall()
                 projects = list(projects) + list(p_res)
@@ -5720,7 +5899,8 @@ def view_kra():
 
             res = cur.fetchone()
             if res is not None:
-                report[user[0]] = json.loads(res[0])
+                formatted_res = str(res[0]).replace('\n','').replace('\t','')
+                report[user[0]] = json.loads(formatted_res)
 
         months = {
             1: 'January',
@@ -5822,14 +6002,15 @@ def kra():
             
 
             res = cur.fetchone()
-            print(res)
             if res is not None and res[0] != '':
-                prefilled_data = json.loads(res[0])
+                print(res[0])
+
+                formatted_res = str(res[0]).replace('\n','').replace('\t','')
+                prefilled_data = json.loads(formatted_res)
                 approved = res[1]
                 kra_id = res[2]
                 if res[3] is not None:
                     notes = res[3]
-
         
         users_query = 'SELECT user_id, name FROM App_users WHERE role = "Project Coordinator" OR role = "Assistant project coordinator"'
         cur.execute(users_query)
@@ -5873,7 +6054,8 @@ def kra():
         
         if res is not None and res[1] != '':
             print('Updating')
-            data = json.loads(res[1])
+            formatted_res = str(res[1]).replace('\n','').replace('\t','')
+            data = json.loads(formatted_res)
             category = request.form['category']
             for key in data[category]:
                 for form_field in request.form.keys():
@@ -6043,6 +6225,43 @@ def edit_task():
     flash('Task has been edited', 'success')
     return redirect(request.referrer)
 
+@app.route('/delete_sub_task', methods=['GET'])
+def delete_sub_task():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/edit_project'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'Billing','Planning','Technical Info']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
+    task_id = request.args['task_id']
+    index = request.args['sub_task_id']
+
+    cur = mysql.connection.cursor()
+    query = 'SELECT sub_tasks FROM Tasks WHERE task_id='+str(task_id)
+    cur.execute(query)
+    res = cur.fetchone()
+    sub_tasks = res[0]
+
+    sub_tasks = sub_tasks.split('^')
+    del sub_tasks[int(index)]
+    print('sub_tasks', sub_tasks)
+
+
+
+
+    sub_tasks = "^".join(sub_tasks) 
+
+    query = "UPDATE Tasks SET sub_tasks='"+sub_tasks+"' WHERE task_id="+str(task_id)
+    cur.execute(query)
+
+
+    mysql.connection.commit()
+    flash('Sub Task has been deleted', 'danger')
+    return redirect(request.referrer)
+    
+
 @app.route('/edit_sub_task', methods=['POST'])
 def edit_sub_task():
     task_id = request.form['task_id']
@@ -6090,7 +6309,9 @@ def mark_task_complete():
     cur.execute(query)
     res = cur.fetchone()
     progress = res[0]
-    progress = progress + subtask_id + '|'
+    
+    progress = progress + str(int(subtask_id) + 1) + '|'
+    progress = progress.strip()
 
     s_note = res[1]
     s_note = s_note + note
@@ -6109,6 +6330,11 @@ def mark_task_complete():
 def mark_task_due():
     task_id = request.args['id']
     note = request.args['note']
+    IST = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(IST)
+    timestamp = current_time.strftime('%d-%m-%Y at %H:%M')
+            
+    note = note + '.Marked as due on '+ timestamp
     cur = mysql.connection.cursor()
     query = 'UPDATE Tasks SET due=true, paid=false, p_note=%s WHERE task_id=%s'
     cur.execute(query, (note, task_id))
@@ -6235,25 +6461,16 @@ def update_advance_payment():
 @app.route('/testing', methods=['GET','POST'])
 def testing():
     cur = mysql.connection.cursor()
-    projects_q = 'CREATE TABLE SalesClients ( \
-        id INT AUTO_INCREMENT PRIMARY KEY, \
-        name VARCHAR(255) NOT NULL, \
-        phone VARCHAR(20), \
-        email VARCHAR(255), \
-        site_location VARCHAR(255), \
-        city VARCHAR(100), \
-        package VARCHAR(50), \
-        sales_exec INTEGER \
-    );'
+    projects_q = "SELECT * from App_updates WHERE project_id=377" 
+
+
 
     cur.execute(projects_q)
-
-    
+    res = cur.fetchall()
     mysql.connection.commit()
 
 
-
-    return jsonify({'data': ''})
+    return jsonify({'data': res})
 
 def months_between_dates(date_str1, date_str2):
     # Parse date strings into datetime objects
@@ -6264,6 +6481,227 @@ def months_between_dates(date_str1, date_str2):
     diff_in_months = (date2.year - date1.year) * 12 + date2.month - date1.month
 
     return int(diff_in_months)
+
+@app.route('/proposal_cities', methods=['GET'])
+def proposal_cities():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_cities'
+        return redirect('/login')
+    
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from proposal_cities'
+    cur.execute(query)
+    res = cur.fetchall()
+
+    return render_template('proposal_cities.html', proposal_cities=res)
+
+@app.route('/add_proposal_city', methods=['POST'])
+def add_proposal_city():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_cities'
+        return redirect('/login')
+
+    city = request.form['city']
+
+    cur = mysql.connection.cursor()
+    query = 'INSERT into proposal_cities(name) values("'+city+'")'
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('City created successfully','success')
+    return redirect('/proposal_cities')
+
+@app.route('/delete_proposal_city')
+def delete_proposal_city():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_cities'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'DELETE from proposal_cities WHERE id='+str(request.args['id'])+''
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('City deleted','danger')
+    return redirect('/proposal_cities')
+
+
+@app.route('/proposal_packages', methods=['GET'])
+def proposal_packages():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_packages'
+        return redirect('/login')
+    
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from proposal_types'
+    cur.execute(query)
+    res = cur.fetchall()
+
+    return render_template('proposal_types.html', proposal_types=res)
+
+@app.route('/add_proposal_type', methods=['POST'])
+def add_proposal_type():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_packages'
+        return redirect('/login')
+
+    proposal_type = request.form['type']
+
+    cur = mysql.connection.cursor()
+    query = 'INSERT into proposal_types(name) values("'+proposal_type+'")'
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Package created successfully','success')
+    return redirect('/proposal_packages')
+
+@app.route('/delete_proposal_type')
+def delete_proposal_type():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_packages'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'DELETE from proposal_types WHERE id='+str(request.args['id'])+''
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Package deleted','danger')
+    return redirect('/proposal_packages')
+
+@app.route('/proposal_additions', methods=['GET'])
+def proposal_additions():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_additions'
+        return redirect('/login')
+    
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from proposal_additions'
+    cur.execute(query)
+    res = cur.fetchall()
+
+    return render_template('proposal_additions.html', proposal_additions=res)
+
+@app.route('/add_proposal_additions', methods=['POST'])
+def add_proposal_additions():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_additions'
+        return redirect('/login')
+
+    proposal_addition = request.form['proposal_addition']
+    cost = request.form['cost']
+
+    cur = mysql.connection.cursor()
+    query = 'INSERT into proposal_additions(name, cost) values("'+proposal_addition+'","'+cost+'")'
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Additions created successfully','success')
+    return redirect('/proposal_additions')
+
+@app.route('/delete_proposal_addition')
+def delete_delete_proposal_addition():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_additions'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'DELETE from proposal_additions WHERE id='+str(request.args['id'])+''
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Additons deleted','danger')
+    return redirect('/proposal_additions')
+
+@app.route('/proposal_configurations', methods=['GET'])
+def proposal_configurations():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_configurations'
+        return redirect('/login')
+    
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from proposal_cities'
+    cur.execute(query)
+    proposal_cities = cur.fetchall()
+
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from proposal_types'
+    cur.execute(query)
+    proposal_types = cur.fetchall()
+
+    cur = mysql.connection.cursor()
+    query = 'SELECT * from proposal_configuration'
+    cur.execute(query)
+    proposal_configurations = cur.fetchall()
+
+    return render_template('proposal_configurations.html', proposal_configurations=proposal_configurations, proposal_types=proposal_types, proposal_cities=proposal_cities )
+
+@app.route('/delete_proposal_configurations', methods=['GET'])
+def delete_proposal_configuration():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_configurations'
+        return redirect('/login')
+
+    configuration_id = request.args['id']
+    cur = mysql.connection.cursor()
+
+    query = 'DELETE FROM proposal_configuration WHERE id='+str(configuration_id)
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Proposal deleted successfully','danger')
+    return redirect('/proposal_configurations')
+
+@app.route('/add_proposal_configurations', methods=['POST'])
+def add_proposal_configurations():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_configurations'
+        return redirect('/login')
+
+    proposal_type = request.form['proposal_type']
+    proposal_city = request.form['proposal_city']
+    price_per_sqft = request.form['price_per_sqft']
+
+    cur = mysql.connection.cursor()
+
+    check_if_exist_query = 'SELECT id FROM proposal_configuration WHERE city="'+proposal_city+'" AND proposal_type="'+proposal_type+'"'
+    cur.execute(check_if_exist_query)
+    res = cur.fetchone()
+    if res is not None:
+        flash('Proposal already exisit','danger')
+        return redirect('/proposal_configurations')
+
+
+    query = 'INSERT into proposal_configuration(city, proposal_type, price_per_sqft) values("'+proposal_city+'", "'+proposal_type+'", "'+price_per_sqft+'")'
+    cur.execute(query)
+
+    if 'proposal_pdf' in request.files:
+        file = request.files['proposal_pdf']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            proposal_filename = 'proposal_pdf_' + filename
+            output = send_to_s3(file, app.config["S3_BUCKET"], proposal_filename)
+            if output == 'success':
+                update_filename_query = 'UPDATE proposal_configuration set file=%s WHERE id=%s'
+                cur.execute(update_filename_query,
+                            (proposal_filename, cur.lastrowid))
+                            
+    mysql.connection.commit()
+
+    flash('Proposal created successfully','success')
+    return redirect('/proposal_configurations')
 
 @app.route('/calendar', methods=['GET'])
 def calendar():
@@ -6358,8 +6796,147 @@ def sales_clients():
 
     return render_template('sales_clients.html', client=res)
 
-@app.route('/new_sales_client', methods=['GET','POST'])
+@app.route('/teams', methods=['GET','POST'])
+def teams():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/teams'
+        return redirect('/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        query = 'SELECT * FROM teams'
+        cur.execute(query)
+        res = cur.fetchall()
+        return render_template('teams.html', teams=res)
+
+@app.route('/create_team', methods=['GET','POST'])
+def create_team():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/create_team'
+        return redirect('/login')
+    if request.method == 'GET':
+        return render_template('create_team.html')
+    else:
+        name = request.form['name']
+
+        cur = mysql.connection.cursor()
+        query = 'INSERT into teams(name) values ("'+name+'")'
+        cur.execute(query)
+
+        mysql.connection.commit()
+        flash('Team created succesfully', 'success')
+        return redirect('/teams')
+
+@app.route('/view_team', methods=['GET'])
+def view_team():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/teams'
+        return redirect('/login')
+    team_id = request.args['id']
+    cur = mysql.connection.cursor()
+
+    query = 'SELECT name, projects FROM teams WHERE id='+str(team_id)
+    cur.execute(query)
+    res = cur.fetchone()
+    projects = []
+
+    team_name = res[0]
+
+    approved_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE is_approved=1 AND archived=0 ORDER BY project_number'
+    cur.execute(approved_projects_query)
+    approved_projects_query_res = cur.fetchall()
+    assigned_project_ids = []
+    print('res ', res)
+    if res is not None and res[1] is not None:
+        projects_query = 'SELECT project_id, project_name FROM projects WHERE project_id IN '+ str(tuple(str(res).split(',')))
+        cur.execute(projects_query)
+        projects_query_res = cur.fetchall()
+
+        if projects_query_res is not None:
+            projects = list(projects_query_res)
+
+            print(projects)
+            assigned_project_ids = [item[0] for item in projects]
+            print(len(assigned_project_ids))
+    
+
+    return render_template('view_team.html', projects=projects, team_name=team_name, all_projects=approved_projects_query_res, assigned_project_ids=assigned_project_ids)
+
+
+@app.route('/update_projects_in_team', methods=['POST'])
+def update_projects_in_team():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/teams'
+        return redirect('/login')
+    projects = request.form.getlist('projects')
+    team_id = request.form['team_id']
+
+    query = 'UPDATE teams SET projects="'+','.join(projects)+'" WHERE id='+str(team_id)
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+
+    update_other_teams_query = 'SELECT * FROM teams'
+    cur.execute(update_other_teams_query)
+    update_other_teams_query_res = cur.fetchall()
+
+    for team in update_other_teams_query_res:
+        if str(team[0]) != str(team_id):
+            team_projects = set(team[2].split(','))
+            unique_projects = set(projects)
+            
+            # Check if there is any common element between the sets
+            if team_projects.intersection(unique_projects):
+                updated_projects = [x for x in team_projects if x not in unique_projects]
+                query = 'UPDATE teams SET projects="'+','.join(updated_projects)+'" WHERE id='+str(team[0])
+                cur = mysql.connection.cursor()
+
+                cur.execute(query)
+
+    flash('Team updated!', 'success')
+            
+
+    mysql.connection.commit()
+    
+    return redirect(request.referrer)
+
+@app.route('/create_proposal', methods=['GET','POST'])
 def new_sales_client():
+    # url1 = 'https://live-mt-server.wati.io/105448/api/v1/addContact/919945613932'
+    
+    # url = 'https://live-mt-server.wati.io/105448/api/v1/sendSessionMessage/919945613932?messageText=HI'
+
+    # # Headers containing the Bearer token
+    # headers = {
+    #     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhN2Q4MmI4OC0yMjJjLTQ0ZmItOWY4Mi0wN2FkZTNkZTFlMmMiLCJ1bmlxdWVfbmFtZSI6ImJ1aWxkYWhvbWVpbmZvQGdtYWlsLmNvbSIsIm5hbWVpZCI6ImJ1aWxkYWhvbWVpbmZvQGdtYWlsLmNvbSIsImVtYWlsIjoiYnVpbGRhaG9tZWluZm9AZ21haWwuY29tIiwiYXV0aF90aW1lIjoiMDQvMTcvMjAyNCAwNTozNzo1MiIsImRiX25hbWUiOiJtdC1wcm9kLVRlbmFudHMiLCJ0ZW5hbnRfaWQiOiIxMDU0NDgiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBRE1JTklTVFJBVE9SIiwiZXhwIjoyNTM0MDIzMDA4MDAsImlzcyI6IkNsYXJlX0FJIiwiYXVkIjoiQ2xhcmVfQUkifQ.Ms5MvgTnMzLeHPqMJZOTMYOIj859i-9iAuc6ZPs-DhI',
+    #     'Content-Type': 'application/json'  # Adjust content type as per your request
+    # }
+
+    # # JSON data to be sent in the request body
+    # data = {
+    #     "name": "Aravind",
+    #      "customParams": [
+    #         {
+    #         "name": "Aravind",
+    #         "value": "9945613932"
+    #         }
+    #     ]
+    # }
+
+    # response = requests.post(url1, headers=headers, json=data)
+
+    # print(response.json())
+
+    # Sending the POST request
+    # response = requests.post(url, headers=headers, json=data)
+
+    # print(response.json())
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/create_proposal'
+        return redirect('/login')
     cities = {
         'Bengaluru': {
             'Essential': 1620, 'Premium': 1770, 'Premium+': 1999, 'Luxury': 2235, 'Luxury+': 2450, 'Freedom': 2099, 'Freedom+': 2250, 'The one+': 2999, 'Ecofriendly': 1800, 'Ecofriendly+': 1950
@@ -6394,17 +6971,65 @@ def new_sales_client():
 
     }
     if request.method == 'GET':
+        client_name = ''
+        client_phone = ''
+        site_location = ''
+        client_email = ''
+        requirement = ''
+        city = ''
+        floors = ''
+        proposal_pdf= ''
+        distance_from_city_center=''
+        proposal_additions= ''
 
         packages = []
         selected_package = ''
         cost_per_sqft = 0
         floors_list = []
-        city= ''
+
+        if 'client_name' in session:
+            client_name = session['client_name']
+        
+        if 'client_phone' in session:
+            client_phone = session['client_phone']
+        
+        if 'client_email' in session:
+            client_email = session['client_email']
+
+        if 'site_location' in session:
+            site_location = session['site_location']
+
+        if 'requirement' in session:
+            requirement = session['requirement']
+
+        if 'city' in session:
+            city = session['city']
+
+        if 'package' in session:
+            selected_package = session['package']
+        
+        if 'floors' in session:
+            floors = session['floors']
+
+        if 'distance_from_city_center' in session:
+            distance_from_city_center = session['distance_from_city_center']
+
         if 'step' in request.args:
+            if request.args['step'] == 'city':
+
+                cur = mysql.connection.cursor()
+                query = 'SELECT DISTINCT(city) FROM proposal_configuration'
+                cur.execute(query)
+                cities = cur.fetchall()
+            
             if request.args['step'] == 'package':
                 city = session['city']
 
                 packages = cities[city]
+                cur = mysql.connection.cursor()
+                query = 'SELECT DISTINCT(proposal_type) FROM proposal_configuration WHERE city="'+city+'"'
+                cur.execute(query)
+                packages = cur.fetchall()
 
             if request.args['step'] == 'commercials':
                 city = session['city']
@@ -6412,6 +7037,18 @@ def new_sales_client():
                 cost_per_sqft = cities[city][selected_package]
                 floors = session['floors']
 
+                cur = mysql.connection.cursor()
+                query = 'SELECT price_per_sqft, file FROM proposal_configuration WHERE city="'+city+'" AND proposal_type="'+selected_package+'"'
+                cur.execute(query)
+                res = cur.fetchone()
+                cost_per_sqft = res[0]
+                proposal_pdf = res[1]
+
+                cur = mysql.connection.cursor()
+                query = 'SELECT * from proposal_additions'
+                cur.execute(query)
+                proposal_additions = cur.fetchall()
+                
                 if int(floors) > 0:
                     floors_list.append('Ground floor')
                 if int(floors) > 1:
@@ -6422,38 +7059,330 @@ def new_sales_client():
                     floors_list.append('Third floor')
                 if int(floors) > 4:
                     floors_list.append('Fourth floor')
-
-
+        
+        
             
         
-        return render_template('new_sales_client.html',city=city, floors_list=floors_list, cities=cities, packages=packages, selected_package=selected_package, cost_per_sqft=cost_per_sqft)
+        return render_template('new_sales_client.html',client_email=client_email, proposal_additions=proposal_additions, distance_from_city_center=distance_from_city_center, proposal_pdf=proposal_pdf, cities=cities, floors=floors,  client_name=client_name, client_phone=client_phone, site_location=site_location, requirement=requirement, city=city, floors_list=floors_list,  packages=packages, selected_package=selected_package, cost_per_sqft=cost_per_sqft)
     else:
         if 'step' not in request.form:
             client_name = request.form['client_name']
             client_phone = request.form['client_phone']
+            client_email = request.form['client_email']
             site_location = request.form['site_location']
             requirement = request.form['requirement']
+            distance_from_city_center = request.form['distance_from_city_center']
 
-            return redirect('/new_sales_client?step=city')
+            session['client_name'] = client_name 
+            session['client_phone'] = client_phone 
+            session['client_email'] = client_email 
+            session['site_location'] = site_location 
+            session['requirement'] = requirement 
+            session['distance_from_city_center'] = distance_from_city_center
+
+            return redirect('/create_proposal?step=city')
         elif request.form['step'] == 'city':
             city = request.form['city']
             session['city'] = city
             
-            return redirect('/new_sales_client?step=package')
+            return redirect('/create_proposal?step=package')
 
         elif request.form['step'] == 'package':
             package = request.form['package']
             session['package'] = package
             
-            return redirect('/new_sales_client?step=floors')
+            return redirect('/create_proposal?step=floors')
 
         elif request.form['step'] == 'floors':
             floors = request.form['floors']
             session['floors'] = floors
             
-            return redirect('/new_sales_client?step=commercials')
+            return redirect('/create_proposal?step=commercials')
+
+        elif request.form['step'] == 'commercials':
+            
+            pass
+
+@app.route('/upload_proposal_and_submit_for_approval', methods=['post'])
+def upload_proposal_and_submit_for_approval():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/create_proposal'
+        return redirect('/login')
+
+    if 'proposal_pdf' in request.files:
+
+        cur = mysql.connection.cursor()
+
+        check_if_exist_query = 'SELECT id FROM sales_prospects WHERE email="'+session['client_email']+'"'
+        cur.execute(check_if_exist_query)
+        res = cur.fetchone()
+        if res is not None:
+            prospect_id = res[0]
+        else:
+            query = 'INSERT into sales_prospects (name, phone, email, site_location, distance_from_city_center, requirement) value(%s,%s,%s,%s,%s,%s)'
+            cur.execute(query, (session['client_name'], session['client_phone'], session['client_email'], session['site_location'], session['distance_from_city_center'], session['requirement']))
+
+            prospect_id = cur.lastrowid
+
+        file = request.files['proposal_pdf']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            output = send_to_s3(file, app.config["S3_BUCKET"], filename, 'public-read','application/pdf')
+
+            if output == 'success':
+                IST = pytz.timezone('Asia/Kolkata')
+                current_time = datetime.now(IST)
+                timestamp = current_time.strftime('%d %m %Y at %H %M')
+                create_proposal_query = 'INSERT into sales_proposals (prospect_id, city, package, is_approved, created_by, proposal_pdf, created_at) values(%s,%s,%s,%s,%s,%s,%s)'
+                cur.execute(create_proposal_query,
+                            (prospect_id, session['city'], session['package'], 0, session['user_id'], str(filename), timestamp))
+                mysql.connection.commit()
+                flash('Proposal submitted for approval','success')
+
+                if 'client_name' in session:
+                    del session['client_name']
+                
+                if 'client_phone' in session:
+                    del session['client_phone']
+                
+                if 'client_email' in session:
+                    del session['client_email']
+
+                if 'site_location' in session:
+                    del session['site_location']
+
+                if 'requirement' in session:
+                    del session['requirement']
+
+                if 'city' in session:
+                    del session['city']
+
+                if 'package' in session:
+                    del session['package']
+                
+                if 'floors' in session:
+                    del session['floors']
+
+                if 'distance_from_city_center' in session:
+                    del session['distance_from_city_center']
+
+                return jsonify({'message': 'success'})
+
+@app.route('/proposal_setup', methods=['GET'])
+def proposal_setup():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/proposal_setup'
+        return redirect('/login')
 
 
+    return render_template('proposal_setup.html')
+
+@app.route('/unapproved_proposals', methods=['GET'])
+def unapproved_proposals():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/unapproved_proposals'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    if session['role'] == 'Sales Manager':
+        execs = 'SELECT user_id from App_users WHERE reports_to='+ str(session['user_id'])
+        cur.execute(execs)
+        res = cur.fetchall()
+        execs = []
+        if res is not None:
+            for i in res:
+                execs.append(str(i[0]))
+                
+            print(",".join(execs))
+            query = 'SELECT DISTINCT pros.name, pros.email, pros.phone, pros.site_location, pros.id FROM sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id = pros.id WHERE prop.is_approved=0 AND prop.created_by IN ('+str(",".join(execs))+')'
+        else:
+            return render_template('unapproved_proposals.html', prospects=[])
+
+    elif session['role'] == 'Sales Executive':
+        query = 'SELECT DISTINCT pros.name, pros.email, pros.phone, pros.site_location, pros.id FROM sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id = pros.id WHERE prop.is_approved=0 AND prop.created_by='+str(session['user_id'])
+            
+    else:
+        query = 'SELECT DISTINCT pros.name, pros.email, pros.phone, pros.site_location, pros.id FROM sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id = pros.id WHERE prop.is_approved=0'
+    
+    cur.execute(query)
+
+    res = cur.fetchall()
+
+    return render_template('unapproved_proposals.html', prospects=res)
+
+@app.route('/approved_proposals', methods=['GET'])
+def approved_proposals():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/approved_proposals'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    if session['role'] == 'Sales Manager':
+        execs = 'SELECT user_id from App_users WHERE reports_to='+ str(session['user_id'])
+        cur.execute(execs)
+        res = cur.fetchall()
+        execs = []
+        if res is not None:
+            for i in res:
+                execs.append(str(i[0]))
+                
+            query = 'SELECT DISTINCT pros.name, pros.email, pros.phone, pros.site_location, pros.id FROM sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id = pros.id WHERE prop.is_approved=1 AND prop.created_by IN ('+str(",".join(execs))+')'
+        else:
+            return render_template('approved_proposals.html', prospects=[])
+
+    elif session['role'] == 'Sales Executive':
+        query = 'SELECT DISTINCT pros.name, pros.email, pros.phone, pros.site_location, pros.id FROM sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id = pros.id WHERE prop.is_approved=1 AND prop.created_by='+str(session['user_id'])
+            
+    else:
+        query = 'SELECT DISTINCT pros.name, pros.email, pros.phone, pros.site_location, pros.id FROM sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id = pros.id WHERE prop.is_approved=1'
+    cur.execute(query)
+
+    res = cur.fetchall()
+
+    return render_template('approved_proposals.html', prospects=res)
+
+@app.route('/view_proposal_for_prospect', methods=['GET'])
+def view_proposal_for_prospect():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/unapproved_proposals'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'SELECT prop.city, prop.package, prop.proposal_pdf, pros.name, prop.created_at, prop.id, prop.is_approved FROM sales_proposals prop JOIN sales_prospects pros ON prop.prospect_id = pros.id WHERE prop.prospect_id='+str(request.args['id'])
+    cur.execute(query)
+
+    res = cur.fetchall()
+
+    return render_template('view_proposal_for_prospect.html', proposals=res)
+
+@app.route('/view_proposal', methods=['GET'])
+def view_proposal():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/unapproved_proposals'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'SELECT prop.city, prop.package, prop.proposal_pdf, pros.name, prop.created_at, prop.id, prop.is_approved, u.name FROM sales_proposals prop JOIN sales_prospects pros ON prop.prospect_id = pros.id JOIN App_users u on u.user_id=prop.created_by WHERE prop.id='+str(request.args['id'])
+    cur.execute(query)
+
+    res = cur.fetchone()
+
+    return render_template('view_proposal.html', proposal=res)
+
+
+@app.route('/reject_proposal', methods=['GET'])
+def reject_proposal():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/unapproved_proposals'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'UPDATE sales_proposals SET is_approved=-1 WHERE id='+str(request.args['id'])
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Proposal rejected', 'danger')
+    
+
+    return redirect('/view_proposal?id='+str(request.args['id']))
+
+@app.route('/rollback_proposal_to_unapproved', methods=['GET'])
+def rollback_proposal_to_unapproved():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/unapproved_proposals'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'UPDATE sales_proposals SET is_approved=0 WHERE id='+str(request.args['id'])
+    cur.execute(query)
+    mysql.connection.commit()
+
+    flash('Proposal rolled back', 'warning')
+    
+
+    return redirect('/view_proposal?id='+str(request.args['id']))
+
+@app.route('/approve_proposal', methods=['GET'])
+def approve_proposal():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/unapproved_proposals'
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+    query = 'UPDATE sales_proposals SET is_approved=1 WHERE id='+str(request.args['id'])
+    cur.execute(query)
+    mysql.connection.commit()
+
+    query = 'SELECT pros.email, prop.proposal_pdf from sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id=pros.id'
+    cur.execute(query)
+    res = cur.fetchone()
+
+    client = boto3.client('ses', region_name='ap-south-1')  # Update with your region
+
+
+    # Email credentials
+    sender_email = "proposal@buildahome.in"
+    receiver_email = res[0]
+    # receiver_email = "aravind.capricon@gmail.com"
+    password = "buildAhome2022!"
+
+    # Email content
+    subject = "Proposal from buildAhome"
+    # The HTML body of the email.
+    body = "<html> \
+    <head></head> \
+    <body> \
+      <h1>Hello!</h1> \
+      <p>Please click on the following link to view your proposal:</p> \
+      <a href='https://office.buildahome.in/files/" +res[1]+ "'>Click here</a> \
+      <p>Thank you!</p> \
+    </body> \
+    </html>"
+
+    # Create a MIME object
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'html'))
+
+    # Connect to GoDaddy's SMTP server
+    try:
+        server = smtplib.SMTP('sg2plcpnl0072.prod.sin2.secureserver.net', 587)
+        server.set_debuglevel(1)  # Enable debug output
+        server.ehlo()
+        server.starttls()  # Secure the connection
+        server.ehlo()
+        server.login(sender_email, password)
+        text = msg.as_string()
+        server.sendmail(sender_email, receiver_email, text)
+        print("Email sent successfully!")
+    except smtplib.SMTPAuthenticationError as e:
+        print("SMTP Authentication error: ", e.smtp_code, e.smtp_error)
+    except smtplib.SMTPException as e:
+        print(f"SMTP error occurred: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        try:
+            server.quit()
+        except Exception as e:
+            print(f"Error closing the connection: {e}")
+
+
+    flash('Proposal approved and sent to client', 'success')
+    
+
+    return redirect('/view_proposal?id='+str(request.args['id']))
 
 @app.route('/client_billing', methods=['GET'])
 def client_billing():
@@ -6474,6 +7403,13 @@ def client_billing():
     project_percentage = res[3]
     blocked = res[4]
     hand_over_date = res[5]
+
+    existing_team_query = 'SELECT poc.co_ordinator, au.name FROM project_operations_team poc JOIN App_users au ON poc.co_ordinator=au.user_id WHERE poc.project_id=' + str(project_id)
+    cur.execute(existing_team_query)
+    res = cur.fetchone()
+    project_coordinator = ''
+    if res is not None:
+        project_coordinator = res[1]
     
     tasks_query = 'SELECT * from Tasks WHERE project_id='+str(project_id)+' ORDER BY task_id'
     cur.execute(tasks_query)
@@ -6521,7 +7457,7 @@ def client_billing():
                             
             tasks.append(task_item)
 
-    return render_template('client_billing.html', hand_over_date=hand_over_date, blocked=blocked, project_name=project_name, tasks=tasks, advance_payment=advance_payment, nt_advance_payment=nt_advance_payment, project_percentage=project_percentage)
+    return render_template('client_billing.html',project_coordinator=project_coordinator, hand_over_date=hand_over_date, blocked=blocked, project_name=project_name, tasks=tasks, advance_payment=advance_payment, nt_advance_payment=nt_advance_payment, project_percentage=project_percentage)
 
 @app.route('/edit_project', methods=['GET', 'POST'])
 def edit_project():
@@ -6724,7 +7660,7 @@ def view_project_details():
             'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'sf_slab_area','fof_slab_area','fif_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
             'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name', 'client_phone','agreement','area_statement', 'handed_over'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name', 'client_phone', 'client_email','agreement','area_statement', 'handed_over'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
@@ -7752,7 +8688,7 @@ def API_get_projects_for_user():
             API_response.append(project)
         return jsonify(API_response) 
         
-    elif role == 'Project Manager':
+    elif role == 'Project Manager1':
         query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE p.archived=0 AND p.is_approved=1 AND project_manager=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
         query_result = cur.fetchall()
@@ -7765,7 +8701,59 @@ def API_get_projects_for_user():
             project['client_phone'] = i[3]
             API_response.append(project)
         return jsonify(API_response) 
+    elif role == 'Project Manager':
+        projects = []
+        coords = 'SELECT user_id from App_users WHERE reports_to='+ str(user_id)
+        cur.execute(coords)
+        res = cur.fetchall()
+        for i in res:
+            coord_id = i[0]
+            projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+            cur.execute(projects_query)
+            pr_result = cur.fetchall()
+            for j in pr_result:
+                projects.append(j[0])
 
+            assistant_coords = 'SELECT user_id from App_users WHERE reports_to='+ str(coord_id)
+            cur.execute(assistant_coords)
+            assistant_coords_res = cur.fetchall()
+            for c in assistant_coords_res:
+                coord_id = c[0]
+                projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+                cur.execute(projects_query)
+                pr_result1 = cur.fetchall()
+                for k in pr_result1:
+                    projects.append(k[0])
+            
+                query = 'SELECT access from App_users WHERE user_id=' + str(coord_id)
+                cur.execute(query)
+                result2 = cur.fetchone()
+                print('result2', result2)
+
+                for p in result2[0].split(','):
+                    projects.append(p)
+
+
+            
+        if len(projects) == 1:
+            projects.append(0)
+        if len(projects) == 0:
+            return ((0,0))
+        return tuple(projects)
+
+        for p in projects:
+            query = 'SELECT project_id, project_name, client_name, client_phone from projects WHERE project_id='+str(p) 
+            cur.execute(query)
+            query_result = cur.fetchall()
+            API_response = []
+            for i in query_result:
+                project = {}
+                project['id'] = i[0]
+                project['name'] = i[1]
+                project['client'] = i[2]
+                project['client_phone'] = i[3]
+                API_response.append(project)
+            return jsonify(API_response)
     elif role == 'Purchase Executive':
         query = 'SELECT pot.project_id, p.project_name, p.client_name, p.client_phone from project_operations_team pot INNER JOIN projects p on p.project_id=pot.project_id WHERE p.archived=0 AND p.is_approved=1 AND purchase_executive=' + str(user_id) + " ORDER BY p.project_number"
         cur.execute(query)
@@ -8541,6 +9529,101 @@ def project_access():
                 'client_name': i[2],
                 'client_phone': i[3],
             })
+    elif role == 'Project Manager':
+        projects = []
+        coords = 'SELECT user_id from App_users WHERE reports_to='+ str(id)
+        cur.execute(coords)
+        res = cur.fetchall()
+        for i in res:
+            coord_id = i[0]
+            projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+            cur.execute(projects_query)
+            pr_result = cur.fetchall()
+            for j in pr_result:
+                projects.append(j[0])
+
+            assistant_coords = 'SELECT user_id from App_users WHERE reports_to='+ str(coord_id)
+            cur.execute(assistant_coords)
+            assistant_coords_res = cur.fetchall()
+            for c in assistant_coords_res:
+                coord_id = c[0]
+                projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+                cur.execute(projects_query)
+                pr_result1 = cur.fetchall()
+                for k in pr_result1:
+                    projects.append(k[0])
+            
+                query = 'SELECT access from App_users WHERE user_id=' + str(coord_id)
+                cur.execute(query)
+                result2 = cur.fetchone()
+
+                for p in result2[0].split(','):
+                    projects.append(p)
+
+
+            
+
+        API_response = []
+
+        for p in projects:
+            query = 'SELECT project_id, project_name, client_name, client_phone from projects WHERE project_id='+str(p) 
+            cur.execute(query)
+            query_result = cur.fetchall()
+            for i in query_result:
+                project = {}
+                project['id'] = i[0]
+                project['name'] = i[1]
+                project['client'] = i[2]
+                project['client_phone'] = i[3]
+                API_response.append(project)
+        return jsonify(API_response)
+    elif role == 'Project Coordinator':
+        projects = []
+        coord_id = str(id)
+        projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+        cur.execute(projects_query)
+        pr_result = cur.fetchall()
+        for j in pr_result:
+            projects.append(j[0])
+
+        assistant_coords = 'SELECT user_id from App_users WHERE reports_to='+ str(coord_id)
+        cur.execute(assistant_coords)
+        assistant_coords_res = cur.fetchall()
+        for c in assistant_coords_res:
+            coord_id = c[0]
+            projects_query = 'SELECT project_id from project_operations_team WHERE co_ordinator=' + str(coord_id)
+            cur.execute(projects_query)
+            pr_result1 = cur.fetchall()
+            for k in pr_result1:
+                if int(k[0]) not in projects:
+                    projects.append(k[0])
+        
+            query = 'SELECT access from App_users WHERE user_id=' + str(coord_id)
+            cur.execute(query)
+            result2 = cur.fetchone()
+
+            for p in result2[0].split(','):
+                if int(p) not in projects:
+                    projects.append(p)
+
+
+            
+
+        API_response = []
+
+        for p in projects:
+            query = 'SELECT project_id, project_name, client_name, client_phone from projects WHERE project_id='+str(p) 
+            cur.execute(query)
+            query_result = cur.fetchall()
+            for i in query_result:
+                project = {}
+                project['id'] = i[0]
+                project['name'] = i[1]
+                project['client'] = i[2]
+                project['client_phone'] = i[3]
+                API_response.append(project)
+        return jsonify(API_response)
+    
     else:
         for i in access.split(','):
             if i != '':
@@ -8556,13 +9639,15 @@ def project_access():
                 })
     return jsonify(projects)
 
-@app.route('/API/add_daily_udpate', methods=['POST'])
+@app.route('/API/add_daily_update', methods=['POST'])
 def add_daily_udpate():
     pr_id = request.form['pr_id']
     date = request.form['date']
     desc = request.form['desc']
     desc = desc.replace("'","")
     desc = desc.replace('"',"")
+
+    print('Form data', request.form)
     
     sql = "INSERT INTO App_updates(update_title, date, project_id) VALUES ('"+desc+"', '"+date+"', '"+str(pr_id)+"')"
     
