@@ -1,6 +1,29 @@
 // In your Javascript (external .js resource or <script> tag)
 $(document).ready(function () {   
 
+    if($('#user-filter').length) {
+        roles = []
+        $(".role").each(function(index, element) {
+            if(!roles.includes(element.innerHTML.trim())) {
+                roles.push(element.innerHTML.trim())
+                $('#user-filter').append(`<option value="${element.innerHTML.trim()}">${element.innerHTML.trim()}</option>`)
+            }
+        })
+
+        $('#user-filter').on('change', function() {
+            value = $('#user-filter').val()
+            console.log(value)
+            if(value == 'All') {
+                $(".role").parents('tr').removeClass('d-none')    
+            } else {
+                $(".role").parents('tr').addClass('d-none')
+            $(`.${value.replaceAll(' ','_')}`).parents('tr').removeClass('d-none')
+            }
+            
+
+        })
+    }
+
 
     $('#assign_team').on('change', function(){
         if ($('#assign_team:checked').length) {
@@ -170,6 +193,7 @@ $(document).ready(function () {
 
         if($('#shr_and_oht').val().trim() != '') {
             let shr_and_oht = parseFloat($('#shr_and_oht').val().trim())
+            $("#total_shr_and_oht").val(shr_and_oht * parseFloat($('.cost_per_sqft_for_plan').text().trim()))
             project_value = project_value + shr_and_oht * parseFloat($('.cost_per_sqft_for_plan').text().trim())
         }
 
@@ -182,6 +206,10 @@ $(document).ready(function () {
         $('#sub_total').val(project_value)
 
         if($('#discount').val().trim() != '') {
+
+            if(parseInt($('#discount').val().trim()) > 3) {
+                $('#discount').val('3')
+            }
             let discount = parseFloat($('#discount').val().trim())
             if(parseFloat($('#discount').val().trim()) > 100) discount = 100;
             project_value = project_value - project_value * (discount / 100)

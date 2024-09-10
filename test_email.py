@@ -20,7 +20,7 @@ msg.attach(MIMEText(body, 'plain'))
 
 # Connect to GoDaddy's SMTP server
 try:
-    server = smtplib.SMTP('sg2plcpnl0072.prod.sin2.secureserver.net', 587)
+    server = smtplib.SMTP('mail.buildahome.in', 587)
     server.set_debuglevel(1)  # Enable debug output
     server.ehlo()
     server.starttls()  # Secure the connection

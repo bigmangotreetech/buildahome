@@ -86,6 +86,11 @@
         <span class="my-auto">Projects</span>
     </a>
 
+    <a href="/projects_handed_over" class='nav-link clickable  {% if "/projects_handed_over" in request.path %} active {% endif %}'>
+        <ion-icon name="checkbox-outline"></ion-icon>
+        <span class="my-auto">Projects (Handed over)</span>
+    </a>
+
     <a href="/projects_with_team" class='nav-link clickable  {% if "/projects_with_team" in request.path  %} active {% endif %}'>
         <ion-icon name="checkbox-outline"></ion-icon>
         <span class="my-auto">Projects with team</span>
@@ -192,6 +197,13 @@
     <a href="/view_ph_approved_indents" class='nav-link clickable  {% if "/view_ph_approved_indents" in request.path %} active {% endif %}'>
         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
         <span class="my-auto">Approved POs</span>
+    </a>
+    {% endif %}
+
+    {% if session['role'] in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Project Manager'] or (session['role'] == 'Custom' and 'Approved POs' in session['permission']) %}
+    <a href="/download_approved_pos" class='nav-link clickable  {% if "/download_approved_pos" in request.path %} active {% endif %}'>
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+        <span class="my-auto">Download Approved POs</span>
     </a>
     {% endif %}
 

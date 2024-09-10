@@ -42,6 +42,13 @@
             <div class="row mx-0 mb-3 form-group">
                 <div class="ml-auto">
                     {% if session['role'] in ['Super Admin','COO','Billing','Technical Info']  or (session['role'] == 'Custom' and 'Archive project' in session['permission'])  %}
+                        {% if hidden=='0' %}
+                            <a href="/hide_project?project_id={{request.args['project_id']}}&&project_name={{details[0]}}" class="btn btn-secondary mr-2">Hide</a>
+                        {% else %}
+                            <a href="/unhide_project?project_id={{request.args['project_id']}}&&project_name={{details[0]}}" class="btn btn-secondary mr-2">Unhide</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if session['role'] in ['Super Admin','COO','Billing','Technical Info']  or (session['role'] == 'Custom' and 'Archive project' in session['permission'])  %}
                         {% if archived=='0' %}
                             <a href="/archive_project?project_id={{request.args['project_id']}}&&project_name={{details[0]}}" class="btn btn-secondary mr-2">Archive</a>
                         {% else %}

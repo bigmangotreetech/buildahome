@@ -108,13 +108,14 @@
                 {% endif %}
             </td>
             <td>
+                
                 <span class="d-none">{{i[7]}}</span>
                 {% if '0' in i[6]|string and data['locked']|string != '1' %}
                 {% if session['role'] in ['Super Admin','QS Engineer'] or (session['role'] == 'Custom' and 'Clear balance for work orders' in session['permission']) %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="clear-individual-balance btn text-primary d-none">Clear balance</span>
                 {% endif %}    
-                {% elif '1' in i[6]|string and session['role'] in ['Super Admin'] and data['locked']|string != '1' %}
+                {% elif '1' in i[6]|string and (session['role'] in ['Super Admin','Custom'] or (session['role'] == 'Custom' and 'Open to clear balance' in session['permission'] ) ) and data['locked']|string != '1' %}
                 <span class="bill_id d-none">{{i[7]}}</span>
                 <span class="force-open-to-clear-balance btn text-primary d-none">Open to Clear balance</span>
                 {% endif %}

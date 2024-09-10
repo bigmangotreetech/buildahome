@@ -31,7 +31,8 @@ roles = [
             'Safety',
             'Socal',
             'Material management',
-            'Assistant project coordinator'
+            'Assistant project coordinator',
+            'Admin view'
         ]
 
 permissions = [
@@ -98,6 +99,7 @@ permissions = [
     'Delete work orders',
     'Delete unsigned work orders',
     'Clear balance for work orders',
+    'Open to clear balance',
     'Lock/unlock work orders',
     'Work order approval 1',
     'Work order approval 2',

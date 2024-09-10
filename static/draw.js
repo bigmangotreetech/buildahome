@@ -234,7 +234,7 @@ async function saveSign() {
   let pngImageBytes = canvas.toDataURL("image/png");
 
 
-  const url = 'https://office.buildahome.in/static/Standard_WO.pdf'
+  const url = 'https://office.buildahome.in/static/WO STD DOCUMENT.pdf'
   const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
   const pdfDoc = await PDFDocument.load(arrayBuffer)
 
@@ -329,21 +329,40 @@ async function saveSign() {
   const notes = $(".contractor_notes").text().trim()
   const notesList = notes.split('\n')
   var yCord = pages[3].getSize().height - 120;
+  lineCount = 0
+  pageIndex = 3 
+  pervLine = null
   for(const note of notesList) {
-    pages[3].drawText(note.trim(), {
+    
+    if(note == '' && prevLine == '') continue
+    prevLine = note
+
+    noOfLines = parseInt(note.trim().length / 85) + 1 
+    let oldYCord = yCord
+    yCord = yCord - (14 * noOfLines)
+    yCord = yCord - 20;
+    console.log(note)
+    
+    if(yCord < 100) {
+      pageIndex = 4
+      yCord = pages[4].getSize().height - 120;
+      oldYCord = yCord
+    }
+    const res = pages[pageIndex].drawText(note.trim(), {
       x: 100,
-      y: yCord,
+      y: oldYCord,
       size: 10,
       lineHeight: 12,
       maxWidth: pages[3].getSize().width - 150,
     })
-    noOfLines = parseInt(note.trim().length / 100)
-    yCord = yCord - (14 * noOfLines)
-    yCord = yCord - 20;
+    
+    lineCount = lineCount + noOfLines;
+
+    
   } 
   
 
-  pages[4].drawImage(pngImage, {
+  pages[5].drawImage(pngImage, {
     x: 330,
     y: 140,
     width: 100,
@@ -355,16 +374,16 @@ async function saveSign() {
 
   const sealImg = await pdfDoc.embedPng(sealImgBytes)
 
-  pages[4].drawImage(sealImg, {
+  pages[5].drawImage(sealImg, {
     x: 40,
     y: 90,
     width: 70,
     height: 100,
   })
   
-  pages[4].drawImage(pngImage1, {
+  pages[5].drawImage(pngImage1, {
     x: 40,
-    y: pages[4].getSize().height - 110  - parseInt(lineHeight * 0.8),
+    y: pages[5].getSize().height - 110  - parseInt(lineHeight * 0.8),
     width: parseInt(550 * 0.8),
     height: parseInt(lineHeight * 0.8),
   })

@@ -31,7 +31,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
-# ssh -i "buildahomeaws1.pem" ubuntu@ec2-13-233-196-224.ap-south-1.compute.amazonaws.com
+# ssh -i "buildahomeaws1.pem" ubuntu@ec2-13-127-184-184.ap-south-1.compute.amazonaws.com
 
 # Debit note
 
@@ -58,11 +58,24 @@ S3_SECRET=os.getenv('S3_SECRET')
 GIT=os.getenv('GIT')
 GIT_PAT=os.getenv('GIT_PAT')
 
-# Sql setup
-app.config['MYSQL_HOST'] = 'bah.cpawi80eylqb.ap-south-1.rds.amazonaws.com'
+print(S3_KEY, S3_SECRET)
+
+app.config['MYSQL_HOST'] = 'bah.cpawi80eylqb.ap-south-1.rds.amazonaws.com' 
 app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+app.config['MYSQL_PASSWORD'] = 'build*2019'
 app.config['MYSQL_DB'] = 'buildahome2016'
+
+
+mysql = MySQL(app)
+print(mysql)
+try:
+    connection = mysql.connection
+    print(f"Database connected: {mysql.connection}")
+    # Your database operations here
+except Exception as e:
+    print(f"Database connection error: {e}")
+
+
 app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
 app.config['S3_SECRET'] = S3_SECRET
@@ -71,6 +84,31 @@ app.config['S3_BUCKET'] = S3_BUCKET
 app.config['S3_LOCATION'] = S3_LOCATION
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
+
+
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+
+scheduler = BackgroundScheduler()
+
+def scheduled_job():
+    print("This job runs every day at 11 AM IST!")
+    response = requests.get('https://office.buildahome.in/get_dlr_report')
+
+    print(response.json())
+
+# Define the time zone for IST
+ist = pytz.timezone('Asia/Kolkata')
+
+# Schedule the job to run every day at 11 AM IST
+scheduler.add_job(scheduled_job, CronTrigger(hour=11, minute=00, timezone=ist))
+
+# Start the scheduler
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+# atexit.register(lambda: scheduler.shutdown())
 
 import smtplib
 from email.mime.text import MIMEText
@@ -103,19 +141,12 @@ def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, logi
 # )
 
 
-mysql = MySQL(app)
-try:
-    connection = mysql.connection
-    print(f"Database connected: {mysql.connection}")
-    # Your database operations here
-except Exception as e:
-    print(f"Database connection error: {e}")
-
 s3 = boto3.client(
     "s3",
     aws_access_key_id=app.config['S3_KEY'],
     aws_secret_access_key=app.config['S3_SECRET']
 )
+
 
 app.secret_key = 'bAhSessionKey'
 ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpeg', 'jpg']
@@ -150,7 +181,7 @@ def send_to_s3(file, bucket_name, filename, acl="public-read", content_type=''):
     try:
         if content_type == '':
             content_type = file.content_type
-        s3.upload_fileobj(
+        res = s3.upload_fileobj(
             file,
             bucket_name,
             filename,
@@ -159,6 +190,7 @@ def send_to_s3(file, bucket_name, filename, acl="public-read", content_type=''):
                 "ContentType": content_type  # Set appropriate content type as per the file
             }
         )
+        print(res)
     except Exception as e:
         print("Something Happened: ", e)
         return str(e)
@@ -382,6 +414,9 @@ def set_material_timestamps():
     mysql.connection.commit()
 
     return 'Done'
+
+
+
 
 @app.route('/documents', methods=['GET'])
 def documents():
@@ -937,6 +972,39 @@ def trade_report():
     return 'Job done!'
 
 
+@app.route('/export_clients', methods=['GET'])
+def export_clients():
+    cur = mysql.connection.cursor()
+    query = 'SELECT client_name, client_phone, client_email from projects WHERE archived=0'
+    cur.execute(query)
+    res = cur.fetchall()
+
+    wb = xlwt.Workbook()
+
+    
+
+    ws = wb.add_sheet(' ' + str(current_time))
+    style = xlwt.XFStyle()
+
+    # font
+    font = xlwt.Font()
+    font.bold = True
+    style.font = font
+
+    row = 0
+    
+    for p in projects:
+        ws.write(row, 0, p[0])
+        ws.write(row, 1, p[1])
+        ws.write(row, 2, p[2])
+        row = row+1
+
+    wb.save('../static/projects.xls')
+
+    return 'Job done!'
+
+
+
 @app.route('/get_dlr_report', methods=['GET'])
 def get_dlr_report():
     cur = mysql.connection.cursor()
@@ -948,9 +1016,13 @@ def get_dlr_report():
     projects = cur.fetchall()
 
     dlr_data = []  
+    index = 0
+    total = len(projects)
     for project in projects:
         project_id = project[0]
         project_name = project[2]
+        print('DLR Report updating for', project_name, index + 1, '/', total)
+        index = index + 1
         project_number = project[1]
         project2update = {
             'project_name': project_name,
@@ -1153,6 +1225,8 @@ def files(filename):
             filename = res[0] 
     print(filename)
     print(filename.replace('\%20','+'))
+    if len(filename.split('.')) > 2 and 'pdf' not in filename:
+        filename = filename + '.pdf'
     response = redirect(app.config['S3_LOCATION'] + filename.replace(' ','+'))
     return response
 
@@ -1374,6 +1448,7 @@ def profile():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    print(request.remote_addr)
     if request.method == 'GET':
         if 'email' in session:
             if 'last_route' in session:
@@ -1386,6 +1461,7 @@ def login():
             return render_template('login.html')
     else:
         required_fields = ['username', 'password']
+        print(request.form)
         for field in required_fields:
             if field not in list(request.form.keys()):
                 flash('Missing fields. Operation failed', 'danger')
@@ -1393,6 +1469,11 @@ def login():
 
         username = request.form['username']
         password = request.form['password']
+
+        if len(password) > 15 or len(password) < 5: 
+            return 'Go home'
+        if len(username) < 5: 
+            return 'Go home'
         password = hashlib.sha256(password.encode()).hexdigest()
         cur = mysql.connection.cursor()
         query = "SELECT user_id, email, name, role, password, access_level, profile_picture, permission FROM App_users WHERE email='" + username + "'"
@@ -1731,6 +1812,44 @@ def enter_material():
         return redirect('/enter_material')
 
 
+@app.route('/get_balance_quantity', methods=['POST'])
+def get_balance_quantity():
+    project = request.form['project']
+
+    material = request.form['material']
+    vendor = request.form['vendor']
+
+    cur = mysql.connection.cursor()
+    total_quantity = 0
+    balance = 0
+
+    project_query = 'SELECT project_id from projects WHERE project_name="'+project+'"'
+    cur.execute(project_query)
+    res = cur.fetchone()
+    project_id = res[0]
+
+    material_quantity_query = "SELECT total_quantity from kyp_material WHERE project_id=" + str(
+                project_id) + " AND material LIKE '%" + str(material).replace('"','').strip() + "%'"
+    
+    cur.execute(material_quantity_query)
+    res = cur.fetchone()
+    if res is not None:
+        total_quantity = float(res[0])
+
+    used_quantity_query = ''
+
+    if str(material) == 'Cement':
+        used_quantity_query = "SELECT SUM(pr.quantity) from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.material='Cement' AND pr.vendor='" + str(vendor) +"' AND p.project_name='"+project+"'"
+    else:    
+        used_quantity_query = "SELECT SUM(pr.quantity) from procurement pr JOIN projects p ON p.project_id = pr.project_id WHERE pr.material LIKE '%" + str(material).replace('"','').strip() + "%' AND pr.vendor='" + str(vendor) +"' AND p.project_name='"+project+"'"
+
+    cur.execute(used_quantity_query)
+    res = cur.fetchone()
+    if res is not None:
+        balance = total_quantity - float(res[0])
+      
+    return jsonify({'balance': balance, 'total_quantity': total_quantity})
+    
 @app.route('/view_inventory', methods=['GET'])
 def view_inventory():
     if 'email' not in session:
@@ -3126,7 +3245,7 @@ def create_bill():
                 return redirect('/create_bill')
 
         double_quotes_escaped_stage = stage.replace('"','""')
-        get_debit_note_bill = 'SELECT approval_2_amount from wo_bills WHERE project_id='+str(project_id)+' AND stage LIKE "%' + double_quotes_escaped_stage +' (Debit note)%" AND contractor_pan="'+str(contractor_pan)+'" AND trade != "NT/NMR"'
+        get_debit_note_bill = 'SELECT approval_2_amount from wo_bills WHERE project_id='+str(project_id)+' AND stage LIKE "%' + double_quotes_escaped_stage.strip() +' (Debit note)%" AND contractor_pan="'+str(contractor_pan)+'" AND trade != "NT/NMR"'
         cur.execute(get_debit_note_bill)
         res = cur.fetchall()
         if res is not None:
@@ -4530,6 +4649,22 @@ def get_qs_approval_indents_numbers():
 
         return teams
 
+@app.route('/download_approved_pos', methods=['GET'])
+def download_approved_pos():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/view_approved_indents'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin','COO','Purchase Head','Purchase Executive','QS Engineer','QS Head','QS Info','Purchase Info','Custom','Project Manager']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if session['role'] == 'Custom' and 'Approved POs' not in session['permission']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+
+    projects = get_projects_for_current_user()
+    return render_template('download_approved_pos', projects=projects)
+
 
 @app.route('/view_ph_approved_indents', methods=['GET'])
 def view_ph_approved_indents():
@@ -5314,6 +5449,67 @@ def reverse_hand_over_project():
         return redirect(request.referrer)
 
 
+@app.route('/hide_project', methods=['GEt'])
+def hide_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/archive_project'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Technical Info']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set archived=1, hidden=1 WHERE project_id=' + str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Project hidden', 'warning')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+@app.route('/unhide_project', methods=['GEt'])
+def unhide_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/archive_project'
+        return redirect('/login')
+    if session['role'] not in ['Super Admin', 'COO', 'Sales Executive', 'Billing','Technical Info']:
+        flash('You do not have permission to view that page', 'danger')
+        return redirect(request.referrer)
+    if 'project_id' in request.args:
+        cur = mysql.connection.cursor()
+        query = 'UPDATE projects set archived=1, hidden=0 WHERE project_id=' + str(request.args['project_id'])
+        cur.execute(query)
+        mysql.connection.commit()
+        flash('Project removed from hidden', 'warning')
+        return redirect(request.referrer)
+    else:
+        flash('Missing fields', 'danger')
+        return redirect(request.referrer)
+
+@app.route('/hidden_projects', methods=['GET'])
+def hidden_project():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/projects'
+        return redirect('/login')
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        result = []
+        if len(get_projects_for_current_user()) > 0:
+            if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 AND hidden=1 ' \
+                                          'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
+                cur.execute(archived_projects_query)
+                result = cur.fetchall()
+            else:
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 AND hidden=1 ORDER BY project_number'
+                cur.execute(archived_projects_query)
+                result = cur.fetchall()
+        return render_template('archived_projects.html', projects=result)
+
 @app.route('/archive_project', methods=['GET'])
 def archive_project():
     if 'email' not in session:
@@ -5349,6 +5545,7 @@ def unarchive_project():
         cur = mysql.connection.cursor()
         query = 'UPDATE projects set archived=0 WHERE project_id=' + str(request.args['project_id'])
         cur.execute(query)
+        print(query)
         mysql.connection.commit()
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unarchived project ' + request.args['project_name'])
         flash('Project unarchived', 'success')
@@ -6064,8 +6261,8 @@ def kra():
                         data[category][key] = request.form[form_field]
             data[category]['notes'] = notes
 
-            update_query = "UPDATE KRA SET rating='"+str(json.dumps(data))+"', notes='"+notes+"' WHERE id="+str(res[0])
-            cur.execute(update_query)
+            update_query = "UPDATE KRA SET rating=%s, notes=%s WHERE id=%s"
+            cur.execute(update_query, (str(json.dumps(data)), notes, str(res[0])))
             mysql.connection.commit()
             flash('KRA Updated', 'success')
         else:
@@ -6123,7 +6320,7 @@ def kra():
                         data[category][key] = request.form[form_field]
             data[category]['notes'] = notes
 
-            new_query = "INSERT INTO KRA (rating, month, year, coordinator, notes) values('"+str(json.dumps(data))+"', '"+month+"', '"+year+"',"+coordinator+",'"+notes+"')"
+            new_query = "INSERT INTO KRA (rating, month, year, coordinator, notes) values('"+str(json.dumps(data))+"', '"+month+"', '"+year+"',"+coordinator+",'"+notes.replace("'","''")+"')"
             cur.execute(new_query)
             mysql.connection.commit()
 
@@ -6190,15 +6387,16 @@ def upload_receipt_or_agreement():
         
         if file and allowed_file(file.filename):
             filetype = file.filename.split('.')[-1]
-            output = send_to_s3(file, app.config["S3_BUCKET"], str(timestamp) + '_'+ file.filename)
+            filename = '_'.join(file.filename.split('.')[:-1]).replace('.','').replace(',','')
+            output = send_to_s3(file, app.config["S3_BUCKET"], str(timestamp) + '_' + str(project_id)  + '.' + filetype)
             if output != 'success':
                 return jsonify({'message':'failed'})
 
             cur = mysql.connection.cursor()
             if document_type == 'receipt':
-                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(timestamp) + '_'+ file.filename +'", "'+file.filename+'", "'+timestamp+'", "RECEIPTS")'
+                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(timestamp) + '_' + str(project_id) + '.' + filetype +'", "'+file.filename+'", "'+timestamp+'", "RECEIPTS")'
             elif document_type == 'agreement':
-                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(timestamp) + '_'+ file.filename +'", "'+file.filename+'", "'+timestamp+'", "AGREEMENTS")'
+                sql = 'INSERT INTO Docs(project_id, doc_name, pdf, date, folder)  VALUES ('+str(project_id)+', "'+str(timestamp) + '_' + str(project_id)  + '.' + filetype +'", "'+file.filename+'", "'+timestamp+'", "AGREEMENTS")'
 
 
             cur.execute(sql)
@@ -6309,6 +6507,7 @@ def mark_task_complete():
     cur.execute(query)
     res = cur.fetchone()
     progress = res[0]
+    print(res)
     
     progress = progress + str(int(subtask_id) + 1) + '|'
     progress = progress.strip()
@@ -6316,6 +6515,8 @@ def mark_task_complete():
     s_note = res[1]
     s_note = s_note + note
     s_note = s_note + '|'
+
+    print(progress)
 
     update_query = 'UPDATE Tasks SET progress=%s, s_note=%s WHERE task_id=%s'
     cur.execute(update_query, (progress, s_note, task_id))
@@ -6461,11 +6662,17 @@ def update_advance_payment():
 @app.route('/testing', methods=['GET','POST'])
 def testing():
     cur = mysql.connection.cursor()
-    projects_q = "SELECT * from App_updates WHERE project_id=377" 
+    # projects_q = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'wo_bills'"
+    double_quotes_escaped_stage = 'Completion of Casting First floor roof	'
+    get_debit_note_bill = 'SELECT approval_2_amount from wo_bills WHERE project_id=727 AND stage LIKE "%' + double_quotes_escaped_stage +' (Debit note)%" AND contractor_pan="ACZPH5977J" AND trade != "NT/NMR"'    # notes = "Here’s a sample paragraph that should be long enough to span two pages in a typical PDF layout: \n\n\n\n In recent years, \n\n\n\n technological \n\n\n\n advancements \n\n\n\n have significantly transformed the way we live, work, and interact with the world around us. The rapid rise of artificial intelligence, machine learning, and automation has revolutionized industries, making processes more efficient and opening up new opportunities for innovation. In the workplace, AI-powered tools have streamlined operations, from data analysis to customer service, enabling businesses to \n\n\n\n  operate with increased precision and reduced overhead costs. Automation has taken over repetitive tasks, freeing up human workers to focus on more strategic and creative endeavors. As a result, the workforce is evolving, with a growing demand for skills in programming, data science, and problem-solving. However, this shift also presents challenges. Many traditional jobs are becoming obsolete, and workers in these industries must adapt by acquiring new skills to remain competitive in the labor market. Governments and educational institutions are increasingly recognizing the need for upskilling programs and initiatives that equip individuals with the competencies required in this new digital landscape. In recent years, technological advancements have significantly transformed the way we live, work, and interact with the world around us. The rapid rise of artificial intelligence, machine learning, and automation has revolutionized industries, making processes more efficient and opening up new opportunities for innovation. In the workplace, AI-powered tools have streamlined operations, from data analysis to customer service, enabling businesses to operate with increased precision and reduced overhead costs. Automation has taken over repetitive tasks, freeing up human workers to focus on more strategic and creative endeavors. As a result, the workforce is evolving, with a growing demand for skills in programming, data science, and problem-solving. However, this shift also presents challenges. Many traditional jobs are becoming obsolete, and workers in these industries must adapt by acquiring new skills to remain competitive in the labor market. Governments and educational institutions are increasingly recognizing the need for upskilling programs and initiatives that equip individuals with the competencies required in this new digital landscape. In recent years, technological advancements have significantly transformed the way we live, work, and interact with the world around us. The rapid rise of artificial intelligence, machine learning, and automation has revolutionized industries, making processes more efficient and opening up new opportunities for innovation. In the workplace, AI-powered tools have streamlined operations, from data analysis to customer service, enabling businesses to operate with increased precision and reduced overhead costs. Automation has taken over repetitive tasks, freeing up human workers to focus on more strategic and creative endeavors. As a result, the workforce is evolving, with a growing demand for skills in programming, data science, and problem-solving. However, this shift also presents challenges. Many traditional jobs are becoming obsolete, and workers in these industries must adapt by acquiring new skills to remain competitive in the labor market. Governments and educational institutions are increasingly recognizing the need for upskilling programs and initiatives that equip individuals with the competencies required in this new digital landscape."
 
 
+    # projects_q = 'UPDATE work_orders SET comments=%s, signed=0 WHERE id=%s'
 
-    cur.execute(projects_q)
+
+    # projects_q = 'SELECT DISTINCT(d.project_id), p.project_name, d.pdf FROM Docs d JOIN projects p ON p.project_id = d.project_id WHERE p.archived = 0 AND LENGTH(d.pdf) - LENGTH(REPLACE(d.pdf, ".", "")) > 2 AND (d.folder="RECEIPTS" OR d.folder="AGREEMENTS")'
+
+    cur.execute(get_debit_note_bill)
     res = cur.fetchall()
     mysql.connection.commit()
 
@@ -7322,16 +7529,16 @@ def approve_proposal():
     cur.execute(query)
     mysql.connection.commit()
 
-    query = 'SELECT pros.email, prop.proposal_pdf from sales_prospects pros JOIN sales_proposals prop ON prop.prospect_id=pros.id'
+    query = 'SELECT pros.email, prop.proposal_pdf from sales_prospects pros LEFT OUTER JOIN sales_proposals prop ON prop.prospect_id=pros.id WHERE prop.id='+str(request.args['id'])
     cur.execute(query)
     res = cur.fetchone()
-
     client = boto3.client('ses', region_name='ap-south-1')  # Update with your region
 
 
     # Email credentials
     sender_email = "proposal@buildahome.in"
     receiver_email = res[0]
+    
     # receiver_email = "aravind.capricon@gmail.com"
     password = "buildAhome2022!"
 
@@ -7354,10 +7561,13 @@ def approve_proposal():
     msg['To'] = receiver_email
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'html'))
-
+    
+    print(res)
+    print('Sending email to ', receiver_email)
+    
     # Connect to GoDaddy's SMTP server
     try:
-        server = smtplib.SMTP('sg2plcpnl0072.prod.sin2.secureserver.net', 587)
+        server = smtplib.SMTP('mail.buildahome.in', 587)
         server.set_debuglevel(1)  # Enable debug output
         server.ehlo()
         server.starttls()  # Secure the connection
@@ -7417,7 +7627,6 @@ def client_billing():
     tasks = []
     if res is not None:
         for i in res:
-            print(i)
             task_item = {
                 'id': i[0],
                 'name': i[2],
@@ -7440,7 +7649,7 @@ def client_billing():
                         sub_task_data = {
                             'index': j,
                             'name': task_name[0],
-                            'is_complete': len(i[10].strip()) > 0 and  str(j) in i[10].strip()
+                            'is_complete': len(i[10].strip()) > 0 and  str(j + 1) in i[10].strip()
                         }
                         if len(task_name) > 1:
                             sub_task_data['start_date'] = task_name[1]
@@ -7607,6 +7816,27 @@ def unblock_project():
         make_entry_in_audit_log(session['name'] + ' with email '+ session['email'] + ' unblocked project ' + project_name)
         return redirect(request.referrer)
 
+@app.route('/projects_handed_over', methods=['GET'])
+def projects_handed_over():
+    if 'email' not in session:
+        flash('You need to login to continue', 'danger')
+        session['last_route'] = '/projects_handed_over'
+        return redirect('/login')
+    cur = mysql.connection.cursor()
+    result = []
+    if len(get_projects_for_current_user()) > 0:
+        if session['role'] not in ['Super Admin', 'COO', 'QS Head','Site Engineer', 'Purchase Head','Planning',
+                                    'Sales Executive', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
+            approved_projects_query = 'SELECT project_id, project_name, project_number, blocked, client_phone from projects WHERE is_approved=1 AND archived=0 AND handed_over=1' \
+                                        'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
+            cur.execute(approved_projects_query)
+            result = cur.fetchall()
+        else:
+            approved_projects_query = 'SELECT project_id, project_name, project_number, blocked, client_phone from projects WHERE is_approved=1 AND archived=0 AND handed_over=1 ORDER BY project_number'
+            cur.execute(approved_projects_query)
+            result = cur.fetchall()
+    return render_template('approved_projects.html', projects=result)
+    
 @app.route('/projects', methods=['GET'])
 def approved_projects():
     if 'email' not in session:
@@ -7641,12 +7871,12 @@ def archived_projects():
         result = []
         if len(get_projects_for_current_user()) > 0:
             if session['role'] not in ['Super Admin', 'COO', 'QS Head', 'Site Engineer', 'Purchase Head', 'Billing'] and 'All' not in str(get_projects_for_current_user()):
-                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 ' \
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 AND hidden = 0 ' \
                                           'AND project_id IN ' + str(get_projects_for_current_user()) + ' ORDER BY project_number'
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
             else:
-                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 ORDER BY project_number'
+                archived_projects_query = 'SELECT project_id, project_name, project_number from projects WHERE project_number!=0 AND project_number is not NULL AND archived=1 AND hidden = 0 ORDER BY project_number'
                 cur.execute(archived_projects_query)
                 result = cur.fetchall()
         return render_template('archived_projects.html', projects=result)
@@ -7660,7 +7890,7 @@ def view_project_details():
             'date_of_initial_advance', 'date_of_agreement', 'sales_executive', 'site_area',
             'gf_slab_area', 'ff_slab_area', 'sf_slab_area','fof_slab_area','fif_slab_area', 'tf_slab_area', 'tef_slab_area', 'shr_oht',
             'elevation_details', 'additional_cost',
-            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name', 'client_phone', 'client_email','agreement','area_statement', 'handed_over'
+            'paid_percentage', 'comments', 'cost_sheet', 'site_inspection_report', 'is_approved', 'archived', 'created_at','client_name', 'client_phone', 'client_email','agreement','area_statement', 'handed_over','hidden'
         ]
         fields_as_string = ", ".join(fields)
         get_details_query = 'SELECT ' + fields_as_string + ' from projects WHERE project_id=' + str(
@@ -7682,7 +7912,7 @@ def view_project_details():
             else:
                 details[fields_name_to_show] = result[i]
         return render_template('view_project_details.html', details=details, approved=str(result[-8]),
-                               archived=str(result[-7]), handed_over=str(result[-1]))
+                               archived=str(result[-8]), hidden=str(result[-1]), handed_over=str(result[-1]))
 
 
 @app.route('/approve_project', methods=['GET'])

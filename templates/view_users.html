@@ -6,6 +6,12 @@
     </div>
 </div>
 <div class="p-5 w-100 table-responsive">
+    <div class="col-md-4 mb-3 px-0">
+        Filter by role
+        <select name="" id="user-filter" class="form-control select2">
+            <option value="All">All</option>
+        </select>
+    </div>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -22,7 +28,7 @@
         <tr>
             <td>{{user[2]}}</td>
             <td>{{user[1]}}</td>
-            <td>{{user[3]}}</td>
+            <td class="role {{user[3].replace(' ','_')}}">{{user[3]}}</td>
             <td>{{user[4]}}</td>
             <td>
                 {% if session['role'] in ['Super Admin','COO','Billing']  or (session['role'] == 'Custom' and 'Edit user' in session['permission'])  %}

@@ -42,7 +42,61 @@ function runBalances() {
     $('.material').each(function(index, element){
         if(Object.keys(total_quantity).includes($(element).text())) {
             if ($(element).parents('tr').find('.total_quantity').text().trim() != '') 
-            $(element).parents('tr').find('.balance_quantity').text(parseInt($(element).parents('tr').find('.total_quantity').text().trim()) - parseInt(total_quantity[$(element).text()]))
+                $(element).parents('tr').find('.balance_quantity').text(parseInt($(element).parents('tr').find('.total_quantity').text().trim()) - parseInt(total_quantity[$(element).text()]))
+            else {
+                const td = $(element).parents('tr').find('.balance_quantity')
+                // const button = document.createElement('DIV')
+                // $(button).text('View')
+                // $(button).addClass('btn text-primary')
+                // $(button).on('click', function(){
+                //     const project = $(element).parents('tr').find('.project').text().trim()
+                //     const material = $(element).parents('tr').find('.material').text().trim()
+                //     const vendor = $(element).parents('tr').find('.vendor').text().trim()
+                //     $.ajax({
+                //         type: "POST",
+                //         url: "/get_balance_quantity",
+                //         success: function (data) {
+                //             console.log(data)
+                //             if(data.balance) {
+                //                 $(td).addClass('text-center')
+                //                 $(td).text(parseFloat(data.balance).toFixed(2))
+                //             }
+                //         },
+                //         error: function (error) {
+                //             console.log(error)
+                //             // handle error
+                //         },
+                //         async: true,
+                //         data: { 'project': project, 'material': material,'vendor': vendor },
+                //     });
+                    
+                // })
+                // $(td).append(button)
+                const project = $(element).parents('tr').find('.project').text().trim()
+                    const material = $(element).parents('tr').find('.material').text().trim()
+                    const vendor = $(element).parents('tr').find('.vendor').text().trim()
+                    $.ajax({
+                        type: "POST",
+                        url: "/get_balance_quantity",
+                        success: function (data) {
+                            console.log(data)
+                            if(data.balance) {
+                                $(td).addClass('text-center')
+                                $(td).text(parseFloat(data.balance).toFixed(2))
+                                
+                            }
+                            if (data.total_quantity) {
+                                $(element).parents('tr').find('.total_quantity').text(parseFloat(data.total_quantity).toFixed(2))
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error)
+                            // handle error
+                        },
+                        async: true,
+                        data: { 'project': project, 'material': material,'vendor': vendor },
+                    });
+            }
         }
     })
 
